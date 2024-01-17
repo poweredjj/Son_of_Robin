@@ -699,7 +699,7 @@ namespace SonOfRobin
                 case PieceHint.Type.ExplosiveGas:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
-                        imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.ArrowExploding), PieceInfo.GetImageObj(PieceTemplate.Name.BowBasic) })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.ArrowExploding), PieceInfo.GetImageObj(PieceTemplate.Name.BowBasic) })};
 
                 case PieceHint.Type.TreasureJar:
                     return new List<HintMessage> {
@@ -729,7 +729,7 @@ namespace SonOfRobin
                 case PieceHint.Type.AlchemyLab:
                     return new List<HintMessage> {
                         new HintMessage(text: "| I can start brewing\n| potions now!",
-                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetImageObj(AnimData.PkgName.PotionRed) })};
 
                 case PieceHint.Type.PoisonousMeat:
                     return new List<HintMessage> {
@@ -812,12 +812,12 @@ namespace SonOfRobin
                 case PieceHint.Type.CineRuins:
                     return new List<HintMessage> {
                         new HintMessage(text: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
-                        imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.RuinsWallHorizontal1) })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.RuinsWallHorizontal1) })};
 
                 case PieceHint.Type.CineCave:
                     return new List<HintMessage> {
                         new HintMessage(text: "This looks like a | cave.\nI wonder what's inside?\nStill, it might be dangerous...",
-                        imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.CaveEntrance) })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.CaveEntrance) })};
 
                 case PieceHint.Type.CineTotem:
                     return new List<HintMessage> {
@@ -836,13 +836,13 @@ namespace SonOfRobin
 
                 case PieceHint.Type.CineLookForSurvivors3:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<ImageObj>{ AnimDataNew.GetImageObj(AnimDataNew.PkgName.SkullAndBones) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.SkullAndBones) }, blockInputDefaultDuration: true),
                     new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.AxeIron), PieceInfo.GetImageObj(PieceTemplate.Name.Meal), PieceInfo.GetImageObj(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineLookForSurvivors4:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<ImageObj>{ AnimDataNew.GetImageObj(AnimDataNew.PkgName.PalmTree) }, blockInputDefaultDuration: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<ImageObj>{ AnimDataNew.GetImageObj(AnimDataNew.PkgName.BoatCompleteStanding) }, blockInputDefaultDuration: true)};
+                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.PalmTree) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.BoatCompleteStanding) }, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineDay1:
                     return new List<HintMessage> {

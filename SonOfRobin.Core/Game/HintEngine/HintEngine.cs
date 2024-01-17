@@ -139,9 +139,9 @@ namespace SonOfRobin
                 case Type.Starving:
                     {
                         var hintMessages = new List<HintMessage> {
-                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Apple), PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.Meal), AnimDataNew.GetImageObj(AnimDataNew.PkgName.SkullAndBones)}, blockInputDefaultDuration: true),
-                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.SkullAndBones), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
-                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.BubbleExclamationRed), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm starving.\nI need to eat | | | something right now\nor else I'm gonna | die...", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Apple), PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.Meal), AnimData.GetImageObj(AnimData.PkgName.SkullAndBones)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "I'm | dying from | hunger.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.SkullAndBones), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
+                            new HintMessage(text: "| I have to | eat right now!", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.BubbleExclamationRed), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, blockInputDefaultDuration: true),
                         };
 
                         this.world.Player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerStomachGrowl);
@@ -223,7 +223,7 @@ namespace SonOfRobin
                     {
                         this.Disable(type: type, delay: 0);
                         ShowMessageDuringPause(new List<HintMessage> {
-                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame)}, blockInputDefaultDuration: true) });
+                            new HintMessage(text: "Ouch! This is | lava!", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame)}, blockInputDefaultDuration: true) });
                         break;
                     }
 
@@ -268,7 +268,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<ImageObj> { piece.sprite.AnimFrame.imageObj, AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame)}, blockInputDefaultDuration: true),
+                            new HintMessage($"This | {piece.readableName} is scared of | fire!", imageList: new List<ImageObj> { piece.sprite.AnimFrame.imageObj, AnimData.GetImageObj(AnimData.PkgName.Flame)}, blockInputDefaultDuration: true),
                             new HintMessage("I think that I'm safe | here.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall)}, blockInputDefaultDuration: true)
                         });
                         break;
@@ -279,7 +279,7 @@ namespace SonOfRobin
                         this.Disable(type: type, delay: 0);
 
                         ShowPieceDuringPause(world: world, pieceToShow: piece, messageList: new List<HintMessage> {
-                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<ImageObj> {piece.sprite.AnimFrame.imageObj, AnimDataNew.GetImageObj(AnimDataNew.PkgName.BloodSplatter1)}, blockInputDefaultDuration: true),
+                            new HintMessage($"This | {piece.readableName} had just attacked me!\nIt must be because I have | attacked it first...", imageList: new List<ImageObj> {piece.sprite.AnimFrame.imageObj, AnimData.GetImageObj(AnimData.PkgName.BloodSplatter1)}, blockInputDefaultDuration: true),
                         });
                         break;
                     }
@@ -339,11 +339,11 @@ namespace SonOfRobin
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 300 } }, storeForLaterUse: true));
 
-                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.SkullAndBones), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Heart) }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "And I WILL | RUIN your game experience.\nWith pleasure |.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.SkullAndBones), AnimData.GetImageObj(AnimData.PkgName.Heart) }, boxType: invertedDialogue, delay: 0).ConvertToTask());
 
                             taskChain.Add(new HintMessage(text: "My contract says, that I'm here to help test this game, human.", boxType: invertedDialogue, delay: 0).ConvertToTask());
 
-                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame) }, boxType: invertedDialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "Is that clear? Yeah?\nThen let's get started |!", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.Flame) }, boxType: invertedDialogue, delay: 0).ConvertToTask());
                         }
                         else
                         {
@@ -441,7 +441,7 @@ namespace SonOfRobin
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60, executeHelper: camZoomDlgt2, storeForLaterUse: true));
 
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 0, executeHelper: SoundData.Name.DunDunDun, storeForLaterUse: true));
-                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.PalmTree) }, boxType: dialogue, delay: 0).ConvertToTask());
+                            taskChain.Add(new HintMessage(text: "I guess I'm stranded | here.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.PalmTree) }, boxType: dialogue, delay: 0).ConvertToTask());
                         }
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
@@ -681,7 +681,7 @@ namespace SonOfRobin
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
-                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.WaterDrop) }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
+                        taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WaterDrop) }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
 
@@ -801,51 +801,51 @@ namespace SonOfRobin
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.WorkshopAdvanced) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WorkshopAdvanced) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.AxeIron) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.AxeIron) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.WoodLogRegular) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients used: {this.world.craftStats.UsedIngredientsTotal}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WoodLogRegular) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.ChestIron) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.ChestIron) }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.cookStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.CookingPot) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.CookingPot) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| meals made: {this.world.cookStats.TotalCookCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MealStandard) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| meals made: {this.world.cookStats.TotalCookCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MealStandard) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.cookStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.cookStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.brewStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.AlchemyLabStandard) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.AlchemyLabStandard) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| potions made: {this.world.brewStats.TotalCookCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| potions made: {this.world.brewStats.TotalCookCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.PotionRed) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.HerbsCyan) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| ingredients used: {this.world.brewStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.HerbsCyan) }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.smeltStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.IronBar) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.IronBar) }, minMarkerWidthMultiplier: 2f));
 
-                                textList.Add(new TextWithImages(font: fontText, text: $"| materials processed: {this.world.smeltStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.IronOre) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontText, text: $"| materials processed: {this.world.smeltStats.AllIngredientsCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.IronOre) }, minMarkerWidthMultiplier: 2f));
                             }
 
                             if (this.world.meatHarvestStats.TotalHarvestCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| animals processed: {this.world.meatHarvestStats.TotalHarvestCount}", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Rabbit) }, minMarkerWidthMultiplier: 2f));
 

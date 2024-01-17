@@ -901,7 +901,7 @@ namespace SonOfRobin
                                     player.sprite.Visible = false;
                                     player.Kill();
 
-                                    new TextWindow(text: "You have | drowned.", imageList: [AnimDataNew.GetImageObj(AnimDataNew.PkgName.WaterDrop)], textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
+                                    new TextWindow(text: "You have | drowned.", imageList: [AnimData.GetImageObj(AnimData.PkgName.WaterDrop)], textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
 
                                     return;
                                 }

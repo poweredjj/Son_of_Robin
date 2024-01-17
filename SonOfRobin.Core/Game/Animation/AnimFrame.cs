@@ -4,7 +4,7 @@ using System;
 
 namespace SonOfRobin
 {
-    public readonly struct AnimFrameNew
+    public readonly struct AnimFrame
     {
         public readonly string atlasName;
         public readonly Rectangle cropRect;
@@ -20,7 +20,7 @@ namespace SonOfRobin
         public readonly bool ignoreWhenCalculatingMaxSize;
         public readonly ImageObj imageObj;
 
-        public AnimFrameNew(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
+        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
             this.atlasName = atlasName;
             this.scale = scale;
@@ -48,11 +48,11 @@ namespace SonOfRobin
             this.imageObj = new AnimFrameObj(this);
         }
 
-        public AnimFrameNew MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
+        public AnimFrame MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
         {
             // to make a copy with edited gfxOffsetCorrection
 
-            return new AnimFrameNew(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize);
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize);
         }
 
         public Texture2D Texture

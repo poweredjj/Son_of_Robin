@@ -42,7 +42,7 @@ namespace SonOfRobin
         public OpacityFade opacityFade;
         public AnimPkg AnimPkg { get; private set; }
         public Anim Anim { get; private set; }
-        public AnimFrameNew AnimFrame { get; private set; }
+        public AnimFrame AnimFrame { get; private set; }
         public Color color;
         private bool visible;
 
@@ -63,7 +63,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, int id, BoardPiece boardPiece, AnimDataNew.PkgName animPkgName, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
+        public Sprite(World world, int id, BoardPiece boardPiece, AnimData.PkgName animPkgName, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -73,7 +73,7 @@ namespace SonOfRobin
             this.orientation = Orientation.right;
             this.lastOrientationChangeFrame = 0;
             this.OrientationAngle = 0f;
-            this.AnimPkg = AnimDataNew.pkgByName[animPkgName];
+            this.AnimPkg = AnimData.pkgByName[animPkgName];
             this.AnimName = animName;
             this.AnimSize = animSize;
             this.color = Color.White;
@@ -274,7 +274,7 @@ namespace SonOfRobin
 
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
 
-            this.AnimPkg = AnimDataNew.pkgByName[(AnimDataNew.PkgName)(Int64)spriteDict["animPackage"]];
+            this.AnimPkg = AnimData.pkgByName[(AnimData.PkgName)(Int64)spriteDict["animPackage"]];
             if (spriteDict.ContainsKey("animName")) this.AnimName = (string)spriteDict["animName"];
             if (spriteDict.ContainsKey("animSize")) this.AnimSize = (byte)(Int64)spriteDict["animSize"];
             this.AssignFrame(checkForCollision: false);
@@ -303,7 +303,7 @@ namespace SonOfRobin
             return this.boardPiece.level.grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
         }
 
-        public static string GetCompleteAnimId(AnimDataNew.PkgName animPackage, int animSize, string animName)
+        public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)
         { return $"{animPackage}-{animSize}-{animName}"; }
 
         public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)
@@ -449,13 +449,13 @@ namespace SonOfRobin
             ParticleEngine.TurnOffAll(this); // every "infinite" preset should end
             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: this.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
 
-            AnimDataNew.PkgName newAnimPackage = this.AnimFrame.layer switch
+            AnimData.PkgName newAnimPackage = this.AnimFrame.layer switch
             {
-                -1 => AnimDataNew.PkgName.WhiteSpotLayerMinus1,
-                0 => AnimDataNew.PkgName.WhiteSpotLayerZero,
-                1 => AnimDataNew.PkgName.WhiteSpotLayerOne,
-                2 => AnimDataNew.PkgName.WhiteSpotLayerTwo,
-                3 => AnimDataNew.PkgName.WhiteSpotLayerThree,
+                -1 => AnimData.PkgName.WhiteSpotLayerMinus1,
+                0 => AnimData.PkgName.WhiteSpotLayerZero,
+                1 => AnimData.PkgName.WhiteSpotLayerOne,
+                2 => AnimData.PkgName.WhiteSpotLayerTwo,
+                3 => AnimData.PkgName.WhiteSpotLayerThree,
                 _ => throw new ArgumentException($"Unsupported layer - {this.AnimFrame.layer}."),
             };
 
@@ -463,7 +463,7 @@ namespace SonOfRobin
                 (this.particleEngine.HasPreset(ParticleEngine.Preset.DustPuff) || this.particleEngine.HasPreset(ParticleEngine.Preset.SmokePuff)))
             {
                 // smoke / dust puff should appear above everything else
-                newAnimPackage = AnimDataNew.PkgName.WhiteSpotLayerTwo;
+                newAnimPackage = AnimData.PkgName.WhiteSpotLayerTwo;
             }
 
             particleEmitter.sprite.AssignNewPackage(newAnimPackage: newAnimPackage, checkForCollision: false);
@@ -614,7 +614,7 @@ namespace SonOfRobin
             this.GfxRect = this.AnimFrame.GetGfxRectForPos(this.position);
         }
 
-        public void AssignNewPackage(AnimDataNew.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)
         {
             if (this.AnimPkg.name == newAnimPackage) return;
 
@@ -622,7 +622,7 @@ namespace SonOfRobin
 
             if (setEvenIfMissing || CheckIfAnimPackageExists(newAnimPackage))
             {
-                this.AnimPkg = AnimDataNew.pkgByName[newAnimPackage];
+                this.AnimPkg = AnimData.pkgByName[newAnimPackage];
                 bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
                 if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
             }
@@ -656,7 +656,7 @@ namespace SonOfRobin
             }
         }
 
-        public void AssignFrameForce(AnimFrameNew animFrame)
+        public void AssignFrameForce(AnimFrame animFrame)
         {
             // does not check collisions, use with caution
             this.AnimFrame = animFrame;
@@ -664,7 +664,7 @@ namespace SonOfRobin
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            AnimFrameNew oldAnimFrame = this.AnimFrame;
+            AnimFrame oldAnimFrame = this.AnimFrame;
 
             try
             {
@@ -674,7 +674,7 @@ namespace SonOfRobin
             catch (KeyNotFoundException)
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimDataNew.pkgByName[AnimDataNew.PkgName.NoAnim].presentationFrame;
+                this.AnimFrame = AnimData.pkgByName[AnimData.PkgName.NoAnim].presentationFrame;
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
@@ -695,7 +695,7 @@ namespace SonOfRobin
             return !collisionDetected;
         }
 
-        public bool CheckIfAnimPackageExists(AnimDataNew.PkgName animPackageToCheck)
+        public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
         {
             string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.AnimSize, animName: this.AnimName);
             return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
@@ -895,7 +895,7 @@ namespace SonOfRobin
         public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
         {
             float distance = Vector2.Distance(lightPos, this.position);
-            AnimFrameNew frame = this.AnimFrame;
+            AnimFrame frame = this.AnimFrame;
 
             if (this.boardPiece.HasFlatShadow)
             {

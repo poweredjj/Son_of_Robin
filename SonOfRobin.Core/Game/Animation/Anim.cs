@@ -13,9 +13,9 @@ namespace SonOfRobin
         public readonly int duration;
         public readonly bool switchWhenComplete;
         public readonly string switchName;
-        public readonly AnimFrameNew[] frameArray;
+        public readonly AnimFrame[] frameArray;
 
-        public Anim(AnimPkg animPkg, int size, AnimFrameNew[] frameArray, string name = "default", bool pingPong = false, string switchName = "")
+        public Anim(AnimPkg animPkg, int size, AnimFrame[] frameArray, string name = "default", bool pingPong = false, string switchName = "")
         {
             this.animPkg = animPkg;
             this.name = name;
@@ -25,7 +25,7 @@ namespace SonOfRobin
 
             if (pingPong)
             {
-                AnimFrameNew[] frameArrayPingPong = new AnimFrameNew[frameArray.Length * 2];
+                AnimFrame[] frameArrayPingPong = new AnimFrame[frameArray.Length * 2];
 
                 for (int i = 0; i < frameArray.Length; i++)
                 {

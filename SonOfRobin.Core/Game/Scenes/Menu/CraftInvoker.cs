@@ -13,7 +13,7 @@ namespace SonOfRobin
             public readonly bool isMain;
             public readonly bool isEmpty;
             public readonly PieceTemplate.Name name;
-            public readonly AnimFrameNew frame;
+            public readonly AnimFrame frame;
             public readonly string text;
             public readonly Color bgColor;
             public readonly int counter;
@@ -286,7 +286,7 @@ namespace SonOfRobin
             this.infoTextList = entryList;
         }
 
-        private void DrawFrameAndText(AnimFrameNew frame, Rectangle cellRect, string text, Color txtCol, Color gfxCol)
+        private void DrawFrameAndText(AnimFrame frame, Rectangle cellRect, string text, Color txtCol, Color gfxCol)
         {
             int middleMargin = (int)(cellRect.Width * 0.05f);
 

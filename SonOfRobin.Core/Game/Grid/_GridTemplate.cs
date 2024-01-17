@@ -209,11 +209,11 @@ namespace SonOfRobin
             int frameMaxWidth = 0;
             int frameMaxHeight = 0;
 
-            foreach (AnimPkg animPkg in AnimDataNew.pkgByName.Values)
+            foreach (AnimPkg animPkg in AnimData.pkgByName.Values)
             {
                 foreach (Anim anim in animPkg.AllAnimList)
                 {
-                    foreach (AnimFrameNew frame in anim.frameArray)
+                    foreach (AnimFrame frame in anim.frameArray)
                     {
                         if (frame.ignoreWhenCalculatingMaxSize) continue;
 

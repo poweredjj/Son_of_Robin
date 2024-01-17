@@ -699,18 +699,18 @@ namespace SonOfRobin
             {
                 if (world == null || world.demoMode) return;
 
-                AnimDataNew.PkgName currentPackageName = world.Player.sprite.AnimPkg.name;
+                AnimData.PkgName currentPackageName = world.Player.sprite.AnimPkg.name;
                 Player player = world.Player;
 
                 while (true)
                 {
-                    var packageNames = new AnimDataNew.PkgName[] { AnimDataNew.PkgName.PlayerBoy, AnimDataNew.PkgName.PlayerGirl, AnimDataNew.PkgName.FoxGinger, AnimDataNew.PkgName.Frog1, AnimDataNew.PkgName.BearBlack, AnimDataNew.PkgName.DragonBonesTestFemaleMage };
+                    var packageNames = new AnimData.PkgName[] { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack, AnimData.PkgName.DragonBonesTestFemaleMage };
 
-                    AnimDataNew.PkgName targetPackage = packageNames[0];
+                    AnimData.PkgName targetPackage = packageNames[0];
 
                     for (int i = 0; i < packageNames.Length; i++)
                     {
-                        AnimDataNew.PkgName pkgName = packageNames[i];
+                        AnimData.PkgName pkgName = packageNames[i];
 
                         if (currentPackageName == pkgName)
                         {

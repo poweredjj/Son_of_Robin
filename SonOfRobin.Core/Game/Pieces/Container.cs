@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class Container : BoardPiece
     {
-        public Container(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description,
+        public Container(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description,
             byte animSize = 0, string animName = "open", int maxHitPoints = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty)
@@ -37,7 +37,7 @@ namespace SonOfRobin
 
             if (notEmptySlotsCount > 0)
             {
-                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.PieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.ChestIron));
+                new StatBar(label: "", value: notEmptySlotsCount, valueMax: this.PieceStorage.AllSlotsCount, colorMin: new Color(0, 255, 255), colorMax: new Color(0, 128, 255), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.ChestIron));
             }
 
             base.DrawStatBar();

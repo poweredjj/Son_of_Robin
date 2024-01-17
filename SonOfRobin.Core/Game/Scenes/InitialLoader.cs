@@ -150,7 +150,7 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateAnims:
-                    AnimDataNew.CreateAllAnims();
+                    AnimData.CreateAllAnims();
                     break;
 
                 case Step.CheckCellSize:

@@ -72,14 +72,14 @@ namespace SonOfRobin
             return category switch
             {
                 Category.Wood => PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig),
-                Category.Stone => AnimDataNew.GetImageObj(AnimDataNew.PkgName.MineralsSmall3),
+                Category.Stone => AnimData.GetImageObj(AnimData.PkgName.MineralsSmall3),
                 Category.Metal => PieceInfo.GetImageObj(PieceTemplate.Name.Anvil),
                 Category.SmallPlant => PieceInfo.GetImageObj(PieceTemplate.Name.GrassRegular),
                 Category.Flesh => TextureBank.GetImageObj(textureName: TextureBank.TextureName.Animal),
-                Category.Leather => AnimDataNew.GetImageObj(AnimDataNew.PkgName.Leather),
+                Category.Leather => AnimData.GetImageObj(AnimData.PkgName.Leather),
                 Category.Dirt => PieceInfo.GetImageObj(PieceTemplate.Name.Hole),
                 Category.Crystal => PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositSmall),
-                _ => AnimDataNew.GetImageObj(AnimDataNew.PkgName.NoAnim),
+                _ => AnimData.GetImageObj(AnimData.PkgName.NoAnim),
             };
         }
 
@@ -122,7 +122,7 @@ namespace SonOfRobin
         public bool isTemporaryDecoration;
         private float hitPoints;
 
-        public BoardPiece(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public BoardPiece(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null)
         {
             this.world = world;
@@ -473,9 +473,9 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Heart));
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, image: AnimData.GetImageObj(AnimData.PkgName.Heart));
 
-            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame));
+            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.Flame));
 
             StatBar.FinishThisBatch();
         }

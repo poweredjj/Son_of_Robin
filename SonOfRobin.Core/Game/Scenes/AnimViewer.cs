@@ -21,7 +21,7 @@ namespace SonOfRobin
         private int currentAnimIndex;
 
         private AnimPkg currentAnimPkg;
-        private AnimFrameNew currentAnimFrame;
+        private AnimFrame currentAnimFrame;
         private Vector2 pos;
         private float rot;
         private int playSpeed;
@@ -58,11 +58,11 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            AnimDataNew.CreateAllAnims();
+            AnimData.CreateAllAnims();
 
-            foreach (AnimDataNew.PkgName pkgName in AnimDataNew.allPkgNames)
+            foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
             {
-                animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
+                animPkgList.Add(AnimData.pkgByName[pkgName]);
             }
 
             this.animPkgArray = animPkgList.OrderBy(a => a.name).ToArray();
@@ -77,7 +77,7 @@ namespace SonOfRobin
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
 
-            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimDataNew.pkgByName[AnimDataNew.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
+            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimData.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
         }
 
         private void AssignCurrentAnim()
@@ -355,7 +355,7 @@ namespace SonOfRobin
         {
             float distance = Vector2.Distance(lightPos, this.pos);
 
-            AnimFrameNew animFrame = this.currentAnimFrame;
+            AnimFrame animFrame = this.currentAnimFrame;
             Vector2 spritePos = this.pos;
             float opacity = 1f;
 

@@ -15,7 +15,7 @@ namespace SonOfRobin
         public AmbientSound(World world, int id, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
            bool visible = false) :
 
-            base(world: world, id: id, animPackage: AnimDataNew.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
+            base(world: world, id: id, animPackage: AnimData.PkgName.MusicNoteBig, animSize: 0, animName: "default", name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: State.PlayAmbientSound)
         {
             this.waitUntilFrame = 0;
 
@@ -38,7 +38,7 @@ namespace SonOfRobin
             if (sound == null) return;
 
             if (sound.isLooped) new StatBar(label: "vol", value: (int)(sound.FadeVolume * 100), valueMax: 100, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false);
-            else new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.CurrentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.MusicNoteSmall));
+            else new StatBar(label: "", value: this.currentDelay - (this.waitUntilFrame - this.world.CurrentUpdate), valueMax: this.currentDelay, colorMin: new Color(0, 128, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.MusicNoteSmall));
 
             StatBar.FinishThisBatch();
         }

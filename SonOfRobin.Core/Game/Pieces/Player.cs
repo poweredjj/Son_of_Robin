@@ -84,7 +84,7 @@ namespace SonOfRobin
         public PieceStorage EquipStorage { get; private set; }
         public PieceStorage GlobalChestStorage { get; private set; } // one storage shared across all crystal chests
 
-        public Player(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public Player(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default") :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, speed: 3, name: name, allowedTerrain: allowedTerrain, maxHitPoints: 400, readableName: readableName, description: description, strength: 1, activeState: activeState)
@@ -1576,7 +1576,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MealStandard) };
+                var imageList = new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MealStandard) };
                 if (levelMaster) imageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Cooking level up!\n       Level {this.CookLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
@@ -1621,7 +1621,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed) };
+                var imageList = new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.PotionRed) };
                 if (levelMaster) imageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Alchemy level up!\n       Level {this.BrewLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);
@@ -1664,7 +1664,7 @@ namespace SonOfRobin
 
                 string newLevelName = levelMaster ? "master |" : $"{nextLevel}";
 
-                var imageList = new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MeatRawPrime) };
+                var imageList = new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime) };
                 if (levelMaster) imageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.Star));
 
                 new TextWindow(text: $"| Meat harvesting level up!\n       Level {this.HarvestLevel} -> {newLevelName}", imageList: imageList, textColor: levelMaster ? Color.PaleGoldenrod : Color.White, bgColor: levelMaster ? Color.DarkGoldenrod : Color.DodgerBlue, useTransition: true, animate: true, blocksUpdatesBelow: true, blockInputDuration: 100, priority: 1, startingSound: levelMaster ? SoundData.Name.Chime : SoundData.Name.Notification1);

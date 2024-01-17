@@ -228,7 +228,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                     new HintMessage(text: "When | enemies are nearby,\nyou cannot | craft, | cook or do some other things.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Bear), PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopAdvanced), PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
 
-                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame)}, boxType: messageTextType),
+                    new HintMessage(text: "To scare off enemies, it is best to build a | campfire\nand | make sure the | fire is burning.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), AnimData.GetImageObj(AnimData.PkgName.Flame)}, boxType: messageTextType),
                 });
 
                 case Type.ShootProjectile:
@@ -266,7 +266,7 @@ namespace SonOfRobin
                     new HintMessage(text:"1. Stand next to the | cooking site and press |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot), InputMapper.GetImageObj(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:"2. Place some | | | ingredients into | the cooking site.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetImageObj(PieceTemplate.Name.Tomato), PieceInfo.GetImageObj(PieceTemplate.Name.Clam), PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to place some | | fuel\ninto | the cooking site.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank), PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot)}, boxType: messageTextType),
-                    new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, boxType: messageTextType),
+                    new HintMessage(text: "4. Use the | flame to start cooking |.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.Meal)}, boxType: messageTextType),
                     });
 
                 case Type.Smelt:
@@ -275,7 +275,7 @@ namespace SonOfRobin
                     new HintMessage(text:$"1. Stand next to the | { PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName } and press |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.FurnaceComplete), InputMapper.GetImageObj(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
                     new HintMessage(text:$"2. Place some | | | materials into | the {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetImageObj(PieceTemplate.Name.FurnaceComplete)}, boxType: messageTextType),
                     new HintMessage(text: $"3. You will also need to put one | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} for every material.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, boxType: messageTextType),
-                    new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetImageObj(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
+                    new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetImageObj(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
                     });
 
                 case Type.ShakeFruit:
@@ -299,31 +299,31 @@ namespace SonOfRobin
                 Preferences.ShowTouchTips ?
                 new HintMessage(text:"3. Touch the | torch on toolbar to select it.", imageList: new List<ImageObj> {PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType):
                 new HintMessage(text:"3. Select the | torch using | and |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall), InputMapper.GetImageObj(InputMapper.Action.ToolbarPrev), InputMapper.GetImageObj(InputMapper.Action.ToolbarNext)}, boxType: messageTextType),
-                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), InputMapper.GetImageObj(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),
-                new HintMessage(text:"5. To extinguish the | fire,\npress | again (with | torch selected).", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), InputMapper.GetImageObj(InputMapper.Action.WorldUseToolbarPiece), PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
+                new HintMessage(text:"4. Set the | torch on | fire by pressing |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall), AnimData.GetImageObj(AnimData.PkgName.Flame), InputMapper.GetImageObj(InputMapper.Action.WorldUseToolbarPiece)}, boxType: messageTextType),
+                new HintMessage(text:"5. To extinguish the | fire,\npress | again (with | torch selected).", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.Flame), InputMapper.GetImageObj(InputMapper.Action.WorldUseToolbarPiece), PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType),
                 new HintMessage(text: "Keep in mind, that the | torch\nwill burn out after some time.", imageList: new List<ImageObj> {PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall)}, boxType: messageTextType)});
 
                 case Type.Fireplace:
                     return new Tutorial(type: type, name: "using fireplace", title: "Using fireplace.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "1. Walk next to the | fireplace and press |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall), InputMapper.GetImageObj(InputMapper.Action.WorldInteract)}, boxType: messageTextType),
-                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Stick), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame)}, boxType: messageTextType),
-                new HintMessage(text: "3. Use | to start the fire.", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame)}, boxType: messageTextType),
+                new HintMessage(text: "2. Put some | | | fuel inside.\nThe more fuel is inside, the longer it will | burn.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Stick), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank), AnimData.GetImageObj(AnimData.PkgName.Flame)}, boxType: messageTextType),
+                new HintMessage(text: "3. Use | to start the fire.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame)}, boxType: messageTextType),
                 new HintMessage(text: "You can add or remove | | | fuel at any time.",imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Stick), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank) }, boxType: messageTextType),
-                new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.WaterDrop)}, boxType: messageTextType)});
+                new HintMessage(text: "Use | to put out the flame instantly.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.WaterDrop)}, boxType: messageTextType)});
 
                 case Type.TooDarkToReadMap:
                     return new Tutorial(type: type, name: "reading map at night", title: "Reading map at night.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "The | map can't be read at night.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Map) }, boxType: messageTextType),
-                new HintMessage(text: "You must use a | torch\nor be near to light source |\nto read map at night.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchBig), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame) }, boxType: messageTextType)
+                new HintMessage(text: "You must use a | torch\nor be near to light source |\nto read map at night.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchBig), AnimData.GetImageObj(AnimData.PkgName.Flame) }, boxType: messageTextType)
                 });
 
                 case Type.TooDarkToSeeAnything:
                     return new Tutorial(type: type, name: "when it is dark", title: "When it is dark.",
                 messages: new List<HintMessage> {
                 new HintMessage(text: "At night, you cannot:\n-pick up any items ||\n-use most tools ||\n-craft |\n-use other stuff |||", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.Stone), PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetImageObj(PieceTemplate.Name.Anvil), PieceInfo.GetImageObj(PieceTemplate.Name.ChestIron), PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot) }, boxType: messageTextType),
-                new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
+                new HintMessage(text: "However, you can still do these things\nif you're near to a light source | or have a torch |.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.TorchBig) }, boxType: messageTextType)
                 });
 
                 case Type.Heat:
@@ -331,7 +331,7 @@ namespace SonOfRobin
                 messages: new List<HintMessage> {
                 new HintMessage(text: "It is getting really hot.\nI feel dizzy...", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                 new HintMessage(text: "At noon, if no clouds are present,\nhigh temperature makes you get tired much faster.", boxType: messageTextType),
-                new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.WaterDrop) }, boxType: messageTextType),
+                new HintMessage(text: "You can cool yourself for a while by entering water |.",imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WaterDrop) }, boxType: messageTextType),
                 new HintMessage(text: "The best solution is to wear equipment, that protects from heat |.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HatSimple) }, boxType: messageTextType)
                 });
 
@@ -349,7 +349,7 @@ namespace SonOfRobin
                     new HintMessage(text: "Ouch!.\nMy feet burn!", boxType: HintMessage.BoxType.Dialogue, fieldOnly: true),
                     new HintMessage(text: "Swamp areas are poisonous.", boxType: messageTextType),
                     new HintMessage(text: "You need | protective boots, to walk there safely.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BootsProtective)}, boxType: messageTextType),
-                    new HintMessage(text: "To get rid of the poison, you need to wait or drink an | antidote potion.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionBlue) }, boxType: messageTextType),
+                    new HintMessage(text: "To get rid of the poison, you need to wait or drink an | antidote potion.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.PotionBlue) }, boxType: messageTextType),
                     });
 
                 case Type.SmartCrafting:
@@ -393,7 +393,7 @@ namespace SonOfRobin
                     new HintMessage(text:$"2. Place ingredients | | | into | the { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName }.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.Tomato), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard) }, boxType: messageTextType),
                     new HintMessage(text: "3. You will also need to insert some | | fuel.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank) }, boxType: messageTextType),
                     new HintMessage(text:"4. Inserting boosters | | |\nis optional, but beneficial.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsRed), PieceInfo.GetImageObj(PieceTemplate.Name.HerbsYellow), PieceInfo.GetImageObj(PieceTemplate.Name.HerbsBlue) }, boxType: messageTextType),
-                    new HintMessage(text: "5. Use the | flame to start brewing |.", imageList: new List<ImageObj> {AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame), AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed)}, boxType: messageTextType),
+                    new HintMessage(text: "5. Use the | flame to start brewing |.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame), AnimData.GetImageObj(AnimData.PkgName.PotionRed)}, boxType: messageTextType),
                 });
 
                 case Type.CookLevels:
@@ -407,8 +407,8 @@ namespace SonOfRobin
                 case Type.BrewLevels:
                     return new Tutorial(type: type, name: "brewing levels", title: "Brewing skill levels.",
                 messages: new List<HintMessage> {
-                    new HintMessage(text: "Your | brewing skills get better over time.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed) }, boxType: messageTextType),
-                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<ImageObj>{ AnimDataNew.GetImageObj(AnimDataNew.PkgName.PotionRed), TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass), TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass) }, boxType: messageTextType),
+                    new HintMessage(text: "Your | brewing skills get better over time.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.PotionRed) }, boxType: messageTextType),
+                    new HintMessage(text: "Increasing your brewing level will make your | potions:\n- | prepared faster\n- | have stronger effects\n- | work longer", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.PotionRed), TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass), TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowUp), TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass) }, boxType: messageTextType),
                     new HintMessage(text: "Try using unique | | ingredients\nand | | boosters, to level up faster.", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRoasted), PieceInfo.GetImageObj(PieceTemplate.Name.HerbsCyan), PieceInfo.GetImageObj(PieceTemplate.Name.HerbsGreen) }, boxType: messageTextType),
                 });
 
@@ -438,8 +438,8 @@ namespace SonOfRobin
                 case Type.MeatHarvestLevels:
                     return new Tutorial(type: type, name: "meat harvesting levels", title: "Meat harvesting levels.",
                 messages: new List<HintMessage> {
-                    new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<ImageObj> { AnimDataNew.GetImageObj(AnimDataNew.PkgName.MeatRawPrime) }, boxType: messageTextType),
-                    new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<ImageObj>{ AnimDataNew.GetImageObj(AnimDataNew.PkgName.MeatRawPrime), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Fat), AnimDataNew.GetImageObj(AnimDataNew.PkgName.Leather) }, boxType: messageTextType),
+                    new HintMessage(text: "Your | meat harvesting skills get better over time.", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime) }, boxType: messageTextType),
+                    new HintMessage(text: "With each level, you get a better chance to get | | | bonus items.", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime), AnimData.GetImageObj(AnimData.PkgName.Fat), AnimData.GetImageObj(AnimData.PkgName.Leather) }, boxType: messageTextType),
                 });
 
                 case Type.Caves:

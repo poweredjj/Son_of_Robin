@@ -23,9 +23,9 @@ namespace SonOfRobin
             public readonly Equipment.EquipType equipType;
             public bool isCarnivorous;
             public readonly List<Buff> buffList;
-            public readonly AnimDataNew.PkgName animPkgName;
+            public readonly AnimData.PkgName animPkgName;
             public readonly ImageObj imageObj;
-            public readonly AnimFrameNew animFrame;
+            public readonly AnimFrame animFrame;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;

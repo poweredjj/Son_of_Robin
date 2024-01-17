@@ -6,15 +6,15 @@ namespace SonOfRobin
 {
     public class AnimPkg
     {
-        public readonly AnimDataNew.PkgName name;
+        public readonly AnimData.PkgName name;
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
-        public AnimFrameNew presentationFrame; // to be used in messages, menus, etc.
+        public AnimFrame presentationFrame; // to be used in messages, menus, etc.
         public List<Anim> AllAnimList { get; private set; } // "flat" list of all anims
         public int[] AllAnimSizes { get { return this.animDict.Keys.ToArray(); } }
 
-        public AnimPkg(AnimDataNew.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
+        public AnimPkg(AnimData.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
         {
             this.name = pkgName;
             this.colRect = new Rectangle(x: -colWidth / 2, y: -colHeight / 2, width: colWidth, height: colHeight); // colRect should always be centered
