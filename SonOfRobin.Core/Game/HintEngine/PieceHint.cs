@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -218,7 +217,7 @@ namespace SonOfRobin
             if (this.recipesToUnlock != null)
             {
                 string unlockedRecipesMessage = this.recipesToUnlock.Length == 1 ? "New recipe unlocked" : "New recipes unlocked:\n";
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
                 foreach (PieceTemplate.Name name in this.recipesToUnlock)
                 {
@@ -226,7 +225,7 @@ namespace SonOfRobin
 
                     PieceInfo.Info unlockedPieceInfo = PieceInfo.GetInfo(name);
                     unlockedRecipesMessage += $"\n|  {unlockedPieceInfo.readableName}";
-                    imageList.Add(unlockedPieceInfo.Texture);
+                    imageList.Add(unlockedPieceInfo.imageObj);
                 }
 
                 messagesToDisplay.AddRange(new List<HintMessage> { new HintMessage(text: unlockedRecipesMessage, imageList: imageList, startingSound: SoundData.Name.Notification1) });

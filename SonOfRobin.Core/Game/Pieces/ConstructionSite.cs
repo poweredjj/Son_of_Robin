@@ -20,7 +20,7 @@ namespace SonOfRobin
         private Dictionary<PieceTemplate.Name, int> CurrentMaterialsDict { get { return this.materialsForLevels[this.constrLevel]; } }
         private StorageSlot ConstructTriggerSlot { get { return this.PieceStorage.GetSlot(0, 0); } }
 
-        public ConstructionSite(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, Dictionary<int, string> descriptionsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
+        public ConstructionSite(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, Dictionary<int, Dictionary<PieceTemplate.Name, int>> materialsForLevels, Dictionary<int, string> descriptionsForLevels, PieceTemplate.Name convertsIntoWhenFinished,
             byte animSize = 0) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
@@ -149,7 +149,7 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
 
                     textList.Add($"| {pieceInfo.readableName} x{missingCount}");
-                    imageList.Add(pieceInfo.ImageObj);
+                    imageList.Add(pieceInfo.imageObj);
                 }
 
                 string materialsList = String.Join("\n", textList);
@@ -309,7 +309,7 @@ namespace SonOfRobin
             if (buildingFinished)
             {
                 constructionMessage = $"| {Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
-                imageList.Add(nextLevelPiece.pieceInfo.ImageObj);
+                imageList.Add(nextLevelPiece.pieceInfo.imageObj);
             }
             else
             {
@@ -347,7 +347,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Hammer).Texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Hammer));
 
             base.DrawStatBar();
         }

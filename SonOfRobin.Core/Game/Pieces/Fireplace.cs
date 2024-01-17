@@ -24,7 +24,7 @@ namespace SonOfRobin
         private int burnStartFrame;
         private int burnAllFuelEndFrame;
 
-        public Fireplace(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description, ushort scareRange,
+        public Fireplace(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description, ushort scareRange,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)
@@ -123,7 +123,7 @@ namespace SonOfRobin
             if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                else MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), texture: this.sprite.CroppedAnimFrame.Texture);
+                else MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), imageObj: this.sprite.AnimFrame.imageObj);
                 return false;
             }
 
@@ -191,7 +191,7 @@ namespace SonOfRobin
                 int burningDuration = this.burnAllFuelEndFrame - this.burnStartFrame;
                 int burningCurrentFrame = burningDuration - (this.world.CurrentUpdate - this.burnStartFrame);
 
-                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WoodLogRegular).Texture);
+                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.WoodLogRegular));
             }
 
             base.DrawStatBar();

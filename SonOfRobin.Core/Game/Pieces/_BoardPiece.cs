@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,19 +67,19 @@ namespace SonOfRobin
             Indestructible,
         }
 
-        public static Texture2D GetTextureForCategory(Category category)
+        public static ImageObj GetTextureForCategory(Category category)
         {
             return category switch
             {
-                Category.Wood => PieceInfo.GetTexture(PieceTemplate.Name.TreeBig),
-                Category.Stone => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MineralsSmall3).Texture,
-                Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
-                Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
-                Category.Flesh => TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal),
-                Category.Leather => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Leather).Texture,
-                Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
-                Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
-                _ => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim).Texture,
+                Category.Wood => PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig),
+                Category.Stone => AnimDataNew.GetImageObj(AnimDataNew.PkgName.MineralsSmall3),
+                Category.Metal => PieceInfo.GetImageObj(PieceTemplate.Name.Anvil),
+                Category.SmallPlant => PieceInfo.GetImageObj(PieceTemplate.Name.GrassRegular),
+                Category.Flesh => TextureBank.GetImageObj(textureName: TextureBank.TextureName.Animal),
+                Category.Leather => AnimDataNew.GetImageObj(AnimDataNew.PkgName.Leather),
+                Category.Dirt => PieceInfo.GetImageObj(PieceTemplate.Name.Hole),
+                Category.Crystal => PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositSmall),
+                _ => AnimDataNew.GetImageObj(AnimDataNew.PkgName.NoAnim),
             };
         }
 
@@ -123,7 +122,7 @@ namespace SonOfRobin
         public bool isTemporaryDecoration;
         private float hitPoints;
 
-        public BoardPiece(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public BoardPiece(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", float speed = 1, bool visible = true, int maxAge = 0, float maxHitPoints = 1, bool rotatesWhenDropped = false, List<Buff> buffList = null, int strength = 0, LightEngine lightEngine = null)
         {
             this.world = world;
@@ -132,7 +131,7 @@ namespace SonOfRobin
             this.id = id;
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPkgName: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
 
             this.activeSoundPack = new ActiveSoundPack(this);
             this.activeState = activeState;
@@ -395,7 +394,7 @@ namespace SonOfRobin
             if (this.DestructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.Anim.duration - 1 : this.DestructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()
@@ -474,9 +473,9 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture);
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Heart));
 
-            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
+            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame));
 
             StatBar.FinishThisBatch();
         }

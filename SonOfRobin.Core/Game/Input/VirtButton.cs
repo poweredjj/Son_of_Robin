@@ -132,6 +132,11 @@ namespace SonOfRobin
             buttonsByName[name] = this;
         }
 
+        public static ImageObj GetLabelImageObj(VButName name)
+        {
+            return new TextureObj(GetLabelTexture(name));
+        }
+
         public static Texture2D GetLabelTexture(VButName name)
         {
             return labelTexturesByNames.ContainsKey(name) ? TextureBank.GetTexture($"input/VirtButton/{labelTexturesByNames[name]}") : null;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -20,7 +19,7 @@ namespace SonOfRobin
         }
 
         public readonly string text;
-        public readonly List<Texture2D> imageList;
+        public readonly List<ImageObj> imageList;
         public readonly BoxType boxType;
         public readonly int delay;
         public readonly bool fieldOnly;
@@ -31,10 +30,10 @@ namespace SonOfRobin
         public readonly bool noInput;
         public readonly SoundData.Name startingSound;
 
-        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInputDefaultDuration = false, int blockInputDuration = 0, List<Texture2D> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, bool autoClose = false, bool noInput = false, SoundData.Name startingSound = SoundData.Name.Empty)
+        public HintMessage(string text, int delay = 1, bool fieldOnly = false, bool blockInputDefaultDuration = false, int blockInputDuration = 0, List<ImageObj> imageList = null, BoxType boxType = BoxType.Dialogue, bool animate = true, bool useTransition = false, bool autoClose = false, bool noInput = false, SoundData.Name startingSound = SoundData.Name.Empty)
         {
             this.text = text;
-            this.imageList = imageList == null ? new List<Texture2D>() : imageList;
+            this.imageList = imageList == null ? new List<ImageObj>() : imageList;
             this.boxType = boxType;
             this.delay = delay;
             this.fieldOnly = fieldOnly;
@@ -107,7 +106,7 @@ namespace SonOfRobin
                 { "text", this.text },
                 { "imageList", this.imageList },
                 { "bgColor", new List<byte> { bgColor.R, bgColor.G, bgColor.B } },
-                { "textColor", new List<byte> {textColor.R, textColor.G, textColor.B }  },
+                { "textColor", new List<byte> { textColor.R, textColor.G, textColor.B }  },
                 { "checkForDuplicate", true },
                 { "animate", this.animate },
                 { "useTransition", this.useTransition },

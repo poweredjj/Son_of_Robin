@@ -62,6 +62,7 @@ namespace SonOfRobin
             BuffWidth = 42,
             BuffHeight = 43,
             BuffPoisonRemove = 44,
+            BuffHungry = 157,
 
             RepeatingOceanFloor = 45,
             RepeatingWaterCaustics = 46,
@@ -225,6 +226,7 @@ namespace SonOfRobin
             { TextureName.BuffWidth, "buffs/buff_width" },
             { TextureName.BuffHeight, "buffs/buff_height" },
             { TextureName.BuffPoisonRemove, "buffs/buff_poison_remove" },
+            { TextureName.BuffHungry, "_processed_burger" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },
@@ -397,6 +399,11 @@ namespace SonOfRobin
         public static ImageObj GetImageObj(TextureName textureName, bool persistent = true)
         {
             return new TextureObj(GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent));
+        }
+
+        public static ImageObj GetImageObj(string fileName, bool persistent = true)
+        {
+            return new TextureObj(GetTexture(fileName: fileName, persistent: persistent));
         }
 
         public static Texture2D GetTexture(string fileName, bool persistent = true)

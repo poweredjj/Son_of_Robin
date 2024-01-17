@@ -165,11 +165,8 @@ namespace SonOfRobin
             }
         }
 
-        public List<Texture2D> AddInfoTextureList
-        { get { return new List<Texture2D> { PieceInfo.GetTexture(playerName) }; } }
-
         public List<ImageObj> AddInfoImgObjList
-        { get { return new List<ImageObj> { new TextureObj(PieceInfo.GetTexture(playerName)) }; } }
+        { get { return new List<ImageObj> { PieceInfo.GetImageObj(playerName) }; } }
 
         public void Delete()
         {

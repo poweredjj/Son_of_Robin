@@ -24,7 +24,7 @@ namespace SonOfRobin
         private float occupiedFieldWealth;
         public readonly FruitEngine fruitEngine;
 
-        public Plant(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
+        public Plant(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description,
             int maxAge, float massTakenMultiplier,
             byte animSize = 0, string animName = "default", float speed = 1, int maxHitPoints = 10, FruitEngine fruitEngine = null, LightEngine lightEngine = null) :
 
@@ -107,7 +107,7 @@ namespace SonOfRobin
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                if (showMessage) MessageLog.Add(text: $"There is nothing left to shake off from {this.readableName}.", bgColor: new Color(105, 3, 18), texture: this.sprite.CroppedAnimFrame.Texture, avoidDuplicates: true);
+                if (showMessage) MessageLog.Add(text: $"There is nothing left to shake off from {this.readableName}.", bgColor: new Color(105, 3, 18), imageObj: this.sprite.AnimFrame.imageObj, avoidDuplicates: true);
                 return false;
             }
 

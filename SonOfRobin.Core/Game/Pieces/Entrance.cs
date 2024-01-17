@@ -13,7 +13,7 @@ namespace SonOfRobin
         private readonly int maxDepth;
         private readonly Level.LevelType levelType;
 
-        public Entrance(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, bool hasWater, Level.LevelType levelType, int maxDepth,
+        public Entrance(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, bool goesDown, bool hasWater, Level.LevelType levelType, int maxDepth,
              byte animSize = 0, string animName = "default", int maxHitPoints = 1, bool rotatesWhenDropped = false, State activeState = State.Empty) :
 
              base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: activeState, rotatesWhenDropped: rotatesWhenDropped)
@@ -37,7 +37,7 @@ namespace SonOfRobin
 
             if (this.isBlocked)
             {
-                new TextWindow(text: "I can't enter this | cave, because the entrance has crumbled...", imageList: new List<ImageObj> { new TextureObj(this.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                new TextWindow(text: "I can't enter this | cave, because the entrance has crumbled...", imageList: new List<ImageObj> { this.sprite.AnimFrame.imageObj }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace SonOfRobin
             string fullText = $"Entering {this.targetLevel.levelType.ToString().ToLower()}{levelText}.";
             if (this.targetLevel.depth == 0) fullText = "Going out.";
 
-            MessageLog.Add(text: fullText, texture: PieceInfo.GetTexture(this.name), avoidDuplicates: true);
+            MessageLog.Add(text: fullText, imageObj: PieceInfo.GetImageObj(this.name), avoidDuplicates: true);
 
             this.world.EnterNewLevel(this.targetLevel);
         }

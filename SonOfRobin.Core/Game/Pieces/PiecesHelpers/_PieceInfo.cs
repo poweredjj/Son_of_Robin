@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +23,9 @@ namespace SonOfRobin
             public readonly Equipment.EquipType equipType;
             public bool isCarnivorous;
             public readonly List<Buff> buffList;
-            public readonly AnimData.PkgName animPkgName;
-            public AnimFrame CroppedFrame { get { return AnimData.GetCroppedFrameForPackage(this.animPkgName); } }
-            public Texture2D Texture { get { return this.CroppedFrame.Texture; } }
-            public ImageObj ImageObj { get { return new TextureObj(this.Texture); } }
+            public readonly AnimDataNew.PkgName animPkgName;
+            public readonly ImageObj imageObj;
+            public readonly AnimFrameNew animFrame;
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;
@@ -146,6 +144,8 @@ namespace SonOfRobin
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
                 this.animName = piece.sprite.AnimName;
+                this.animFrame = piece.sprite.AnimFrame;
+                this.imageObj = new AnimFrameObj(this.animFrame);
                 this.eats = this.type == typeof(Animal) ? ((Animal)piece).Eats : null;
                 this.equipType = this.type == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = this.type == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
@@ -3238,7 +3238,7 @@ namespace SonOfRobin
 
                 // setting some variables, that need params non-present in boardPiece
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
-                this.animPkgName = piece.sprite.AnimPackage;
+                this.animPkgName = piece.sprite.AnimPkg.name;
 
                 // checking for params, that need to be set
 
@@ -3347,16 +3347,10 @@ namespace SonOfRobin
             return info.ContainsKey(pieceName) ? info[pieceName] : null;
         }
 
-        public static Texture2D GetTexture(PieceTemplate.Name pieceName)
-        {
-            // to simplify frequently used query
-            return info[pieceName].Texture;
-        }
-
         public static ImageObj GetImageObj(PieceTemplate.Name pieceName)
         {
             // to simplify frequently used query
-            return new TextureObj(info[pieceName].Texture);
+            return info[pieceName].imageObj;
         }
 
         public static void CreateAllInfo()
@@ -3465,7 +3459,7 @@ namespace SonOfRobin
                     float multiplier = multiplierByCategory[category];
 
                     text += $"| {multiplier}   ";
-                    imageList.Add(new TextureObj(BoardPiece.GetTextureForCategory(category)));
+                    imageList.Add(BoardPiece.GetTextureForCategory(category));
                 }
             }
 

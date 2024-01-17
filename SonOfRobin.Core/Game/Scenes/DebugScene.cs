@@ -61,7 +61,7 @@ namespace SonOfRobin
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)} worlds left {World.DestroyedNotReleasedWorldCount} last draw {LastDrawDuration.Milliseconds} last update {LastUpdateDuration.Milliseconds}");
 
-            debugLines.Add($"loaded snd: {SoundData.LoadedSoundsCount}/{SoundData.AllSoundsCount} tx pers: {TextureBank.LoadedTexturesCountPersistent} tmp: {TextureBank.LoadedTexturesCountTemporary} frames {AnimData.loadedFramesCount}/{AnimData.frameById.Count}");
+            debugLines.Add($"loaded snd: {SoundData.LoadedSoundsCount}/{SoundData.AllSoundsCount} tx pers: {TextureBank.LoadedTexturesCountPersistent} tmp: {TextureBank.LoadedTexturesCountTemporary}");
 
             if (worldActive)
             {
@@ -284,7 +284,7 @@ namespace SonOfRobin
                 var piecesInsideTriangle = world.Grid.GetPiecesInsideTriangle(groupName: Cell.Group.All, point1: point1, point2: point2, point3: point3);
                 foreach (BoardPiece piece in piecesInsideTriangle)
                 {
-                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 60));
+                    piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Red, textureSize: new Vector2(piece.sprite.AnimFrame.Texture.Width, piece.sprite.AnimFrame.Texture.Height), priority: 0, framesLeft: 60));
                     PieceTemplate.CreateAndPlaceOnBoard(world: world, position: piece.sprite.position, templateName: PieceTemplate.Name.Backlight);
                 }
             }
@@ -337,9 +337,9 @@ namespace SonOfRobin
                 { if (sprite.boardPiece != world.Player) sprite.boardPiece.RemoveFromStateMachines(); }
             }
 
-            //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimData.PkgName.BeltMedium].texture });
+            //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "Line 1\nLine 2\nThis is button A | and button B |.\nBelt here >|<\nLast line.", animate: false, useTransition: false, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { ButtonScheme.buttonA, ButtonScheme.buttonB, AnimData.framesForPkgs[AnimDataNew.PkgName.BeltMedium].texture });
 
-            //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig), PieceInfo.GetTexture(PieceTemplate.Name.BeltBig) });
+            //if (Keyboard.HasBeenPressed(Keys.F1)) new TextWindow(text: "If I had more | leather, I could make a | backpack or a | belt.\n>|1|2|3|4|5<", animate: true, useTransition: false, framesPerChar: 1, bgColor: Color.DeepSkyBlue, textColor: Color.White, imageList: new List<Texture2D> { PieceInfo.GetImageObj(PieceTemplate.Name.Leather), PieceInfo.GetImageObj(PieceTemplate.Name.BackpackSmall), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig), PieceInfo.GetImageObj(PieceTemplate.Name.BeltBig) });
 
             //if (Keyboard.HasBeenPressed(Keys.F1))
             //{
@@ -699,18 +699,18 @@ namespace SonOfRobin
             {
                 if (world == null || world.demoMode) return;
 
-                AnimData.PkgName currentPackageName = world.Player.sprite.AnimPackage;
+                AnimDataNew.PkgName currentPackageName = world.Player.sprite.AnimPkg.name;
                 Player player = world.Player;
 
                 while (true)
                 {
-                    var packageNames = new AnimData.PkgName[] { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack, AnimData.PkgName.DragonBonesTestFemaleMage };
+                    var packageNames = new AnimDataNew.PkgName[] { AnimDataNew.PkgName.PlayerBoy, AnimDataNew.PkgName.PlayerGirl, AnimDataNew.PkgName.FoxGinger, AnimDataNew.PkgName.Frog1, AnimDataNew.PkgName.BearBlack, AnimDataNew.PkgName.DragonBonesTestFemaleMage };
 
-                    AnimData.PkgName targetPackage = packageNames[0];
+                    AnimDataNew.PkgName targetPackage = packageNames[0];
 
                     for (int i = 0; i < packageNames.Length; i++)
                     {
-                        AnimData.PkgName pkgName = packageNames[i];
+                        AnimDataNew.PkgName pkgName = packageNames[i];
 
                         if (currentPackageName == pkgName)
                         {

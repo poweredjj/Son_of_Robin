@@ -13,7 +13,7 @@ namespace SonOfRobin
             public readonly bool isMain;
             public readonly bool isEmpty;
             public readonly PieceTemplate.Name name;
-            public readonly AnimFrame frame;
+            public readonly AnimFrameNew frame;
             public readonly string text;
             public readonly Color bgColor;
             public readonly int counter;
@@ -24,7 +24,7 @@ namespace SonOfRobin
                 this.isEmpty = isEmpty;
                 this.name = name;
                 this.text = text;
-                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
+                this.frame = PieceInfo.GetInfo(name).animFrame;
                 this.bgColor = bgColor;
                 this.counter = counter;
             }
@@ -35,7 +35,7 @@ namespace SonOfRobin
                 this.isMain = false;
                 this.isEmpty = true;
                 this.name = PieceTemplate.Name.Empty;
-                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
+                this.frame = PieceInfo.GetInfo(name).animFrame;
                 this.text = "";
                 this.bgColor = Color.White;
                 this.counter = 0;
@@ -268,7 +268,7 @@ namespace SonOfRobin
                 {
                     PieceInfo.Info missingPieceInfo = PieceInfo.GetInfo(kvp.Key);
                     ingredientsTextLines.Add($"|  {missingPieceInfo.readableName} x{kvp.Value}");
-                    missingIngredientsImages.Add(new TextureObj(missingPieceInfo.Texture));
+                    missingIngredientsImages.Add(missingPieceInfo.imageObj);
                 }
 
                 entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 1.2f, imageAlignX: Helpers.AlignX.Center));
@@ -286,7 +286,7 @@ namespace SonOfRobin
             this.infoTextList = entryList;
         }
 
-        private void DrawFrameAndText(AnimFrame frame, Rectangle cellRect, string text, Color txtCol, Color gfxCol)
+        private void DrawFrameAndText(AnimFrameNew frame, Rectangle cellRect, string text, Color txtCol, Color gfxCol)
         {
             int middleMargin = (int)(cellRect.Width * 0.05f);
 

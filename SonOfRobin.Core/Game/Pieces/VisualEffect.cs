@@ -11,7 +11,7 @@ namespace SonOfRobin
         private Tweener tweener;
         public float universalFloat; // universal usage within state machines
 
-        public VisualEffect(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
+        public VisualEffect(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, State activeState,
             byte animSize = 0, string animName = "default", bool visible = true, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, visible: visible, activeState: activeState, lightEngine: lightEngine)
@@ -54,7 +54,7 @@ namespace SonOfRobin
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();
-                MessageLog.Add(text: "Map marker has been reached.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker));
+                MessageLog.Add(text: "Map marker has been reached.", imageObj: PieceInfo.GetImageObj(PieceTemplate.Name.MapMarker));
             }
         }
 

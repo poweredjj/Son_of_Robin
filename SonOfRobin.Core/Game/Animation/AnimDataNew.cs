@@ -5,17 +5,411 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static SonOfRobin.AnimData;
 
 namespace SonOfRobin
 {
     public class AnimDataNew
     {
-        public static readonly AnimData.PkgName[] allPkgNames = (AnimData.PkgName[])Enum.GetValues(typeof(AnimData.PkgName));
-        public static readonly Dictionary<AnimData.PkgName, AnimPkg> pkgByName = new();
-        public static readonly Dictionary<string, AnimFrame> frameById = new(); // needed to access frames directly by id (for loading and saving game)
+        public static readonly PkgName[] allPkgNames = (PkgName[])Enum.GetValues(typeof(PkgName));
+        public static readonly Dictionary<PkgName, AnimPkg> pkgByName = [];
+        private static readonly Dictionary<PkgName, ImageObj> imgObjByName = [];
 
-        public static void LoadPackage(AnimData.PkgName pkgName)
+        public static ImageObj GetImageObj(PkgName pkgName)
+        {
+            if (!imgObjByName.ContainsKey(pkgName)) imgObjByName[pkgName] = new AnimFrameObj(pkgByName[pkgName].presentationFrame);
+            return imgObjByName[pkgName];
+        }
+
+        public enum PkgName : ushort
+        {
+            NoAnim = 0,
+            Empty = 1,
+
+            WhiteSpotLayerMinus1 = 2,
+            WhiteSpotLayerZero = 3,
+            WhiteSpotLayerOne = 4,
+            WhiteSpotLayerTwo = 5,
+            WhiteSpotLayerThree = 6,
+
+            FlowersWhite = 7,
+            FlowersYellow1 = 8,
+            FlowersYellow2 = 9,
+            FlowersRed = 10,
+
+            Rushes = 11,
+            GrassDesert = 12,
+            GrassRegular = 13,
+            PlantPoison = 14,
+            CoffeeShrub = 15,
+            CarrotPlant = 16,
+            TomatoPlant = 17,
+            MushroomPlant = 18,
+
+            Cactus = 19,
+
+            PalmTree = 20,
+            TreeBig = 21,
+            TreeSmall1 = 22,
+            TreeSmall2 = 23,
+
+            TreeStump = 24,
+
+            WaterLily1 = 25,
+            WaterLily2 = 26,
+            WaterLily3 = 27,
+
+            MineralsBig1 = 28,
+            MineralsBig2 = 29,
+            MineralsBig3 = 30,
+            MineralsBig4 = 31,
+            MineralsBig5 = 32,
+            MineralsBig6 = 33,
+            MineralsBig7 = 34,
+            MineralsBig8 = 35,
+            MineralsBig9 = 36,
+            MineralsBig10 = 37,
+            MineralsBig11 = 38,
+            MineralsBig12 = 39,
+            MineralsBig13 = 40,
+            MineralsBig14 = 41,
+
+            MineralsSmall1 = 42,
+            MineralsSmall2 = 43,
+            MineralsSmall3 = 44,
+            MineralsSmall4 = 45,
+            MineralsSmall5 = 302,
+            MineralsSmall6 = 303,
+            MineralsSmall7 = 304,
+            MineralsSmall8 = 305,
+            MineralsSmall9 = 306,
+            MineralsSmall10 = 307,
+
+            MineralsMossyBig1 = 46,
+            MineralsMossyBig2 = 47,
+            MineralsMossyBig3 = 48,
+            MineralsMossyBig4 = 49,
+            MineralsMossyBig5 = 50,
+            MineralsMossyBig6 = 51,
+            MineralsMossyBig7 = 52,
+            MineralsMossyBig8 = 53,
+            MineralsMossyBig9 = 54,
+            MineralsMossyBig10 = 55,
+            MineralsMossyBig11 = 56,
+            MineralsMossyBig12 = 57,
+
+            MineralsMossySmall1 = 58,
+            MineralsMossySmall2 = 59,
+            MineralsMossySmall3 = 60,
+            MineralsMossySmall4 = 61,
+
+            MineralsCave = 62,
+
+            JarWhole = 63,
+            JarBroken = 64,
+
+            ChestWooden = 65,
+            ChestStone = 66,
+            ChestIron = 67,
+            ChestCrystal = 68,
+            ChestTreasureBlue = 69,
+            ChestTreasureRed = 70,
+
+            WoodLogRegular = 71,
+            WoodLogHard = 72,
+            WoodPlank = 73,
+
+            Nail = 74,
+            Rope = 75,
+            HideCloth = 76,
+            Crate = 77,
+
+            WorkshopEssential = 78,
+            WorkshopBasic = 79,
+            WorkshopAdvanced = 80,
+            WorkshopMaster = 81,
+
+            WorkshopMeatHarvesting = 82,
+
+            WorkshopLeatherBasic = 83,
+            WorkshopLeatherAdvanced = 84,
+
+            MeatDryingRackRegular = 85,
+            MeatDryingRackWide = 86,
+
+            AlchemyLabStandard = 87,
+            AlchemyLabAdvanced = 88,
+
+            FurnaceConstructionSite = 271,
+            FurnaceComplete = 89,
+            Anvil = 90,
+            HotPlate = 91,
+            CookingPot = 92,
+
+            Totem = 93,
+            RuinsWallHorizontal1 = 94,
+            RuinsWallHorizontal2 = 95,
+            RuinsWallWallVertical = 96,
+            RuinsColumn = 97,
+            RuinsRubble = 98,
+
+            Stick = 99,
+            Stone = 100,
+            Granite = 101,
+
+            Clay = 102,
+
+            Apple = 103,
+            Banana = 104,
+            Cherry = 105,
+            Tomato = 106,
+            Carrot = 107,
+            Acorn = 108,
+            Mushroom = 109,
+
+            SeedBag = 110,
+            CoffeeRaw = 111,
+            CoffeeRoasted = 112,
+
+            Clam = 113,
+
+            MeatRawRegular = 114,
+            MeatRawPrime = 115,
+            MeatDried = 116,
+            Fat = 117,
+            Burger = 118,
+            MealStandard = 119,
+            Leather = 120,
+
+            KnifeSimple = 121,
+
+            AxeWood = 122,
+            AxeStone = 123,
+            AxeIron = 124,
+            AxeCrystal = 125,
+
+            PickaxeWood = 126,
+            PickaxeStone = 127,
+            PickaxeIron = 128,
+            PickaxeCrystal = 129,
+
+            ScytheStone = 130,
+            ScytheIron = 131,
+            ScytheCrystal = 132,
+
+            SpearWood = 133,
+            SpearStone = 134,
+            SpearIron = 135,
+            SpearCrystal = 136,
+
+            ShovelStone = 137,
+            ShovelIron = 138,
+            ShovelCrystal = 139,
+
+            BowBasic = 140,
+            BowAdvanced = 141,
+
+            ArrowWood = 142,
+            ArrowStone = 143,
+            ArrowIron = 144,
+            ArrowCrystal = 145,
+            ArrowExploding = 146,
+
+            CoalDeposit = 147,
+            IronDeposit = 148,
+
+            CrystalDepositSmall = 149,
+            CrystalDepositBig = 150,
+
+            DigSite = 151,
+            DigSiteGlass = 152,
+            DigSiteRuins = 153,
+
+            Coal = 154,
+            IronOre = 155,
+            IronBar = 156,
+            IronRod = 157,
+            IronPlate = 158,
+            GlassSand = 159,
+            Crystal = 160,
+
+            PlayerBoy = 161,
+            PlayerGirl = 162,
+
+            FoxBlack = 164,
+            FoxBrown = 165,
+            FoxChocolate = 166,
+            FoxGinger = 167,
+            FoxGray = 168,
+            FoxRed = 169,
+            FoxWhite = 170,
+            FoxYellow = 171,
+
+            Frog1 = 172,
+            Frog2 = 173,
+            Frog3 = 174,
+            Frog4 = 175,
+            Frog5 = 176,
+            Frog6 = 177,
+            Frog7 = 178,
+            Frog8 = 179,
+
+            RabbitBeige = 180,
+            RabbitBlack = 181,
+            RabbitBrown = 182,
+            RabbitDarkBrown = 183,
+            RabbitGray = 184,
+            RabbitLightBrown = 185,
+            RabbitLightGray = 186,
+            RabbitWhite = 187,
+
+            BearBrown = 188,
+            BearWhite = 189,
+            BearOrange = 190,
+            BearBlack = 191,
+            BearDarkBrown = 192,
+            BearGray = 193,
+            BearRed = 194,
+            BearBeige = 195,
+
+            DragonBonesTestFemaleMage = 301,
+
+            TentModern = 196,
+            TentModernPacked = 197,
+            TentSmall = 198,
+            TentMedium = 199,
+            TentBig = 200,
+
+            BackpackSmall = 202,
+            BackpackMedium = 203,
+            BackpackBig = 204,
+            BackpackLuxurious = 205,
+
+            BeltSmall = 206,
+            BeltMedium = 207,
+            BeltBig = 208,
+            BeltLuxurious = 209,
+            Map = 210,
+
+            HatSimple = 211,
+            BootsProtective = 212,
+            BootsMountain = 213,
+            BootsSpeed = 214,
+            BootsAllTerrain = 215,
+            GlovesStrength = 216,
+            GlassesBlue = 217,
+            Dungarees = 218,
+
+            LanternFrame = 219,
+            Candle = 220,
+            Lantern = 221,
+
+            SmallTorch = 222,
+            BigTorch = 223,
+            CampfireSmall = 224,
+            CampfireMedium = 225,
+
+            BoatConstruction = 226,
+            BoatCompleteStanding = 227,
+            BoatCompleteCruising = 228,
+            ShipRescue = 229,
+
+            HerbsBlack = 230,
+            HerbsCyan = 231,
+            HerbsBlue = 232,
+            HerbsGreen = 233,
+            HerbsYellow = 234,
+            HerbsRed = 235,
+            HerbsViolet = 236,
+            HerbsBrown = 237,
+            HerbsDarkViolet = 238,
+            HerbsDarkGreen = 239,
+
+            EmptyBottle = 240,
+            PotionRed = 241,
+            PotionBlue = 242,
+            PotionViolet = 243,
+            PotionYellow = 244,
+            PotionCyan = 245,
+            PotionGreen = 246,
+            PotionBlack = 247,
+            PotionDarkViolet = 248,
+            PotionDarkYellow = 249,
+            PotionDarkGreen = 250,
+            PotionLightYellow = 251,
+            PotionTransparent = 252,
+            PotionBrown = 253,
+
+            BloodSplatter1 = 254,
+            BloodSplatter2 = 255,
+            BloodSplatter3 = 256,
+
+            HumanSkeleton = 257,
+            Hole = 258,
+
+            Explosion = 259,
+            SkullAndBones = 260,
+            MusicNoteSmall = 261,
+            MusicNoteBig = 262,
+            Miss = 263,
+            Attack = 264,
+            MapMarker = 265,
+            Backlight = 266,
+            Crosshair = 267,
+            Flame = 268,
+            Upgrade = 269,
+            WaterDrop = 270,
+            Zzz = 272,
+            Heart = 273,
+            Hammer = 274,
+
+            Fog1 = 275,
+            Fog2 = 276,
+            Fog3 = 277,
+            Fog4 = 278,
+
+            BubbleExclamationRed = 279,
+            BubbleExclamationBlue = 280,
+            BubbleCraftGreen = 281,
+
+            SeaWave = 282,
+            WeatherFog1 = 283,
+            WeatherFog2 = 284,
+            WeatherFog3 = 285,
+            WeatherFog4 = 286,
+            WeatherFog5 = 287,
+            WeatherFog6 = 288,
+            WeatherFog7 = 289,
+            WeatherFog8 = 290,
+            WeatherFog9 = 291,
+
+            FertileGroundSmall = 292,
+            FertileGroundMedium = 293,
+            FertileGroundLarge = 294,
+            FenceHorizontalShort = 295,
+            FenceVerticalShort = 296,
+            FenceHorizontalLong = 297,
+            FenceVerticalLong = 298,
+
+            CaveEntrance = 299,
+            CaveExit = 300,
+
+            // obsolete below (kept for compatibility with old saves)
+        }
+
+        public static void CreateAllAnims()
+        {
+            DateTime startTime = DateTime.Now;
+
+            foreach (PkgName pkgName in allPkgNames)
+            {
+                LoadPackage(pkgName);
+            }
+
+            TimeSpan creationDuration = DateTime.Now - startTime;
+            MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
+        }
+
+        public static void LoadPackage(PkgName pkgName)
         {
             if (pkgByName.ContainsKey(pkgName))
             {
@@ -27,35 +421,35 @@ namespace SonOfRobin
 
             switch (pkgName)
             {
-                case AnimData.PkgName.Empty:
+                case PkgName.Empty:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_transparent_pixel", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.NoAnim:
+                case PkgName.NoAnim:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 63, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_no_anim", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.WhiteSpotLayerMinus1:
+                case PkgName.WhiteSpotLayerMinus1:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: -1, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.WhiteSpotLayerZero:
+                case PkgName.WhiteSpotLayerZero:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.WhiteSpotLayerOne:
+                case PkgName.WhiteSpotLayerOne:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.WhiteSpotLayerTwo:
+                case PkgName.WhiteSpotLayerTwo:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.WhiteSpotLayerThree:
+                case PkgName.WhiteSpotLayerThree:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 3, animSize: 0, altasName: "_processed_white_spot", hasOnePixelMargin: false);
                     break;
 
-                case AnimData.PkgName.FlowersWhite:
+                case PkgName.FlowersWhite:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
@@ -64,7 +458,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FlowersYellow1:
+                case PkgName.FlowersYellow1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
@@ -72,7 +466,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FlowersYellow2:
+                case PkgName.FlowersYellow2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_flowers_yellow_2_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 46, height: 41), scale: 0.5f)]));
@@ -80,7 +474,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FlowersRed:
+                case PkgName.FlowersRed:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
@@ -88,7 +482,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Rushes:
+                case PkgName.Rushes:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
@@ -96,7 +490,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.GrassDesert:
+                case PkgName.GrassDesert:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 12);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_desert_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 21))]));
@@ -104,7 +498,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.GrassRegular:
+                case PkgName.GrassRegular:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
@@ -114,7 +508,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.PlantPoison:
+                case PkgName.PlantPoison:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 11);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f)]));
@@ -122,7 +516,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CoffeeShrub:
+                case PkgName.CoffeeShrub:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 15);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.05f, gfxOffsetCorrection: new Vector2(0, -136))]));
@@ -130,7 +524,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CarrotPlant:
+                case PkgName.CarrotPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_carrot_plant_empty", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 283), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -37))], name: "default"));
@@ -140,7 +534,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.TomatoPlant:
+                case PkgName.TomatoPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 28, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tomato_plant_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 296, height: 288), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -13))]));
@@ -149,7 +543,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.MushroomPlant:
+                case PkgName.MushroomPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 18, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -2))]));
@@ -158,7 +552,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Cactus:
+                case PkgName.Cactus:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 18);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cactus_s0", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 30), gfxOffsetCorrection: new Vector2(0, -5))]));
@@ -166,7 +560,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.PalmTree:
+                case PkgName.PalmTree:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_palmtree_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 39), scale: 0.7f, gfxOffsetCorrection: new Vector2(0, -8))]));
@@ -176,7 +570,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.TreeBig:
+                case PkgName.TreeBig:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -32))]));
@@ -185,7 +579,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.TreeSmall1:
+                case PkgName.TreeSmall1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
@@ -194,7 +588,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.TreeSmall2:
+                case PkgName.TreeSmall2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
@@ -203,406 +597,406 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.TreeStump:
+                case PkgName.TreeStump:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 17);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tree_stump", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1f)]));
                         break;
                     }
 
-                case AnimData.PkgName.WaterLily1:
+                case PkgName.WaterLily1:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily1", hasOnePixelMargin: true);
                     break;
 
-                case AnimData.PkgName.WaterLily2:
+                case PkgName.WaterLily2:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 32, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily2", hasOnePixelMargin: true);
                     break;
 
-                case AnimData.PkgName.WaterLily3:
+                case PkgName.WaterLily3:
                     animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_waterlily3", hasOnePixelMargin: true);
                     break;
 
-                case AnimData.PkgName.MineralsBig1:
+                case PkgName.MineralsBig1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 222, height: 310), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig2:
+                case PkgName.MineralsBig2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 37);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 210, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -76))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig3:
+                case PkgName.MineralsBig3:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 41);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 312, height: 346), scale: 0.3f, gfxOffsetCorrection: new Vector2(14, -67))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig4:
+                case PkgName.MineralsBig4:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 213, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -77))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig5:
+                case PkgName.MineralsBig5:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 294), scale: 0.3f, gfxOffsetCorrection: new Vector2(16, -66))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig6:
+                case PkgName.MineralsBig6:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 306), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -80))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig7:
+                case PkgName.MineralsBig7:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 69, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 251, height: 297), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -75))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig8:
+                case PkgName.MineralsBig8:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 56, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 228, height: 312), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -81))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig9:
+                case PkgName.MineralsBig9:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 230, height: 342), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -97))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig10:
+                case PkgName.MineralsBig10:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 301), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -85))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig11:
+                case PkgName.MineralsBig11:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 90, colHeight: 44);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 321, height: 333), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -78))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig12:
+                case PkgName.MineralsBig12:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 60, colHeight: 42);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 217, height: 328), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -84))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig13:
+                case PkgName.MineralsBig13:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 59, colHeight: 42);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_13", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 229, height: 308), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -81))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsBig14:
+                case PkgName.MineralsBig14:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_big_14", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 269), scale: 0.3f, gfxOffsetCorrection: new Vector2(-10, -54))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall1:
+                case PkgName.MineralsSmall1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 163), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -21))]));
                         break;
                     }
-                case AnimData.PkgName.MineralsSmall2:
+                case PkgName.MineralsSmall2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 45, colHeight: 22);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 186, height: 186), scale: 0.3f, gfxOffsetCorrection: new Vector2(11, -47))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall3:
+                case PkgName.MineralsSmall3:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 26);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 256, height: 164), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -25))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall4:
+                case PkgName.MineralsSmall4:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 68, colHeight: 24);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 261, height: 145), scale: 0.3f, gfxOffsetCorrection: new Vector2(2, -19))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall5:
+                case PkgName.MineralsSmall5:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 26);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 161, height: 175), scale: 0.3f, gfxOffsetCorrection: new Vector2(3, -35))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall6:
+                case PkgName.MineralsSmall6:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 216, height: 156), scale: 0.3f, gfxOffsetCorrection: new Vector2(4, -32))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall7:
+                case PkgName.MineralsSmall7:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 195, height: 181), scale: 0.3f, gfxOffsetCorrection: new Vector2(8, -32))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall8:
+                case PkgName.MineralsSmall8:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 47, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 182, height: 172), scale: 0.3f, gfxOffsetCorrection: new Vector2(-6, -33))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall9:
+                case PkgName.MineralsSmall9:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 23);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 151, height: 154), scale: 0.3f, gfxOffsetCorrection: new Vector2(-3, -33))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsSmall10:
+                case PkgName.MineralsSmall10:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 22);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_minerals_small_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 150), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -26))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig1:
+                case PkgName.MineralsMossyBig1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 387), scale: 0.3f, gfxOffsetCorrection: new Vector2(-2, -122))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig2:
+                case PkgName.MineralsMossyBig2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 57, colHeight: 35);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 232, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-8, -72))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig3:
+                case PkgName.MineralsMossyBig3:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 55, colHeight: 34);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 233, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(-1, -69))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig4:
+                case PkgName.MineralsMossyBig4:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 72, colHeight: 36);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 304, height: 394), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -130))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig5:
+                case PkgName.MineralsMossyBig5:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_5", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 384), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig6:
+                case PkgName.MineralsMossyBig6:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 70, colHeight: 34);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_6", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 270, height: 381), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -124))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig7:
+                case PkgName.MineralsMossyBig7:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 65, colHeight: 34);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_7", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 231, height: 307), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -88))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig8:
+                case PkgName.MineralsMossyBig8:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 58, colHeight: 38);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_8", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 209, height: 305), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -80))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig9:
+                case PkgName.MineralsMossyBig9:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 74, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_9", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 265, height: 302), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -103))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig10:
+                case PkgName.MineralsMossyBig10:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 79, colHeight: 18);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_10", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 275, height: 291), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig11:
+                case PkgName.MineralsMossyBig11:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 19);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_11", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 254, height: 292), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -107))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossyBig12:
+                case PkgName.MineralsMossyBig12:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_big_12", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 295), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -104))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossySmall1:
+                case PkgName.MineralsMossySmall1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 266, height: 199), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossySmall2:
+                case PkgName.MineralsMossySmall2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 77, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 272, height: 286), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -64))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossySmall3:
+                case PkgName.MineralsMossySmall3:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 252, height: 166), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -36))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsMossySmall4:
+                case PkgName.MineralsMossySmall4:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 67, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_mossy_minerals_small_4", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 246, height: 183), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -43))]));
                         break;
                     }
 
-                case AnimData.PkgName.MineralsCave:
+                case PkgName.MineralsCave:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 48, colHeight: 29);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_minerals", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 170, height: 157), scale: 0.3f, gfxOffsetCorrection: new Vector2(1, -27))]));
                         break;
                     }
 
-                case AnimData.PkgName.JarWhole:
+                case PkgName.JarWhole:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_jar_sealed", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 43, height: 47), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -10))]));
                         break;
                     }
 
-                case AnimData.PkgName.JarBroken:
+                case PkgName.JarBroken:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_jar_broken", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 41, height: 47), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -10))]));
                         break;
                     }
 
-                case AnimData.PkgName.ChestWooden:
+                case PkgName.ChestWooden:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 37, colHeight: 15, atlasNameBase: "chest_wooden/_processed_chest_wooden_", cropRect: new Rectangle(x: 0, y: 0, width: 229, height: 259), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -81));
                         break;
                     }
 
-                case AnimData.PkgName.ChestStone:
+                case PkgName.ChestStone:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 37, colHeight: 15, atlasNameBase: "chest_stone/_processed_chest_stone_", cropRect: new Rectangle(x: 0, y: 0, width: 227, height: 258), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -81));
                         break;
                     }
 
-                case AnimData.PkgName.ChestIron:
+                case PkgName.ChestIron:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 37, colHeight: 15, atlasNameBase: "chest_iron/_processed_chest_iron_", cropRect: new Rectangle(x: 0, y: 0, width: 229, height: 259), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -81));
                         break;
                     }
 
-                case AnimData.PkgName.ChestCrystal:
+                case PkgName.ChestCrystal:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 37, colHeight: 15, atlasNameBase: "chest_crystal/_processed_chest_crystal_", cropRect: new Rectangle(x: 0, y: 0, width: 226, height: 258), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -81));
                         break;
                     }
 
-                case AnimData.PkgName.ChestTreasureBlue:
+                case PkgName.ChestTreasureBlue:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 46, colHeight: 19, atlasNameBase: "chest_blue/_processed_chest_blue_", cropRect: new Rectangle(x: 0, y: 0, width: 270, height: 308), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -95));
                         break;
                     }
 
-                case AnimData.PkgName.ChestTreasureRed:
+                case PkgName.ChestTreasureRed:
                     {
                         animPkg = AddChestPackage(pkgName: pkgName, colWidth: 46, colHeight: 19, atlasNameBase: "chest_red/_processed_chest_red_", cropRect: new Rectangle(x: 0, y: 0, width: 270, height: 307), frameDuration: 3, animLength: 6, scale: 0.18f, gfxOffsetCorrection: new Vector2(-3, -95));
                         break;
                     }
 
-                case AnimData.PkgName.WoodLogRegular:
+                case PkgName.WoodLogRegular:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 19, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_wood_regular", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 30, height: 30), scale: 0.75f, gfxOffsetCorrection: new Vector2(1, -4))]));
                         break;
                     }
 
-                case AnimData.PkgName.WoodLogHard:
+                case PkgName.WoodLogHard:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 19, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_wood_hard", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 44), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -6))]));
                         break;
                     }
 
-                case AnimData.PkgName.WoodPlank:
+                case PkgName.WoodPlank:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 23, height: 23, scale: 0.8f, layer: 0, animSize: 0, altasName: "_processed_wood_plank", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Nail:
+                case PkgName.Nail:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 31, height: 27, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_nail", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Rope:
+                case PkgName.Rope:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 25, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_rope", hasOnePixelMargin: true);
                         break;
                     }
-                case AnimData.PkgName.HideCloth:
+                case PkgName.HideCloth:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 504, height: 330, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_hidecloth", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Crate:
+                case PkgName.Crate:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 23, colHeight: 16);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crate", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 25, height: 31), scale: 1f, gfxOffsetCorrection: new Vector2(1, -6))]));
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopEssential:
+                case PkgName.WorkshopEssential:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_essential", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -612,7 +1006,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopBasic:
+                case PkgName.WorkshopBasic:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_basic", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -622,7 +1016,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopAdvanced:
+                case PkgName.WorkshopAdvanced:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_advanced", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -632,7 +1026,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopMaster:
+                case PkgName.WorkshopMaster:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_master", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -642,7 +1036,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopMeatHarvesting:
+                case PkgName.WorkshopMeatHarvesting:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 24);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_workshop_meat_harvesting_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14))]));
@@ -650,7 +1044,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopLeatherBasic:
+                case PkgName.WorkshopLeatherBasic:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_leather_basic", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 62, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -660,7 +1054,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WorkshopLeatherAdvanced:
+                case PkgName.WorkshopLeatherAdvanced:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_workshop_leather_advanced", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 78), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -14));
 
@@ -670,7 +1064,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.MeatDryingRackRegular:
+                case PkgName.MeatDryingRackRegular:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 75, colHeight: 35);
 
@@ -683,7 +1077,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.MeatDryingRackWide:
+                case PkgName.MeatDryingRackWide:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 100, colHeight: 35);
 
@@ -696,7 +1090,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.AlchemyLabStandard:
+                case PkgName.AlchemyLabStandard:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_alchemy_lab_standard", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 64, height: 90), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -19));
 
@@ -706,7 +1100,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.AlchemyLabAdvanced:
+                case PkgName.AlchemyLabAdvanced:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_alchemy_lab_advanced", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 82, height: 90), scale: 0.5f, gfxOffsetCorrection: new Vector2(1, -19));
 
@@ -716,7 +1110,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FurnaceConstructionSite:
+                case PkgName.FurnaceConstructionSite:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
 
@@ -730,7 +1124,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.FurnaceComplete:
+                case PkgName.FurnaceComplete:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 52, colHeight: 37);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [new AnimFrameNew(atlasName: "furnace/_processed_furnace_off", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 603), scale: 0.2f, gfxOffsetCorrection: new Vector2(-2, -200))]));
@@ -738,7 +1132,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Anvil:
+                case PkgName.Anvil:
                     {
                         AnimFrameNew frame = new AnimFrameNew(atlasName: "_processed_anvil", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 50, height: 33), scale: 1f, gfxOffsetCorrection: new Vector2(1, -4));
 
@@ -748,7 +1142,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.HotPlate:
+                case PkgName.HotPlate:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 32, colHeight: 24);
 
@@ -765,7 +1159,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CookingPot:
+                case PkgName.CookingPot:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 32, colHeight: 17);
 
@@ -782,332 +1176,332 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Totem:
+                case PkgName.Totem:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 21, colHeight: 40);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_totem", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 186, height: 467), scale: 0.25f, gfxOffsetCorrection: new Vector2(-1, -149))]));
                         break;
                     }
 
-                case AnimData.PkgName.RuinsWallHorizontal1:
+                case PkgName.RuinsWallHorizontal1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 79, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_horizontal_1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 81, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(1, -19))]));
                         break;
                     }
 
-                case AnimData.PkgName.RuinsWallHorizontal2:
+                case PkgName.RuinsWallHorizontal2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 62, colHeight: 25);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_horizontal_2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 64, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(1, -19))]));
                         break;
                     }
 
-                case AnimData.PkgName.RuinsWallWallVertical:
+                case PkgName.RuinsWallWallVertical:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 35);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_wall_vertical", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 66), scale: 1f, gfxOffsetCorrection: new Vector2(0, -14))]));
                         break;
                     }
 
-                case AnimData.PkgName.RuinsColumn:
+                case PkgName.RuinsColumn:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 27, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_column", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 32), scale: 1f, gfxOffsetCorrection: new Vector2(0, -5))]));
                         break;
                     }
 
-                case AnimData.PkgName.RuinsRubble:
+                case PkgName.RuinsRubble:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 29, colHeight: 18);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ruins_rubble", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 28), scale: 1f, gfxOffsetCorrection: new Vector2(0, -3))]));
                         break;
                     }
 
-                case AnimData.PkgName.Stick:
+                case PkgName.Stick:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 22, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_stick", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Stone:
+                case PkgName.Stone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 20, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Granite:
+                case PkgName.Granite:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 19, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_granite", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 21, height: 19), scale: 1f, gfxOffsetCorrection: new Vector2(0, -2))]));
                         break;
                     }
 
-                case AnimData.PkgName.Clay:
+                case PkgName.Clay:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 25, height: 23, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_clay", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Apple:
+                case PkgName.Apple:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 218, height: 264, scale: 0.075f, layer: 0, animSize: 0, altasName: "_processed_apple", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Banana:
+                case PkgName.Banana:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 432, height: 342, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_banana", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Cherry:
+                case PkgName.Cherry:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 242, height: 158, scale: 0.12f, layer: 0, animSize: 0, altasName: "_processed_cherry", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Tomato:
+                case PkgName.Tomato:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 234, height: 257, scale: 0.07f, layer: 0, animSize: 0, altasName: "_processed_tomato", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Carrot:
+                case PkgName.Carrot:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 195, height: 445, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_carrot", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Acorn:
+                case PkgName.Acorn:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 131, height: 202, scale: 0.13f, layer: 0, animSize: 0, altasName: "_processed_acorn", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Mushroom:
+                case PkgName.Mushroom:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 32, height: 30, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_mushroom", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.SeedBag:
+                case PkgName.SeedBag:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 211, height: 258, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_seed_bag", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.CoffeeRaw:
+                case PkgName.CoffeeRaw:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_coffee_raw", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.CoffeeRoasted:
+                case PkgName.CoffeeRoasted:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_coffee_roasted", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Clam:
+                case PkgName.Clam:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 28, height: 30, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_clam", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.MeatRawRegular:
+                case PkgName.MeatRawRegular:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 228, height: 161, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_raw_regular", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.MeatRawPrime:
+                case PkgName.MeatRawPrime:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 249, height: 221, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_raw_prime", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.MeatDried:
+                case PkgName.MeatDried:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 298, height: 145, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_meat_dried", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Fat:
+                case PkgName.Fat:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 201, scale: 0.08f, layer: 0, animSize: 0, altasName: "_processed_fat", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Burger:
+                case PkgName.Burger:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 256, height: 233, scale: 0.07f, layer: 0, animSize: 0, altasName: "_processed_burger", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.MealStandard:
+                case PkgName.MealStandard:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_meal_standard", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Leather:
+                case PkgName.Leather:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 23, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_leather", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.KnifeSimple:
+                case PkgName.KnifeSimple:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 24, height: 26, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_knife_simple", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.AxeWood:
+                case PkgName.AxeWood:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_axe_wooden", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.AxeStone:
+                case PkgName.AxeStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.AxeIron:
+                case PkgName.AxeIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.AxeCrystal:
+                case PkgName.AxeCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_axe_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.PickaxeWood:
+                case PkgName.PickaxeWood:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_wood", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.PickaxeStone:
+                case PkgName.PickaxeStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.PickaxeIron:
+                case PkgName.PickaxeIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.PickaxeCrystal:
+                case PkgName.PickaxeCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_pickaxe_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ScytheStone:
+                case PkgName.ScytheStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ScytheIron:
+                case PkgName.ScytheIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ScytheCrystal:
+                case PkgName.ScytheCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_scythe_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.SpearWood:
+                case PkgName.SpearWood:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 54, height: 54, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_wood", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.SpearStone:
+                case PkgName.SpearStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 54, height: 54, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.SpearIron:
+                case PkgName.SpearIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.SpearCrystal:
+                case PkgName.SpearCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_spear_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ShovelStone:
+                case PkgName.ShovelStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ShovelIron:
+                case PkgName.ShovelIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ShovelCrystal:
+                case PkgName.ShovelCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_shovel_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BowBasic:
+                case PkgName.BowBasic:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 116, scale: 0.25f, layer: 0, animSize: 0, altasName: "_processed_bow_basic", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BowAdvanced:
+                case PkgName.BowAdvanced:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 116, scale: 0.25f, layer: 0, animSize: 0, altasName: "_processed_bow_advanced", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ArrowWood:
+                case PkgName.ArrowWood:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_wood", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ArrowStone:
+                case PkgName.ArrowStone:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_stone", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ArrowIron:
+                case PkgName.ArrowIron:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 27, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_iron", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ArrowCrystal:
+                case PkgName.ArrowCrystal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 27, scale: 0.75f, layer: 0, animSize: 0, altasName: "_processed_arrow_crystal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.ArrowExploding:
+                case PkgName.ArrowExploding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 27, height: 27), scale: 0.75f, gfxOffsetCorrection: new Vector2(0, 0))]));
@@ -1115,41 +1509,41 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CoalDeposit:
+                case PkgName.CoalDeposit:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 22);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_coal_deposit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -9))]));
                         break;
                     }
 
-                case AnimData.PkgName.IronDeposit:
+                case PkgName.IronDeposit:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 22);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_iron_deposit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -9))]));
                         break;
                     }
 
-                case AnimData.PkgName.CrystalDepositSmall:
+                case PkgName.CrystalDepositSmall:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 46, colHeight: 19);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal_deposit_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 47), scale: 1f, gfxOffsetCorrection: new Vector2(1, -10))]));
                         break;
                     }
 
-                case AnimData.PkgName.CrystalDepositBig:
+                case PkgName.CrystalDepositBig:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 45, colHeight: 30);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal_deposit_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 96), scale: 1f, gfxOffsetCorrection: new Vector2(0, -29))]));
                         break;
                     }
 
-                case AnimData.PkgName.DigSite:
+                case PkgName.DigSite:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_dig_site", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.DigSiteGlass:
+                case PkgName.DigSiteGlass:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 80, colHeight: 80);
 
@@ -1166,68 +1560,68 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.DigSiteRuins:
+                case PkgName.DigSiteRuins:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 162, height: 164, scale: 0.35f, layer: 0, animSize: 0, altasName: "_processed_dig_site_ruins", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Coal:
+                case PkgName.Coal:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_coal", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.IronOre:
+                case PkgName.IronOre:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_iron_ore", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.IronBar:
+                case PkgName.IronBar:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 24, height: 39, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_iron_bar", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.IronRod:
+                case PkgName.IronRod:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 22, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_iron_rod", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.IronPlate:
+                case PkgName.IronPlate:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 26, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_iron_plate", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.GlassSand:
+                case PkgName.GlassSand:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 49, height: 48, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_glass_sand", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.Crystal:
+                case PkgName.Crystal:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_crystal", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 32), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -5))]));
                         break;
                     }
 
-                case AnimData.PkgName.PlayerBoy:
+                case PkgName.PlayerBoy:
                     {
                         animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
                         break;
                     }
 
-                case AnimData.PkgName.PlayerGirl:
+                case PkgName.PlayerGirl:
                     {
                         animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
                         break;
                     }
 
-                case AnimData.PkgName.DragonBonesTestFemaleMage:
+                case PkgName.DragonBonesTestFemaleMage:
 
                     string[] jsonNameArray = new string[] {
                             "female_mage_tex_cropped.json",
@@ -1255,348 +1649,348 @@ namespace SonOfRobin
 
                     break;
 
-                case AnimData.PkgName.FoxGinger:
+                case PkgName.FoxGinger:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxRed:
+                case PkgName.FoxRed:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxWhite:
+                case PkgName.FoxWhite:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxGray:
+                case PkgName.FoxGray:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxBlack:
+                case PkgName.FoxBlack:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxChocolate:
+                case PkgName.FoxChocolate:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxBrown:
+                case PkgName.FoxBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.FoxYellow:
+                case PkgName.FoxYellow:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog1:
+                case PkgName.Frog1:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog2:
+                case PkgName.Frog2:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog3:
+                case PkgName.Frog3:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog4:
+                case PkgName.Frog4:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog5:
+                case PkgName.Frog5:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog6:
+                case PkgName.Frog6:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog7:
+                case PkgName.Frog7:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.Frog8:
+                case PkgName.Frog8:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/frogs_small", colWidth: 13, colHeight: 10, gfxOffsetCorrection: new Vector2(0, -17), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitBrown:
+                case PkgName.RabbitBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitDarkBrown:
+                case PkgName.RabbitDarkBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitGray:
+                case PkgName.RabbitGray:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitBlack:
+                case PkgName.RabbitBlack:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitLightGray:
+                case PkgName.RabbitLightGray:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitBeige:
+                case PkgName.RabbitBeige:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitWhite:
+                case PkgName.RabbitWhite:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.RabbitLightBrown:
+                case PkgName.RabbitLightBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearBrown:
+                case PkgName.BearBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearWhite:
+                case PkgName.BearWhite:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearOrange:
+                case PkgName.BearOrange:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearBlack:
+                case PkgName.BearBlack:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearDarkBrown:
+                case PkgName.BearDarkBrown:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearGray:
+                case PkgName.BearGray:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearRed:
+                case PkgName.BearRed:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.BearBeige:
+                case PkgName.BearBeige:
                     {
                         animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/bear", colWidth: 19, colHeight: 18, gfxOffsetCorrection: new Vector2(1, -12), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
                         break;
                     }
 
-                case AnimData.PkgName.TentModern:
+                case PkgName.TentModern:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 87, colHeight: 75);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_modern", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 146, height: 205), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -39))]));
                         break;
                     }
 
-                case AnimData.PkgName.TentModernPacked:
+                case PkgName.TentModernPacked:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 33, colHeight: 9);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_modern_packed", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 291, height: 188), scale: 0.12f, gfxOffsetCorrection: new Vector2(4, -50))]));
                         break;
                     }
 
-                case AnimData.PkgName.TentSmall: // TODO replace with A - frame tent asset(when found)
+                case PkgName.TentSmall: // TODO replace with A - frame tent asset(when found)
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 50, colHeight: 27);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 118, height: 103), scale: 0.5f, gfxOffsetCorrection: new Vector2(2, -22))]));
                         break;
                     }
 
-                case AnimData.PkgName.TentMedium:
+                case PkgName.TentMedium:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 102, colHeight: 48);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 118, height: 103), scale: 1f, gfxOffsetCorrection: new Vector2(1, -24))]));
                         break;
                     }
 
-                case AnimData.PkgName.TentBig:
+                case PkgName.TentBig:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 176, colHeight: 92);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_tent_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 190, height: 162), scale: 1f, gfxOffsetCorrection: new Vector2(0, -28))]));
                         break;
                     }
 
-                case AnimData.PkgName.BackpackSmall:
+                case PkgName.BackpackSmall:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 208, height: 181, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_small", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BackpackMedium:
+                case PkgName.BackpackMedium:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 46, height: 46, scale: 0.5f, layer: 1, animSize: 0, altasName: "_processed_backpack_medium", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BackpackBig:
+                case PkgName.BackpackBig:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_big", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BackpackLuxurious:
+                case PkgName.BackpackLuxurious:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "_processed_backpack_luxurious", hasOnePixelMargin: true);
                         break;
                     }
 
-                case AnimData.PkgName.BeltSmall:
+                case PkgName.BeltSmall:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_belt_small", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BeltMedium:
+                case PkgName.BeltMedium:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 243, height: 134, scale: 0.12f, layer: 0, animSize: 0, altasName: "_processed_belt_medium", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BeltBig:
+                case PkgName.BeltBig:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 494, height: 192, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_belt_big", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BeltLuxurious:
+                case PkgName.BeltLuxurious:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 494, height: 192, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_belt_luxurious", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Map:
+                case PkgName.Map:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 319, height: 240, scale: 0.06f, layer: 0, animSize: 0, altasName: "_processed_map_item", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HatSimple:
+                case PkgName.HatSimple:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 28, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_hat_simple", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BootsProtective:
+                case PkgName.BootsProtective:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 20, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_protective", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BootsMountain:
+                case PkgName.BootsMountain:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_mountain", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BootsSpeed:
+                case PkgName.BootsSpeed:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 31, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_speed", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BootsAllTerrain:
+                case PkgName.BootsAllTerrain:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 26, scale: 1f, layer: 1, animSize: 0, altasName: "_processed_boots_all_terrain", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.GlovesStrength:
+                case PkgName.GlovesStrength:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 31, height: 25, scale: 0.7f, layer: 0, animSize: 0, altasName: "_processed_gloves_strength", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.GlassesBlue:
+                case PkgName.GlassesBlue:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 24, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_glasses_blue", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Dungarees:
+                case PkgName.Dungarees:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 27, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_dungarees", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.LanternFrame:
+                case PkgName.LanternFrame:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 203, height: 438, scale: 0.075f, layer: 0, animSize: 0, altasName: "_processed_lantern_frame", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Candle:
+                case PkgName.Candle:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 182, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_candle", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Lantern:
+                case PkgName.Lantern:
                     {
                         AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_lantern_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 201, height: 437), scale: 0.075f, gfxOffsetCorrection: new Vector2(8, -3));
 
@@ -1609,7 +2003,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.SmallTorch:
+                case PkgName.SmallTorch:
                     {
                         AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_small_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.07f, gfxOffsetCorrection: new Vector2(-31, -59));
 
@@ -1622,7 +2016,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.BigTorch:
+                case PkgName.BigTorch:
                     {
                         AnimFrameNew frameOn = new AnimFrameNew(atlasName: "_processed_big_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.1f, gfxOffsetCorrection: new Vector2(44, -59));
 
@@ -1635,7 +2029,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CampfireSmall:
+                case PkgName.CampfireSmall:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 16);
 
@@ -1651,7 +2045,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CampfireMedium:
+                case PkgName.CampfireMedium:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 33, colHeight: 20);
 
@@ -1667,7 +2061,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.BoatConstruction:
+                case PkgName.BoatConstruction:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
 
@@ -1681,202 +2075,202 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.BoatCompleteStanding:
+                case PkgName.BoatCompleteStanding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24), ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
-                case AnimData.PkgName.BoatCompleteCruising:
+                case PkgName.BoatCompleteCruising:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 329, colHeight: 66);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "boat/_processed_boat_complete", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 500, height: 183), scale: 0.7f, gfxOffsetCorrection: new Vector2(7, -24), ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
-                case AnimData.PkgName.ShipRescue:
+                case PkgName.ShipRescue:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 1310, colHeight: 1041);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_ship_rescue", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 873, height: 694), scale: 1.5f, ignoreWhenCalculatingMaxSize: true)]));
                         break;
                     }
 
-                case AnimData.PkgName.HerbsBlack:
+                case PkgName.HerbsBlack:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_black", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsCyan:
+                case PkgName.HerbsCyan:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_cyan", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsBlue:
+                case PkgName.HerbsBlue:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_blue", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsGreen:
+                case PkgName.HerbsGreen:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_green", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsYellow:
+                case PkgName.HerbsYellow:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_yellow", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsRed:
+                case PkgName.HerbsRed:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_red", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsViolet:
+                case PkgName.HerbsViolet:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_violet", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsBrown:
+                case PkgName.HerbsBrown:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_brown", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsDarkViolet:
+                case PkgName.HerbsDarkViolet:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_dark_violet", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HerbsDarkGreen:
+                case PkgName.HerbsDarkGreen:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 22, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_herbs_dark_green", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.EmptyBottle:
+                case PkgName.EmptyBottle:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_bottle_empty", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionRed:
+                case PkgName.PotionRed:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_red", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionBlue:
+                case PkgName.PotionBlue:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_blue", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionViolet:
+                case PkgName.PotionViolet:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_violet", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionYellow:
+                case PkgName.PotionYellow:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_yellow", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionCyan:
+                case PkgName.PotionCyan:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_cyan", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionGreen:
+                case PkgName.PotionGreen:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_green", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionBlack:
+                case PkgName.PotionBlack:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_black", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionDarkViolet:
+                case PkgName.PotionDarkViolet:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_violet", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionDarkYellow:
+                case PkgName.PotionDarkYellow:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_yellow", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionDarkGreen:
+                case PkgName.PotionDarkGreen:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_dark_green", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionLightYellow:
+                case PkgName.PotionLightYellow:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_bottle_oil", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionTransparent:
+                case PkgName.PotionTransparent:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_transparent", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.PotionBrown:
+                case PkgName.PotionBrown:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_potion_brown", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BloodSplatter1:
+                case PkgName.BloodSplatter1:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 34, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_1", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BloodSplatter2:
+                case PkgName.BloodSplatter2:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_2", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BloodSplatter3:
+                case PkgName.BloodSplatter3:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 24, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_blood_splatter_3", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.HumanSkeleton:
+                case PkgName.HumanSkeleton:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_human_skeleton", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Hole:
+                case PkgName.Hole:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 31, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_hole", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Explosion:
+                case PkgName.Explosion:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 48, colHeight: 48); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
@@ -1898,31 +2292,31 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.SkullAndBones:
+                case PkgName.SkullAndBones:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 32, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_skull_and_bones", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.MusicNoteSmall:
+                case PkgName.MusicNoteSmall:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_music_note", hasOnePixelMargin: false);
                         break;
                     };
 
-                case AnimData.PkgName.MusicNoteBig:
+                case PkgName.MusicNoteBig:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 2.5f, layer: 2, animSize: 0, altasName: "_processed_music_note", hasOnePixelMargin: false);
                         break;
                     };
 
-                case AnimData.PkgName.Miss:
+                case PkgName.Miss:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_miss", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Attack:
+                case PkgName.Attack:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 34, colHeight: 58);
 
@@ -1937,13 +2331,13 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.MapMarker:
+                case PkgName.MapMarker:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 16, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_map_marker", hasOnePixelMargin: false);
                         break;
                     };
 
-                case AnimData.PkgName.Backlight:
+                case PkgName.Backlight:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 13);
 
@@ -1959,13 +2353,13 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Crosshair:
+                case PkgName.Crosshair:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 40, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_crosshair", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Flame:
+                case PkgName.Flame:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 46); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
@@ -2002,79 +2396,79 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.Upgrade:
+                case PkgName.Upgrade:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 31, height: 31, scale: 1f, layer: 0, animSize: 0, altasName: "_processed_upgrade", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.WaterDrop:
+                case PkgName.WaterDrop:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 124, height: 183, scale: 0.5f, layer: 0, animSize: 0, altasName: "_processed_water_drop", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Zzz:
+                case PkgName.Zzz:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 39, height: 15, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_zzz", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Heart:
+                case PkgName.Heart:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 18, scale: 1f, layer: 2, animSize: 0, altasName: "_processed_heart_16x16", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Hammer:
+                case PkgName.Hammer:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 182, height: 336, scale: 0.1f, layer: 0, animSize: 0, altasName: "_processed_hammer", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.Fog1:
+                case PkgName.Fog1:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.Fog2:
+                case PkgName.Fog2:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.Fog3:
+                case PkgName.Fog3:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "_processed_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.Fog4:
+                case PkgName.Fog4:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "_processed_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.BubbleExclamationRed:
+                case PkgName.BubbleExclamationRed:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_exclamation_red", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BubbleExclamationBlue:
+                case PkgName.BubbleExclamationBlue:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_exclamation_blue", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.BubbleCraftGreen:
+                case PkgName.BubbleCraftGreen:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "_processed_bubble_craft_green", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.SeaWave:
+                case PkgName.SeaWave:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 40, colHeight: 40); // colRect does not match bigger sizes (gfxRect should be used for detecting collisions instead)
 
@@ -2088,107 +2482,107 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.WeatherFog1:
+                case PkgName.WeatherFog1:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog2:
+                case PkgName.WeatherFog2:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog3:
+                case PkgName.WeatherFog3:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog4:
+                case PkgName.WeatherFog4:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog5:
+                case PkgName.WeatherFog5:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog6:
+                case PkgName.WeatherFog6:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog7:
+                case PkgName.WeatherFog7:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog8:
+                case PkgName.WeatherFog8:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.WeatherFog9:
+                case PkgName.WeatherFog9:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "_processed_weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
                         break;
                     };
 
-                case AnimData.PkgName.FertileGroundSmall:
+                case PkgName.FertileGroundSmall:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 65, height: 55, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_small", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.FertileGroundMedium:
+                case PkgName.FertileGroundMedium:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 102, height: 75, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_medium", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.FertileGroundLarge:
+                case PkgName.FertileGroundLarge:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 134, height: 134, scale: 1.0f, layer: -1, animSize: 0, altasName: "_processed_fertile_ground_big", hasOnePixelMargin: true);
                         break;
                     };
 
-                case AnimData.PkgName.FenceHorizontalShort:
+                case PkgName.FenceHorizontalShort:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 120, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_horizontal_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 122, height: 50), scale: 1f, gfxOffsetCorrection: new Vector2(0, -19))]));
                         break;
                     }
 
-                case AnimData.PkgName.FenceVerticalShort:
+                case PkgName.FenceVerticalShort:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 121);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_vertical_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 146), scale: 1f, gfxOffsetCorrection: new Vector2(0, -11))]));
                         break;
                     }
 
-                case AnimData.PkgName.FenceHorizontalLong:
+                case PkgName.FenceHorizontalLong:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 224, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_horizontal_long", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 226, height: 50), scale: 1f, gfxOffsetCorrection: new Vector2(0, -19))]));
                         break;
                     }
 
-                case AnimData.PkgName.FenceVerticalLong:
+                case PkgName.FenceVerticalLong:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 219);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_fence_vertical_long", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 14, height: 244), scale: 1f, gfxOffsetCorrection: new Vector2(0, -11))]));
                         break;
                     }
 
-                case AnimData.PkgName.CaveEntrance:
+                case PkgName.CaveEntrance:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 92, colHeight: 53);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_entrance_open", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
@@ -2196,7 +2590,7 @@ namespace SonOfRobin
                         break;
                     }
 
-                case AnimData.PkgName.CaveExit:
+                case PkgName.CaveExit:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 55);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrameNew(atlasName: "_processed_cave_exit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 43, height: 29), scale: 2f, gfxOffsetCorrection: new Vector2(-0, -0))]));
@@ -2210,7 +2604,7 @@ namespace SonOfRobin
             pkgByName[pkgName] = animPkg;
         }
 
-        public static AnimPkg MakePackageForSingleImage(AnimData.PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimPkg MakePackageForSingleImage(PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
             int colWidth = (int)((hasOnePixelMargin ? width - 2 : width) * scale);
             int colHeight = (int)((hasOnePixelMargin ? height - 2 : height) * scale);
@@ -2243,7 +2637,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRpgMakerV1Data(AnimData.PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
+        public static AnimPkg MakePackageForRpgMakerV1Data(PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
 
@@ -2299,7 +2693,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRPGMakerPackageV2UsingSizeDict(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
+        public static AnimPkg MakePackageForRPGMakerPackageV2UsingSizeDict(PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
@@ -2313,7 +2707,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRpgMakerV2Data(AnimData.PkgName pkgName, string atlasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, AnimPkg animPkg = null)
+        public static AnimPkg MakePackageForRpgMakerV2Data(PkgName pkgName, string atlasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, AnimPkg animPkg = null)
         {
             if (animPkg == null) animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
 
@@ -2369,7 +2763,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForDragonBonesAnims(AnimData.PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict = null, List<string> nonLoopedAnims = null, Dictionary<string, Vector2> offsetDict = null, Dictionary<string, string> switchDict = null, Vector2 globalOffsetCorrection = default)
+        public static AnimPkg MakePackageForDragonBonesAnims(PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict = null, List<string> nonLoopedAnims = null, Dictionary<string, Vector2> offsetDict = null, Dictionary<string, string> switchDict = null, Vector2 globalOffsetCorrection = default)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 

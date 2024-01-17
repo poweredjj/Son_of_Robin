@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +6,7 @@ namespace SonOfRobin
 {
     public class AnimPkg
     {
-        public readonly AnimData.PkgName pkgName;
+        public readonly AnimDataNew.PkgName name;
         public readonly Rectangle colRect;
         private readonly Dictionary<int, Dictionary<string, Anim>> animDict;
         public readonly bool horizontalOrientationsOnly;
@@ -15,28 +14,13 @@ namespace SonOfRobin
         public List<Anim> AllAnimList { get; private set; } // "flat" list of all anims
         public int[] AllAnimSizes { get { return this.animDict.Keys.ToArray(); } }
 
-        public AnimPkg(AnimData.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
+        public AnimPkg(AnimDataNew.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
         {
-            this.pkgName = pkgName;
+            this.name = pkgName;
             this.colRect = new Rectangle(x: -colWidth / 2, y: -colHeight / 2, width: colWidth, height: colHeight); // colRect should always be centered
             this.animDict = [];
             this.AllAnimList = [];
             this.horizontalOrientationsOnly = horizontalOrientationsOnly;
-        }
-
-        public static void CreateAllAnims()
-        {
-            // TODO use in InitialLoader
-
-            DateTime startTime = DateTime.Now;
-
-            foreach (AnimData.PkgName pkgName in AnimDataNew.allPkgNames)
-            {
-                AnimDataNew.LoadPackage(pkgName);
-            }
-
-            TimeSpan creationDuration = DateTime.Now - startTime;
-            MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
         public void AddAnim(Anim anim)
@@ -50,7 +34,7 @@ namespace SonOfRobin
 
         public AnimPkg MakeCopyWithEditedColOffset(int colWidth, int colHeight)
         {
-            AnimPkg animPkg = new AnimPkg(pkgName: this.pkgName, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
+            AnimPkg animPkg = new AnimPkg(pkgName: this.name, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
 
             foreach (Anim anim in this.AllAnimList)
             {

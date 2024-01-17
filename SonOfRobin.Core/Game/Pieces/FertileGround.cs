@@ -6,7 +6,7 @@ namespace SonOfRobin
     public class FertileGround : BoardPiece
     {
 
-        public FertileGround(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, float maxHitPoints) :
+        public FertileGround(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, float maxHitPoints) :
 
             base(world: world, id: id, animPackage: animPackage, name: name, allowedTerrain: allowedTerrain, readableName: readableName, description: description, activeState: State.Empty, maxHitPoints: maxHitPoints)
         {

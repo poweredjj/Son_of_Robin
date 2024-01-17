@@ -488,7 +488,7 @@ namespace SonOfRobin
                         {
                             if (hadThisBuffBefore) this.RemoveEveryBuffOfType(buff.type);
                             player.speed += (float)buff.value;
-                            player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, borderThickness: 1, textureSize: player.sprite.AnimFrame.textureSize, priority: 0, framesLeft: -1));
+                            player.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.Cyan, borderThickness: 1, textureSize: new Vector2(player.sprite.AnimFrame.imageObj.Width, player.sprite.AnimFrame.imageObj.Height), priority: 0, framesLeft: -1));
                             player.activeSoundPack.Play(PieceSoundPackTemplate.Action.PlayerSprint);
                         }
                         else

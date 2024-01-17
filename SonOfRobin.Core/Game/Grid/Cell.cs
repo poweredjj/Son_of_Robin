@@ -262,7 +262,7 @@ namespace SonOfRobin
             {
                 foreach (Sprite sprite in this.spriteGroups[groupName])
                 {
-                    string spriteText = $"{sprite.AnimPackage}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
+                    string spriteText = $"{sprite.AnimPkg.name}\n{this.cellNoX},{this.cellNoY}\n{sprite.position.X},{sprite.position.Y}";
 
                     font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: spriteText, position: new Vector2(sprite.ColRect.Left, sprite.ColRect.Bottom), color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
                 }

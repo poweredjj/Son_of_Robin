@@ -228,7 +228,7 @@ namespace SonOfRobin
             {
                 if (this.pieceTextureShownWhenEmpty != PieceTemplate.Name.Empty)
                 {
-                    Helpers.DrawTextureInsideRect(texture: PieceInfo.GetTexture(this.pieceTextureShownWhenEmpty), rectangle: destRect, color: Color.White * opacity * 0.3f);
+                    PieceInfo.GetImageObj(this.pieceTextureShownWhenEmpty).DrawInsideRect(rect: destRect, color: Color.White * opacity * 0.3f);
                 }
 
                 return;

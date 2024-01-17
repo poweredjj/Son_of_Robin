@@ -9,7 +9,7 @@ namespace SonOfRobin
         public readonly bool emitsLightWhenCrafting;
         public readonly bool canBeUsedDuringRain;
 
-        public Workshop(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, MenuTemplate.Name craftMenuTemplate, string readableName, string description, bool canBeUsedDuringRain,
+        public Workshop(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, MenuTemplate.Name craftMenuTemplate, string readableName, string description, bool canBeUsedDuringRain,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1, bool emitsLightWhenCrafting = false, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain,   maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: lightEngine, activeState: State.Empty)

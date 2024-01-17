@@ -346,7 +346,7 @@ namespace SonOfRobin
                     this.Player.RemoveFromStateMachines();
 
                     BoardPiece spectator = PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.camera.TrackedPos, templateName: PieceTemplate.Name.PlayerGhost, closestFreeSpot: true);
-                    spectator.sprite.AssignNewPackage(this.Player.sprite.AnimPackage);
+                    spectator.sprite.AssignNewPackage(this.Player.sprite.AnimPkg.name);
 
                     spectator.sprite.orientation = this.Player != null ? this.Player.sprite.orientation : Sprite.Orientation.right;
 
@@ -1734,7 +1734,7 @@ namespace SonOfRobin
             {
                 if (!piece.pieceInfo.canBePickedUp || (piece.GetType() == typeof(Animal) && piece.alive)) continue;
 
-                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: highlightColor * 0.8f, drawFill: false, borderThickness: (int)(2 * (1f / piece.sprite.AnimFrame.scale)), textureSize: piece.sprite.AnimFrame.textureSize, priority: 0, framesLeft: 1));
+                piece.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: highlightColor * 0.8f, drawFill: false, borderThickness: (int)(2 * (1f / piece.sprite.AnimFrame.scale)), textureSize: new Vector2(piece.sprite.AnimFrame.Texture.Width, piece.sprite.AnimFrame.Texture.Height), priority: 0, framesLeft: 1));
                 piece.sprite.Draw();
             }
         }

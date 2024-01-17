@@ -351,7 +351,7 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<ImageObj> { AnimData.GetCroppedImageObjForPackage(selectedPiece.sprite.AnimPackage) }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
+                new InfoWindow.TextEntry(imageList: new List<ImageObj> { selectedPiece.sprite.AnimFrame.imageObj }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
@@ -1104,7 +1104,7 @@ namespace SonOfRobin
             soundCombine.Play();
             new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<ImageObj> { new TextureObj(piece1.sprite.CroppedAnimFrame.Texture), new TextureObj(piece2.sprite.CroppedAnimFrame.Texture), new TextureObj(combinedPiece.sprite.AnimFrame.Texture) }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<ImageObj> { piece1.sprite.AnimFrame.imageObj, piece2.sprite.AnimFrame.imageObj, combinedPiece.sprite.AnimFrame.imageObj }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
         }
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)
@@ -1189,7 +1189,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                 // pieceInfo.readableName is used to show original name (before the change)
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<ImageObj> { new TextureObj(potion.sprite.CroppedAnimFrame.Texture), new TextureObj(targetPieces[0].sprite.CroppedAnimFrame.Texture) }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<ImageObj> { potion.sprite.AnimFrame.imageObj, targetPieces[0].sprite.AnimFrame.imageObj }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

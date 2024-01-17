@@ -19,7 +19,7 @@ namespace SonOfRobin
         private int realHitPower;
         private bool shootMode; // true == shoot (can damage target), false == bounce (can't damage anything)
 
-        public Projectile(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
+        public Projectile(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
             byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null, LightEngine lightEngine = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty, lightEngine: lightEngine)

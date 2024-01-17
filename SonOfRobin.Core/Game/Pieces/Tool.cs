@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         public int hitCooldown;
 
-        public Tool(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
+        public Tool(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxHitPoints, string readableName, string description,
             byte animSize = 0, string animName = "default", bool rotatesWhenDropped = true, List<Buff> buffList = null) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, rotatesWhenDropped: rotatesWhenDropped, readableName: readableName, description: description, buffList: buffList, activeState: State.Empty)
@@ -42,7 +42,7 @@ namespace SonOfRobin
             if (!this.pieceInfo.toolIndestructible)
             {
                 this.HitPoints = Math.Max(0, this.HitPoints - this.world.random.Next(1, 5));
-                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.AnimFrame.Texture);
+                if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, imageObj: this.sprite.AnimFrame.imageObj);
             }
 
             float angle = this.world.Player.ShootingAngle;
@@ -54,7 +54,7 @@ namespace SonOfRobin
             Vector2 movement = new((int)Math.Round(movementDist * Math.Cos(angle)), (int)Math.Round(movementDist * Math.Sin(angle)));
 
             Sprite playerSprite = this.world.Player.sprite;
-            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimFrame.colWidth * 1.5f, offset.Y * playerSprite.AnimFrame.colHeight * 1.5f);
+            Vector2 startingPos = playerSprite.position + new Vector2(offset.X * playerSprite.AnimPkg.colRect.Width * 1.5f, offset.Y * playerSprite.AnimPkg.colRect.Height * 1.5f);
             projectile.GetThrown(startPosition: startingPos, movement: movement, hitPowerMultiplier: (this.pieceInfo.toolMultiplierByCategory[Category.Flesh] * 3f) + this.world.Player.strength, shootingPower: shootingPower);
         }
 
@@ -95,7 +95,7 @@ namespace SonOfRobin
                 {
                     Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Hit, world: this.world);
 
-                    target.sprite.effectCol.AddEffect(new BorderInstance(priority: 0, outlineColor: Color.Red, borderThickness: (int)(2f * (1f / target.sprite.AnimFrame.scale)), textureSize: target.sprite.AnimFrame.textureSize));
+                    target.sprite.effectCol.AddEffect(new BorderInstance(priority: 0, outlineColor: Color.Red, borderThickness: (int)(2f * (1f / target.sprite.AnimFrame.scale)), textureSize: new Vector2(target.sprite.AnimFrame.Texture.Width, target.sprite.AnimFrame.Texture.Height)));
 
                     VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
                     ControlTips.TipHighlightOnNextFrame(tipName: "use item");
@@ -192,9 +192,9 @@ namespace SonOfRobin
                     this.HitPoints -= player.Skill == Player.SkillName.Maintainer ? 0.7f : 1f;
                     this.HitPoints = Math.Max(0, this.HitPoints);
 
-                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.Texture);
+                    if (this.HitPointsPercent < 0.4f && this.HitPoints > 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BreakingItem, ignoreDelay: true, text: this.readableName, imageObj: this.pieceInfo.imageObj);
 
-                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, texture: this.sprite.CroppedAnimFrame.Texture);
+                    if (this.HitPoints == 0) this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.BrokenItem, ignoreDelay: true, text: this.readableName, imageObj: this.pieceInfo.imageObj);
                 }
             }
         }
@@ -256,7 +256,7 @@ namespace SonOfRobin
                         if (target.pieceInfo.category == Category.Dirt && droppedPiecesCount > 1) // hole is the first "dropped" piece, so the real "count" starts at 2
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
-                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            particleEmitter.sprite.AssignNewPackage(AnimDataNew.PkgName.WhiteSpotLayerZero);
                             ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
                         }
 

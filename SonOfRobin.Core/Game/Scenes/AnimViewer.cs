@@ -58,14 +58,14 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            AnimPkg.CreateAllAnims(); // move to InitialLoader
+            AnimDataNew.CreateAllAnims();
 
-            foreach (AnimData.PkgName pkgName in AnimDataNew.allPkgNames)
+            foreach (AnimDataNew.PkgName pkgName in AnimDataNew.allPkgNames)
             {
                 animPkgList.Add(AnimDataNew.pkgByName[pkgName]);
             }
 
-            this.animPkgArray = animPkgList.OrderBy(a => a.pkgName).ToArray();
+            this.animPkgArray = animPkgList.OrderBy(a => a.name).ToArray();
             this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
             this.currentAnimIndex = 0;
 
@@ -77,7 +77,7 @@ namespace SonOfRobin
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
 
-            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimDataNew.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
+            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimDataNew.pkgByName[AnimDataNew.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
         }
 
         private void AssignCurrentAnim()
@@ -283,7 +283,7 @@ namespace SonOfRobin
                 this.effect.Parameters["outlineColor"].SetValue(Color.White.ToVector4());
                 this.effect.Parameters["outlineThickness"].SetValue(this.outlineThickness);
                 this.effect.Parameters["drawFill"].SetValue(true);
-                this.effect.Parameters["textureSize"].SetValue(new Vector2(this.currentAnimFrame.Texture.Width, this.currentAnimFrame.Texture.Height));
+                this.effect.Parameters["textureSize"].SetValue(new Vector2(this.currentAnimFrame.imageObj.Width, this.currentAnimFrame.imageObj.Height));
 
                 this.effect.Parameters["cropXMin"].SetValue((float)cropRect.Left / (float)texture.Width);
                 this.effect.Parameters["cropXMax"].SetValue((float)cropRect.Right / (float)texture.Width);
@@ -331,7 +331,7 @@ namespace SonOfRobin
             description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
-            description += $"AnimPkg: {this.currentAnimPkg.pkgName} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
+            description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
 
             this.textWithImages.Draw(position: new Vector2(50, 50), color: Color.White, drawShadow: true, textScale: 2f, shadowColor: Color.Black * 0.4f);
 

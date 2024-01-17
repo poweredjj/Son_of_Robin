@@ -237,7 +237,7 @@ namespace SonOfRobin
 
                             if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
                             {
-                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<ImageObj> { new TextureObj(workshop.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<ImageObj> { workshop.sprite.AnimFrame.imageObj }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
 
                                 return;
                             }
@@ -608,7 +608,7 @@ namespace SonOfRobin
                                 {
                                     new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
 
-                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<ImageObj> { new TextureObj(seeds.sprite.CroppedAnimFrame.Texture), PieceInfo.GetImageObj(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<ImageObj> { seeds.sprite.AnimFrame.imageObj, PieceInfo.GetImageObj(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
                                 }
                                 else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
                             }
@@ -671,7 +671,7 @@ namespace SonOfRobin
 
                             if (!highlightOnly && !canBurnNow && !buttonHeld)
                             {
-                                MessageLog.Add(text: $"Cannot use {portableLight.readableName}.", texture: portableLight.pieceInfo.CroppedFrame.Texture, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                                MessageLog.Add(text: $"Cannot use {portableLight.readableName}.", imageObj: portableLight.pieceInfo.imageObj, bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                                 Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
                                 return;
                             }
@@ -901,7 +901,7 @@ namespace SonOfRobin
                                     player.sprite.Visible = false;
                                     player.Kill();
 
-                                    new TextWindow(text: "You have | drowned.", imageList: [AnimData.GetCroppedImageObjForPackage(AnimData.PkgName.WaterDrop)], textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
+                                    new TextWindow(text: "You have | drowned.", imageList: [AnimDataNew.GetImageObj(AnimDataNew.PkgName.WaterDrop)], textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
 
                                     return;
                                 }
@@ -1394,7 +1394,7 @@ namespace SonOfRobin
 
                                 HintEngine.ShowMessageDuringPause(new List<HintMessage> {
                                    new HintMessage(text: $"I cannot approach this | {totem.readableName} now.\n{timeLeftString}.",
-                                   blockInputDefaultDuration: true, imageList: new List<Texture2D> { totem.sprite.CroppedAnimFrame.Texture }),
+                                   blockInputDefaultDuration: true, imageList: new List<ImageObj> { totem.sprite.AnimFrame.imageObj }),
                                    });
                             }
 
@@ -1483,7 +1483,7 @@ namespace SonOfRobin
                             Vector2 obstaclePos = obstacle.sprite.position;
                             Vector2 playerPos = player.sprite.position;
 
-                            bool horizontal = obstacle.sprite.AnimFrame.colWidth > obstacle.sprite.AnimFrame.colHeight;
+                            bool horizontal = obstacle.sprite.ColRect.Width > obstacle.sprite.ColRect.Height;
 
                             // checking for proper player alignment
 

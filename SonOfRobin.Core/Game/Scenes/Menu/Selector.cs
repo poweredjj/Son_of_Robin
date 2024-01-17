@@ -160,9 +160,9 @@ namespace SonOfRobin
                 var objectList = (List<object>)this.ActiveName;
 
                 string text = (string)objectList[0];
-                Texture2D texture = (Texture2D)objectList[1];
+                ImageObj imageObj = (ImageObj)objectList[1];
 
-                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<ImageObj> { new TextureObj(texture) });
+                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<ImageObj> { imageObj });
                 return;
             }
         }

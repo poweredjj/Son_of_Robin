@@ -26,7 +26,7 @@ namespace SonOfRobin
         public List<PieceTemplate.Name> Eats { get; private set; }
         public List<PieceTemplate.Name> IsEatenBy { get; private set; }
 
-        public Animal(World world, int id, AnimData.PkgName maleAnimPkgName, AnimData.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
+        public Animal(World world, int id, AnimDataNew.PkgName maleAnimPkgName, AnimDataNew.PkgName femaleAnimPkgName, PieceTemplate.Name name, AllowedTerrain allowedTerrain, int maxAge, float maxStamina, int maxHitPoints, string readableName, string description, List<PieceTemplate.Name> eats, int strength,
             byte animSize = 0, string animName = "default", float speed = 1) :
 
             base(world: world, id: id, animPackage: maleAnimPkgName, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, speed: speed, maxAge: maxAge, maxHitPoints: maxHitPoints, readableName: readableName, description: description, strength: strength, activeState: State.AnimalAssessSituation)
@@ -117,12 +117,12 @@ namespace SonOfRobin
             int posX = this.sprite.GfxRect.Center.X;
             int posY = this.sprite.GfxRect.Bottom;
 
-            new StatBar(label: "hp", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture);
+            new StatBar(label: "hp", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Heart));
 
             if (Preferences.debugShowStatBars)
             {
-                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, texture: TextureBank.GetTexture(TextureBank.TextureName.Biceps));
-                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).Texture);
+                new StatBar(label: "stam", value: (int)this.stamina, valueMax: (int)this.maxStamina, colorMin: new Color(100, 100, 100), colorMax: new Color(255, 255, 255), posX: posX, posY: posY, image: TextureBank.GetImageObj(TextureBank.TextureName.Biceps));
+                new StatBar(label: "food", value: (int)this.fedLevel, valueMax: (int)maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Burger));
                 new StatBar(label: "age", value: (int)this.currentAge, valueMax: (int)this.maxAge, colorMin: new Color(180, 0, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY);
                 new StatBar(label: "weight", value: (int)this.Mass, valueMax: (int)this.pieceInfo.animalMaxMass, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY);
             }

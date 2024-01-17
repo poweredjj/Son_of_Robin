@@ -24,7 +24,7 @@ namespace SonOfRobin
         private TimeSpan TimeToFinishBrewing
         { get { return TimeSpan.FromSeconds((int)Math.Ceiling((float)(this.brewingDoneFrame - (float)this.world.CurrentUpdate) / 60f)); } }
 
-        public AlchemyLab(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, int boosterSpace,
+        public AlchemyLab(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, string readableName, string description, int boosterSpace,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
@@ -151,7 +151,7 @@ namespace SonOfRobin
                 int brewingDuration = this.brewingDoneFrame - this.brewingStartFrame;
                 int brewingCurrentFrame = this.world.CurrentUpdate - this.brewingStartFrame;
 
-                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
+                new StatBar(label: "", value: brewingCurrentFrame, valueMax: brewingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame));
             }
 
             base.DrawStatBar();
@@ -173,7 +173,7 @@ namespace SonOfRobin
                 BoardPiece bottle = BottleSlot.TopPiece;
                 if (bottle.name != PieceTemplate.Name.EmptyBottle)
                 {
-                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<ImageObj> { new TextureObj(bottle.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<ImageObj> { bottle.sprite.AnimFrame.imageObj }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -197,7 +197,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).ImageObj);
+                    imageList.Add(PieceInfo.GetImageObj(fuel));
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -212,7 +212,7 @@ namespace SonOfRobin
                 foreach (PieceTemplate.Name baseName in baseNames)
                 {
                     baseMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(baseName).ImageObj);
+                    imageList.Add(PieceInfo.GetImageObj(baseName));
                 }
 
                 new TextWindow(text: $"I don't have any {baseMarkers} base.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -336,17 +336,17 @@ namespace SonOfRobin
 
             if (!customPotion && storedBoosters.Count > 0)
             {
-                var colorByBoosterDict = new Dictionary<PieceTemplate.Name, AnimData.PkgName> {
-                    { PieceTemplate.Name.HerbsBlack, AnimData.PkgName.PotionBlack  },
-                    { PieceTemplate.Name.HerbsBrown, AnimData.PkgName.PotionDarkYellow  },
-                    { PieceTemplate.Name.HerbsDarkViolet, AnimData.PkgName.PotionDarkViolet  },
-                    { PieceTemplate.Name.HerbsDarkGreen, AnimData.PkgName.PotionDarkGreen  },
-                    { PieceTemplate.Name.HerbsBlue, AnimData.PkgName.PotionBlue  },
-                    { PieceTemplate.Name.HerbsCyan, AnimData.PkgName.PotionCyan  },
-                    { PieceTemplate.Name.HerbsGreen, AnimData.PkgName.PotionGreen  },
-                    { PieceTemplate.Name.HerbsRed, AnimData.PkgName.PotionRed  },
-                    { PieceTemplate.Name.HerbsViolet, AnimData.PkgName.PotionViolet  },
-                    { PieceTemplate.Name.HerbsYellow, AnimData.PkgName.PotionYellow  },
+                var colorByBoosterDict = new Dictionary<PieceTemplate.Name, AnimDataNew.PkgName> {
+                    { PieceTemplate.Name.HerbsBlack, AnimDataNew.PkgName.PotionBlack  },
+                    { PieceTemplate.Name.HerbsBrown, AnimDataNew.PkgName.PotionDarkYellow  },
+                    { PieceTemplate.Name.HerbsDarkViolet, AnimDataNew.PkgName.PotionDarkViolet  },
+                    { PieceTemplate.Name.HerbsDarkGreen, AnimDataNew.PkgName.PotionDarkGreen  },
+                    { PieceTemplate.Name.HerbsBlue, AnimDataNew.PkgName.PotionBlue  },
+                    { PieceTemplate.Name.HerbsCyan, AnimDataNew.PkgName.PotionCyan  },
+                    { PieceTemplate.Name.HerbsGreen, AnimDataNew.PkgName.PotionGreen  },
+                    { PieceTemplate.Name.HerbsRed, AnimDataNew.PkgName.PotionRed  },
+                    { PieceTemplate.Name.HerbsViolet, AnimDataNew.PkgName.PotionViolet  },
+                    { PieceTemplate.Name.HerbsYellow, AnimDataNew.PkgName.PotionYellow  },
                 };
 
                 PieceTemplate.Name boosterName = storedBoosters[0].name;
@@ -354,7 +354,7 @@ namespace SonOfRobin
                 potion.sprite.AssignNewPackage(newAnimPackage: colorByBoosterDict[boosterName], checkForCollision: false);
             }
 
-            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.PotionBrown, checkForCollision: false);
+            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(newAnimPackage: AnimDataNew.PkgName.PotionBrown, checkForCollision: false);
 
             // destroying every inserted piece
 

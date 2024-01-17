@@ -18,6 +18,7 @@ namespace SonOfRobin
         public readonly int duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
+        public readonly ImageObj imageObj;
 
         public AnimFrameNew(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
         {
@@ -43,6 +44,8 @@ namespace SonOfRobin
             this.layer = layer;
             this.duration = duration;
             this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
+
+            this.imageObj = new AnimFrameObj(this);
         }
 
         public AnimFrameNew MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)

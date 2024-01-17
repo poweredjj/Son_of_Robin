@@ -22,7 +22,7 @@ namespace SonOfRobin
         private TimeSpan TimeToFinishCooking
         { get { return TimeSpan.FromSeconds((int)Math.Ceiling((float)(this.cookingDoneFrame - (float)this.world.CurrentUpdate) / 60f)); } }
 
-        public Cooker(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, float foodMassMultiplier, string readableName, string description, int ingredientSpace, bool canBeUsedDuringRain,
+        public Cooker(World world, int id, AnimDataNew.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, float foodMassMultiplier, string readableName, string description, int ingredientSpace, bool canBeUsedDuringRain,
             byte animSize = 0, string animName = "off", int maxHitPoints = 1) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, lightEngine: new LightEngine(size: 0, opacity: 0.7f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), activeState: State.Empty)
@@ -143,7 +143,7 @@ namespace SonOfRobin
                 int cookingDuration = this.cookingDoneFrame - this.cookingStartFrame;
                 int cookingCurrentFrame = this.world.CurrentUpdate - this.cookingStartFrame;
 
-                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
+                new StatBar(label: "", value: cookingCurrentFrame, valueMax: cookingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimDataNew.GetImageObj(AnimDataNew.PkgName.Flame));
             }
 
             base.DrawStatBar();
@@ -157,7 +157,7 @@ namespace SonOfRobin
             {
                 BoardPiece mealLeftInside = MealSlot.TopPiece;
 
-                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<ImageObj> { new TextureObj(mealLeftInside.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<ImageObj> { mealLeftInside.sprite.AnimFrame.imageObj }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 

@@ -81,7 +81,7 @@ namespace SonOfRobin
                     case ParticleEngine.Preset.DebrisStarSmall:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
-                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            particleEmitter.sprite.AssignNewPackage(AnimDataNew.PkgName.WhiteSpotLayerZero);
                             ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStarSmall, duration: 6, update: true, particlesToEmit: particlesToEmit);
                             break;
                         }
@@ -101,7 +101,7 @@ namespace SonOfRobin
                     case ParticleEngine.Preset.DebrisHeart:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
-                            particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
+                            particleEmitter.sprite.AssignNewPackage(AnimDataNew.PkgName.WhiteSpotLayerZero);
                             ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true, particlesToEmit: 1);
                             break;
                         }
@@ -151,7 +151,7 @@ namespace SonOfRobin
                         {
                             bonusCount = dropCount - originalDropCount;
                             string countText = bonusCount > 1 ? $" x{bonusCount}" : "";
-                            MessageLog.Add(text: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", texture: PieceInfo.GetTexture(droppedPiece.pieceName), textColor: Color.Yellow);
+                            MessageLog.Add(text: $"Bonus drop - {PieceInfo.GetInfo(droppedPiece.pieceName).readableName}{countText}", imageObj: PieceInfo.GetImageObj(droppedPiece.pieceName), textColor: Color.Yellow);
                             Sound.QuickPlay(name: SoundData.Name.BonusItem);
                         }
                     }
