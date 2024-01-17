@@ -394,6 +394,11 @@ namespace SonOfRobin
             return GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent);
         }
 
+        public static ImageObj GetImageObj(TextureName textureName, bool persistent = true)
+        {
+            return new TextureObj(GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent));
+        }
+
         public static Texture2D GetTexture(string fileName, bool persistent = true)
         {
             if (persistent) return GetTexturePersistent(fileName);

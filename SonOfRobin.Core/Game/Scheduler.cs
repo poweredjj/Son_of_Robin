@@ -237,7 +237,7 @@ namespace SonOfRobin
 
                             if (workshop.world.weather.IsRaining && !workshop.canBeUsedDuringRain)
                             {
-                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<Texture2D> { workshop.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
+                                new TextWindow(text: $"I can't use | {workshop.readableName} during rain.", imageList: new List<ImageObj> { new TextureObj(workshop.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: workshop.world.DialogueSound);
 
                                 return;
                             }
@@ -608,7 +608,7 @@ namespace SonOfRobin
                                 {
                                     new Task(taskName: TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.Ding1);
 
-                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { seeds.sprite.CroppedAnimFrame.Texture, PieceInfo.GetTexture(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
+                                    new TextWindow(text: $"Acquired | seeds for | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<ImageObj> { new TextureObj(seeds.sprite.CroppedAnimFrame.Texture), PieceInfo.GetImageObj(plantName) }, textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, checkForDuplicate: true, inputType: Scene.InputTypes.Normal, blocksUpdatesBelow: true, priority: 0);
                                 }
                                 else seeds.Destroy(); // seeds should not appear, if there is no room for them to be stored
                             }
@@ -821,9 +821,9 @@ namespace SonOfRobin
 
                             string text = (string)textWindowData["text"];
 
-                            List<Texture2D> imageList;
-                            if (textWindowData.ContainsKey("imageList")) imageList = (List<Texture2D>)textWindowData["imageList"];
-                            else imageList = new List<Texture2D>();
+                            List<ImageObj> imageList;
+                            if (textWindowData.ContainsKey("imageList")) imageList = ((List<Texture2D>)textWindowData["imageList"]).Select(i => (ImageObj)new TextureObj(i)).ToList();
+                            else imageList = new List<ImageObj>();
 
                             bool checkForDuplicate = false;
                             if (textWindowData.ContainsKey("checkForDuplicate")) checkForDuplicate = (bool)textWindowData["checkForDuplicate"];
@@ -901,7 +901,7 @@ namespace SonOfRobin
                                     player.sprite.Visible = false;
                                     player.Kill();
 
-                                    new TextWindow(text: "You have | drowned.", imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WaterDrop).Texture }, textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
+                                    new TextWindow(text: "You have | drowned.", imageList: [AnimData.GetCroppedImageObjForPackage(AnimData.PkgName.WaterDrop)], textColor: Color.White, bgColor: Color.DarkRed, useTransition: true, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 220); ;
 
                                     return;
                                 }
@@ -1415,7 +1415,7 @@ namespace SonOfRobin
 
                             if (!player.CanSeeAnything)
                             {
-                                if (!highlightOnly) new TextWindow(text: $"It is too dark to plant | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
+                                if (!highlightOnly) new TextWindow(text: $"It is too dark to plant | {PieceInfo.GetInfo(plantName).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
 
                                 return;
                             }
@@ -1429,7 +1429,7 @@ namespace SonOfRobin
 
                             if (player.AreEnemiesNearby && !player.IsActiveFireplaceNearby)
                             {
-                                if (!highlightOnly) new TextWindow(text: $"I can't plant | {PieceInfo.GetInfo(plantName).readableName} with enemies nearby.", imageList: new List<Texture2D> { PieceInfo.GetTexture(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
+                                if (!highlightOnly) new TextWindow(text: $"I can't plant | {PieceInfo.GetInfo(plantName).readableName} with enemies nearby.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(plantName) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 70, priority: 0, animSound: world.DialogueSound);
 
                                 return;
                             }

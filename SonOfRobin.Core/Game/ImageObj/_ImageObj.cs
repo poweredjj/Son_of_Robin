@@ -4,8 +4,14 @@ namespace SonOfRobin
 {
     public abstract class ImageObj
     {
+        public virtual int ID { get; }
         public virtual int Width { get; }
         public virtual int Height { get; }
+
+        public bool Equals(ImageObj otherImgObj)
+        {
+            return this.ID == otherImgObj.ID;
+        }
 
         public ImageObj()
         { }

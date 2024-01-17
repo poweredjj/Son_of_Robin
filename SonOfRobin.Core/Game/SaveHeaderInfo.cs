@@ -106,7 +106,7 @@ namespace SonOfRobin
                 var infoTextList = new List<InfoWindow.TextEntry>();
 
                 Texture2D screenshot = this.Screenshot;
-                if (screenshot != null) infoTextList.Add(new InfoWindow.TextEntry(text: $"|", imageList: new List<Texture2D> { screenshot }, color: Color.White, scale: 7f));
+                if (screenshot != null) infoTextList.Add(new InfoWindow.TextEntry(text: $"|", imageList: new List<ImageObj> { new TextureObj(screenshot) }, color: Color.White, scale: 7f));
 
                 return infoTextList;
             }
@@ -166,13 +166,10 @@ namespace SonOfRobin
         }
 
         public List<Texture2D> AddInfoTextureList
-        {
-            get
-            {
-                var textureList = new List<Texture2D> { PieceInfo.GetTexture(playerName) };
-                return textureList;
-            }
-        }
+        { get { return new List<Texture2D> { PieceInfo.GetTexture(playerName) }; } }
+
+        public List<ImageObj> AddInfoImgObjList
+        { get { return new List<ImageObj> { new TextureObj(PieceInfo.GetTexture(playerName)) }; } }
 
         public void Delete()
         {

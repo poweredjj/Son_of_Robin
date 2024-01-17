@@ -227,7 +227,7 @@ namespace SonOfRobin
 
             if (fieldStorage != null && fieldStorage.PieceStorage.storageType != PieceStorage.StorageType.Fireplace && player != null && !player.CanSeeAnything)
             {
-                new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<Texture2D> { PieceInfo.GetTexture(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
+                new TextWindow(text: $"It is too dark to use the | {fieldStorage.readableName}...", imageList: new List<ImageObj> { PieceInfo.GetImageObj(fieldStorage.name) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: InputTypes.None, blockInputDuration: 45, priority: 1, animSound: player.world.DialogueSound);
 
                 return;
             }
@@ -351,14 +351,14 @@ namespace SonOfRobin
             }
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(selectedPiece.sprite.AnimPackage).Texture }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
+                new InfoWindow.TextEntry(imageList: new List<ImageObj> { AnimData.GetCroppedImageObjForPackage(selectedPiece.sprite.AnimPackage) }, text: $"| {Helpers.FirstCharToUpperCase(selectedPiece.readableName)}" , color: Color.White, scale: 1.5f), // AnimData.framesForPkgs is used for texture, to avoid animating (jitter)
                 new InfoWindow.TextEntry(text: selectedPiece.description, color: Color.White)
             };
 
             float smallScale = 0.7f;
 
             var extInfoTextList = new List<string>();
-            var extInfoImageList = new List<Texture2D>();
+            var extInfoImageList = new List<ImageObj>();
 
             PieceInfo.Info pieceInfo = selectedPiece.pieceInfo;
 
@@ -366,18 +366,18 @@ namespace SonOfRobin
             {
                 float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 1);
                 extInfoTextList.Add($"| +{fedPercent}%");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleBurger));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleBurger));
             }
 
             var durabilityTypeList = new List<System.Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(selectedPiece.GetType()))
             {
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleHeart));
 
                 if (selectedPiece.pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
-                    extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleInfinity));
+                    extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleInfinity));
                 }
                 else extInfoTextList.Add($"| {Math.Round(selectedPiece.HitPoints)}/{Math.Round(selectedPiece.maxHitPoints)}");
             }
@@ -385,19 +385,19 @@ namespace SonOfRobin
             if (selectedPiece.pieceInfo.toolShootsProjectile)
             {
                 extInfoTextList.Add($"| {Math.Round(60f / (float)pieceInfo.toolHitCooldown, 1)}/s");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSpeed));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleSpeed));
             }
 
             if (pieceInfo.toolRange > 0)
             {
                 extInfoTextList.Add($"| {pieceInfo.toolRange}");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArea));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleArea));
             }
 
             if (selectedPiece.StackSize > 1 && !slot.locked)
             {
                 extInfoTextList.Add($"| {selectedPiece.StackSize}");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleStack));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleStack));
             }
 
             if (extInfoTextList.Count > 0)
@@ -409,12 +409,12 @@ namespace SonOfRobin
             {
                 Seed seeds = (Seed)selectedPiece;
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<Texture2D> { PieceInfo.GetInfo(seeds.PlantToGrow).Texture }, scale: smallScale, color: new Color(208, 255, 199)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(seeds.PlantToGrow) }, scale: smallScale, color: new Color(208, 255, 199)));
             }
 
             if (selectedPiece.GetType() == typeof(Projectile))
             {
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {selectedPiece.pieceInfo.projectileHitMultiplier}", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {selectedPiece.pieceInfo.projectileHitMultiplier}", imageList: new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
@@ -429,7 +429,7 @@ namespace SonOfRobin
 
                 foreach (Buff buff in selectedPiece.buffList)
                 {
-                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
+                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<ImageObj> { new TextureObj(buff.iconTexture) } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
                 }
             }
 
@@ -1104,7 +1104,7 @@ namespace SonOfRobin
             soundCombine.Play();
             new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
-            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<Texture2D> { piece1.sprite.CroppedAnimFrame.Texture, piece2.sprite.CroppedAnimFrame.Texture, combinedPiece.sprite.AnimFrame.Texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+            new TextWindow(text: $"{piece1.readableName} | + {piece2.readableName} | = {combinedPiece.readableName} |", imageList: new List<ImageObj> { new TextureObj(piece1.sprite.CroppedAnimFrame.Texture), new TextureObj(piece2.sprite.CroppedAnimFrame.Texture), new TextureObj(combinedPiece.sprite.AnimFrame.Texture) }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
         }
 
         public bool TryToApplyPotion(StorageSlot slot, bool execute)
@@ -1189,7 +1189,7 @@ namespace SonOfRobin
                 new RumbleEvent(force: 0.27f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.085f, fadeOutSeconds: 0.085f);
 
                 // pieceInfo.readableName is used to show original name (before the change)
-                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<Texture2D> { potion.sprite.CroppedAnimFrame.Texture, targetPieces[0].sprite.CroppedAnimFrame.Texture }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
+                new TextWindow(text: $"{Helpers.FirstCharToUpperCase(potion.readableName)} | has been used on | {targetPieces[0].pieceInfo.readableName}{counterText}.", imageList: new List<ImageObj> { new TextureObj(potion.sprite.CroppedAnimFrame.Texture), new TextureObj(targetPieces[0].sprite.CroppedAnimFrame.Texture) }, textColor: Color.White, bgColor: new Color(0, 214, 222), useTransition: true, animate: true);
             }
 
             return true;

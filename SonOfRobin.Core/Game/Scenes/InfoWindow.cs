@@ -1,6 +1,5 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace SonOfRobin
             public readonly bool progressBarMode;
             public readonly Justify justify;
 
-            public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<Texture2D> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
+            public TextEntry(Color color, float scale = 1f, string text = "", int progressCurrentVal = -1, int progressMaxVal = -1, Justify justify = Justify.Left, List<ImageObj> imageList = null, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
             {
                 this.progressBarMode = progressCurrentVal > -1 && progressMaxVal > -1;
 

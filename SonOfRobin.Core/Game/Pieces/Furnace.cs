@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -207,25 +206,25 @@ namespace SonOfRobin
 
             if (storedMats.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: $"I need at least one | | | material and some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need at least one | | | material and some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedMats.Count == 0)
             {
-                new TextWindow(text: "I don't have any | | | materials.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I don't have any | | | materials.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedFuel.Count == 0)
             {
-                new TextWindow(text: $"I need some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedMats.Count > storedFuel.Count)
             {
-                new TextWindow(text: $"I need more | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need more | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 

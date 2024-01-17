@@ -79,7 +79,7 @@ namespace SonOfRobin
         public static Texture2D GradientBottom { get; private set; }
         public static Texture2D SplashScreenTexture { get; private set; }
 
-        public static readonly ParallelOptions defaultParallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
+        public static readonly ParallelOptions defaultParallelOptions = new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
         public static RenderTarget2D tempShadowMask;
         public static Texture2D lightSphere;
         public static readonly SimpleFps fps = new();
@@ -202,8 +202,8 @@ namespace SonOfRobin
 
             KeepScreenOn = true;
 
-            // new InitialLoader();
-            new AnimViewer(); // for testing
+            new InitialLoader();
+            //new AnimViewer(); // for testing
         }
 
         public void OnResize(Object sender, EventArgs e)

@@ -27,6 +27,7 @@ namespace SonOfRobin
             public readonly AnimData.PkgName animPkgName;
             public AnimFrame CroppedFrame { get { return AnimData.GetCroppedFrameForPackage(this.animPkgName); } }
             public Texture2D Texture { get { return this.CroppedFrame.Texture; } }
+            public ImageObj ImageObj { get { return new TextureObj(this.Texture); } }
             public List<PieceTemplate.Name> eats;
             public List<PieceTemplate.Name> isEatenBy;
             public List<PieceTemplate.Name> combinesWith;
@@ -3349,8 +3350,13 @@ namespace SonOfRobin
         public static Texture2D GetTexture(PieceTemplate.Name pieceName)
         {
             // to simplify frequently used query
-
             return info[pieceName].Texture;
+        }
+
+        public static ImageObj GetImageObj(PieceTemplate.Name pieceName)
+        {
+            // to simplify frequently used query
+            return new TextureObj(info[pieceName].Texture);
         }
 
         public static void CreateAllInfo()
@@ -3450,7 +3456,7 @@ namespace SonOfRobin
             if (multiplierByCategory == null) return entryList;
 
             string text = "|     ";
-            var imageList = new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps) };
+            var imageList = new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.Biceps) };
 
             foreach (BoardPiece.Category category in BoardPiece.allCategories) // allCategories is used to keep the same order for every tool
             {
@@ -3459,7 +3465,7 @@ namespace SonOfRobin
                     float multiplier = multiplierByCategory[category];
 
                     text += $"| {multiplier}   ";
-                    imageList.Add(BoardPiece.GetTextureForCategory(category));
+                    imageList.Add(new TextureObj(BoardPiece.GetTextureForCategory(category)));
                 }
             }
 
@@ -3476,12 +3482,12 @@ namespace SonOfRobin
             if (combinesWith.Count == 0) return entryList;
 
             string text = "Combines with: ";
-            var imageList = new List<Texture2D>();
+            var imageList = new List<ImageObj>();
 
             foreach (PieceTemplate.Name combineName in combinesWith)
             {
                 text += "| ";
-                imageList.Add(GetTexture(combineName));
+                imageList.Add(GetImageObj(combineName));
             }
 
             entryList.Add(new InfoWindow.TextEntry(text: text, scale: scale, imageList: imageList, color: Color.White));

@@ -1,6 +1,5 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +11,7 @@ namespace SonOfRobin
         public readonly Menu menu;
         public readonly int index;
         public readonly string name;
-        public readonly List<Texture2D> imageList;
+        public readonly List<ImageObj> imageList;
         protected TextWithImages textWithImages;
         public Color textColor;
         public Color shadowColor;
@@ -27,7 +26,7 @@ namespace SonOfRobin
         public List<InfoWindow.TextEntry> infoTextList;
         private readonly float infoWindowMaxLineHeightPercentOverride;
 
-        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, bool resizesAllScenes = false, List<InfoWindow.TextEntry> infoTextList = null, float infoWindowMaxLineHeightPercentOverride = 0f, List<Texture2D> imageList = null)
+        public Entry(Menu menu, string name, bool rebuildsMenu = false, bool rebuildsMenuInstantScroll = false, bool rebuildsAllMenus = false, bool resizesAllScenes = false, List<InfoWindow.TextEntry> infoTextList = null, float infoWindowMaxLineHeightPercentOverride = 0f, List<ImageObj> imageList = null)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.menu = menu;
@@ -51,8 +50,7 @@ namespace SonOfRobin
             if (this.menu.activeIndex == -1 && this.GetType() != typeof(Separator)) this.menu.activeIndex = this.index;
         }
 
-        public virtual string DisplayedText
-        { get { return this.name; } }
+        public virtual string DisplayedText { get { return this.name; } }
 
         public Vector2 Position
         {
@@ -67,7 +65,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
+                Rectangle screenRect = new(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
                 return screenRect.Contains(this.Rect);
             }
         }
@@ -76,7 +74,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
+                Rectangle screenRect = new(x: 0, y: 0, width: SonOfRobinGame.ScreenWidth, height: SonOfRobinGame.ScreenHeight);
                 return !screenRect.Contains(this.Rect) && screenRect.Intersects(this.Rect);
             }
         }
@@ -85,7 +83,7 @@ namespace SonOfRobin
         {
             get
             {
-                Rectangle screenRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
+                Rectangle screenRect = new(x: 0, y: 0, width: SonOfRobinGame.ScreenWidth, height: SonOfRobinGame.ScreenHeight);
                 return screenRect.Intersects(this.Rect);
             }
         }
@@ -135,7 +133,7 @@ namespace SonOfRobin
             return Math.Min(0.6f + this.OpacityFade, 1);
         }
 
-        public virtual void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
+        public virtual void Draw(bool active, string textOverride = null, List<ImageObj> imageList = null)
         {
             if (this.imageList != null) imageList = this.imageList;
 
@@ -159,11 +157,11 @@ namespace SonOfRobin
 
             float textScale = Math.Min(maxTextWidth / this.textWithImages.textWidth, maxTextHeight / this.textWithImages.textHeight);
 
-            Vector2 textPos = new Vector2(
+            Vector2 textPos = new(
                 rect.Center.X - (this.textWithImages.textWidth / 2 * textScale),
                 rect.Center.Y - (this.textWithImages.textHeight / 2 * textScale));
 
-            Color textColorCalculated = new Color( // to avoid transparency (which would ruin shadows)
+            Color textColorCalculated = new( // to avoid transparency (which would ruin shadows)
                 r: (byte)((float)this.textColor.R * opacity),
                 g: (byte)((float)this.textColor.G * opacity),
                 b: (byte)((float)this.textColor.B * opacity));
@@ -186,36 +184,27 @@ namespace SonOfRobin
             }
 
             InfoWindow hintWindow = SonOfRobinGame.HintWindow;
-
-            Vector2 windowPos;
             Vector2 infoWindowSize = hintWindow.MeasureEntries(this.infoTextList);
 
             Vector2 entryPos = this.Position;
             ViewParams menuViewParams = this.menu.viewParams;
 
-            switch (this.menu.layout)
+            Vector2 windowPos = this.menu.layout switch
             {
-                case Menu.Layout.Middle:
-                    windowPos = new Vector2(
-                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
-                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
-                    break;
+                Menu.Layout.Middle => new Vector2(
+                                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
+                                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2)),
 
-                case Menu.Layout.Left:
-                    windowPos = new Vector2(
-                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
-                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
-                    break;
+                Menu.Layout.Left => new Vector2(
+                                       menuViewParams.PosX + menuViewParams.Width - this.menu.ScrollbarWidth,
+                                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2)),
 
-                case Menu.Layout.Right:
-                    windowPos = new Vector2(
-                       menuViewParams.PosX - infoWindowSize.X + this.menu.ScrollbarWidth,
-                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2));
-                    break;
+                Menu.Layout.Right => new Vector2(
+                                       menuViewParams.PosX - infoWindowSize.X + this.menu.ScrollbarWidth,
+                                       menuViewParams.PosY + entryPos.Y - this.menu.CurrentScrollPosition + (this.menu.EntryHeight / 2) - (infoWindowSize.Y / 2)),
 
-                default:
-                    throw new ArgumentException($"Unsupported layout - {this.menu.layout}.");
-            }
+                _ => throw new ArgumentException($"Unsupported layout - {this.menu.layout}."),
+            };
 
             // keeping the window inside screen bounds
             windowPos.X = Math.Max(windowPos.X, 0);

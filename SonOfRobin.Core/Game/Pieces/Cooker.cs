@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,7 +157,7 @@ namespace SonOfRobin
             {
                 BoardPiece mealLeftInside = MealSlot.TopPiece;
 
-                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<Texture2D> { mealLeftInside.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I have to take out previously cooked | meal first.", imageList: new List<ImageObj> { new TextureObj(mealLeftInside.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -167,19 +166,19 @@ namespace SonOfRobin
 
             if (storedIngredients.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need at least one | | | ingredient and | fuel to cook.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Clam), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I need at least one | | | ingredient and | fuel to cook.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.MeatRawPrime), PieceInfo.GetImageObj(PieceTemplate.Name.Tomato), PieceInfo.GetImageObj(PieceTemplate.Name.Clam), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedFuel.Count == 0)
             {
                 string fuelMarkers = "";
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
-                foreach (PieceTemplate.Name fuel in fuelNames)
+                foreach (PieceTemplate.Name fuelName in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).Texture);
+                    imageList.Add(PieceInfo.GetImageObj(fuelName));
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -191,12 +190,12 @@ namespace SonOfRobin
             if (storedIngredients.Count == 0)
             {
                 string ingredientMarkers = "";
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
                 foreach (PieceTemplate.Name ingredient in ingredientNames)
                 {
                     ingredientMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(ingredient).Texture);
+                    imageList.Add(PieceInfo.GetImageObj(ingredient));
                 }
 
                 new TextWindow(text: $"I don't have any {ingredientMarkers} ingredients.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);

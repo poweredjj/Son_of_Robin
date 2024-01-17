@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +7,13 @@ namespace SonOfRobin
 {
     public class AlchemyLab : BoardPiece
     {
-        public static readonly HashSet<PieceTemplate.Name> baseNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
+        public static readonly HashSet<PieceTemplate.Name> baseNames = new() { PieceTemplate.Name.Apple, PieceTemplate.Name.Cherry, PieceTemplate.Name.Banana, PieceTemplate.Name.Tomato, PieceTemplate.Name.Carrot, PieceTemplate.Name.CoffeeRoasted, PieceTemplate.Name.Fat, PieceTemplate.Name.SeedsGeneric };
 
-        private static readonly HashSet<PieceTemplate.Name> boosterNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsDarkGreen, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
+        private static readonly HashSet<PieceTemplate.Name> boosterNames = new() { PieceTemplate.Name.HerbsYellow, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsBlue, PieceTemplate.Name.HerbsBlack, PieceTemplate.Name.HerbsBrown, PieceTemplate.Name.HerbsDarkViolet, PieceTemplate.Name.HerbsDarkGreen, PieceTemplate.Name.HerbsCyan, PieceTemplate.Name.HerbsViolet, PieceTemplate.Name.HerbsGreen, PieceTemplate.Name.HerbsRed };
 
-        private static readonly HashSet<PieceTemplate.Name> fuelNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
+        private static readonly HashSet<PieceTemplate.Name> fuelNames = new() { PieceTemplate.Name.WoodLogRegular, PieceTemplate.Name.WoodPlank, PieceTemplate.Name.WoodLogHard };
 
-        private static readonly HashSet<PieceTemplate.Name> potionNames = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionGeneric };
+        private static readonly HashSet<PieceTemplate.Name> potionNames = new() { PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.BottleOfOil, PieceTemplate.Name.PotionGeneric };
 
         private readonly int boosterSpace;
 
@@ -165,7 +164,7 @@ namespace SonOfRobin
             if (BottleSlot.IsEmpty)
             {
                 {
-                    new TextWindow(text: $"I need an | {PieceInfo.GetInfo(PieceTemplate.Name.EmptyBottle).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.EmptyBottle) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: $"I need an | {PieceInfo.GetInfo(PieceTemplate.Name.EmptyBottle).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.EmptyBottle) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -174,7 +173,7 @@ namespace SonOfRobin
                 BoardPiece bottle = BottleSlot.TopPiece;
                 if (bottle.name != PieceTemplate.Name.EmptyBottle)
                 {
-                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<Texture2D> { bottle.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                    new TextWindow(text: "I have to take out previously brewed | potion first.", imageList: new List<ImageObj> { new TextureObj(bottle.sprite.CroppedAnimFrame.Texture) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                     return;
                 }
             }
@@ -186,19 +185,19 @@ namespace SonOfRobin
 
             if (storedBases.Count == 0 && storedBoosters.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: "I need at least one | | | base and | fuel to brew.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.Tomato), PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I need at least one | | | base and | fuel to brew.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Apple), PieceInfo.GetImageObj(PieceTemplate.Name.Tomato), PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedFuel.Count == 0)
             {
                 string fuelMarkers = "";
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
                 foreach (PieceTemplate.Name fuel in fuelNames)
                 {
                     fuelMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(fuel).Texture);
+                    imageList.Add(PieceInfo.GetInfo(fuel).ImageObj);
                 }
 
                 new TextWindow(text: $"I don't have any {fuelMarkers} fuel.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
@@ -208,12 +207,12 @@ namespace SonOfRobin
             if (storedBases.Count == 0)
             {
                 string baseMarkers = "";
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
                 foreach (PieceTemplate.Name baseName in baseNames)
                 {
                     baseMarkers += "| ";
-                    imageList.Add(PieceInfo.GetInfo(baseName).Texture);
+                    imageList.Add(PieceInfo.GetInfo(baseName).ImageObj);
                 }
 
                 new TextWindow(text: $"I don't have any {baseMarkers} base.", imageList: imageList, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);

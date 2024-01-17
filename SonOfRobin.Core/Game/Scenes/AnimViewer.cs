@@ -41,7 +41,7 @@ namespace SonOfRobin
         private readonly Effect effect;
         private int outlineThickness;
 
-        private AnimFrameObj animFrameObj;
+        private readonly TextWithImages textWithImages;
 
         public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
@@ -77,7 +77,7 @@ namespace SonOfRobin
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
 
-            this.animFrameObj = new AnimFrameObj(AnimDataNew.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame);
+            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimDataNew.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
         }
 
         private void AssignCurrentAnim()
@@ -333,7 +333,7 @@ namespace SonOfRobin
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.pkgName} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
 
-            // this.animFrameObj.Draw(rect: new Rectangle(x: 10, y: 10, width: 100, height: 80), color: Color.White);
+            this.textWithImages.Draw(position: new Vector2(50, 50), color: Color.White, drawShadow: true, textScale: 2f, shadowColor: Color.Black * 0.4f);
 
             SonOfRobinGame.SpriteBatch.End();
 

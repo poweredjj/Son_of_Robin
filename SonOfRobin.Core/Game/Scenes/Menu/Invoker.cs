@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace SonOfRobin
         public readonly int taskDelay;
         private bool invokedByDoubleTouch;
 
-        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, bool resizesAllScenes = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<Texture2D> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f, bool invokedByDoubleTouch = false) :
+        public Invoker(Menu menu, string name, Scheduler.TaskName taskName, Object executeHelper = null, int taskDelay = 0, bool closesMenu = false, bool rebuildsMenu = false, bool resizesAllScenes = false, bool rebuildsAllMenus = false, List<InfoWindow.TextEntry> infoTextList = null, SoundData.Name sound = SoundData.Name.Empty, bool playSound = true, List<ImageObj> imageList = null, float infoWindowMaxLineHeightPercentOverride = 0f, bool invokedByDoubleTouch = false) :
 
             base(menu: menu, name: name, rebuildsMenu: rebuildsMenu, rebuildsAllMenus: rebuildsAllMenus, resizesAllScenes: resizesAllScenes, infoTextList: infoTextList, imageList: imageList, infoWindowMaxLineHeightPercentOverride: infoWindowMaxLineHeightPercentOverride)
         {
@@ -46,7 +45,7 @@ namespace SonOfRobin
             if (this.resizesAllScenes) Scene.ScheduleAllScenesResize();
         }
 
-        public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
+        public override void Draw(bool active, string textOverride = null, List<ImageObj> imageList = null)
         {
             if (active) this.UpdateHintWindow();
             base.Draw(active);

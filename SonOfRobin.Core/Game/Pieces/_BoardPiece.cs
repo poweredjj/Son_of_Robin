@@ -81,7 +81,7 @@ namespace SonOfRobin
                 Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
                 Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
                 _ => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim).Texture,
-            }; ;
+            };
         }
 
         protected const float passiveMovementMultiplier = 100f;

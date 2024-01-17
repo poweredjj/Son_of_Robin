@@ -6,8 +6,10 @@ namespace SonOfRobin
     public class TextureObj : ImageObj
     {
         private readonly Texture2D texture;
-        public override int Width { get => texture.Width; }
-        public override int Height { get => texture.Height; }
+
+        public override int ID { get => this.texture.GetHashCode(); }
+        public override int Width { get => this.texture.Width; }
+        public override int Height { get => this.texture.Height; }
 
         public TextureObj(Texture2D texture) : base()
         {

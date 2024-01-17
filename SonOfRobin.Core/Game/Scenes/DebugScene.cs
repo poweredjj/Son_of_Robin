@@ -1,6 +1,5 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
@@ -631,11 +630,11 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.F9))
             {
                 SonOfRobinGame.SmallProgressBar.TurnOn(newPosX: 0, newPosY: 0, centerHoriz: true, centerVert: true, addTransition: true, entryList: new List<InfoWindow.TextEntry> {
-                        new InfoWindow.TextEntry(text: "| First line.", color: Color.White, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }),
-                        new InfoWindow.TextEntry(text: "| Second line.", color: Color.Green, scale: 1.5f, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }, justify: InfoWindow.TextEntry.Justify.Center),
+                        new InfoWindow.TextEntry(text: "| First line.", color: Color.White, imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit) }),
+                        new InfoWindow.TextEntry(text: "| Second line.", color: Color.Green, scale: 1.5f, imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit) }, justify: InfoWindow.TextEntry.Justify.Center),
                         new InfoWindow.TextEntry(color: Color.White, progressCurrentVal: 2, progressMaxVal: 5),
-                        new InfoWindow.TextEntry(text: "| And this is fourth line.", color: Color.LightBlue, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }),
-                        new InfoWindow.TextEntry(text: "| This window should be centered.", color: Color.YellowGreen, imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) }, justify: InfoWindow.TextEntry.Justify.Right),
+                        new InfoWindow.TextEntry(text: "| And this is fourth line.", color: Color.LightBlue, imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit) }),
+                        new InfoWindow.TextEntry(text: "| This window should be centered.", color: Color.YellowGreen, imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit) }, justify: InfoWindow.TextEntry.Justify.Right),
                     });
             }
 

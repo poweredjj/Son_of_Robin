@@ -5,8 +5,10 @@ namespace SonOfRobin
     public class AnimFrameObj : ImageObj
     {
         private readonly AnimFrameNew animFrame;
-        public override int Width { get => animFrame.cropRect.Width; }
-        public override int Height { get => animFrame.cropRect.Height; }
+
+        public override int ID { get => this.animFrame.GetHashCode(); }
+        public override int Width { get => this.animFrame.cropRect.Width; }
+        public override int Height { get => this.animFrame.cropRect.Height; }
 
         public AnimFrameObj(AnimFrameNew animFrame) : base()
         {

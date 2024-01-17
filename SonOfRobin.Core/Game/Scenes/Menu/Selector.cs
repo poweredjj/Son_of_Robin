@@ -126,7 +126,7 @@ namespace SonOfRobin
             new InputGrabber(targetObj: this.targetObj, targetPropertyName: this.propertyName, grabButtons: this.captureButtons, grabKeys: this.captureKeys);
         }
 
-        public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
+        public override void Draw(bool active, string textOverride = null, List<ImageObj> imageList = null)
         {
             if (this.captureModeActive)
             {
@@ -153,7 +153,7 @@ namespace SonOfRobin
             }
             else if (activeNameType == typeof(Texture2D) || (activeNameType == typeof(RenderTarget2D)))
             {
-                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: new List<Texture2D> { (Texture2D)this.ActiveName });
+                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [new TextureObj((Texture2D)this.ActiveName)]);
             }
             else if (activeNameType == typeof(List<object>))
             {
@@ -162,7 +162,7 @@ namespace SonOfRobin
                 string text = (string)objectList[0];
                 Texture2D texture = (Texture2D)objectList[1];
 
-                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<Texture2D> { texture });
+                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<ImageObj> { new TextureObj(texture) });
                 return;
             }
         }

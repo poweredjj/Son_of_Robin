@@ -2373,6 +2373,11 @@ namespace SonOfRobin
             return croppedFramesForPkgs[pkgName];
         }
 
+        public static ImageObj GetCroppedImageObjForPackage(PkgName pkgName)
+        {
+            return new TextureObj(croppedFramesForPkgs[pkgName].Texture);
+        }
+
         public static void DisposeUsedAtlasses()
         {
             // Should be used after loading textures from all atlasses.
