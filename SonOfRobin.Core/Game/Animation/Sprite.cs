@@ -97,9 +97,6 @@ namespace SonOfRobin
             if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
 
-        public string CompleteAnimID
-        { get { return GetCompleteAnimId(animPackage: this.AnimPkg.name, animSize: this.AnimSize, animName: this.AnimName); } }
-
         public bool IsInCameraRect
         { get { return this.world.camera.viewRect.Contains(this.position); } }
 
@@ -671,8 +668,8 @@ namespace SonOfRobin
 
             try
             {
-                if (forceRewind || this.currentFrameIndex >= AnimData.frameArrayById[this.CompleteAnimID].Length) this.RewindAnim();
-                this.AnimFrame = AnimData.frameArrayById[this.CompleteAnimID][this.currentFrameIndex];
+                if (forceRewind || this.currentFrameIndex >= this.Anim.frameArray.Length) this.RewindAnim();
+                this.AnimFrame = this.Anim.frameArray[this.currentFrameIndex];
             }
             catch (KeyNotFoundException)
             {
@@ -829,20 +826,13 @@ namespace SonOfRobin
                 destRect.Y += offsetY;
             }
 
-            if (this.rotation == 0)
+            int submergeCorrection = 0;
+            if (this.rotation == 0 && !this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
             {
-                int submergeCorrection = 0;
-                if (!this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
-                {
-                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
-                }
+                submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
+            }
 
-                this.AnimFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
-            }
-            else
-            {
-                this.AnimFrame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
-            }
+            this.AnimFrame.Draw(position: this.position, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: rotationOriginOverride);
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
         }
@@ -876,7 +866,7 @@ namespace SonOfRobin
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
 
-                    fruitSprite.AnimFrame.DrawWithRotation(position: new Vector2(fruitSprite.GfxRect.Center.X, fruitSprite.GfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+                    fruitSprite.AnimFrame.Draw(position: new Vector2(fruitSprite.GfxRect.Center.X, fruitSprite.GfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, opacity: this.opacity, rotationOriginOverride: rotationOriginOverride);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }
@@ -918,7 +908,7 @@ namespace SonOfRobin
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
                 Color originalColor = this.color;
-                this.color = color * this.opacity;
+                this.color = color;
                 this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offset.X + drawOffsetX, offsetY: (int)offset.Y + drawOffsetY);
                 this.color = originalColor;
             }
@@ -930,12 +920,11 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
-                    position:
-                    new Vector2(this.position.X + drawOffsetX, this.position.Y + drawOffsetY),
-                    sourceRectangle: frame.textureRect,
-                    color: color * this.opacity,
+                    position: new Vector2(this.position.X + drawOffsetX, this.position.Y + drawOffsetY),
+                    sourceRectangle: frame.cropRect,
+                    color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2(-frame.gfxOffset.X, -(frame.gfxOffset.Y + frame.colOffset.Y)) / frame.scale,
+                    origin: new Vector2((float)frame.cropRect.Width * 0.5f, frame.cropRect.Height * 0.98f),
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

@@ -281,7 +281,7 @@ namespace SonOfRobin
                 for (int i = 0; i < numberOfExplosions; i++)
                 {
                     Vector2 posOffset = new(world.random.Next(target.sprite.AnimFrame.gfxWidth), world.random.Next(target.sprite.AnimFrame.gfxHeight));
-                    posOffset += target.sprite.AnimFrame.gfxOffset;
+                    posOffset += target.sprite.AnimFrame.gfxOffsetBase + target.sprite.AnimFrame.gfxOffsetCorrection;
 
                     var attack = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position + posOffset, templateName: PieceTemplate.Name.Attack);
                     attack.sprite.color = Color.LightSteelBlue;

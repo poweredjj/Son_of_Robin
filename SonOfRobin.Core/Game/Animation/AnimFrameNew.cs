@@ -79,7 +79,7 @@ namespace SonOfRobin
             return submergeCorrection > 0 ? Math.Max(this.cropRect.Height / 2, this.cropRect.Height - submergeCorrection) : this.cropRect.Height;
         }
 
-        public void Draw(Vector2 position, Color color, float rotation, float opacity, int submergeCorrection = 0, Vector2 rotationOriginOverride = default)
+        public void Draw(Vector2 position, Color color, float rotation, float opacity, int submergeCorrection = 0, Vector2 rotationOriginOverride = default, float scale = 1f)
         {
             // destRect should not be used to draw, because of reduced (integer only) draw precision
 
@@ -102,7 +102,7 @@ namespace SonOfRobin
 
             Rectangle srcRect = new(x: this.cropRect.X, y: this.cropRect.Y, width: this.cropRect.Width, correctedSourceHeight);
 
-            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: srcRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
+            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: srcRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale * scale, effects: this.spriteEffects, layerDepth: 0);
         }
     }
 }

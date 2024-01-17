@@ -1,7 +1,6 @@
 ﻿using FontStashSharp;
 using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -330,7 +329,7 @@ namespace SonOfRobin
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
-                        SonOfRobinGame.SpriteBatch.Draw(texture: markerImage, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerImage.Bounds, color: Color.White * markerPiece.sprite.opacity, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
+                        markerPiece.sprite.AnimFrame.Draw(position: markerScreenPos, color: Color.White, rotation: 0f, opacity: markerPiece.sprite.opacity, scale: markerDrawScale);
                     }
                 }
             }
