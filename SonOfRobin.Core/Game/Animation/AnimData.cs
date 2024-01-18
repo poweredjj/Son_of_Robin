@@ -396,24 +396,24 @@ namespace SonOfRobin
             // obsolete below (kept for compatibility with old saves)
         }
 
-        public static void CreateAllAnims()
+        public static void PrepareAllAnims()
         {
             DateTime startTime = DateTime.Now;
 
             foreach (PkgName pkgName in allPkgNames)
             {
-                LoadPackage(pkgName);
+                PreparePackage(pkgName);
             }
 
             TimeSpan creationDuration = DateTime.Now - startTime;
             MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
-        public static void LoadPackage(PkgName pkgName)
+        public static void PreparePackage(PkgName pkgName)
         {
             if (pkgByName.ContainsKey(pkgName))
             {
-                MessageLog.Add(debugMessage: true, text: $"Package '{pkgName}' already loaded, ignoring.");
+                MessageLog.Add(debugMessage: true, text: $"Package  '{pkgName}' has been prepared already, ignoring.");
                 return;
             }
 
@@ -530,7 +530,7 @@ namespace SonOfRobin
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "_processed_carrot_plant_empty", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 283), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -37))], name: "default"));
 
                         // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "_processed_carrot_plant_has_carrot", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 295, height: 351), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -70))], name: "has_fruits"));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "_processed_carrot_plant_has_carrot", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 295, height: 351), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -70))], name: "has_fruits"));
                         break;
                     }
 
@@ -2601,6 +2601,8 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported pkgName - {pkgName}.");
             }
 
+            animPkg.AddDefaultAnimsIfMissing();
+
             pkgByName[pkgName] = animPkg;
         }
 
@@ -2765,7 +2767,7 @@ namespace SonOfRobin
 
         public static AnimPkg MakePackageForDragonBonesAnims(PkgName pkgName, int colWidth, int colHeight, string[] jsonNameArray, int animSize, float scale, bool baseAnimsFaceRight, Dictionary<string, int> durationDict = null, List<string> nonLoopedAnims = null, Dictionary<string, Vector2> offsetDict = null, Dictionary<string, string> switchDict = null, Vector2 globalOffsetCorrection = default)
         {
-            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
+            AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: true);
 
             durationDict ??= [];
             offsetDict ??= [];

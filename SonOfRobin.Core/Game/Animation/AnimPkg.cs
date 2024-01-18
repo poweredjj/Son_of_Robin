@@ -32,9 +32,22 @@ namespace SonOfRobin
             this.presentationFrame = anim.frameArray[0];
         }
 
+        public void AddDefaultAnimsIfMissing()
+        {
+            foreach (int size in this.animDict.Keys)
+            {
+                if (!this.animDict[size].ContainsKey("default"))
+                {
+                    Anim foundAnim = this.animDict[size].LastOrDefault().Value;
+
+                    this.animDict[size]["default"] = new(animPkg: this, size: size, frameArray: foundAnim.frameArray);
+                }
+            }
+        }
+
         public AnimPkg MakeCopyWithEditedColOffset(int colWidth, int colHeight)
         {
-            AnimPkg animPkg = new AnimPkg(pkgName: this.name, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
+            AnimPkg animPkg = new(pkgName: this.name, colWidth: colWidth, colHeight: colHeight, horizontalOrientationsOnly: this.horizontalOrientationsOnly);
 
             foreach (Anim anim in this.AllAnimList)
             {

@@ -58,7 +58,7 @@ namespace SonOfRobin
 
             var animPkgList = new List<AnimPkg> { };
 
-            AnimData.CreateAllAnims();
+            AnimData.PrepareAllAnims();
 
             foreach (AnimData.PkgName pkgName in AnimData.allPkgNames)
             {
