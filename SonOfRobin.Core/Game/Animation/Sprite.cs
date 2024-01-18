@@ -303,9 +303,6 @@ namespace SonOfRobin
             return this.boardPiece.level.grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
         }
 
-        public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)
-        { return $"{animPackage}-{animSize}-{animName}"; }
-
         public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)
         {
             if (!this.IsOnBoard && checkIsOnBoard) throw new ArgumentException($"Trying to move '{this.boardPiece.name}' that is not on board.");
@@ -466,7 +463,7 @@ namespace SonOfRobin
                 newAnimPackage = AnimData.PkgName.WhiteSpotLayerTwo;
             }
 
-            particleEmitter.sprite.AssignNewPackage(newAnimPackage: newAnimPackage, checkForCollision: false);
+            particleEmitter.sprite.AssignNewPackage(newAnimPkgName: newAnimPackage, checkForCollision: false);
 
             this.particleEngine.ReassignSprite(particleEmitter.sprite);
         }
@@ -614,32 +611,26 @@ namespace SonOfRobin
             this.GfxRect = this.AnimFrame.GetGfxRectForPos(this.position);
         }
 
-        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewPackage(AnimData.PkgName newAnimPkgName, bool checkForCollision = true)
         {
-            if (this.AnimPkg.name == newAnimPackage) return;
+            if (this.AnimPkg.name == newAnimPkgName) return;
 
             AnimPkg oldAnimPackage = this.AnimPkg;
 
-            if (setEvenIfMissing || CheckIfAnimPackageExists(newAnimPackage))
-            {
-                this.AnimPkg = AnimData.pkgByName[newAnimPackage];
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
-            }
+            this.AnimPkg = AnimData.pkgByName[newAnimPkgName];
+            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
+            if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
         }
 
-        public void AssignNewSize(byte newAnimSize, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewSize(byte newAnimSize, bool checkForCollision = true)
         {
             if (this.AnimSize == newAnimSize) return;
 
             byte oldAnimSize = this.AnimSize;
 
-            if (setEvenIfMissing || CheckIfAnimSizeExists(newAnimSize))
-            {
-                this.AnimSize = newAnimSize;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
-            }
+            this.AnimSize = newAnimSize;
+            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
+            if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
         }
 
         public void AssignNewName(string newAnimName, bool setEvenIfMissing = true, bool checkForCollision = true)
@@ -662,8 +653,15 @@ namespace SonOfRobin
             this.AnimFrame = animFrame;
         }
 
+        private void AssignAnim()
+        {
+            this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.AnimName);
+        }
+
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
+            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize) this.AssignAnim();
+
             AnimFrame oldAnimFrame = this.AnimFrame;
 
             try
@@ -695,22 +693,9 @@ namespace SonOfRobin
             return !collisionDetected;
         }
 
-        public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
-        {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.AnimSize, animName: this.AnimName);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
-        }
-
-        public bool CheckIfAnimSizeExists(byte animSizeToCheck)
-        {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPkgName, animSize: animSizeToCheck, animName: this.AnimName);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
-        }
-
         public bool CheckIfAnimNameExists(string animNameToCheck)
         {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPkgName, animSize: this.AnimSize, animName: animNameToCheck);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
+            return this.AnimPkg.GetAnimNamesForSize(this.AnimSize).Contains(animNameToCheck);
         }
 
         public void RewindAnim()

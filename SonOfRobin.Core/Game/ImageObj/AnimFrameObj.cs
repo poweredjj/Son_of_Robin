@@ -5,21 +5,19 @@ namespace SonOfRobin
     public class AnimFrameObj : ImageObj
     {
         private readonly AnimFrame animFrame;
-
-        public override int ID { get => this.animFrame.GetHashCode(); }
         public override int Width { get => this.animFrame.cropRect.Width; }
         public override int Height { get => this.animFrame.cropRect.Height; }
 
-        public AnimFrameObj(AnimFrame animFrame) : base()
+        public AnimFrameObj(AnimFrame animFrame) : base(id: animFrame.GetHashCode())
         {
             this.animFrame = animFrame;
         }
 
-        public override void DrawInsideRect(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center)
+        public override void DrawInsideRect(Rectangle rect, Color color = default, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center, bool drawTestRect = false)
         {
             if (color == default) color = Color.White;
 
-            Helpers.DrawTextureInsideRect(texture: this.animFrame.Texture, rectangle: rect, srcRect: this.animFrame.cropRect, color: color, alignX: alignX, alignY: alignY, drawTestRect: false);
+            this.animFrame.DrawInsideRect(rect: rect, color: color, alignX: alignX, alignY: alignY, drawTestRect);
         }
     }
 }

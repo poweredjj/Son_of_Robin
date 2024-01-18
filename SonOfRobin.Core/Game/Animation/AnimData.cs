@@ -1611,13 +1611,13 @@ namespace SonOfRobin
 
                 case PkgName.PlayerBoy:
                     {
-                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
                         break;
                     }
 
                 case PkgName.PlayerGirl:
                     {
-                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 1, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
                         break;
                     }
 

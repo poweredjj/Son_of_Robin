@@ -104,5 +104,10 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: srcRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale * scale, effects: this.spriteEffects, layerDepth: 0);
         }
+
+        public void DrawInsideRect(Rectangle rect, Color color, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center, bool drawTestRect = false)
+        {
+            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: rect, srcRect: this.cropRect, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+        }
     }
 }

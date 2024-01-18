@@ -351,10 +351,10 @@ namespace SonOfRobin
 
                 PieceTemplate.Name boosterName = storedBoosters[0].name;
 
-                potion.sprite.AssignNewPackage(newAnimPackage: colorByBoosterDict[boosterName], checkForCollision: false);
+                potion.sprite.AssignNewPackage(newAnimPkgName: colorByBoosterDict[boosterName], checkForCollision: false);
             }
 
-            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.PotionBrown, checkForCollision: false);
+            if (storedBases[0].name == PieceTemplate.Name.CoffeeRoasted) potion.sprite.AssignNewPackage(newAnimPkgName: AnimData.PkgName.PotionBrown, checkForCollision: false);
 
             // destroying every inserted piece
 

@@ -721,7 +721,7 @@ namespace SonOfRobin
 
                     MessageLog.Add(debugMessage: true, text: $"Assigning new package: {targetPackage}");
 
-                    player.sprite.AssignNewPackage(newAnimPackage: targetPackage, setEvenIfMissing: true);
+                    player.sprite.AssignNewPackage(newAnimPkgName: targetPackage);
                     break;
                 }
             }
