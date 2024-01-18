@@ -12,6 +12,7 @@ namespace SonOfRobin
     public class AnimViewer : Scene
     {
         private const float baseScale = 0.5f; // 0.5f
+        private const float originCorrStep = 0.01f;
 
         private readonly SpriteFontBase font;
         private readonly AnimPkg[] animPkgArray;
@@ -47,11 +48,11 @@ namespace SonOfRobin
             this.pos = new Vector2(80, 80);
             this.rot = 0f;
             this.playSpeed = 1; // 1
-            this.showColRect = true;
+            this.showColRect = false;
             this.showGfxRect = false;
             this.showEffect = false;
-            this.flatShadow = true;
-            this.drawLightAndShadow = false;
+            this.flatShadow = false;
+            this.drawLightAndShadow = true;
             this.outlineThickness = 1;
 
             var animPkgList = new List<AnimPkg> { };
@@ -179,6 +180,24 @@ namespace SonOfRobin
                 this.currentAnimPkg = animPkg;
             }
 
+            Vector2 shadowOriginFactorChange = Vector2.Zero;
+
+            if (Keyboard.HasBeenPressed(Keys.Home)) shadowOriginFactorChange.X += originCorrStep;
+            if (Keyboard.HasBeenPressed(Keys.PageUp)) shadowOriginFactorChange.X -= originCorrStep;
+            if (Keyboard.HasBeenPressed(Keys.End)) shadowOriginFactorChange.Y += originCorrStep;
+            if (Keyboard.HasBeenPressed(Keys.PageDown)) shadowOriginFactorChange.Y -= originCorrStep;
+
+            if (shadowOriginFactorChange != Vector2.Zero)
+            {
+                Vector2 shadowOriginFactor = this.currentAnimFrame.shadowOriginFactor + shadowOriginFactorChange;
+                shadowOriginFactor = new Vector2((float)Math.Round(shadowOriginFactor.X, 2), (float)Math.Round(shadowOriginFactor.Y, 2));
+
+                this.CurrentAnim.EditShadowOriginFactor(shadowOriginFactor);
+                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+
+                this.UpdateAnimation();
+            }
+
             Vector2 gfxOffsetCorrectionChange = Vector2.Zero;
 
             if (Keyboard.HasBeenPressed(Keys.NumPad4)) gfxOffsetCorrectionChange.X--;
@@ -218,8 +237,6 @@ namespace SonOfRobin
             this.UpdateAnimation();
             this.UpdateRects();
         }
-
-        public bool AnimFinished { get { return this.currentAnimFrame.duration == 0; } }
 
         public void RewindAnim()
         {
@@ -263,8 +280,6 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            // TODO move to Sprite class
-
             this.colRect = this.currentAnimPkg.GetColRectForPos(this.pos);
             this.gfxRect = this.currentAnimFrame.GetGfxRectForPos(this.pos);
         }
@@ -311,7 +326,7 @@ namespace SonOfRobin
             Vector2 rotationOriginOverride = default;
             //rotationOriginOverride = new Vector2(this.currentAnimFrame.cropRect.Width * 0.5f, this.currentAnimFrame.cropRect.Height); // emulating SwayEvent
 
-            Vector2 lightPos = new(40, 40);
+            Vector2 lightPos = new(160, 70);
             int lightSize = 40;
             Rectangle lightRect = new(x: 0, y: 0, width: lightSize, height: lightSize);
             lightRect.Offset((int)(lightPos.X - (lightSize / 2)), (int)(lightPos.Y - (lightSize / 2)));
@@ -320,7 +335,7 @@ namespace SonOfRobin
 
             this.currentAnimFrame.Draw(position: this.pos, color: Color.White, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0, rotationOriginOverride: rotationOriginOverride);
 
-            if (this.drawLightAndShadow) Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(textureName: TextureBank.TextureName.LightSphereWhite), rectangle: lightRect, color: Color.Yellow * 0.8f);
+            if (this.drawLightAndShadow) Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(textureName: TextureBank.TextureName.LightSphereWhite), rectangle: lightRect, color: Color.Yellow * 0.75f);
 
             if (this.showColRect) SonOfRobinGame.SpriteBatch.Draw(texture: SonOfRobinGame.WhiteRectangle, destinationRectangle: this.colRect, color: Color.Red * 0.55f);
             if (this.showGfxRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.gfxRect, color: Color.White * 0.35f, thickness: 1f);
@@ -330,7 +345,7 @@ namespace SonOfRobin
 
             string description = "";
 
-            description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
+            description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
@@ -367,8 +382,6 @@ namespace SonOfRobin
                 Rectangle simulRect = this.gfxRect;
                 simulRect.Offset(offset);
 
-                // if (!this.world.camera.viewRect.Intersects(simulRect)) return;
-
                 this.currentAnimFrame.Draw(position: this.pos + offset, color: color * opacity, rotation: this.rot, opacity: 1.0f, submergeCorrection: 0);
             }
             else
@@ -383,7 +396,7 @@ namespace SonOfRobin
                     sourceRectangle: animFrame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2((float)animFrame.cropRect.Width * 0.5f, animFrame.cropRect.Height * 0.98f),
+                    origin: animFrame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

@@ -6,10 +6,14 @@ namespace SonOfRobin
 {
     public readonly struct AnimFrame
     {
+        private readonly Vector2 defaultShadowOriginFactor = new(0.5f, 0.98f);
+
         public readonly string atlasName;
         public readonly Rectangle cropRect;
         public readonly Vector2 gfxOffsetBase;
         public readonly Vector2 gfxOffsetCorrection;
+        public readonly Vector2 shadowOriginFactor; // base multiplier for shadowOrigin
+        public readonly Vector2 shadowOrigin; // final shadowOrigin
         public readonly int gfxWidth; // final draw size
         public readonly int gfxHeight; // final draw size
         public readonly Vector2 rotationOrigin;
@@ -20,11 +24,16 @@ namespace SonOfRobin
         public readonly bool ignoreWhenCalculatingMaxSize;
         public readonly ImageObj imageObj;
 
-        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
+        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default)
         {
+            if (shadowOriginFactor == default) shadowOriginFactor = defaultShadowOriginFactor;
+
             this.atlasName = atlasName;
             this.scale = scale;
             this.cropRect = cropRect;
+
+            this.shadowOriginFactor = shadowOriginFactor;
+            this.shadowOrigin = new Vector2((float)this.cropRect.Width * shadowOriginFactor.X, this.cropRect.Height * shadowOriginFactor.Y);
 
             this.gfxWidth = (int)(this.cropRect.Width * this.scale);
             this.gfxHeight = (int)(this.cropRect.Height * this.scale);
@@ -50,9 +59,12 @@ namespace SonOfRobin
 
         public AnimFrame MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
         {
-            // to make a copy with edited gfxOffsetCorrection
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: this.shadowOriginFactor);
+        }
 
-            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize);
+        public AnimFrame MakeCopyWithEditedShadowOriginFactor(Vector2 shadowOriginFactor)
+        {
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: this.gfxOffsetCorrection / this.scale, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor);
         }
 
         public Texture2D Texture

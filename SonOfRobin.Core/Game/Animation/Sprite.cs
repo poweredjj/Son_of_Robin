@@ -904,7 +904,7 @@ namespace SonOfRobin
                     sourceRectangle: frame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2((float)frame.cropRect.Width * 0.5f, frame.cropRect.Height * 0.98f),
+                    origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

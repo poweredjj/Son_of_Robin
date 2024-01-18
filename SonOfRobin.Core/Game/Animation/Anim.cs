@@ -49,5 +49,13 @@ namespace SonOfRobin
                 this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedGfxOffsetCorrection(gfxOffsetCorrection);
             }
         }
+
+        public void EditShadowOriginFactor(Vector2 shadowOriginFactor)
+        {
+            for (int i = 0; i < this.frameArray.Length; i++)
+            {
+                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowOriginFactor(shadowOriginFactor);
+            }
+        }
     }
 }
