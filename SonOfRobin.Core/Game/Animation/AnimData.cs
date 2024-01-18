@@ -409,6 +409,24 @@ namespace SonOfRobin
             MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
+        public static List<AnimFrame> GetAllFrames()
+        {
+            var allFrames = new List<AnimFrame>();
+
+            foreach (AnimPkg animPkg in AnimData.pkgByName.Values)
+            {
+                foreach (Anim anim in animPkg.AllAnimList)
+                {
+                    foreach (AnimFrame frame in anim.frameArray)
+                    {
+                        allFrames.Add(frame);
+                    }
+                }
+            }
+
+            return allFrames;
+        }
+
         public static void PreparePackage(PkgName pkgName)
         {
             if (pkgByName.ContainsKey(pkgName))

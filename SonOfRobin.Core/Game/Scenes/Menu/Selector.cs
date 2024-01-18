@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             if (valueList != null)
             {
-                this.valueDict = new Dictionary<object, object> { };
+                this.valueDict = [];
                 foreach (var value in valueList)
                 {
                     this.valueDict[value] = value.ToString();

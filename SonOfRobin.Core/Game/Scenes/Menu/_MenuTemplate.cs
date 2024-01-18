@@ -1195,15 +1195,9 @@ namespace SonOfRobin
 
                             var loadedTextures = new List<Texture2D>();
 
-                            foreach (AnimPkg animPkg in AnimData.pkgByName.Values)
+                            foreach (AnimFrame animFrame in AnimData.GetAllFrames())
                             {
-                                foreach (Anim anim in animPkg.AllAnimList)
-                                {
-                                    foreach (AnimFrame frame in anim.frameArray)
-                                    {
-                                        loadedTextures.Add(frame.Texture);
-                                    }
-                                }
+                                loadedTextures.Add(animFrame.Texture);
                             }
 
                             TimeSpan loadingDuration = DateTime.Now - startTime;
@@ -1378,20 +1372,17 @@ namespace SonOfRobin
                         foreach (AnimPkg animPkg in AnimData.pkgByName.Values)
                         {
                             AnimData.PkgName pkgName = animPkg.name;
-
                             var imageByName = new Dictionary<object, object>();
 
                             foreach (Anim anim in animPkg.AllAnimList)
                             {
-                                foreach (AnimFrame frame in anim.frameArray)
-                                {
-                                    imageByName[$"{pkgName} - {frame}"] = frame.imageObj;
-                                }
+                                AnimFrame frame = anim.frameArray[0];
+                                imageByName[$"{pkgName} {anim.name}"] = new List<object> { $"{anim.name}", frame.imageObj };
                             }
 
                             if (imageByName.Count == 0) new Invoker(menu: menu, name: $"{pkgName} NO FRAMES", taskName: Scheduler.TaskName.Empty, playSound: false);
                             else if (imageByName.Count > 1) new Selector(menu: menu, name: pkgName.ToString(), valueDict: imageByName, targetObj: preferences, propertyName: "neededForMenus");
-                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: new List<ImageObj> { AnimData.GetImageObj(pkgName) }, taskName: Scheduler.TaskName.Empty, playSound: false);
+                            else new Invoker(menu: menu, name: $"{pkgName}  |", imageList: [AnimData.GetImageObj(pkgName)], taskName: Scheduler.TaskName.Empty, playSound: false);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -1416,7 +1407,7 @@ namespace SonOfRobin
                 playerSelectorValueDict[playerName] = PieceInfo.GetImageObj(playerName);
             }
 
-            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "appearance only - no effect on gameplay", color: Color.White, scale: 1f) });
+            new Selector(menu: menu, name: "character", valueDict: playerSelectorValueDict, targetObj: preferences, propertyName: "newWorldPlayerName", rebuildsAllMenus: true, infoTextList: [new(text: "appearance only - no effect on gameplay", color: Color.White, scale: 1f)]);
 
             var startingItemSelectorValueDict = new Dictionary<object, object>();
             foreach (PieceTemplate.Name itemName in Preferences.startingItemNames)
@@ -1425,7 +1416,7 @@ namespace SonOfRobin
                 startingItemSelectorValueDict[itemName] = new List<object> { pieceInfo.readableName, pieceInfo.imageObj };
             }
 
-            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "the one item you would take to a deserted island", color: Color.White, scale: 1f) });
+            new Selector(menu: menu, name: "starting item", valueDict: startingItemSelectorValueDict, targetObj: preferences, propertyName: "newWorldStartingItem", infoTextList: new List<InfoWindow.TextEntry> { new(text: "the one item you would take to a deserted island", color: Color.White, scale: 1f) });
 
             var startingSkillSelectorValueDict = new Dictionary<object, object>();
             foreach (Player.SkillName skillName in Player.allSkillNames)
