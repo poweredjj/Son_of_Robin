@@ -11,6 +11,10 @@ namespace SonOfRobin
 {
     public class AnimViewer : Scene
     {
+        public enum ControlMode : byte { GfxOffset, ShadowOriginFactor, ShadowPosOffset, ColSize }
+
+        public static readonly ControlMode[] allControlModes = (ControlMode[])Enum.GetValues(typeof(ControlMode));
+
         private const float baseScale = 0.5f; // 0.5f
         private const float originCorrStep = 0.01f;
 
@@ -26,6 +30,8 @@ namespace SonOfRobin
         private Vector2 pos;
         private float rot;
         private int playSpeed;
+
+        private ControlMode controlMode;
 
         private int currentFrameIndex;
         private int currentFrameTimeLeft;
@@ -44,6 +50,8 @@ namespace SonOfRobin
 
         public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
+            this.controlMode = ControlMode.GfxOffset;
+
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(80, 80);
             this.rot = 0f;
@@ -91,6 +99,17 @@ namespace SonOfRobin
             {
                 this.Remove();
                 return;
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.PageUp))
+            {
+                this.controlMode--;
+                if (!allControlModes.Contains(this.controlMode)) this.controlMode = allControlModes.Max();
+            }
+            if (Keyboard.HasBeenPressed(Keys.PageDown))
+            {
+                this.controlMode++;
+                if (!allControlModes.Contains(this.controlMode)) this.controlMode = 0;
             }
 
             if (Keyboard.IsPressed(Keys.Left)) this.pos.X--;
@@ -164,57 +183,65 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.Delete)) this.playSpeed++;
             this.playSpeed = Math.Clamp(value: this.playSpeed, min: 1, max: 50);
 
-            int colWidthChange = 0;
-            int colHeightChange = 0;
+            Vector2 posValChange = Vector2.Zero;
 
-            if (Keyboard.HasBeenPressed(Keys.OemMinus)) colWidthChange--;
-            if (Keyboard.HasBeenPressed(Keys.OemPlus)) colWidthChange++;
-            if (Keyboard.HasBeenPressed(Keys.OemOpenBrackets)) colHeightChange--;
-            if (Keyboard.HasBeenPressed(Keys.OemCloseBrackets)) colHeightChange++;
+            if (Keyboard.HasBeenPressed(Keys.NumPad4)) posValChange.X--;
+            if (Keyboard.HasBeenPressed(Keys.NumPad6)) posValChange.X++;
+            if (Keyboard.HasBeenPressed(Keys.NumPad8)) posValChange.Y--;
+            if (Keyboard.HasBeenPressed(Keys.NumPad2)) posValChange.Y++;
 
-            if (colWidthChange != 0 || colHeightChange != 0)
+            if (posValChange != Vector2.Zero)
             {
-                AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedColOffset(this.currentAnimPkg.colRect.Width + colWidthChange, this.currentAnimPkg.colRect.Height + colHeightChange);
+                switch (this.controlMode)
+                {
+                    case ControlMode.GfxOffset:
 
-                this.animPkgArray[this.currentAnimPkgIndex] = animPkg;
-                this.currentAnimPkg = animPkg;
-            }
+                        Vector2 gfxOffsetCorrection = (this.currentAnimFrame.gfxOffsetCorrection / this.currentAnimFrame.scale) + posValChange;
+                        gfxOffsetCorrection.X = (float)Math.Round(gfxOffsetCorrection.X);
+                        gfxOffsetCorrection.Y = (float)Math.Round(gfxOffsetCorrection.Y);
 
-            Vector2 shadowOriginFactorChange = Vector2.Zero;
+                        this.CurrentAnim.EditGfxOffsetCorrection(gfxOffsetCorrection);
+                        this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
 
-            if (Keyboard.HasBeenPressed(Keys.Home)) shadowOriginFactorChange.X += originCorrStep;
-            if (Keyboard.HasBeenPressed(Keys.PageUp)) shadowOriginFactorChange.X -= originCorrStep;
-            if (Keyboard.HasBeenPressed(Keys.End)) shadowOriginFactorChange.Y += originCorrStep;
-            if (Keyboard.HasBeenPressed(Keys.PageDown)) shadowOriginFactorChange.Y -= originCorrStep;
+                        this.UpdateAnimation();
 
-            if (shadowOriginFactorChange != Vector2.Zero)
-            {
-                Vector2 shadowOriginFactor = this.currentAnimFrame.shadowOriginFactor + shadowOriginFactorChange;
-                shadowOriginFactor = new Vector2((float)Math.Round(shadowOriginFactor.X, 2), (float)Math.Round(shadowOriginFactor.Y, 2));
+                        break;
 
-                this.CurrentAnim.EditShadowOriginFactor(shadowOriginFactor);
-                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+                    case ControlMode.ShadowOriginFactor:
 
-                this.UpdateAnimation();
-            }
+                        Vector2 shadowOriginFactor = this.currentAnimFrame.shadowOriginFactor - (posValChange * originCorrStep);
+                        shadowOriginFactor = new Vector2((float)Math.Round(shadowOriginFactor.X, 2), (float)Math.Round(shadowOriginFactor.Y, 2));
 
-            Vector2 gfxOffsetCorrectionChange = Vector2.Zero;
+                        this.CurrentAnim.EditShadowOriginFactor(shadowOriginFactor);
+                        this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
 
-            if (Keyboard.HasBeenPressed(Keys.NumPad4)) gfxOffsetCorrectionChange.X--;
-            if (Keyboard.HasBeenPressed(Keys.NumPad6)) gfxOffsetCorrectionChange.X++;
-            if (Keyboard.HasBeenPressed(Keys.NumPad8)) gfxOffsetCorrectionChange.Y--;
-            if (Keyboard.HasBeenPressed(Keys.NumPad2)) gfxOffsetCorrectionChange.Y++;
+                        this.UpdateAnimation();
 
-            if (gfxOffsetCorrectionChange != Vector2.Zero)
-            {
-                Vector2 gfxOffsetCorrection = (this.currentAnimFrame.gfxOffsetCorrection / this.currentAnimFrame.scale) + gfxOffsetCorrectionChange;
-                gfxOffsetCorrection.X = (float)Math.Round(gfxOffsetCorrection.X);
-                gfxOffsetCorrection.Y = (float)Math.Round(gfxOffsetCorrection.Y);
+                        break;
 
-                this.CurrentAnim.EditGfxOffsetCorrection(gfxOffsetCorrection);
-                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+                    case ControlMode.ShadowPosOffset:
 
-                this.UpdateAnimation();
+                        Vector2 shadowPosOffset = this.currentAnimFrame.shadowPosOffset + (posValChange * 0.5f);
+
+                        this.CurrentAnim.EditShadowPosOffset(shadowPosOffset);
+                        this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+
+                        this.UpdateAnimation();
+
+                        break;
+
+                    case ControlMode.ColSize:
+
+                        AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedColOffset(this.currentAnimPkg.colRect.Width + (int)posValChange.X, this.currentAnimPkg.colRect.Height - (int)posValChange.Y);
+
+                        this.animPkgArray[this.currentAnimPkgIndex] = animPkg;
+                        this.currentAnimPkg = animPkg;
+
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Unsupported controlMode - {this.controlMode}.");
+                }
             }
 
             foreach (var kvp in new Dictionary<Keys, int> {
@@ -345,7 +372,7 @@ namespace SonOfRobin
 
             string description = "";
 
-            description += $"colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}\n";
+            description += $"{this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y} shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
@@ -371,7 +398,6 @@ namespace SonOfRobin
             float distance = Vector2.Distance(lightPos, this.pos);
 
             AnimFrame animFrame = this.currentAnimFrame;
-            Vector2 spritePos = this.pos;
             float opacity = 1f;
 
             if (this.flatShadow)
@@ -392,7 +418,7 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     animFrame.Texture,
-                    position: new Vector2(spritePos.X + drawOffsetX, spritePos.Y + drawOffsetY),
+                    position: this.pos + animFrame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
                     sourceRectangle: animFrame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),

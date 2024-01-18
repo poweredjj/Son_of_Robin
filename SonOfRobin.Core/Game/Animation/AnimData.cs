@@ -591,16 +591,16 @@ namespace SonOfRobin
                 case PkgName.TreeBig:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 14);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -32))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_big_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 49, height: 64), gfxOffsetCorrection: new Vector2(0, -22))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_big_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 65, height: 96), gfxOffsetCorrection: new Vector2(0, -38))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -32), shadowOriginFactor: new Vector2(0.5f, 0.97f), shadowPosOffset: new Vector2(0, 7))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_big_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 49, height: 64), gfxOffsetCorrection: new Vector2(0, -22), shadowOriginFactor: new Vector2(0.53f, 0.94f), shadowPosOffset: new Vector2(2.5f, -1.5f))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_big_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 65, height: 96), gfxOffsetCorrection: new Vector2(0, -38), shadowOriginFactor: new Vector2(0.5f, 0.94f))]));
                         break;
                     }
 
                 case PkgName.TreeSmall1:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10), shadowPosOffset: new Vector2(0, 7.5f))]));
                         animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_1_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 33, height: 34), gfxOffsetCorrection: new Vector2(0, -6))]));
                         animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_small_1_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22))]));
                         break;
@@ -609,7 +609,7 @@ namespace SonOfRobin
                 case PkgName.TreeSmall2:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10), shadowPosOffset: new Vector2(0, 7.5f))]));
                         animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_2_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 32), gfxOffsetCorrection: new Vector2(0, -6))]));
                         animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_small_2_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22))]));
                         break;

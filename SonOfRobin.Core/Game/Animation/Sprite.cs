@@ -885,8 +885,6 @@ namespace SonOfRobin
 
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
-                //this.AnimFrame.Draw(position: this.position + offset, color: color * opacity, rotation: this.rotation, opacity: this.opacity, submergeCorrection: 0);
-
                 Color originalColor = this.color;
                 this.color = color;
                 this.DrawRoutine(calculateSubmerge: true, offset: offset + new Vector2(drawOffsetX, drawOffsetY));
@@ -900,7 +898,7 @@ namespace SonOfRobin
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
-                    position: new Vector2(this.position.X + drawOffsetX, this.position.Y + drawOffsetY),
+                    position: this.position + frame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
                     sourceRectangle: frame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),

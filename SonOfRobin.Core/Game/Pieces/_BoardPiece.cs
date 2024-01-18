@@ -175,7 +175,8 @@ namespace SonOfRobin
             set { this.hitPoints = Math.Clamp(value: value, min: 0, max: this.maxHitPoints); }
         }
 
-        public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow || Math.Abs(this.sprite.rotation) > 0.3f; } }
+        // public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow || Math.Abs(this.sprite.rotation) > 0.3f; } } // TODO remove if rot check is not necessary
+        public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow; } }
 
         public bool AreEnemiesNearby
         {

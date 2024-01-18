@@ -14,6 +14,7 @@ namespace SonOfRobin
         public readonly Vector2 gfxOffsetCorrection;
         public readonly Vector2 shadowOriginFactor; // base multiplier for shadowOrigin
         public readonly Vector2 shadowOrigin; // final shadowOrigin
+        public readonly Vector2 shadowPosOffset; // for non-flat shadows
         public readonly int gfxWidth; // final draw size
         public readonly int gfxHeight; // final draw size
         public readonly Vector2 rotationOrigin;
@@ -24,14 +25,16 @@ namespace SonOfRobin
         public readonly bool ignoreWhenCalculatingMaxSize;
         public readonly ImageObj imageObj;
 
-        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default)
+        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default)
         {
             if (shadowOriginFactor == default) shadowOriginFactor = defaultShadowOriginFactor;
+            if (shadowPosOffset == default) shadowPosOffset = Vector2.Zero;
 
             this.atlasName = atlasName;
             this.scale = scale;
             this.cropRect = cropRect;
 
+            this.shadowPosOffset = shadowPosOffset;
             this.shadowOriginFactor = shadowOriginFactor;
             this.shadowOrigin = new Vector2((float)this.cropRect.Width * shadowOriginFactor.X, this.cropRect.Height * shadowOriginFactor.Y);
 
@@ -59,12 +62,17 @@ namespace SonOfRobin
 
         public AnimFrame MakeCopyWithEditedGfxOffsetCorrection(Vector2 gfxOffsetCorrection)
         {
-            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: this.shadowOriginFactor);
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: this.shadowOriginFactor, shadowPosOffset: this.shadowPosOffset);
         }
 
         public AnimFrame MakeCopyWithEditedShadowOriginFactor(Vector2 shadowOriginFactor)
         {
-            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: this.gfxOffsetCorrection / this.scale, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor);
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: this.gfxOffsetCorrection / this.scale, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: this.shadowPosOffset);
+        }
+
+        public AnimFrame MakeCopyWithEditedShadowPosOffset(Vector2 shadowPosOffset)
+        {
+            return new AnimFrame(atlasName: this.atlasName, layer: this.layer, cropRect: this.cropRect, scale: this.scale, duration: this.duration, gfxOffsetCorrection: this.gfxOffsetCorrection / this.scale, mirrorX: this.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: this.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: this.ignoreWhenCalculatingMaxSize, shadowOriginFactor: this.shadowOriginFactor, shadowPosOffset: shadowPosOffset);
         }
 
         public Texture2D Texture
