@@ -41,8 +41,6 @@ namespace SonOfRobin
         private readonly Effect effect;
         private int outlineThickness;
 
-        private readonly TextWithImages textWithImages;
-
         public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
@@ -76,8 +74,6 @@ namespace SonOfRobin
             this.viewParams.ScaleY = baseScale;
 
             this.effect = SonOfRobinGame.ContentMgr.Load<Effect>("effects/Border");
-
-            this.textWithImages = new TextWithImages(font: this.font, text: "First line |.\nSecond line |.", imageList: new List<ImageObj> { TextureBank.GetImageObj(textureName: TextureBank.TextureName.LoadingWheel), new AnimFrameObj(AnimData.pkgByName[AnimData.PkgName.DragonBonesTestFemaleMage].presentationFrame) });
         }
 
         private void AssignCurrentAnim()
@@ -90,6 +86,12 @@ namespace SonOfRobin
 
         public override void Update()
         {
+            if (Keyboard.HasBeenPressed(Keys.Escape))
+            {
+                this.Remove();
+                return;
+            }
+
             if (Keyboard.IsPressed(Keys.Left)) this.pos.X--;
             if (Keyboard.IsPressed(Keys.Right)) this.pos.X++;
             if (Keyboard.IsPressed(Keys.Up)) this.pos.Y--;
@@ -332,8 +334,6 @@ namespace SonOfRobin
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
-
-            this.textWithImages.Draw(position: new Vector2(50, 50), color: Color.White, drawShadow: true, textScale: 2f, shadowColor: Color.Black * 0.4f);
 
             SonOfRobinGame.SpriteBatch.End();
 

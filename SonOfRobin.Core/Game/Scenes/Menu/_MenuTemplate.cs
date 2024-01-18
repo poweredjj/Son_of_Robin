@@ -1222,6 +1222,9 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
                         }
 
+                        Scheduler.ExecutionDelegate showAnimViewerDlgt = () => { new AnimViewer(); };
+                        new Invoker(menu: menu, name: "show anim viewer", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showAnimViewerDlgt);
+
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds", resizesAllScenes: true);
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe", resizesAllScenes: true);
                         new Selector(menu: menu, name: "show outside camera", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowOutsideCamera", resizesAllScenes: true);
