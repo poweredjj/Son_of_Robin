@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -822,7 +821,7 @@ namespace SonOfRobin
                             string text = (string)textWindowData["text"];
 
                             List<ImageObj> imageList;
-                            if (textWindowData.ContainsKey("imageList")) imageList = ((List<Texture2D>)textWindowData["imageList"]).Select(i => (ImageObj)new TextureObj(i)).ToList();
+                            if (textWindowData.ContainsKey("imageList")) imageList = (List<ImageObj>)textWindowData["imageList"];
                             else imageList = new List<ImageObj>();
 
                             bool checkForDuplicate = false;

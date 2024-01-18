@@ -633,7 +633,7 @@ namespace SonOfRobin
             if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
         }
 
-        public void AssignNewName(string newAnimName, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewName(string newAnimName, bool setEvenIfMissing = false, bool checkForCollision = true)
         {
             if (this.AnimName == newAnimName) return;
 
@@ -718,7 +718,7 @@ namespace SonOfRobin
             }
         }
 
-        public void CharacterStand(bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void CharacterStand(bool setEvenIfMissing = false, bool checkForCollision = true)
         {
             if (this.AnimName.Contains("walk") || this.AnimFinished)
             {
@@ -734,7 +734,7 @@ namespace SonOfRobin
             }
         }
 
-        public void CharacterWalk(bool setEvenIfMissing = true)
+        public void CharacterWalk(bool setEvenIfMissing = false)
         { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
 
         public void Draw(bool calculateSubmerge = true)
