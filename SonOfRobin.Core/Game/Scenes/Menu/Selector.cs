@@ -151,7 +151,7 @@ namespace SonOfRobin
             {
                 base.Draw(active: active, textOverride: textOverride);
             }
-            else if (activeNameType == typeof(RenderTarget2D))
+            else if (activeNameType == typeof(RenderTarget2D) || activeNameType == typeof(Texture2D))
             {
                 base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [new TextureObj((Texture2D)this.ActiveName)]);
             }
@@ -169,6 +169,7 @@ namespace SonOfRobin
                 base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<ImageObj> { imageObj });
                 return;
             }
+            else throw new ArgumentException($"Unsupported activeNameType - {activeNameType}");
         }
 
         public override void ProcessTouch()
