@@ -29,17 +29,17 @@ mkdir bin\Release\osx-64\SonOfRobin.app\Contents\Resources
 mkdir bin\Release\osx-64\SonOfRobin.app\Contents\MacOS
 
 :: Copy all MonoGame content files to the correct location
-copy bin\Release\net6.0\osx-x64\publish\Content bin\Release\osx-64\SonOfRobin.app\Contents\Resources
+copy bin\Release\net8.0\osx-x64\publish\Content bin\Release\osx-64\SonOfRobin.app\Contents\Resources
 
 :: Copy all .dlls etx to the correct location
 
-robocopy "bin\Release\net6.0\osx-x64\publish" "bin\Release\osx-64\SonOfRobin.app\Contents\MacOS" /s /e
+robocopy "bin\Release\net8.0\osx-x64\publish" "bin\Release\osx-64\SonOfRobin.app\Contents\MacOS" /s /e
 
 ::
 :: NOTE If using additional native libs such as required for Steamworks.net these must be copied to Contents\MacOS
 :: If not using additional native libs you can ignore this line
 ::
-::copy bin\Release\net6.0\osx-x64\publish\runtimes\osx\native\libsteam_api.dylib bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\
+::copy bin\Release\net8.0\osx-x64\publish\runtimes\osx\native\libsteam_api.dylib bin\Release\osx-64\SonOfRobin.app\Contents\MacOS\
 
 :: Remove the content directory from Contents\MacOS - it have been copied with everything else and we don't need it there 
 
@@ -63,5 +63,5 @@ attrib +R +X ".\SonOfRobin.DesktopGL\bin\Release\osx-64\SonOfRobin.app\Contents\
 
 del SonOfRobin_OSX_x86.tar
 
-rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\net6.0
+rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\net8.0
 rmdir /S /Q .\SonOfRobin.DesktopGL\bin\Release\osx-64
