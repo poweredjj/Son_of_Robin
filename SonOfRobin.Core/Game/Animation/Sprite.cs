@@ -706,7 +706,7 @@ namespace SonOfRobin
 
         public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
 
-        public void UpdateAnimation(bool checkForCollision)
+        public void UpdateAnimation()
         {
             if (this.AnimFrame.duration == 0) return; // duration == 0 will stop the animation
 
@@ -714,7 +714,7 @@ namespace SonOfRobin
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
-                AssignFrame(checkForCollision: checkForCollision);
+                AssignFrame(checkForCollision: false);
             }
         }
 

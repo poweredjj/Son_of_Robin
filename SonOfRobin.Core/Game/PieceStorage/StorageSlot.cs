@@ -238,7 +238,7 @@ namespace SonOfRobin
             BoardPiece piece = sprite.boardPiece;
             World world = piece.world;
 
-            sprite.UpdateAnimation(checkForCollision: false);
+            sprite.UpdateAnimation();
             sprite.DrawAndKeepInRectBounds(destRect: destRect, opacity: opacity);
 
             if (piece.HitPoints < piece.maxHitPoints)

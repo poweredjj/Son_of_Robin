@@ -1366,7 +1366,7 @@ namespace SonOfRobin
         {
             foreach (BoardPiece piece in this.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true))
             {
-                if (this.ActiveLevel.stateMachineTypesManager.CanBeProcessed(piece)) piece.sprite.UpdateAnimation(checkForCollision: true);
+                if (this.ActiveLevel.stateMachineTypesManager.CanBeProcessed(piece)) piece.sprite.UpdateAnimation();
             }
         }
 

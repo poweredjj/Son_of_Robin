@@ -662,7 +662,7 @@ namespace SonOfRobin
                     opacity = 0.6f;
                 }
 
-                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
+                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
 
                 sprite.AnimFrame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
