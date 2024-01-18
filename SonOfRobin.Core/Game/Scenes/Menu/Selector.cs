@@ -151,9 +151,13 @@ namespace SonOfRobin
             {
                 base.Draw(active: active, textOverride: textOverride);
             }
-            else if (activeNameType == typeof(Texture2D) || (activeNameType == typeof(RenderTarget2D)))
+            else if (activeNameType == typeof(RenderTarget2D))
             {
                 base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [new TextureObj((Texture2D)this.ActiveName)]);
+            }
+            else if (activeNameType == typeof(TextureObj) || activeNameType == typeof(AnimFrameObj)) // every class inherited from ImageObj must be checked here
+            {
+                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [(ImageObj)this.ActiveName]);
             }
             else if (activeNameType == typeof(List<object>))
             {
