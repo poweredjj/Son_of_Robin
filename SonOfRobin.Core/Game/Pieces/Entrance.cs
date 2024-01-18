@@ -45,7 +45,7 @@ namespace SonOfRobin
             {
                 if (this.level.levelType == Level.LevelType.Island)
                 {
-                    this.sprite.AssignNewName(newAnimName: "blocked", checkForCollision: false);
+                    this.sprite.AssignNewName(newAnimName: "blocked");
                     this.isBlocked = true;
                     this.world.Player.cavesVisited++;
                 }

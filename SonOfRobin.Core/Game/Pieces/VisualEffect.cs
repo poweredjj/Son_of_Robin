@@ -264,7 +264,7 @@ namespace SonOfRobin
                 new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
             }
 
-            this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
+            this.sprite.SetIdenticalAnimFrame(this.world.Player.sprite);
         }
 
         public override void SM_EndingBoatCruise()

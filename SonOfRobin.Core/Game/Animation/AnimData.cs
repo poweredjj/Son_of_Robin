@@ -413,7 +413,7 @@ namespace SonOfRobin
         {
             if (pkgByName.ContainsKey(pkgName))
             {
-                MessageLog.Add(debugMessage: true, text: $"Package  '{pkgName}' has been prepared already, ignoring.");
+                MessageLog.Add(debugMessage: true, text: $"Package '{pkgName}' has been prepared already, ignoring.");
                 return;
             }
 

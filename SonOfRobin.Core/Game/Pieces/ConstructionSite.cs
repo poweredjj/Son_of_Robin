@@ -203,7 +203,7 @@ namespace SonOfRobin
                 newConstrSite.constrLevel = newConstructionLevel;
                 newConstrSite.ClearAndConfigureStorage();
                 newConstrSite.RefreshTriggerDescription();
-                newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
+                newConstrSite.sprite.AssignNewSize((byte)newConstructionLevel);
             }
 
             world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();

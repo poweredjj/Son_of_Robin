@@ -512,7 +512,7 @@ namespace SonOfRobin
 
             if (this.GetType() == typeof(Animal))
             {
-                this.sprite.CharacterStand(checkForCollision: false);
+                this.sprite.CharacterStand();
                 this.sprite.rotation = (float)(Random.NextSingle() * Math.PI);
             }
 

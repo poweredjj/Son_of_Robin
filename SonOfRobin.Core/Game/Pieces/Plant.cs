@@ -122,7 +122,7 @@ namespace SonOfRobin
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
             // swapping from "has_fruits", if the plant has such animation
-            if (this.sprite.AnimName == "has_fruits" && this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName(newAnimName: "default", checkForCollision: false);
+            if (this.sprite.AnimName == "has_fruits" && this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName(newAnimName: "default");
 
             return true;
         }

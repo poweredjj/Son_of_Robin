@@ -622,35 +622,35 @@ namespace SonOfRobin
             if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
         }
 
-        public void AssignNewSize(byte newAnimSize, bool checkForCollision = true)
+        public void AssignNewSize(byte newAnimSize)
         {
             if (this.AnimSize == newAnimSize) return;
 
-            byte oldAnimSize = this.AnimSize;
-
             this.AnimSize = newAnimSize;
-            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-            if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
+            this.AssignFrame(forceRewind: true, checkForCollision: false);
         }
 
-        public void AssignNewName(string newAnimName, bool setEvenIfMissing = false, bool checkForCollision = true)
+        public void AssignNewName(string newAnimName, bool setEvenIfMissing = false)
         {
             if (this.AnimName == newAnimName) return;
-
-            string oldAnimName = this.AnimName;
 
             if (setEvenIfMissing || this.CheckIfAnimNameExists(newAnimName))
             {
                 this.AnimName = newAnimName;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimName = oldAnimName;
+                this.AssignFrame(forceRewind: true, checkForCollision: false);
             }
         }
 
-        public void AssignFrameForce(AnimFrame animFrame)
+        public void SetIdenticalAnimFrame(Sprite sprite)
         {
             // does not check collisions, use with caution
-            this.AnimFrame = animFrame;
+
+            this.AnimPkg = sprite.AnimPkg;
+            this.AnimSize = sprite.AnimSize;
+            this.Anim = sprite.Anim;
+            this.currentFrameIndex = 0;
+            this.currentFrameTimeLeft = 0;
+            this.AnimFrame = sprite.AnimFrame;
         }
 
         private void AssignAnim()
@@ -718,7 +718,7 @@ namespace SonOfRobin
             }
         }
 
-        public void CharacterStand(bool setEvenIfMissing = false, bool checkForCollision = true)
+        public void CharacterStand(bool setEvenIfMissing = false)
         {
             if (this.AnimName.Contains("walk") || this.AnimFinished)
             {
@@ -730,7 +730,7 @@ namespace SonOfRobin
                     if (this.CheckIfAnimNameExists(weakAnimName)) newAnimName = weakAnimName;
                 }
 
-                this.AssignNewName(newAnimName: newAnimName, setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision);
+                this.AssignNewName(newAnimName: newAnimName, setEvenIfMissing: setEvenIfMissing);
             }
         }
 
