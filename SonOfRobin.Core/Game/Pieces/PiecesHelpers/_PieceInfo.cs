@@ -319,6 +319,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 80;
                         this.allowedDensity = new AllowedDensity(radius: 75, maxNoOfPiecesSameName: 8);
                         this.isAffectedByWind = true;
+                        this.hasFlatShadow = false;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -395,6 +396,7 @@ namespace SonOfRobin
                         this.placeMaxDistance = 120;
                         this.allowedDensity = new AllowedDensity(radius: 120, maxNoOfPiecesTotal: 40);
                         this.isAffectedByWind = true;
+                        this.hasFlatShadow = false;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },

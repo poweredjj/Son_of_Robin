@@ -503,8 +503,8 @@ namespace SonOfRobin
                 case PkgName.Rushes:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "rushes", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 34), gfxOffsetCorrection: new Vector2(0, -8))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15), shadowOriginFactor: new Vector2(0.5f, 0.77f))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "rushes", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 34), gfxOffsetCorrection: new Vector2(0, -8), shadowOriginFactor: new Vector2(0.53f, 0.84f), shadowPosOffset: new Vector2(-1.5f, 0))]));
                         break;
                     }
 
@@ -519,9 +519,9 @@ namespace SonOfRobin
                 case PkgName.GrassRegular:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), gfxOffsetCorrection: new Vector2(0, -2))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1.2f, gfxOffsetCorrection: new Vector2(0, -3))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15), shadowOriginFactor: new Vector2(0.5f, 0.77f))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), gfxOffsetCorrection: new Vector2(0, -2), shadowOriginFactor: new Vector2(0.5f, 0.8f))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "grass_s1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1.2f, gfxOffsetCorrection: new Vector2(0, -3), shadowOriginFactor: new Vector2(0.5f, 0.8f))]));
 
                         break;
                     }
@@ -1257,7 +1257,7 @@ namespace SonOfRobin
 
                 case PkgName.Clay:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 25, height: 23, scale: 1f, layer: 0, animSize: 0, altasName: "clay", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 25, height: 23, scale: 0.7f, layer: 0, animSize: 0, altasName: "clay", hasOnePixelMargin: true);
                         break;
                     }
 
