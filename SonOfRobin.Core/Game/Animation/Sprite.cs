@@ -800,16 +800,9 @@ namespace SonOfRobin
             if (Preferences.debugShowStatBars || this.boardPiece.ShowStatBars) this.boardPiece.DrawStatBar();
         }
 
-        public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
+        public void DrawRoutine(bool calculateSubmerge, Vector2 offset = default)
         {
             if (!this.IsOnBoard) return;
-
-            Rectangle destRect = this.GfxRect;
-            if (offsetX != 0 || offsetY != 0)
-            {
-                destRect.X += offsetX;
-                destRect.Y += offsetY;
-            }
 
             int submergeCorrection = 0;
             if (this.rotation == 0 && !this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
@@ -817,7 +810,7 @@ namespace SonOfRobin
                 submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
             }
 
-            this.AnimFrame.Draw(position: this.position, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: rotationOriginOverride);
+            this.AnimFrame.Draw(position: this.position + offset, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: rotationOriginOverride);
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
         }
@@ -896,7 +889,7 @@ namespace SonOfRobin
 
                 Color originalColor = this.color;
                 this.color = color;
-                this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offset.X + drawOffsetX, offsetY: (int)offset.Y + drawOffsetY);
+                this.DrawRoutine(calculateSubmerge: true, offset: offset + new Vector2(drawOffsetX, drawOffsetY));
                 this.color = originalColor;
             }
             else
