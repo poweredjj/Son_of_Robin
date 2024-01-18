@@ -664,7 +664,7 @@ namespace SonOfRobin
 
                 if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
 
-                sprite.AnimFrame.imageObj.DrawInsideRect(rect: destRect, color: Color.White * opacity);
+                sprite.AnimFrame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
             // drawing named locations
@@ -746,7 +746,7 @@ namespace SonOfRobin
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
-                        markerPiece.sprite.AnimFrame.imageObj.DrawInsideRect(rect: markerRect, color: Color.White);
+                        markerPiece.sprite.AnimFrame.DrawInsideRect(rect: markerRect, color: Color.White);
 
                         SonOfRobinGame.SpriteBatch.End();
                         SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);

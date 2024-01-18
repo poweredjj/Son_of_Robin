@@ -204,7 +204,7 @@ namespace SonOfRobin
             { TextureName.MonoGame, "monogame" },
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
-            { TextureName.FogCloud, "_processed_weather_fog_1" },
+            { TextureName.FogCloud, "weather_fog_1" },
             { TextureName.GfxCorrupted, "gfx_corrupted" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
@@ -226,7 +226,7 @@ namespace SonOfRobin
             { TextureName.BuffWidth, "buffs/buff_width" },
             { TextureName.BuffHeight, "buffs/buff_height" },
             { TextureName.BuffPoisonRemove, "buffs/buff_poison_remove" },
-            { TextureName.BuffHungry, "_processed_burger" },
+            { TextureName.BuffHungry, "burger" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },

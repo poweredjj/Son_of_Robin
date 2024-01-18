@@ -860,7 +860,7 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
-            this.AnimFrame.imageObj.DrawInsideRect(rect: destRect, color: this.color * opacity);
+            this.AnimFrame.DrawInsideRect(rect: destRect, color: this.color * opacity);
         }
 
         private void DrawState()
@@ -891,6 +891,8 @@ namespace SonOfRobin
                 simulRect.Offset(offset);
 
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
+
+                //this.AnimFrame.Draw(position: this.position + offset, color: color * opacity, rotation: this.rotation, opacity: this.opacity, submergeCorrection: 0);
 
                 Color originalColor = this.color;
                 this.color = color;

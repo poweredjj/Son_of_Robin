@@ -293,7 +293,7 @@ namespace SonOfRobin
             Rectangle leftRect = new(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
             Rectangle rightRect = new(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
 
-            frame.imageObj.DrawInsideRect(rect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
+            frame.DrawInsideRect(rect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
             this.DrawText(text: text, containingRect: rightRect, txtCol: txtCol);
         }
 
