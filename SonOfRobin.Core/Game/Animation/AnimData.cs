@@ -471,7 +471,7 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_white", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 19), gfxOffsetCorrection: new Vector2(0, -1))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_white", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 23, height: 19), gfxOffsetCorrection: new Vector2(0, -1), shadowOriginFactor: new Vector2(0.5f, 0.79f), shadowHeightMultiplier: 0.55f, hasFlatShadow: false)]));
 
                         break;
                     }
@@ -496,7 +496,7 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_red", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 25), gfxOffsetCorrection: new Vector2(0, -2), shadowOriginFactor: new Vector2(0.5f, 0.77f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.55f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_red", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 25), gfxOffsetCorrection: new Vector2(0, -2), shadowOriginFactor: new Vector2(0.5f, 0.77f), shadowHeightMultiplier: 0.55f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -529,8 +529,8 @@ namespace SonOfRobin
                 case PkgName.PlantPoison:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 11);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f, shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -1), shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f, shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -1), shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -545,36 +545,36 @@ namespace SonOfRobin
                 case PkgName.CarrotPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 20);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "carrot_plant_empty", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 283), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -37), hasFlatShadow: false)], name: "default"));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "carrot_plant_empty", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 298, height: 283), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -37), shadowOriginFactor: new Vector2(0.53f, 0.95f), shadowPosOffset: new Vector2(0f, 6f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)], name: "default"));
 
                         // using different plant graphics when carrot is present, instead of drawing the carrot separately (because the carrot should be underground)
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "carrot_plant_has_carrot", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 295, height: 351), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -70), hasFlatShadow: false)], name: "has_fruits"));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "carrot_plant_has_carrot", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 295, height: 351), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -70), shadowOriginFactor: new Vector2(0.53f, 0.95f), shadowPosOffset: new Vector2(0f, 6f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)], name: "has_fruits"));
                         break;
                     }
 
                 case PkgName.TomatoPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 28, colHeight: 25);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "tomato_plant_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 296, height: 288), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -13), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tomato_plant_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 477, height: 459), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -64), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tomato_plant_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 494, height: 980), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -332), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "tomato_plant_small", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 296, height: 288), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -13), shadowOriginFactor: new Vector2(0.6f, 0.97f), shadowPosOffset: new Vector2(2.5f, 11.5f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tomato_plant_medium", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 477, height: 459), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -64), shadowOriginFactor: new Vector2(0.58f, 1.01f), shadowPosOffset: new Vector2(2.5f, 11.5f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tomato_plant_big", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 494, height: 980), scale: 0.08f, gfxOffsetCorrection: new Vector2(0, -332), shadowOriginFactor: new Vector2(0.58f, 0.99f), shadowPosOffset: new Vector2(2.5f, 11.5f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
                         break;
                     }
 
                 case PkgName.MushroomPlant:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 18, colHeight: 14);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -2))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.8f, gfxOffsetCorrection: new Vector2(1, -5))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 1.0f, gfxOffsetCorrection: new Vector2(1, -7))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.6f, gfxOffsetCorrection: new Vector2(1, -2), shadowOriginFactor: new Vector2(0.46f, 1.03f), shadowPosOffset: new Vector2(0f, 4f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 0.8f, gfxOffsetCorrection: new Vector2(1, -5), shadowOriginFactor: new Vector2(0.46f, 1.03f), shadowPosOffset: new Vector2(0f, 4f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "mushroom_plant", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 31, height: 29), scale: 1.0f, gfxOffsetCorrection: new Vector2(1, -7), shadowOriginFactor: new Vector2(0.46f, 1.03f), shadowPosOffset: new Vector2(0f, 4f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
                         break;
                     }
 
                 case PkgName.Cactus:
                     {
-                        animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 18);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "cactus_s0", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 30), gfxOffsetCorrection: new Vector2(0, -5), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "cactus_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 53), gfxOffsetCorrection: new Vector2(0, -13), hasFlatShadow: false)]));
+                        animPkg = new(pkgName: pkgName, colWidth: 18, colHeight: 18);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "cactus_s0", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 29), gfxOffsetCorrection: new Vector2(0f, -5f), shadowOriginFactor: new Vector2(0.5f, 0.98f), shadowPosOffset: new Vector2(-2.5f, 4.5f), shadowHeightMultiplier: 0.8f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "cactus_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 49), gfxOffsetCorrection: new Vector2(0f, -13f), shadowOriginFactor: new Vector2(0.5f, 0.98f), shadowPosOffset: new Vector2(0f, 4.5f), shadowHeightMultiplier: 0.8f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -591,9 +591,9 @@ namespace SonOfRobin
                 case PkgName.TreeBig:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 14, colHeight: 14);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -32), shadowOriginFactor: new Vector2(0.5f, 0.97f), shadowPosOffset: new Vector2(0, 7))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_big_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 49, height: 64), gfxOffsetCorrection: new Vector2(0, -22), shadowOriginFactor: new Vector2(0.53f, 0.94f), shadowPosOffset: new Vector2(2.5f, -1.5f))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_big_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 65, height: 96), gfxOffsetCorrection: new Vector2(0, -38), shadowOriginFactor: new Vector2(0.5f, 0.94f))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_tall", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 48, height: 99), scale: 0.5f, gfxOffsetCorrection: new Vector2(0f, -32f), shadowOriginFactor: new Vector2(0.5f, 0.97f), shadowPosOffset: new Vector2(0f, 7f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_big_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 49, height: 64), gfxOffsetCorrection: new Vector2(0, -22), shadowOriginFactor: new Vector2(0.53f, 0.94f), shadowPosOffset: new Vector2(2.5f, -1.5f), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_big_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 65, height: 96), gfxOffsetCorrection: new Vector2(0, -38), shadowOriginFactor: new Vector2(0.5f, 0.94f), hasFlatShadow: false)]));
                         break;
                     }
 
@@ -601,8 +601,8 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10), shadowPosOffset: new Vector2(0, 7.5f), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_1_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 33, height: 34), gfxOffsetCorrection: new Vector2(0, -6), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_small_1_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_1_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 33, height: 34), gfxOffsetCorrection: new Vector2(0f, -6f), shadowOriginFactor: new Vector2(0.5f, 0.84f), shadowHeightMultiplier: 0.7f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_small_1_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22), shadowOriginFactor: new Vector2(0.5f, 0.84f), shadowHeightMultiplier: 0.7f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -610,7 +610,7 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 15);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "sapling_short", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 44, height: 55), scale: 0.5f, gfxOffsetCorrection: new Vector2(0, -10), shadowPosOffset: new Vector2(0, 7.5f), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_2_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 32), gfxOffsetCorrection: new Vector2(0, -6), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "tree_small_2_s1", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 32), gfxOffsetCorrection: new Vector2(0f, -6f), shadowOriginFactor: new Vector2(0.5f, 0.85f), shadowHeightMultiplier: 1f, hasFlatShadow: false)]));
                         animPkg.AddAnim(new(animPkg: animPkg, size: 2, frameArray: [new AnimFrame(atlasName: "tree_small_2_s2", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 66), gfxOffsetCorrection: new Vector2(0, -22), hasFlatShadow: false)]));
                         break;
                     }
@@ -618,7 +618,7 @@ namespace SonOfRobin
                 case PkgName.TreeStump:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 16, colHeight: 17);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "tree_stump", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "tree_stump", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 20), scale: 1f, shadowOriginFactor: new Vector2(0.5f, 0.72f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -902,7 +902,7 @@ namespace SonOfRobin
                 case PkgName.MineralsMossySmall3:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 71, colHeight: 20);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "mossy_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 252, height: 166), scale: 0.3f, gfxOffsetCorrection: new Vector2(0, -36), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "mossy_minerals_small_3", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 252, height: 166), scale: 0.3f, gfxOffsetCorrection: new Vector2(0f, -36f), shadowOriginFactor: new Vector2(0.5f, 0.84f), hasFlatShadow: false)]));
                         break;
                     }
 

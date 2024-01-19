@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public readonly struct AnimFrame
     {
-        private readonly Vector2 defaultShadowOriginFactor = new(0.5f, 0.98f);
+        public static readonly Vector2 defaultShadowOriginFactor = new(0.5f, 0.98f);
 
         public readonly string atlasName;
         public readonly Rectangle cropRect;

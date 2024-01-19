@@ -71,7 +71,7 @@ namespace SonOfRobin
             }
 
             this.animPkgArray = animPkgList.OrderBy(a => a.name).ToArray();
-            this.currentAnimPkgIndex = this.animPkgArray.Length - 1;
+            this.currentAnimPkgIndex = 0;
             this.currentAnimIndex = 0;
 
             this.AssignCurrentAnim();
@@ -398,7 +398,7 @@ namespace SonOfRobin
             description += $"shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y} shadow height mult: {this.currentAnimFrame.shadowHeightMultiplier}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
-            description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
+            description += $"AnimPkg: {this.currentAnimPkg.name} {this.currentAnimPkgIndex}/{this.animPkgArray.Length}, layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
 
             SonOfRobinGame.SpriteBatch.End();
 
@@ -418,14 +418,21 @@ namespace SonOfRobin
 
         private void PrintFrameParams()
         {
+            // for easy copying and pasting params into AnimData
+
             AnimFrame frame = this.currentAnimFrame;
 
             var textList = new List<string>();
             textList.Add($"\n\n{this.currentAnimPkg.name} {frame.atlasName}\n");
-            textList.Add($", gfxOffsetCorrection: new Vector2({(int)(frame.gfxOffsetCorrection.X / frame.scale)}f, {(int)(frame.gfxOffsetCorrection.Y / frame.scale)}f)");
-            textList.Add($", shadowOriginFactor: new Vector2({ConvertValueToString(frame.shadowOriginFactor.X)}f, {ConvertValueToString(frame.shadowOriginFactor.Y)}f)");
-            textList.Add($", shadowPosOffset: new Vector2({ConvertValueToString(frame.shadowPosOffset.X)}f, {ConvertValueToString(frame.shadowPosOffset.Y)}f)");
-            textList.Add($", shadowHeightMultiplier: {ConvertValueToString(frame.shadowHeightMultiplier)}f");
+
+            if (frame.gfxOffsetCorrection != Vector2.Zero) textList.Add($", gfxOffsetCorrection: new Vector2({(int)(frame.gfxOffsetCorrection.X / frame.scale)}f, {(int)(frame.gfxOffsetCorrection.Y / frame.scale)}f)");
+
+            if (frame.shadowOriginFactor != AnimFrame.defaultShadowOriginFactor) textList.Add($", shadowOriginFactor: new Vector2({ConvertValueToString(frame.shadowOriginFactor.X)}f, {ConvertValueToString(frame.shadowOriginFactor.Y)}f)");
+
+            if (frame.shadowPosOffset != Vector2.Zero) textList.Add($", shadowPosOffset: new Vector2({ConvertValueToString(frame.shadowPosOffset.X)}f, {ConvertValueToString(frame.shadowPosOffset.Y)}f)");
+
+            if (frame.shadowHeightMultiplier != 1f) textList.Add($", shadowHeightMultiplier: {ConvertValueToString(frame.shadowHeightMultiplier)}f");
+
             if (!frame.hasFlatShadow) textList.Add($", hasFlatShadow: {frame.hasFlatShadow.ToString().ToLower()}");
 
             MessageLog.Add(debugMessage: true, text: String.Join("", textList));
