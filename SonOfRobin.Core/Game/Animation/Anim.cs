@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 
 namespace SonOfRobin
@@ -46,7 +47,9 @@ namespace SonOfRobin
         {
             for (int i = 0; i < this.frameArray.Length; i++)
             {
-                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedGfxOffsetCorrection(gfxOffsetCorrection);
+                AnimFrame frame = this.frameArray[i];
+
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
             }
         }
 
@@ -54,7 +57,9 @@ namespace SonOfRobin
         {
             for (int i = 0; i < this.frameArray.Length; i++)
             {
-                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowOriginFactor(shadowOriginFactor);
+                AnimFrame frame = this.frameArray[i];
+
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
             }
         }
 
@@ -62,7 +67,9 @@ namespace SonOfRobin
         {
             for (int i = 0; i < this.frameArray.Length; i++)
             {
-                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowPosOffset(shadowPosOffset);
+                AnimFrame frame = this.frameArray[i];
+
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
             }
         }
 
@@ -70,7 +77,19 @@ namespace SonOfRobin
         {
             for (int i = 0; i < this.frameArray.Length; i++)
             {
-                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowHeightMultiplier(shadowHeightMultiplier);
+                AnimFrame frame = this.frameArray[i];
+
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
+            }
+        }
+
+        public void EditFlatShadow(bool hasFlatShadow)
+        {
+            for (int i = 0; i < this.frameArray.Length; i++)
+            {
+                AnimFrame frame = this.frameArray[i];
+
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: hasFlatShadow);
             }
         }
     }

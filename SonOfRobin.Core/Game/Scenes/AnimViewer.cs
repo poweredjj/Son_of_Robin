@@ -42,7 +42,6 @@ namespace SonOfRobin
         private bool showColRect;
         private bool showGfxRect;
         private bool showEffect;
-        private bool flatShadow;
         private bool drawLightAndShadow;
 
         private readonly Effect effect;
@@ -59,7 +58,6 @@ namespace SonOfRobin
             this.showColRect = false;
             this.showGfxRect = false;
             this.showEffect = false;
-            this.flatShadow = false;
             this.drawLightAndShadow = true;
             this.outlineThickness = 1;
 
@@ -120,7 +118,13 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.Z)) this.showColRect = !this.showColRect;
             if (Keyboard.HasBeenPressed(Keys.X)) this.showGfxRect = !this.showGfxRect;
             if (Keyboard.HasBeenPressed(Keys.C)) this.showEffect = !this.showEffect;
-            if (Keyboard.HasBeenPressed(Keys.B)) this.flatShadow = !this.flatShadow;
+            if (Keyboard.HasBeenPressed(Keys.B))
+            {
+                this.CurrentAnim.EditFlatShadow(!this.currentAnimFrame.hasFlatShadow);
+                this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+
+                this.UpdateAnimation();
+            }
             if (Keyboard.HasBeenPressed(Keys.N)) this.drawLightAndShadow = !this.drawLightAndShadow;
 
             float rotVal = 0.03f;
@@ -384,8 +388,11 @@ namespace SonOfRobin
 
             string description = "";
 
-            description += $"{this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}";
-            description += $" shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y} shadow Y scale: {this.currentAnimFrame.shadowHeightMultiplier}\n";
+            description += $"mode: {this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}, gfxOffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
+
+            description += $"shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}\n";
+
+            description += $"shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y} shadow height mult: {this.currentAnimFrame.shadowHeightMultiplier}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
@@ -408,12 +415,14 @@ namespace SonOfRobin
 
         private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, float drawOffsetX = 0f, float drawOffsetY = 0f, float yScaleForce = 0f)
         {
+            // must match Sprite.DrawShadow logic
+
             float distance = Vector2.Distance(lightPos, this.pos);
 
-            AnimFrame animFrame = this.currentAnimFrame;
+            AnimFrame frame = this.currentAnimFrame;
             float opacity = 1f;
 
-            if (this.flatShadow)
+            if (this.currentAnimFrame.hasFlatShadow)
             {
                 Vector2 diff = this.pos - lightPos;
                 Vector2 limit = new(this.gfxRect.Width / 8, this.gfxRect.Height / 8);
@@ -425,18 +434,19 @@ namespace SonOfRobin
             }
             else
             {
-                float xScale = animFrame.scale;
-                float yScale = Math.Max(animFrame.scale / distance * 100f, animFrame.scale * 0.3f);
-                yScale = yScaleForce == 0 ? Math.Min(yScale, animFrame.scale * 3f) : animFrame.scale * yScaleForce;
-                yScale *= animFrame.shadowHeightMultiplier;
+                float xScale = frame.scale;
+                float yScale = frame.scale / distance * 100f;
+                yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
+                yScale *= frame.shadowHeightMultiplier;
+                yScale = Math.Max(yScale, 0.8f);
 
                 SonOfRobinGame.SpriteBatch.Draw(
-                    animFrame.Texture,
-                    position: this.pos + animFrame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
-                    sourceRectangle: animFrame.cropRect,
+                    frame.Texture,
+                    position: this.pos + frame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
+                    sourceRectangle: frame.cropRect,
                     color: color * opacity,
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: animFrame.shadowOrigin,
+                    origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

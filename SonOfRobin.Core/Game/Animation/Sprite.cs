@@ -875,7 +875,7 @@ namespace SonOfRobin
             float distance = Vector2.Distance(lightPos, this.position);
             AnimFrame frame = this.AnimFrame;
 
-            if (this.boardPiece.HasFlatShadow)
+            if (this.AnimFrame.hasFlatShadow)
             {
                 Vector2 diff = this.position - lightPos;
                 Vector2 limit = new(this.GfxRect.Width / 8, this.GfxRect.Height / 8);
@@ -893,9 +893,10 @@ namespace SonOfRobin
             else
             {
                 float xScale = frame.scale;
-                float yScale = Math.Max(frame.scale / distance * 100f, frame.scale * 0.3f);
+                float yScale = frame.scale / distance * 100f;
                 yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
                 yScale *= frame.shadowHeightMultiplier;
+                yScale = Math.Max(yScale, 0.8f);
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
