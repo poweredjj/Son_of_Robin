@@ -65,5 +65,13 @@ namespace SonOfRobin
                 this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowPosOffset(shadowPosOffset);
             }
         }
+
+        public void EditShadowHeightMuliplier(float shadowHeightMultiplier)
+        {
+            for (int i = 0; i < this.frameArray.Length; i++)
+            {
+                this.frameArray[i] = this.frameArray[i].MakeCopyWithEditedShadowHeightMultiplier(shadowHeightMultiplier);
+            }
+        }
     }
 }

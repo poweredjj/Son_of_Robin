@@ -11,7 +11,7 @@ namespace SonOfRobin
 {
     public class AnimViewer : Scene
     {
-        public enum ControlMode : byte { GfxOffset, ShadowOriginFactor, ShadowPosOffset, ColSize }
+        public enum ControlMode : byte { GfxOffset, ShadowOriginFactor, ShadowPosOffset, ShadowHeightMultiplier, ColSize }
 
         public static readonly ControlMode[] allControlModes = (ControlMode[])Enum.GetValues(typeof(ControlMode));
 
@@ -230,6 +230,18 @@ namespace SonOfRobin
 
                         break;
 
+                    case ControlMode.ShadowHeightMultiplier:
+
+                        float shadowHeightMultiplier = this.currentAnimFrame.shadowHeightMultiplier - (posValChange.Y * 0.05f);
+                        shadowHeightMultiplier = (float)Math.Round(shadowHeightMultiplier, 2);
+
+                        this.CurrentAnim.EditShadowHeightMuliplier(shadowHeightMultiplier);
+                        this.currentAnimFrame = this.CurrentAnim.frameArray[this.currentFrameIndex];
+
+                        this.UpdateAnimation();
+
+                        break;
+
                     case ControlMode.ColSize:
 
                         AnimPkg animPkg = this.currentAnimPkg.MakeCopyWithEditedColOffset(this.currentAnimPkg.colRect.Width + (int)posValChange.X, this.currentAnimPkg.colRect.Height - (int)posValChange.Y);
@@ -372,7 +384,8 @@ namespace SonOfRobin
 
             string description = "";
 
-            description += $"{this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y} shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y}\n";
+            description += $"{this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}\noffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)} shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}";
+            description += $" shadowPosOffset:  X {this.currentAnimFrame.shadowPosOffset.X} Y {this.currentAnimFrame.shadowPosOffset.Y} shadow Y scale: {this.currentAnimFrame.shadowHeightMultiplier}\n";
             description += "\n";
             description += $"pos {(int)this.pos.X},{(int)this.pos.Y} rot: {Math.Round(this.rot, 2)} speed: 1/{this.playSpeed}\n";
             description += $"AnimPkg: {this.currentAnimPkg.name} layer: {this.currentAnimFrame.layer} animSize: {this.CurrentAnim.size} animName: {this.CurrentAnim.name}\ntexture: {this.currentAnimFrame.Texture.Name}\n";
@@ -415,6 +428,7 @@ namespace SonOfRobin
                 float xScale = animFrame.scale;
                 float yScale = Math.Max(animFrame.scale / distance * 100f, animFrame.scale * 0.3f);
                 yScale = yScaleForce == 0 ? Math.Min(yScale, animFrame.scale * 3f) : animFrame.scale * yScaleForce;
+                yScale *= animFrame.shadowHeightMultiplier;
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     animFrame.Texture,

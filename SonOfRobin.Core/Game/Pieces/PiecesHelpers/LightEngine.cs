@@ -91,8 +91,11 @@ namespace SonOfRobin
         {
             get
             {
-                Point centerPos = this.sprite.GfxRect.Center;
-                return new Rectangle(x: centerPos.X - (this.Width / 2), y: centerPos.Y - (this.Height / 2), width: this.Width, height: this.Height);
+                return new Rectangle(
+                    x: (int)this.sprite.position.X - (this.Width / 2),
+                    y: (int)this.sprite.position.Y - (this.Height / 2),
+                    width: this.Width,
+                    height: this.Height);
             }
         }
 

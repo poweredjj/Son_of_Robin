@@ -895,6 +895,7 @@ namespace SonOfRobin
                 float xScale = frame.scale;
                 float yScale = Math.Max(frame.scale / distance * 100f, frame.scale * 0.3f);
                 yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
+                yScale *= frame.shadowHeightMultiplier;
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
