@@ -71,7 +71,7 @@ namespace SonOfRobin
             }
 
             this.animPkgArray = animPkgList.OrderBy(a => a.name).ToArray();
-            this.currentAnimPkgIndex = 161;
+            this.currentAnimPkgIndex = 195;
             this.currentAnimIndex = 0;
 
             this.AssignCurrentAnim();

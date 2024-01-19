@@ -1628,7 +1628,7 @@ namespace SonOfRobin
 
                     foreach (Sprite shadowSprite in spritesCastingShadows)
                     {
-                        if (shadowSprite == lightSprite || !lightRect.Intersects(shadowSprite.GfxRect) || shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
+                        if (shadowSprite == lightSprite || !lightRect.Intersects(shadowSprite.GfxRect) || !shadowSprite.AnimFrame.castsShadow) continue;
 
                         float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: lightSprite.position, end: shadowSprite.position);
                         shadowSprite.DrawShadow(color: Color.White, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);

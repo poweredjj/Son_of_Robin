@@ -12,6 +12,7 @@ namespace SonOfRobin
         public readonly Rectangle cropRect;
         public readonly Vector2 gfxOffsetBase;
         public readonly Vector2 gfxOffsetCorrection;
+        public readonly bool castsShadow;
         public readonly bool hasFlatShadow;
         public readonly Vector2 shadowOriginFactor; // base multiplier for shadowOrigin
         public readonly Vector2 shadowOrigin; // final shadowOrigin
@@ -28,7 +29,7 @@ namespace SonOfRobin
         public readonly bool ignoreWhenCalculatingMaxSize;
         public readonly ImageObj imageObj;
 
-        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f, bool hasFlatShadow = true)
+        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f, bool hasFlatShadow = true, bool castsShadow = true)
         {
             if (shadowOriginFactor == default) shadowOriginFactor = defaultShadowOriginFactor;
             if (shadowPosOffset == default) shadowPosOffset = Vector2.Zero;
@@ -37,6 +38,7 @@ namespace SonOfRobin
             this.scale = scale;
             this.cropRect = cropRect;
 
+            this.castsShadow = castsShadow;
             this.hasFlatShadow = hasFlatShadow;
             this.shadowPosOffset = shadowPosOffset;
             this.shadowOriginFactor = shadowOriginFactor;

@@ -49,7 +49,7 @@ namespace SonOfRobin
             {
                 AnimFrame frame = this.frameArray[i];
 
-                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: gfxOffsetCorrection, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow, castsShadow: frame.castsShadow);
             }
         }
 
@@ -59,7 +59,7 @@ namespace SonOfRobin
             {
                 AnimFrame frame = this.frameArray[i];
 
-                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow, castsShadow: frame.castsShadow);
             }
         }
 
@@ -69,7 +69,7 @@ namespace SonOfRobin
             {
                 AnimFrame frame = this.frameArray[i];
 
-                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow, castsShadow: frame.castsShadow);
             }
         }
 
@@ -79,7 +79,7 @@ namespace SonOfRobin
             {
                 AnimFrame frame = this.frameArray[i];
 
-                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow);
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: frame.hasFlatShadow, castsShadow: frame.castsShadow);
             }
         }
 
@@ -89,7 +89,7 @@ namespace SonOfRobin
             {
                 AnimFrame frame = this.frameArray[i];
 
-                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: hasFlatShadow);
+                this.frameArray[i] = new AnimFrame(atlasName: frame.atlasName, layer: frame.layer, cropRect: frame.cropRect, scale: frame.scale, duration: frame.duration, gfxOffsetCorrection: frame.gfxOffsetCorrection / frame.scale, mirrorX: frame.spriteEffects == SpriteEffects.FlipHorizontally, mirrorY: frame.spriteEffects == SpriteEffects.FlipVertically, ignoreWhenCalculatingMaxSize: frame.ignoreWhenCalculatingMaxSize, shadowOriginFactor: frame.shadowOriginFactor, shadowPosOffset: frame.shadowPosOffset, shadowHeightMultiplier: frame.shadowHeightMultiplier, hasFlatShadow: hasFlatShadow, castsShadow: frame.castsShadow);
             }
         }
     }

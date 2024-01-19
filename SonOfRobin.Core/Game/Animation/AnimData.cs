@@ -440,31 +440,31 @@ namespace SonOfRobin
             switch (pkgName)
             {
                 case PkgName.Empty:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "transparent_pixel", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "transparent_pixel", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.NoAnim:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 63, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "no_anim", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 63, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "no_anim", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.WhiteSpotLayerMinus1:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: -1, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: -1, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.WhiteSpotLayerZero:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 0, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 0, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.WhiteSpotLayerOne:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 1, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 1, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.WhiteSpotLayerTwo:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 2, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.WhiteSpotLayerThree:
-                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 3, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false);
+                    animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 1, height: 1, scale: 1f, layer: 3, animSize: 0, altasName: "white_spot", hasOnePixelMargin: false, castsShadow: false);
                     break;
 
                 case PkgName.FlowersWhite:
@@ -1557,7 +1557,7 @@ namespace SonOfRobin
 
                 case PkgName.DigSite:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "dig_site", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "dig_site", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     }
 
@@ -1567,11 +1567,11 @@ namespace SonOfRobin
 
                         var frameList = new List<AnimFrame>();
 
-                        frameList.Add(new AnimFrame(atlasName: "dig_site_glass", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 450));
+                        frameList.Add(new AnimFrame(atlasName: "dig_site_glass", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 450, castsShadow: false));
 
                         foreach (int frameNo in new List<int> { 1, 2, 3, 2, 1 })
                         {
-                            frameList.Add(new AnimFrame(atlasName: $"dig_site_glass_shine_{frameNo}", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 2));
+                            frameList.Add(new AnimFrame(atlasName: $"dig_site_glass_shine_{frameNo}", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 2, castsShadow: false));
                         }
 
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: frameList.ToArray()));
@@ -1580,7 +1580,7 @@ namespace SonOfRobin
 
                 case PkgName.DigSiteRuins:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 162, height: 164, scale: 0.35f, layer: 0, animSize: 0, altasName: "dig_site_ruins", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 162, height: 164, scale: 0.35f, layer: 0, animSize: 0, altasName: "dig_site_ruins", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     }
 
@@ -1629,15 +1629,13 @@ namespace SonOfRobin
 
                 case PkgName.PlayerBoy:
                     {
-                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/actor29rec4", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0, shadowOriginFactor: new Vector2(0.5f, 0.95f), shadowPosOffset: new Vector2(0f, 1.5f));
                         break;
-
-                        // , gfxOffsetCorrection: new Vector2(0f, -9f), shadowOriginFactor: new Vector2(0.5f, 0.95f), shadowPosOffset: new Vector2(0f, 1.5f), hasFlatShadow: false
                     }
 
                 case PkgName.PlayerGirl:
                     {
-                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0);
+                        animPkg = MakePackageForRpgMakerV1Data(pkgName: pkgName, scale: 1f, animSize: 0, colWidth: 14, colHeight: 14, altasName: "characters/recolor_pt2", gfxOffsetCorrection: new Vector2(0, -9), setNoX: 0, setNoY: 0, shadowOriginFactor: new Vector2(0.5f, 0.95f), shadowPosOffset: new Vector2(0f, 1.5f));
                         break;
                     }
 
@@ -1671,49 +1669,49 @@ namespace SonOfRobin
 
                 case PkgName.FoxGinger:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxRed:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxWhite:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxGray:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxBlack:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxChocolate:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxBrown:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
                 case PkgName.FoxYellow:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/fox", colWidth: 16, colHeight: 20, gfxOffsetCorrection: new Vector2(1, -11), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.5f);
                         break;
                     }
 
@@ -1767,49 +1765,49 @@ namespace SonOfRobin
 
                 case PkgName.RabbitBrown:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitDarkBrown:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitGray:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitBlack:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 0, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitLightGray:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 0, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitBeige:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 1, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitWhite:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 2, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
                 case PkgName.RabbitLightBrown:
                     {
-                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } });
+                        animPkg = MakePackageForRPGMakerPackageV2UsingSizeDict(pkgName: pkgName, atlasName: "characters/rabbits", colWidth: 14, colHeight: 12, gfxOffsetCorrection: new Vector2(1, -14), setNoX: 3, setNoY: 1, scaleForSizeDict: new Dictionary<byte, float> { { 0, 0.8f }, { 1, 0.9f }, { 2, 1.0f } }, shadowOriginFactor: new Vector2(0.5f, 0.94f));
                         break;
                     }
 
@@ -2302,7 +2300,7 @@ namespace SonOfRobin
                             {
                                 for (int x = 0; x < 4; x++)
                                 {
-                                    frameList.Add(new AnimFrame(atlasName: "explosion", layer: 1, cropRect: new Rectangle(x: x * 32, y: y * 32, width: 32, height: 32), scale: 1.5f * (size + 1), duration: 2, ignoreWhenCalculatingMaxSize: true));
+                                    frameList.Add(new AnimFrame(atlasName: "explosion", layer: 1, cropRect: new Rectangle(x: x * 32, y: y * 32, width: 32, height: 32), scale: 1.5f * (size + 1), duration: 2, ignoreWhenCalculatingMaxSize: true, castsShadow: false));
                                 }
                             }
 
@@ -2314,25 +2312,25 @@ namespace SonOfRobin
 
                 case PkgName.SkullAndBones:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 32, scale: 1f, layer: 2, animSize: 0, altasName: "skull_and_bones", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 32, scale: 1f, layer: 2, animSize: 0, altasName: "skull_and_bones", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.MusicNoteSmall:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "music_note", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "music_note", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     };
 
                 case PkgName.MusicNoteBig:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 2.5f, layer: 2, animSize: 0, altasName: "music_note", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 21, scale: 2.5f, layer: 2, animSize: 0, altasName: "music_note", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     };
 
                 case PkgName.Miss:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "miss", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 21, scale: 1f, layer: 2, animSize: 0, altasName: "miss", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
@@ -2342,9 +2340,9 @@ namespace SonOfRobin
 
                         var frameList = new List<AnimFrame>();
 
-                        frameList.Add(new AnimFrame(atlasName: "attack_1", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 18, height: 18), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
-                        frameList.Add(new AnimFrame(atlasName: "attack_2", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 28, height: 30), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
-                        frameList.Add(new AnimFrame(atlasName: "attack_3", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 58), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0)));
+                        frameList.Add(new AnimFrame(atlasName: "attack_1", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 18, height: 18), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0), castsShadow: false));
+                        frameList.Add(new AnimFrame(atlasName: "attack_2", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 28, height: 30), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0), castsShadow: false));
+                        frameList.Add(new AnimFrame(atlasName: "attack_3", layer: 2, cropRect: new Rectangle(x: 0, y: 0, width: 34, height: 58), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(0, 0), castsShadow: false));
 
                         animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: frameList.ToArray()));
 
@@ -2353,7 +2351,7 @@ namespace SonOfRobin
 
                 case PkgName.MapMarker:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 16, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "map_marker", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 16, height: 16, scale: 1f, layer: 2, animSize: 0, altasName: "map_marker", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     };
 
@@ -2361,10 +2359,10 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 13);
 
-                        AnimFrame frame1 = new AnimFrame(atlasName: "backlight_1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 17, height: 9), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
-                        AnimFrame frame2 = new AnimFrame(atlasName: "backlight_2", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 21, height: 11), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
-                        AnimFrame frame3 = new AnimFrame(atlasName: "backlight_3", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 13), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1));
-                        AnimFrame frame4 = new AnimFrame(atlasName: "backlight_4", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 14), scale: 1f, duration: 20, gfxOffsetCorrection: new Vector2(1, 1));
+                        AnimFrame frame1 = new AnimFrame(atlasName: "backlight_1", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 17, height: 9), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false);
+                        AnimFrame frame2 = new AnimFrame(atlasName: "backlight_2", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 21, height: 11), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false);
+                        AnimFrame frame3 = new AnimFrame(atlasName: "backlight_3", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 26, height: 13), scale: 1f, duration: 6, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false);
+                        AnimFrame frame4 = new AnimFrame(atlasName: "backlight_4", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 29, height: 14), scale: 1f, duration: 20, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false);
 
                         var frameList = new List<AnimFrame> { frame1, frame2, frame3, frame4, frame3, frame2, frame1 };
 
@@ -2375,7 +2373,7 @@ namespace SonOfRobin
 
                 case PkgName.Crosshair:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 40, scale: 1f, layer: 2, animSize: 0, altasName: "crosshair", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 40, height: 40, scale: 1f, layer: 2, animSize: 0, altasName: "crosshair", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
@@ -2391,7 +2389,7 @@ namespace SonOfRobin
 
                             for (int i = 0; i < 3; i++)
                             {
-                                frameList.Add(new AnimFrame(atlasName: $"flame_small_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 40, height: 46), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1)));
+                                frameList.Add(new AnimFrame(atlasName: $"flame_small_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 40, height: 46), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false));
                             }
 
                             animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: frameList.ToArray()));
@@ -2405,7 +2403,7 @@ namespace SonOfRobin
 
                             for (int i = 0; i < 3; i++)
                             {
-                                frameList.Add(new AnimFrame(atlasName: $"flame_big_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 70, height: 66), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1)));
+                                frameList.Add(new AnimFrame(atlasName: $"flame_big_{i + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 70, height: 66), scale: scale, duration: 6, gfxOffsetCorrection: new Vector2(1, 1), castsShadow: false));
                             }
 
                             animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: frameList.ToArray()));
@@ -2430,13 +2428,13 @@ namespace SonOfRobin
 
                 case PkgName.Zzz:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 39, height: 15, scale: 1f, layer: 2, animSize: 0, altasName: "zzz", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 39, height: 15, scale: 1f, layer: 2, animSize: 0, altasName: "zzz", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.Heart:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 18, scale: 1f, layer: 2, animSize: 0, altasName: "heart_16x16", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 18, height: 18, scale: 1f, layer: 2, animSize: 0, altasName: "heart_16x16", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
@@ -2448,43 +2446,43 @@ namespace SonOfRobin
 
                 case PkgName.Fog1:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.Fog2:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.4f, layer: 2, animSize: 0, altasName: "fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.Fog3:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.Fog4:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 352, height: 352, scale: 1.8f, layer: 2, animSize: 0, altasName: "fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.BubbleExclamationRed:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_exclamation_red", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_exclamation_red", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.BubbleExclamationBlue:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_exclamation_blue", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_exclamation_blue", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.BubbleCraftGreen:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_craft_green", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 128, height: 131, scale: 0.2f, layer: 2, animSize: 0, altasName: "bubble_craft_green", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
@@ -2497,80 +2495,80 @@ namespace SonOfRobin
                             int animSize = kvp.Key;
                             float scale = kvp.Value;
 
-                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: "wave", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 89, height: 315), scale: scale, ignoreWhenCalculatingMaxSize: true)]));
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: "wave", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 89, height: 315), scale: scale, ignoreWhenCalculatingMaxSize: true, castsShadow: false)]));
                         }
                         break;
                     }
 
                 case PkgName.WeatherFog1:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog2:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog3:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.0f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog4:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog5:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog6:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 1.4f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog7:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_1", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog8:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 84, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_2", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.WeatherFog9:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 130, height: 85, scale: 2.0f, layer: 2, animSize: 0, altasName: "weather_fog_3", hasOnePixelMargin: true, ignoreWhenCalculatingMaxSize: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.FertileGroundSmall:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 65, height: 55, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_small", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 65, height: 55, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_small", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.FertileGroundMedium:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 102, height: 75, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_medium", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 102, height: 75, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_medium", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
                 case PkgName.FertileGroundLarge:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 134, height: 134, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_big", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 134, height: 134, scale: 1.0f, layer: -1, animSize: 0, altasName: "fertile_ground_big", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     };
 
@@ -2626,14 +2624,14 @@ namespace SonOfRobin
             pkgByName[pkgName] = animPkg;
         }
 
-        public static AnimPkg MakePackageForSingleImage(PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false)
+        public static AnimPkg MakePackageForSingleImage(PkgName pkgName, string altasName, int width, int height, int animSize, int layer, bool hasOnePixelMargin = false, float scale = 1f, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, bool castsShadow = true)
         {
             int colWidth = (int)((hasOnePixelMargin ? width - 2 : width) * scale);
             int colHeight = (int)((hasOnePixelMargin ? height - 2 : height) * scale);
 
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
-            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: altasName, layer: layer, cropRect: new Rectangle(x: 0, y: 0, width: width, height: height), duration: 0, mirrorX: mirrorX, mirrorY: mirrorY, scale: scale, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize)]));
+            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: altasName, layer: layer, cropRect: new Rectangle(x: 0, y: 0, width: width, height: height), duration: 0, mirrorX: mirrorX, mirrorY: mirrorY, scale: scale, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize, castsShadow: castsShadow)]));
 
             return animPkg;
         }
@@ -2659,8 +2657,11 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRpgMakerV1Data(PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f)
+        public static AnimPkg MakePackageForRpgMakerV1Data(PkgName pkgName, string altasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f)
         {
+            if (shadowOriginFactor == default) shadowOriginFactor = AnimFrame.defaultShadowOriginFactor;
+            if (shadowPosOffset == default) shadowPosOffset = Vector2.Zero;
+
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
 
             int setOffsetX = setNoX * 96;
@@ -2685,7 +2686,7 @@ namespace SonOfRobin
 
                 var frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, hasFlatShadow: false)
+                    new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false)
                 };
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"stand-{animName}", size: animSize, frameArray: frameList.ToArray()));
@@ -2706,7 +2707,7 @@ namespace SonOfRobin
 
                 foreach (int x in new int[] { setOffsetX + width, setOffsetX + (width * 2) })
                 {
-                    frameList.Add(new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection));
+                    frameList.Add(new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
                 }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
@@ -2715,7 +2716,7 @@ namespace SonOfRobin
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRPGMakerPackageV2UsingSizeDict(PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection)
+        public static AnimPkg MakePackageForRPGMakerPackageV2UsingSizeDict(PkgName pkgName, string atlasName, int colWidth, int colHeight, int setNoX, int setNoY, Dictionary<byte, float> scaleForSizeDict, Vector2 gfxOffsetCorrection, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f)
         {
             AnimPkg animPkg = new(pkgName: pkgName, colWidth: colWidth, colHeight: colHeight);
 
@@ -2723,14 +2724,17 @@ namespace SonOfRobin
             {
                 byte animSize = kvp.Key;
                 float scale = kvp.Value;
-                MakePackageForRpgMakerV2Data(pkgName: pkgName, atlasName: atlasName, setNoX: setNoX, setNoY: setNoY, animSize: animSize, scale: scale, colWidth: colWidth, colHeight: colHeight, gfxOffsetCorrection: gfxOffsetCorrection, animPkg: animPkg);
+                MakePackageForRpgMakerV2Data(pkgName: pkgName, atlasName: atlasName, setNoX: setNoX, setNoY: setNoY, animSize: animSize, scale: scale, colWidth: colWidth, colHeight: colHeight, gfxOffsetCorrection: gfxOffsetCorrection, animPkg: animPkg, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier);
             }
 
             return animPkg;
         }
 
-        public static AnimPkg MakePackageForRpgMakerV2Data(PkgName pkgName, string atlasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, AnimPkg animPkg = null)
+        public static AnimPkg MakePackageForRpgMakerV2Data(PkgName pkgName, string atlasName, int colWidth, int colHeight, Vector2 gfxOffsetCorrection, int setNoX, int setNoY, int animSize, float scale = 1f, AnimPkg animPkg = null, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f)
         {
+            if (shadowOriginFactor == default) shadowOriginFactor = AnimFrame.defaultShadowOriginFactor;
+            if (shadowPosOffset == default) shadowPosOffset = Vector2.Zero;
+
             if (animPkg == null) animPkg = new(pkgName: pkgName, colWidth: (int)(colWidth * scale), colHeight: (int)(colHeight * scale));
 
             int setOffsetX = setNoX * 144;
@@ -2755,7 +2759,7 @@ namespace SonOfRobin
 
                 var frameList = new List<AnimFrame>
                 {
-                    new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, hasFlatShadow: false)
+                    new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: width + setOffsetX, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false)
                 };
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"stand-{animName}", size: animSize, frameArray: frameList.ToArray()));
@@ -2776,7 +2780,7 @@ namespace SonOfRobin
 
                 foreach (int x in new int[] { setOffsetX, setOffsetX + width, setOffsetX + (width * 2), setOffsetX + width })
                 {
-                    frameList.Add(new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection));
+                    frameList.Add(new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x, y: setOffsetY + directionOffsetY, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
                 }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));

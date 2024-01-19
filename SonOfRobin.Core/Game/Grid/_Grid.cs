@@ -1293,7 +1293,7 @@ namespace SonOfRobin
 
             foreach (Sprite shadowSprite in spritesCastingShadows.OrderBy(s => s.AnimFrame.layer).ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
             {
-                if (shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
+                if (!shadowSprite.AnimFrame.castsShadow) continue;
 
                 Rectangle gfxRect = shadowSprite.GfxRect;
 

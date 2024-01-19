@@ -97,7 +97,6 @@ namespace SonOfRobin
             public readonly bool ambsoundGeneratesWind;
             public readonly bool visFogExplodesWhenBurns;
             public readonly bool destroysPlantsWhenBuilt;
-            public readonly bool shadowNotDrawn;
             public readonly float fertileGroundSoilWealthMultiplier;
             public readonly int inOpacityFadeDuration;
             public readonly int toolRange;
@@ -235,7 +234,6 @@ namespace SonOfRobin
                 this.ambsoundGeneratesWind = false;
                 this.visFogExplodesWhenBurns = false;
                 this.destroysPlantsWhenBuilt = false;
-                this.shadowNotDrawn = false;
                 this.fertileGroundSoilWealthMultiplier = 0;
                 this.inOpacityFadeDuration = 0;
                 this.toolMultiplierByCategory = null;
@@ -1768,7 +1766,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1785,7 +1782,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1802,7 +1798,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1818,7 +1813,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                 firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1833,7 +1827,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1852,7 +1845,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                                  firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -1972,7 +1964,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.BloodSplatter:
@@ -1991,7 +1982,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 3;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Miss:
@@ -2001,7 +1991,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Zzz:
@@ -2011,7 +2000,6 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
                         this.inOpacityFadeDuration = 30;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Heart:
@@ -2021,7 +2009,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 2;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Orbiter:
@@ -2030,7 +2017,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.MapMarker:
@@ -2039,7 +2025,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.MusicNote:
@@ -2048,7 +2033,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Crosshair:
@@ -2057,7 +2041,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationRed:
@@ -2067,7 +2050,6 @@ namespace SonOfRobin
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
                         this.inOpacityFadeDuration = 30;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.BubbleExclamationBlue:
@@ -2076,7 +2058,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.BubbleCraftGreen:
@@ -2085,7 +2066,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.Explosion:
@@ -2095,7 +2075,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.HasAppeared] = new Sound(name: SoundData.Name.ShootFire, maxPitchVariation: 0.6f);
                         break;
 
@@ -2699,7 +2678,6 @@ namespace SonOfRobin
                         this.destructionDelay = 60 * 60 * 5;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.HerbsBlack:
@@ -2867,14 +2845,12 @@ namespace SonOfRobin
                         this.placeMaxDistance = 500;
                         this.inOpacityFadeDuration = 30;
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 1);
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.WaterEdgeDistort:
                         this.category = BoardPiece.Category.Indestructible;
                         this.serialize = false;
                         this.placeMaxDistance = 500;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.SwampGas:
@@ -2886,7 +2862,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 370, maxNoOfPiecesSameName: 3);
                         this.inOpacityFadeDuration = 180;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.WeatherFog:
@@ -2895,7 +2870,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 0;
                         this.inOpacityFadeDuration = 60 * 3;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.SwampGeyser:
@@ -2903,7 +2877,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.allowedDensity = new AllowedDensity(radius: 320, maxNoOfPiecesSameName: 1);
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.LavaGas:
@@ -2914,7 +2887,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(radius: 100, maxNoOfPiecesSameName: 1);
                         this.inOpacityFadeDuration = 120;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.SoundLakeWaves:
@@ -2968,7 +2940,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 500;
                         this.floatsOnWater = true;
-                        this.shadowNotDrawn = true;
 
                         customSoundsForActions[PieceSoundPackTemplate.Action.Ambient] = new Sound(nameList: new List<SoundData.Name> { SoundData.Name.SeaWave1, SoundData.Name.SeaWave2, SoundData.Name.SeaWave3, SoundData.Name.SeaWave4, SoundData.Name.SeaWave5, SoundData.Name.SeaWave6, SoundData.Name.SeaWave7, SoundData.Name.SeaWave8, SoundData.Name.SeaWave9, SoundData.Name.SeaWave10, SoundData.Name.SeaWave11, SoundData.Name.SeaWave12, SoundData.Name.SeaWave13 }, maxPitchVariation: 0.8f, volume: 0.8f);
                         break;
@@ -2987,7 +2958,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.ParticleEmitterWeather:
@@ -2995,7 +2965,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.HastePlayerClone:
@@ -3010,7 +2979,6 @@ namespace SonOfRobin
                         this.serialize = false;
                         this.placeMaxDistance = 0;
                         this.ignoresCollisions = true;
-                        this.shadowNotDrawn = true;
                         break;
 
                     case PieceTemplate.Name.FertileGroundSmall:
@@ -3020,7 +2988,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.4f;
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -3035,7 +3002,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 1.7f;
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -3050,7 +3016,6 @@ namespace SonOfRobin
                         this.allowedDensity = new AllowedDensity(forbidOverlapSameClass: true);
                         this.destroysPlantsWhenBuilt = true;
                         this.fertileGroundSoilWealthMultiplier = 2.2f;
-                        this.shadowNotDrawn = true;
 
                         this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisStone },
                             firstDroppedPieces: new List<Yield.DroppedPiece> { },
@@ -3177,12 +3142,7 @@ namespace SonOfRobin
                 }
                 else if (this.type == typeof(AmbientSound))
                 {
-                    this.shadowNotDrawn = true;
                     if (this.ambsoundPlayDelay == -1) throw new ArgumentNullException($"{this.name} - ambsoundPlayDelay not set.");
-                }
-                else if (this.type == typeof(ConstructionSite))
-                {
-                    this.shadowNotDrawn = true;
                 }
             }
 
