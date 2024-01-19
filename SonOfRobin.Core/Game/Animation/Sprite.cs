@@ -660,7 +660,8 @@ namespace SonOfRobin
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize) this.AssignAnim();
+            //if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize)
+            this.AssignAnim();
 
             AnimFrame oldAnimFrame = this.AnimFrame;
 
@@ -698,18 +699,27 @@ namespace SonOfRobin
             return this.AnimPkg.GetAnimNamesForSize(this.AnimSize).Contains(animNameToCheck);
         }
 
+        public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
+
         public void RewindAnim()
         {
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = this.AnimFrame.duration;
+            AssignFrame(checkForCollision: false);
         }
-
-        public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
 
         public void UpdateAnimation()
         {
-            if (this.AnimFrame.duration == 0) return; // duration == 0 will stop the animation
+            if (this.AnimFinished)
+            {
+                if (this.Anim.switchWhenComplete)
+                {
+                    this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.Anim.switchName);
+                    this.RewindAnim();
+                }
 
+                return; // duration == 0 will stop the animation, if there's no anim to switch to 
+            }
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
             {
@@ -735,7 +745,9 @@ namespace SonOfRobin
         }
 
         public void CharacterWalk(bool setEvenIfMissing = false)
-        { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
+        {
+            this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing);
+        }
 
         public void Draw(bool calculateSubmerge = true)
         {
