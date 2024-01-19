@@ -496,7 +496,7 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_red", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 25), gfxOffsetCorrection: new Vector2(0, -2))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "flowers_red", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 24, height: 25), gfxOffsetCorrection: new Vector2(0, -2), shadowOriginFactor: new Vector2(0.5f, 0.77f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.55f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -504,7 +504,7 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 10);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "grass_s0", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 19, height: 15))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "rushes", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 34), gfxOffsetCorrection: new Vector2(0, -8), shadowOriginFactor: new Vector2(0.53f, 0.84f), shadowPosOffset: new Vector2(-1.5f, 0), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "rushes", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 34), gfxOffsetCorrection: new Vector2(0, -8), shadowOriginFactor: new Vector2(0.53f, 0.84f), shadowPosOffset: new Vector2(-1.5f, 0), shadowHeightMultiplier: 0.45f, hasFlatShadow: false)]));
                         break;
                     }
 
@@ -529,16 +529,16 @@ namespace SonOfRobin
                 case PkgName.PlantPoison:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 12, colHeight: 11);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -1))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.4f, shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "plant_poison", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 33), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -1), shadowOriginFactor: new Vector2(0.5f, 0.81f), shadowPosOffset: new Vector2(0f, 0f), shadowHeightMultiplier: 0.5f, hasFlatShadow: false)]));
                         break;
                     }
 
                 case PkgName.CoffeeShrub:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 15);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.05f, gfxOffsetCorrection: new Vector2(0, -136), hasFlatShadow: false)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.06f, gfxOffsetCorrection: new Vector2(0, -160), hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.05f, gfxOffsetCorrection: new Vector2(0, -136), shadowOriginFactor: new Vector2(0.42f, 0.99f), shadowPosOffset: new Vector2(-1.5f, 7.5f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 1, frameArray: [new AnimFrame(atlasName: "coffee_shrub", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 486, height: 577), scale: 0.06f, gfxOffsetCorrection: new Vector2(0, -160), shadowOriginFactor: new Vector2(0.42f, 0.99f), shadowPosOffset: new Vector2(-1.5f, 7.5f), shadowHeightMultiplier: 0.6f, hasFlatShadow: false)]));
                         break;
                     }
 

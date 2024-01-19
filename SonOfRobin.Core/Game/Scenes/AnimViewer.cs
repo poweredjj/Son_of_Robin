@@ -49,7 +49,7 @@ namespace SonOfRobin
 
         public AnimViewer() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.controlMode = ControlMode.GfxOffset;
+            this.controlMode = ControlMode.ShadowOriginFactor;
 
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(80, 80);
@@ -96,6 +96,7 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.Escape))
             {
                 this.Remove();
+                if (GetTopSceneOfType(typeof(Menu)) == null) new InitialLoader();
                 return;
             }
 
@@ -260,6 +261,8 @@ namespace SonOfRobin
                 }
             }
 
+            if (Keyboard.HasBeenPressed(Keys.P)) this.PrintFrameParams();
+
             foreach (var kvp in new Dictionary<Keys, int> {
                 { Keys.D1, 1 },
                 { Keys.D2, 2 },
@@ -388,7 +391,7 @@ namespace SonOfRobin
 
             string description = "";
 
-            description += $"mode: {this.controlMode} colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}, gfxOffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
+            description += $"mode: {this.controlMode}, colRect: {this.colRect.Width}x{this.colRect.Height} gfxRect: {this.gfxRect.Width}x{this.gfxRect.Height}, gfxOffset: {(int)(this.currentAnimFrame.gfxOffsetCorrection.X / this.currentAnimFrame.scale)},{(int)(this.currentAnimFrame.gfxOffsetCorrection.Y / this.currentAnimFrame.scale)}\n";
 
             description += $"shadowOriginFactor: X {this.currentAnimFrame.shadowOriginFactor.X} Y {this.currentAnimFrame.shadowOriginFactor.Y}\n";
 
@@ -411,6 +414,26 @@ namespace SonOfRobin
                 effectAmount: 1);
 
             SonOfRobinGame.SpriteBatch.End();
+        }
+
+        private void PrintFrameParams()
+        {
+            AnimFrame frame = this.currentAnimFrame;
+
+            var textList = new List<string>();
+            textList.Add($"\n\n{this.currentAnimPkg.name} {frame.atlasName}\n");
+            textList.Add($", gfxOffsetCorrection: new Vector2({(int)(frame.gfxOffsetCorrection.X / frame.scale)}f, {(int)(frame.gfxOffsetCorrection.Y / frame.scale)}f)");
+            textList.Add($", shadowOriginFactor: new Vector2({ConvertValueToString(frame.shadowOriginFactor.X)}f, {ConvertValueToString(frame.shadowOriginFactor.Y)}f)");
+            textList.Add($", shadowPosOffset: new Vector2({ConvertValueToString(frame.shadowPosOffset.X)}f, {ConvertValueToString(frame.shadowPosOffset.Y)}f)");
+            textList.Add($", shadowHeightMultiplier: {ConvertValueToString(frame.shadowHeightMultiplier)}f");
+            if (!frame.hasFlatShadow) textList.Add($", hasFlatShadow: {frame.hasFlatShadow.ToString().ToLower()}");
+
+            MessageLog.Add(debugMessage: true, text: String.Join("", textList));
+        }
+
+        private static string ConvertValueToString(float value)
+        {
+            return value.ToString().Replace(",", ".");
         }
 
         private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, float drawOffsetX = 0f, float drawOffsetY = 0f, float yScaleForce = 0f)
@@ -438,7 +461,7 @@ namespace SonOfRobin
                 float yScale = frame.scale / distance * 100f;
                 yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
                 yScale *= frame.shadowHeightMultiplier;
-                yScale = Math.Max(yScale, 0.8f);
+                yScale = Math.Max(yScale, frame.scale * 0.8f);
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
