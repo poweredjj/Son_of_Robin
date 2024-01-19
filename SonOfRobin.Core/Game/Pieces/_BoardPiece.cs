@@ -310,10 +310,7 @@ namespace SonOfRobin
                 if (this.world == null || !this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera) // size change should not be visible
                 {
                     int previousSpriteSize = this.sprite.AnimSize;
-                    bool spriteSizeSetCorrectly = this.SetSpriteSizeByMass();
-
-                    // cannot change mass, if there is no room to expand
-                    if (!spriteSizeSetCorrectly && previousSpriteSize < this.sprite.AnimSize) this.mass = this.pieceInfo.maxMassForSize[this.sprite.AnimSize];
+                    this.SetSpriteSizeByMass();
 
                     if (previousSpriteSize != this.sprite.AnimSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                     {
@@ -324,14 +321,13 @@ namespace SonOfRobin
             }
         }
 
-        private bool SetSpriteSizeByMass()
+        private void SetSpriteSizeByMass()
         {
             byte newSpriteSize = this.SpriteSize;
-            if (this.sprite.AnimSize == newSpriteSize) return true;
-            if (!this.pieceInfo.canShrink && this.sprite.AnimSize > newSpriteSize) return true;
+            if (this.sprite.AnimSize == newSpriteSize) return;
+            if (!this.pieceInfo.canShrink && this.sprite.AnimSize > newSpriteSize) return;
 
             this.sprite.AssignNewSize(newSpriteSize);
-            return this.sprite.AnimSize == newSpriteSize;
         }
 
         public float HitPointsPercent
