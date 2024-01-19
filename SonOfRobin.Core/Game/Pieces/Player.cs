@@ -1402,7 +1402,7 @@ namespace SonOfRobin
                 closestPiece.HeatLevel = 0f;
                 if (closestPiece.GetType() == typeof(Animal)) closestPiece.HitPoints = closestPiece.maxHitPoints; // to prevent from showing health bar
 
-                MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", imageObj: closestPiece.sprite.AnimFrame.imageObj);
+                MessageLog.Add(text: $"Picked up {closestPiece.readableName}.", imageObj: closestPiece.sprite.AnimPkg.presentationFrame.imageObj);
                 this.world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, newOwnedPieceNameToCheck: closestPiece.name);
             }
             else
@@ -1410,7 +1410,7 @@ namespace SonOfRobin
                 this.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.SmallInventory, ignoreDelay: true);
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), imageObj: closestPiece.sprite.AnimFrame.imageObj, avoidDuplicates: true);
+                MessageLog.Add(text: $"Inventory full - cannot pick up {closestPiece.readableName}.", bgColor: new Color(105, 3, 18), imageObj: closestPiece.sprite.AnimPkg.presentationFrame.imageObj, avoidDuplicates: true);
             }
         }
 
