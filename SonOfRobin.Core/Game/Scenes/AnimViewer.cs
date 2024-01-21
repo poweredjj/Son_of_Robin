@@ -105,6 +105,7 @@ namespace SonOfRobin
                 this.controlMode--;
                 if (!allControlModes.Contains(this.controlMode)) this.controlMode = allControlModes.Max();
             }
+
             if (Keyboard.HasBeenPressed(Keys.PageDown))
             {
                 this.controlMode++;
