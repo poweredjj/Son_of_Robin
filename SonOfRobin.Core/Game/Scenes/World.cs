@@ -5,6 +5,7 @@ using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,50 +13,39 @@ namespace SonOfRobin
 {
     public class World : Scene
     {
-        private static readonly BlendState darknessMaskBlend = new()
-        {
-            AlphaBlendFunction = BlendFunction.ReverseSubtract,
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.One,
-
-            ColorBlendFunction = BlendFunction.ReverseSubtract,
-            ColorSourceBlend = Blend.One,
-            ColorDestinationBlend = Blend.One,
-        };
-
         public static BlendState shadowBlend = new()
         {
             // BlendFunction.Min and BlendFunction.Max will not work on Android (causing crashes)
 
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.SourceAlpha,
+            AlphaDestinationBlend = Blend.DestinationAlpha,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.SourceAlpha,
+            ColorDestinationBlend = Blend.InverseSourceAlpha,
+        };
+
+        public static BlendState lightBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.InverseDestinationColor,
+            AlphaDestinationBlend = Blend.SourceColor,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.Zero,
+            ColorDestinationBlend = Blend.SourceColor,
+        };
+
+        public static BlendState darknessMaskBlend = new()
+        {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.One,
+            AlphaSourceBlend = Blend.DestinationColor,
+            AlphaDestinationBlend = Blend.BlendFactor,
 
-            ColorBlendFunction = BlendFunction.ReverseSubtract,
-            ColorSourceBlend = Blend.One,
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.SourceAlphaSaturation,
             ColorDestinationBlend = Blend.One,
-        };
-
-        private static readonly BlendState shadowBlendRedraw = new()
-        {
-            AlphaBlendFunction = BlendFunction.Add,
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.One,
-
-            ColorBlendFunction = BlendFunction.Add,
-            ColorSourceBlend = Blend.Zero,
-            ColorDestinationBlend = Blend.InverseSourceColor,
-        };
-
-        private static readonly BlendState lightBlend = new()
-        {
-            AlphaBlendFunction = BlendFunction.Add,
-            AlphaSourceBlend = Blend.InverseSourceAlpha,
-            AlphaDestinationBlend = Blend.SourceAlpha,
-
-            ColorBlendFunction = BlendFunction.Add,
-            ColorSourceBlend = Blend.Zero,
-            ColorDestinationBlend = Blend.DestinationColor,
         };
 
         private static readonly BlendState ambientBlend = new()
@@ -1614,7 +1604,7 @@ namespace SonOfRobin
                 // drawing shadows onto shadow mask
 
                 SetRenderTarget(tempShadowMask);
-                SonOfRobinGame.GfxDev.Clear(Color.Black);
+                SonOfRobinGame.GfxDev.Clear(Color.White);
 
                 Matrix scaleMatrix = Matrix.CreateScale( // to match drawing size with rect size (light texture size differs from light rect size)
                     (float)tempShadowMask.Width / (float)lightRect.Width,
@@ -1632,25 +1622,18 @@ namespace SonOfRobin
 
                         float shadowAngle = Helpers.GetAngleBetweenTwoPoints(start: lightSprite.position, end: shadowSprite.position);
                         if (shadowSprite != lightSprite) shadowSprite.DrawShadow(color: Color.Black, lightPos: lightSprite.position, shadowAngle: shadowAngle, drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
-                        //shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y));
+                        shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y));
                     }
                     SonOfRobinGame.SpriteBatch.End();
                 }
-
-                // second pass - erasing shadow from original sprites' position
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: shadowBlendRedraw);
-                foreach (Sprite shadowSprite in spritesCastingShadows)
-                {
-                    // the lightSprite should be also redrawn, to avoid being overdrawn with any shadow
-                    if (lightRect.Intersects(shadowSprite.GfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y));
-                }
-                SonOfRobinGame.SpriteBatch.End();
 
                 // drawing light on top of shadows
 
                 SonOfRobinGame.SpriteBatch.Begin(blendState: lightBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
+
+                // if (SonOfRobinGame.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask.png"), texture: tempShadowMask); // for testing
 
                 // subtracting shadow mask from darkness
 

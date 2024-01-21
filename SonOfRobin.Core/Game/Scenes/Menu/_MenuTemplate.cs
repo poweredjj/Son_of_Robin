@@ -1228,13 +1228,16 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "show anim viewer", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showAnimViewerDlgt);
                         }
 
-                        Scheduler.ExecutionDelegate toggleBlendStateEditorDlgt = () =>
+                        if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            Scene scene = Scene.GetTopSceneOfType(typeof(BlendStateEditor));
-                            if (scene == null) new BlendStateEditor();
-                            else { scene.Remove();  }
-                        };
-                        new Invoker(menu: menu, name: "toggle blendState editor", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: toggleBlendStateEditorDlgt);
+                            Scheduler.ExecutionDelegate toggleBlendStateEditorDlgt = () =>
+                            {
+                                Scene scene = Scene.GetTopSceneOfType(typeof(BlendStateEditor));
+                                if (scene == null) new BlendStateEditor();
+                                else { scene.Remove(); }
+                            };
+                            new Invoker(menu: menu, name: "toggle blendState editor", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: toggleBlendStateEditorDlgt);
+                        }
 
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds", resizesAllScenes: true);
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe", resizesAllScenes: true);

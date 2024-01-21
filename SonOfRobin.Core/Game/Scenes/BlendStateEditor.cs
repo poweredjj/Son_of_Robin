@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace SonOfRobin
 {
@@ -12,12 +11,12 @@ namespace SonOfRobin
     {
         // Allows for brute forcing needed BlendState settings.
 
-        private static BlendState TargetBlendState { get { return World.shadowBlend; } set { World.shadowBlend = value; } }
+        private static BlendState TargetBlendState { get { return World.lightBlend; } set { World.lightBlend = value; } }
 
         private readonly BlendState blendState;
         private readonly SpriteFontBase font;
 
-        public BlendStateEditor() : base(inputType: InputTypes.Always, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public BlendStateEditor() : base(inputType: InputTypes.Always, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.blendState = MakeBlendStateCopy(TargetBlendState);
             this.font = SonOfRobinGame.FontVCROSD.GetFont(18);
