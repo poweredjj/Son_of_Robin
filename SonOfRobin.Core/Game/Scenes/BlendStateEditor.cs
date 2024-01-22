@@ -9,8 +9,20 @@ namespace SonOfRobin
 {
     public class BlendStateEditor : Scene
     {
+
+        private static BlendState testBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Subtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.BlendFactor,
+
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
         // Allows for brute forcing needed BlendState settings.
-        private static BlendState TargetBlendState { get { return World.darknessMaskBlend; } set { World.darknessMaskBlend = value; } }
+        private static BlendState TargetBlendState { get { return testBlend; } set { testBlend = value; } } // replace testBlend with Class.blend to be changed
 
         private readonly BlendState blendState;
         private readonly SpriteFontBase font;

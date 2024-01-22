@@ -16,7 +16,18 @@ namespace SonOfRobin
     {
         // BlendFunction.Min and BlendFunction.Max will not work on Android (causing crashes)
 
-        public static BlendState darknessMaskBlend = new()
+        private static readonly BlendState lightSphereBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Subtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.BlendFactor,
+
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
+        private static readonly BlendState darknessMaskBlend = new()
         {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
             AlphaSourceBlend = Blend.One,
@@ -54,7 +65,6 @@ namespace SonOfRobin
 
         // render targets are static, to avoid using more when more worlds are in use (demo, new world during loading, etc.)
         private static RenderTarget2D cameraViewRenderTarget;
-
         public static RenderTarget2D DarknessAndHeatMask { get; private set; } // used for darkness and for heat
         public static RenderTarget2D FinalRenderTarget { get; private set; } // used also as temp mask for effects (shadows, distortion map, etc.)
 
@@ -1461,7 +1471,7 @@ namespace SonOfRobin
 
             if (sunShadowsOpacity > 0f)
             {
-                bool softShadows = Preferences.softSunShadows && sunLightData.shadowBlurSize > 0;
+                bool softShadows = Preferences.softShadows && sunLightData.shadowBlurSize > 0;
 
                 SonOfRobinGame.SpriteBatch.Begin(sortMode: softShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
                 if (softShadows)
@@ -1590,17 +1600,17 @@ namespace SonOfRobin
 
                 // drawing shadows onto shadow mask
 
-                SetRenderTarget(SonOfRobinGame.tempShadowMask1);
-                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
-
                 Matrix scaleMatrix = Matrix.CreateScale( // to match drawing size with rect size (light texture size differs from light rect size)
                     (float)SonOfRobinGame.tempShadowMask1.Width / (float)lightRect.Width,
                     (float)SonOfRobinGame.tempShadowMask1.Height / (float)lightRect.Height,
                     1f);
 
                 // drawing shadows
-                if (lightSprite.lightEngine.castShadows)
+                if (lightSprite.lightEngine.castShadows && Preferences.drawLightSourcedShadows)
                 {
+                    SetRenderTarget(SonOfRobinGame.tempShadowMask1);
+                    SonOfRobinGame.GfxDev.Clear(Color.Transparent);
+
                     SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scaleMatrix, blendState: BlendState.AlphaBlend);
 
                     foreach (Sprite shadowSprite in spritesCastingShadows
@@ -1613,19 +1623,28 @@ namespace SonOfRobin
                         shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y)); // "erasing" original sprite from shadow
                     }
                     SonOfRobinGame.SpriteBatch.End();
+
+                    // merging shadows with lightsphere (using shader)
+
+                    if (this.shadowMergeInstance == null) this.shadowMergeInstance = new ShadowMergeInstance(shadowTexture: SonOfRobinGame.tempShadowMask1, lightTexture: SonOfRobinGame.lightSphere);
+
+                    SetRenderTarget(SonOfRobinGame.tempShadowMask2);
+                    SonOfRobinGame.GfxDev.Clear(Color.Transparent);
+
+                    SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+                    this.shadowMergeInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.End();
                 }
+                else // simpler operation for non-shadow casters
+                {
+                    SetRenderTarget(SonOfRobinGame.tempShadowMask2);
+                    SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
-                // cutting out shadows from lightsphere
-
-                if (this.shadowMergeInstance == null) this.shadowMergeInstance = new ShadowMergeInstance(shadowTexture: SonOfRobinGame.tempShadowMask1, lightTexture: SonOfRobinGame.lightSphere);
-
-                SetRenderTarget(SonOfRobinGame.tempShadowMask2);
-                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
-
-                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
-                this.shadowMergeInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
-                SonOfRobinGame.SpriteBatch.End();
+                    SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Deferred, blendState: lightSphereBlend);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.End();
+                }
 
                 //if (SonOfRobinGame.CurrentUpdate % 60 == 0)
                 //{
@@ -1696,9 +1715,9 @@ namespace SonOfRobin
                 if (ambientLightData.darknessColor != Color.Transparent)
                 {
                     SonOfRobinGame.SpriteBatch.End();
-                    SonOfRobinGame.SpriteBatch.Begin(sortMode: Preferences.softSunShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+                    SonOfRobinGame.SpriteBatch.Begin(sortMode: Preferences.softShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
 
-                    if (Preferences.softSunShadows)
+                    if (Preferences.softShadows)
                     {
                         this.shadowBlurEffect.blurSize = new Vector2(2);
                         this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
