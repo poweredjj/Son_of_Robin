@@ -36,6 +36,28 @@ namespace SonOfRobin
             ColorDestinationBlend = Blend.InverseDestinationColor,
         };
 
+        public static BlendState lightBlend2 = new()
+        {
+            AlphaBlendFunction = BlendFunction.Add,
+            AlphaSourceBlend = Blend.DestinationAlpha,
+            AlphaDestinationBlend = Blend.InverseBlendFactor,
+
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.DestinationColor,
+            ColorDestinationBlend = Blend.Zero,
+        };
+
+        public static BlendState lightSphereBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.ReverseSubtract,
+            AlphaSourceBlend = Blend.SourceAlpha,
+            AlphaDestinationBlend = Blend.InverseSourceColor,
+
+            ColorBlendFunction = BlendFunction.Subtract,
+            ColorSourceBlend = Blend.SourceAlphaSaturation,
+            ColorDestinationBlend = Blend.BlendFactor,
+        };
+
         public static BlendState darknessMaskBlend = new()
         {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
@@ -1627,9 +1649,9 @@ namespace SonOfRobin
                     SonOfRobinGame.SpriteBatch.End();
                 }
 
-                // drawing light on top of shadows
+                // adding lightsphere transparency to shadows
 
-                SonOfRobinGame.SpriteBatch.Begin(blendState: lightBlend);
+                SonOfRobinGame.SpriteBatch.Begin(blendState: lightBlend2);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
@@ -1638,7 +1660,11 @@ namespace SonOfRobin
                 // subtracting shadow mask from darkness
 
                 SetRenderTarget(DarknessAndHeatMask);
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: lightSphereBlend);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, lightRect, Color.White * lightSprite.lightEngine.Opacity);
+                SonOfRobinGame.SpriteBatch.End();
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: lightSphereBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
                 SonOfRobinGame.SpriteBatch.End();
             }
