@@ -4,20 +4,30 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace SonOfRobin
 {
     public class BlendStateEditor : Scene
     {
-        // Allows for brute forcing needed BlendState settings.
 
-        private static BlendState TargetBlendState { get { return World.shadowBlend; } set { World.shadowBlend = value; } }
+        private static BlendState testBlend = new()
+        {
+            AlphaBlendFunction = BlendFunction.Subtract,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.BlendFactor,
+
+            ColorBlendFunction = BlendFunction.ReverseSubtract,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
+        };
+
+        // Allows for brute forcing needed BlendState settings.
+        private static BlendState TargetBlendState { get { return testBlend; } set { testBlend = value; } } // replace testBlend with Class.blend to be changed
 
         private readonly BlendState blendState;
         private readonly SpriteFontBase font;
 
-        public BlendStateEditor() : base(inputType: InputTypes.Always, priority: 1, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
+        public BlendStateEditor() : base(inputType: InputTypes.Always, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.blendState = MakeBlendStateCopy(TargetBlendState);
             this.font = SonOfRobinGame.FontVCROSD.GetFont(18);
@@ -34,6 +44,8 @@ namespace SonOfRobin
                 ColorBlendFunction = blendState.ColorBlendFunction,
                 ColorSourceBlend = blendState.ColorSourceBlend,
                 ColorDestinationBlend = blendState.ColorDestinationBlend,
+
+                BlendFactor = blendState.BlendFactor,
             };
         }
 
@@ -52,7 +64,7 @@ namespace SonOfRobin
                 this.blendState.AlphaSourceBlend = GetNextBlend(this.blendState.AlphaSourceBlend);
                 blendChanged = true;
             }
-            
+
             if (Keyboard.HasBeenPressed(Keys.PageUp))
             {
                 this.blendState.AlphaDestinationBlend = GetNextBlend(this.blendState.AlphaDestinationBlend);
@@ -74,6 +86,20 @@ namespace SonOfRobin
             if (Keyboard.HasBeenPressed(Keys.PageDown))
             {
                 this.blendState.ColorDestinationBlend = GetNextBlend(this.blendState.ColorDestinationBlend);
+                blendChanged = true;
+            }
+
+            if (Keyboard.HasBeenPressed(Keys.OemPlus))
+            {
+                Color bFactor = this.blendState.BlendFactor;
+                this.blendState.BlendFactor = new Color(bFactor.R + 20, bFactor.G + 20, bFactor.B + 20, bFactor.B + 20);
+                blendChanged = true;
+            }  
+            
+            if (Keyboard.HasBeenPressed(Keys.OemMinus))
+            {
+                Color bFactor = this.blendState.BlendFactor;
+                this.blendState.BlendFactor = new Color(bFactor.R - 20, bFactor.G - 20, bFactor.B - 20, bFactor.B - 20);
                 blendChanged = true;
             }
 
@@ -154,10 +180,12 @@ namespace SonOfRobin
             textList.Add($"AlphaBlendFunction: {this.blendState.AlphaBlendFunction}");
             textList.Add($"AlphaSourceBlend: {this.blendState.AlphaSourceBlend}");
             textList.Add($"AlphaDestinationBlend: {this.blendState.AlphaDestinationBlend}");
+            textList.Add("");
             textList.Add($"ColorBlendFunction: {this.blendState.ColorBlendFunction}");
             textList.Add($"ColorSourceBlend: {this.blendState.ColorSourceBlend}");
             textList.Add($"ColorDestinationBlend: {this.blendState.ColorDestinationBlend}");
-
+            textList.Add("");
+            textList.Add($"BlendFactor: {this.blendState.BlendFactor}");
 
             this.font.DrawText(
                 batch: SonOfRobinGame.SpriteBatch,

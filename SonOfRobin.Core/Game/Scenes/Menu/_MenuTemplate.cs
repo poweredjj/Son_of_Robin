@@ -269,11 +269,13 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);
+                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);    
+                        
+                        new Selector(menu: menu, name: "light-sourced shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawLightSourcedShadows", rebuildsMenu: true, resizesAllScenes: true);
 
-                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softSunShadows", resizesAllScenes: true);
+                        if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softShadows", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "draw shadows", valueDict: new Dictionary<object, object> { { true, "all" }, { false, "some" } }, targetObj: preferences, propertyName: "drawAllShadows", resizesAllScenes: true);
+                        new Selector(menu: menu, name: "shadows amount", valueDict: new Dictionary<object, object> { { true, "full" }, { false, "limited" } }, targetObj: preferences, propertyName: "drawAllShadows", resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell", resizesAllScenes: true);
 
@@ -1228,13 +1230,16 @@ namespace SonOfRobin
                             new Invoker(menu: menu, name: "show anim viewer", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showAnimViewerDlgt);
                         }
 
-                        Scheduler.ExecutionDelegate toggleBlendStateEditorDlgt = () =>
+                        if (SonOfRobinGame.platform != Platform.Mobile)
                         {
-                            Scene scene = Scene.GetTopSceneOfType(typeof(BlendStateEditor));
-                            if (scene == null) new BlendStateEditor();
-                            else { scene.Remove();  }
-                        };
-                        new Invoker(menu: menu, name: "toggle blendState editor", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: toggleBlendStateEditorDlgt);
+                            Scheduler.ExecutionDelegate toggleBlendStateEditorDlgt = () =>
+                            {
+                                Scene scene = Scene.GetTopSceneOfType(typeof(BlendStateEditor));
+                                if (scene == null) new BlendStateEditor();
+                                else { scene.Remove(); }
+                            };
+                            new Invoker(menu: menu, name: "toggle blendState editor", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: toggleBlendStateEditorDlgt);
+                        }
 
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds", resizesAllScenes: true);
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe", resizesAllScenes: true);

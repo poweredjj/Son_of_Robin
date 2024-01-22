@@ -91,7 +91,7 @@ namespace SonOfRobin
         public static bool alwaysRun = false;
         public static bool destroyMapMarkerWhenReached = true;
         public static bool smartCamera = true;
-        public static bool softSunShadows = true;
+        public static bool softShadows = true;
         public static bool drawAllShadows = true;
         public static bool mapShowLocationNames = true; // not saved
         public static bool pickupsHighlighted = false; // not saved
@@ -145,6 +145,7 @@ namespace SonOfRobin
         public static int maxFlameLightsPerCell = 3;
 
         public static bool drawSunShadows = true;
+        public static bool drawLightSourcedShadows = true;
         private static bool showControlTips = true;
 
         public static bool ShowControlTips
@@ -565,8 +566,9 @@ namespace SonOfRobin
             prefsData["alwaysRun"] = alwaysRun;
             prefsData["destroyMapMarkerWhenReached"] = destroyMapMarkerWhenReached;
             prefsData["smartCamera"] = smartCamera;
-            prefsData["softSunShadows"] = softSunShadows;
             prefsData["drawAllShadows"] = drawAllShadows;
+            prefsData["drawLightSourcedShadows"] = drawLightSourcedShadows;
+            prefsData["softShadows"] = softShadows;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -636,8 +638,9 @@ namespace SonOfRobin
                     messageLogScale = (float)(double)prefsData["messageLogScale"];
                     messageLogAtRight = (bool)prefsData["messageLogAtRight"];
                     smartCamera = (bool)prefsData["smartCamera"];
-                    softSunShadows = (bool)prefsData["softSunShadows"];
                     drawAllShadows = (bool)prefsData["drawAllShadows"];
+                    drawLightSourcedShadows = (bool)prefsData["drawLightSourcedShadows"];
+                    softShadows = (bool)prefsData["softShadows"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

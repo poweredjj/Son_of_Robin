@@ -319,7 +319,7 @@ namespace SonOfRobin
                         markerScreenPos.X -= this.viewParams.DrawPos.X;
                         markerScreenPos.Y -= this.viewParams.DrawPos.Y;
 
-                        Vector2 markerPosRightBottom = new(markerPos.X + markerWidth, markerPos.Y + markerHeight);
+                        Vector2 markerPosRightBottom = new(markerPos.X, markerPos.Y);
                         Vector2 markerScreenPosRightBottom = this.world.TranslateWorldToScreenPos(markerPosRightBottom);
                         markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
                         markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;

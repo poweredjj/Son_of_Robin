@@ -58,6 +58,7 @@ namespace SonOfRobin
         public static Effect EffectDistort { get; private set; }
         public static Effect EffectRain { get; private set; }
         public static Effect EffectHeatMaskDistortion { get; private set; }
+        public static Effect EffectShadowMerge { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -80,7 +81,8 @@ namespace SonOfRobin
         public static Texture2D SplashScreenTexture { get; private set; }
 
         public static readonly ParallelOptions defaultParallelOptions = new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        public static RenderTarget2D tempShadowMask;
+        public static RenderTarget2D tempShadowMask1;
+        public static RenderTarget2D tempShadowMask2;
         public static Texture2D lightSphere;
         public static readonly SimpleFps fps = new();
         public static readonly Random random = new();
@@ -255,6 +257,7 @@ namespace SonOfRobin
             EffectDistort = ContentMgr.Load<Effect>("effects/Distort");
             EffectRain = ContentMgr.Load<Effect>("effects/Rain");
             EffectHeatMaskDistortion = ContentMgr.Load<Effect>("effects/HeatMaskDistortion");
+            EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");
         }
 
         public static void LoadInitialTextures()
