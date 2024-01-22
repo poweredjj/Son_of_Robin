@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static SonOfRobin.AmbientLight;
 
 namespace SonOfRobin
 {
@@ -78,7 +79,7 @@ namespace SonOfRobin
         public EffInstance globalEffect;
         public EffInstance heatMaskDistortInstance;
         public EffInstance shadowMergeInstance;
-        public MosaicInstance sunShadowsBlurEffect;
+        public MosaicInstance shadowBlurEffect;
         public readonly Tweener tweenerForGlobalEffect;
         public readonly Map map;
         public readonly PlayerPanel playerPanel;
@@ -168,7 +169,7 @@ namespace SonOfRobin
             this.globalEffect = null;
             this.heatMaskDistortInstance = null;
             this.shadowMergeInstance = null;
-            this.sunShadowsBlurEffect = null;
+            this.shadowBlurEffect = null;
             this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
@@ -1465,8 +1466,8 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Begin(sortMode: softShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
                 if (softShadows)
                 {
-                    this.sunShadowsBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    this.sunShadowsBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
+                    this.shadowBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
+                    this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
                 }
                 SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, Color.White * sunShadowsOpacity);
                 SonOfRobinGame.SpriteBatch.End();
@@ -1695,7 +1696,14 @@ namespace SonOfRobin
                 if (ambientLightData.darknessColor != Color.Transparent)
                 {
                     SonOfRobinGame.SpriteBatch.End();
-                    SonOfRobinGame.SpriteBatch.Begin();
+                    SonOfRobinGame.SpriteBatch.Begin(sortMode: Preferences.softSunShadows ? SpriteSortMode.Immediate : SpriteSortMode.Deferred);
+
+                    if (Preferences.softSunShadows)
+                    {
+                        this.shadowBlurEffect.blurSize = new Vector2(2);
+                        this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+                    }
+
                     SonOfRobinGame.SpriteBatch.Draw(DarknessAndHeatMask, DarknessAndHeatMask.Bounds, Color.White);
                 }
             }
@@ -1746,7 +1754,7 @@ namespace SonOfRobin
                 MessageLog.Add(debugMessage: true, text: $"Creating new darkness mask (world) - {DarknessAndHeatMask.Width}x{DarknessAndHeatMask.Height}");
             }
             this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: cameraViewRenderTarget, distortTexture: DarknessAndHeatMask);
-            this.sunShadowsBlurEffect = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(DarknessAndHeatMask.Width, DarknessAndHeatMask.Height));
+            this.shadowBlurEffect = new MosaicInstance(blurSize: new Vector2(1f), textureSize: new Vector2(DarknessAndHeatMask.Width, DarknessAndHeatMask.Height));
 
             if (FinalRenderTarget == null || FinalRenderTarget.Width != newWidth || FinalRenderTarget.Height != newHeight)
             {
