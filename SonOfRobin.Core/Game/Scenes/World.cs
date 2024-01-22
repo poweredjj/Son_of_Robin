@@ -1636,13 +1636,13 @@ namespace SonOfRobin
                         shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y)); // "erasing" original sprite from shadow
                     }
                     SonOfRobinGame.SpriteBatch.End();
+
+                    // adding lightsphere transparency to shadows
+
+                    SonOfRobinGame.SpriteBatch.Begin(blendState: lightTransparencyBlend);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.End();
                 }
-
-                // adding lightsphere transparency to shadows
-
-                SonOfRobinGame.SpriteBatch.Begin(blendState: lightTransparencyBlend);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
-                SonOfRobinGame.SpriteBatch.End();
 
                 //if (SonOfRobinGame.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask.png"), texture: tempShadowMask); // for testing
 
@@ -1655,9 +1655,12 @@ namespace SonOfRobin
 
                 // adding darkness mask to darkness
 
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
-                SonOfRobinGame.SpriteBatch.End();
+                if (lightSprite.lightEngine.castShadows)
+                {
+                    SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
+                    SonOfRobinGame.SpriteBatch.End();
+                }
             }
 
             // setting render target back to camera view
