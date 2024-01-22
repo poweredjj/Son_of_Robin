@@ -81,7 +81,8 @@ namespace SonOfRobin
         public static Texture2D SplashScreenTexture { get; private set; }
 
         public static readonly ParallelOptions defaultParallelOptions = new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        public static RenderTarget2D tempShadowMask;
+        public static RenderTarget2D tempShadowMask1;
+        public static RenderTarget2D tempShadowMask2;
         public static Texture2D lightSphere;
         public static readonly SimpleFps fps = new();
         public static readonly Random random = new();
