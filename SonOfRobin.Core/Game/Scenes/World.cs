@@ -90,6 +90,7 @@ namespace SonOfRobin
         public readonly Camera camera;
         public EffInstance globalEffect;
         public EffInstance heatMaskDistortInstance;
+        public EffInstance shadowMergeInstance;
         public MosaicInstance sunShadowsBlurEffect;
         public readonly Tweener tweenerForGlobalEffect;
         public readonly Map map;
@@ -179,6 +180,7 @@ namespace SonOfRobin
             this.camera.TrackCoords(Vector2.Zero);
             this.globalEffect = null;
             this.heatMaskDistortInstance = null;
+            this.shadowMergeInstance = null;
             this.sunShadowsBlurEffect = null;
             this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
@@ -1621,11 +1623,16 @@ namespace SonOfRobin
 
                 // cutting out shadows from lightsphere
 
-                SonOfRobinGame.SpriteBatch.Begin(blendState: lightSphereBlend);
+                if (this.shadowMergeInstance == null) this.shadowMergeInstance = new ShadowMergeInstance(shadowTexture: tempShadowMask, lightTexture: SonOfRobinGame.lightSphere);
+
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+
+                this.shadowMergeInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
-               //  if (SonOfRobinGame.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask.png"), texture: tempShadowMask); // for testing
+                if (SonOfRobinGame.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask.png"), texture: tempShadowMask); // for testing
 
                 // subtracting darkness mask from darkness
 

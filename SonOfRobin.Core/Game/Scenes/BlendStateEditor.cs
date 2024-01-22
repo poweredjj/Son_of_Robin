@@ -10,7 +10,7 @@ namespace SonOfRobin
     public class BlendStateEditor : Scene
     {
         // Allows for brute forcing needed BlendState settings.
-        private static BlendState TargetBlendState { get { return World.lightSphereBlend; } set { World.lightSphereBlend = value; } }
+        private static BlendState TargetBlendState { get { return World.darknessMaskBlend; } set { World.darknessMaskBlend = value; } }
 
         private readonly BlendState blendState;
         private readonly SpriteFontBase font;
