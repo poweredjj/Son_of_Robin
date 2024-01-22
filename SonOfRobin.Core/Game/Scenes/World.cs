@@ -25,18 +25,7 @@ namespace SonOfRobin
             ColorDestinationBlend = Blend.InverseSourceColor,
         };
 
-        public static BlendState lightBlend = new()
-        {
-            AlphaBlendFunction = BlendFunction.Subtract,
-            AlphaSourceBlend = Blend.InverseDestinationColor,
-            AlphaDestinationBlend = Blend.DestinationColor,
-
-            ColorBlendFunction = BlendFunction.Subtract,
-            ColorSourceBlend = Blend.DestinationAlpha,
-            ColorDestinationBlend = Blend.InverseDestinationColor,
-        };
-
-        public static BlendState lightBlend2 = new()
+        public static BlendState lightTransparencyBlend = new()
         {
             AlphaBlendFunction = BlendFunction.Add,
             AlphaSourceBlend = Blend.DestinationAlpha,
@@ -50,23 +39,23 @@ namespace SonOfRobin
         public static BlendState lightSphereBlend = new()
         {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
-            AlphaSourceBlend = Blend.SourceAlpha,
-            AlphaDestinationBlend = Blend.InverseSourceColor,
+            AlphaSourceBlend = Blend.BlendFactor,
+            AlphaDestinationBlend = Blend.One,
 
-            ColorBlendFunction = BlendFunction.Subtract,
-            ColorSourceBlend = Blend.SourceAlphaSaturation,
-            ColorDestinationBlend = Blend.BlendFactor,
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.InverseBlendFactor,
+            ColorDestinationBlend = Blend.InverseSourceAlpha,
         };
 
         public static BlendState darknessMaskBlend = new()
         {
-            AlphaBlendFunction = BlendFunction.ReverseSubtract,
+            AlphaBlendFunction = BlendFunction.Add,
             AlphaSourceBlend = Blend.SourceAlpha,
-            AlphaDestinationBlend = Blend.InverseSourceColor,
+            AlphaDestinationBlend = Blend.InverseSourceAlpha,
 
-            ColorBlendFunction = BlendFunction.Subtract,
-            ColorSourceBlend = Blend.SourceAlphaSaturation,
-            ColorDestinationBlend = Blend.BlendFactor,
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.InverseSourceColor,
         };
 
         private static readonly BlendState ambientBlend = new()
@@ -1651,20 +1640,22 @@ namespace SonOfRobin
 
                 // adding lightsphere transparency to shadows
 
-                SonOfRobinGame.SpriteBatch.Begin(blendState: lightBlend2);
+                SonOfRobinGame.SpriteBatch.Begin(blendState: lightTransparencyBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, tempShadowMask.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
                 //if (SonOfRobinGame.CurrentUpdate % 60 == 0) GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask.png"), texture: tempShadowMask); // for testing
 
-                // subtracting shadow mask from darkness
+                // subtracting light sphere from darkness
 
                 SetRenderTarget(DarknessAndHeatMask);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: lightSphereBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, lightRect, Color.White * lightSprite.lightEngine.Opacity);
                 SonOfRobinGame.SpriteBatch.End();
 
-                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: lightSphereBlend);
+                // adding darkness mask to darkness
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask, lightRect, Color.White * lightSprite.lightEngine.Opacity);
                 SonOfRobinGame.SpriteBatch.End();
             }
