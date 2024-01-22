@@ -1632,10 +1632,11 @@ namespace SonOfRobin
                 if (this.shadowMergeInstance == null) this.shadowMergeInstance = new ShadowMergeInstance(shadowTexture: SonOfRobinGame.tempShadowMask1, lightTexture: SonOfRobinGame.lightSphere);
 
                 SetRenderTarget(SonOfRobinGame.tempShadowMask2);
+                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
 
-                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate);
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
                 this.shadowMergeInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask1, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
                 if (SonOfRobinGame.CurrentUpdate % 60 == 0)

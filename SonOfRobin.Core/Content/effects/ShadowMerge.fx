@@ -9,6 +9,7 @@
 
 Texture2D ShadowTexture : register(t0);
 Texture2D LightTexture : register(t1);
+
 float4 drawColor;
 
 sampler s0: register(s0);
@@ -36,15 +37,23 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	// shaders use color value range 0.0f - 1.0f
                 
     float4 shadowColor = tex2D(ShadowTextureSampler, input.TextureCoordinates);
-    float4 lightColor = tex2D(LightTextureSampler, input.TextureCoordinates);
+    float4 lightColor = tex2D(LightTextureSampler, input.TextureCoordinates);      
          
     float4 mergedColor;
-    mergedColor.rgb = (shadowColor.r + shadowColor.g + shadowColor.b) + shadowColor.a;
-    mergedColor.a = lightColor.rgb;
-    if (shadowColor.r > 0.005) mergedColor.rgb = 0;
-        
-    return (1 - (mergedColor + (1 - lightColor))) * drawColor;
-}
+    mergedColor.rgb = 0;
+    
+    if (shadowColor.r < 0.005 && shadowColor.a > 0.2)
+    {
+        mergedColor.a = shadowColor.r;
+    }
+    else
+    {   
+        mergedColor.a = lightColor.a;
+    }
+    
+    return mergedColor * drawColor;
+         
+ }
 
 technique SpriteDrawing
 {
