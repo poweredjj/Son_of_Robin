@@ -11,7 +11,7 @@ namespace SonOfRobin
     {
         // Allows for brute forcing needed BlendState settings.
 
-        private static BlendState TargetBlendState { get { return World.lightBlend; } set { World.lightBlend = value; } }
+        private static BlendState TargetBlendState { get { return World.darknessMaskBlend; } set { World.darknessMaskBlend = value; } }
 
         private readonly BlendState blendState;
         private readonly SpriteFontBase font;
@@ -19,7 +19,7 @@ namespace SonOfRobin
         public BlendStateEditor() : base(inputType: InputTypes.Always, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.blendState = MakeBlendStateCopy(TargetBlendState);
-            this.font = SonOfRobinGame.FontVCROSD.GetFont(18);
+            this.font = SonOfRobinGame.FontPressStart2P.GetFont(8); // FontVCROSD.GetFont(18)
         }
 
         private static BlendState MakeBlendStateCopy(BlendState blendState)
@@ -51,7 +51,7 @@ namespace SonOfRobin
                 this.blendState.AlphaSourceBlend = GetNextBlend(this.blendState.AlphaSourceBlend);
                 blendChanged = true;
             }
-            
+
             if (Keyboard.HasBeenPressed(Keys.PageUp))
             {
                 this.blendState.AlphaDestinationBlend = GetNextBlend(this.blendState.AlphaDestinationBlend);

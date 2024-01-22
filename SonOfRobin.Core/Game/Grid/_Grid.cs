@@ -1291,7 +1291,9 @@ namespace SonOfRobin
             bool shadowLeftSide = sunLightData.sunPos.X < 0;
             bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
 
-            foreach (Sprite shadowSprite in spritesCastingShadows.OrderBy(s => s.AnimFrame.layer).ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
+            foreach (Sprite shadowSprite in spritesCastingShadows
+                .OrderBy(s => s.AnimFrame.layer)
+                .ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
             {
                 if (!shadowSprite.AnimFrame.castsShadow) continue;
 
