@@ -42,17 +42,18 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 mergedColor;
     mergedColor.rgb = 0;
     
-    if (shadowColor.r < 0.005 && shadowColor.a > 0.2)
+    float shadowVal = (shadowColor.r + shadowColor.g + shadowColor.b) / 3;
+    
+    if (shadowVal < 0.01 && shadowColor.a > 0.2)
     {
-        mergedColor.a = shadowColor.r;
+        mergedColor.a = shadowVal;
     }
     else
     {   
         mergedColor.a = lightColor.a;
     }
     
-    return mergedColor * drawColor;
-         
+    return mergedColor * drawColor;        
  }
 
 technique SpriteDrawing

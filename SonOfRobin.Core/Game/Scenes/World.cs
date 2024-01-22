@@ -15,28 +15,15 @@ namespace SonOfRobin
     {
         // BlendFunction.Min and BlendFunction.Max will not work on Android (causing crashes)
 
-        public static BlendState lightSphereBlend = new()
-        {
-            AlphaBlendFunction = BlendFunction.Subtract,
-            AlphaSourceBlend = Blend.One,
-            AlphaDestinationBlend = Blend.BlendFactor,
-
-            ColorBlendFunction = BlendFunction.ReverseSubtract,
-            ColorSourceBlend = Blend.One,
-            ColorDestinationBlend = Blend.One,
-
-            BlendFactor = new Color(80, 80, 80, 80),
-        };
-
         public static BlendState darknessMaskBlend = new()
         {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
-            AlphaSourceBlend = Blend.BlendFactor,
-            AlphaDestinationBlend = Blend.BlendFactor,
+            AlphaSourceBlend = Blend.One,
+            AlphaDestinationBlend = Blend.One,
 
-            ColorBlendFunction = BlendFunction.ReverseSubtract,
-            ColorSourceBlend = Blend.InverseBlendFactor,
-            ColorDestinationBlend = Blend.InverseDestinationColor,
+            ColorBlendFunction = BlendFunction.Add,
+            ColorSourceBlend = Blend.One,
+            ColorDestinationBlend = Blend.One,
         };
 
         private static readonly BlendState ambientBlend = new()
@@ -1639,11 +1626,11 @@ namespace SonOfRobin
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
                 SonOfRobinGame.SpriteBatch.End();
 
-                if (SonOfRobinGame.CurrentUpdate % 60 == 0)
-                {
-                    //GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask1.png"), texture: SonOfRobinGame.tempShadowMask1); // for testing
-                    //GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask2.png"), texture: SonOfRobinGame.tempShadowMask2); // for testing
-                }
+                //if (SonOfRobinGame.CurrentUpdate % 60 == 0)
+                //{
+                //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask1.png"), texture: SonOfRobinGame.tempShadowMask1); // for testing
+                //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask2.png"), texture: SonOfRobinGame.tempShadowMask2); // for testing
+                //}
 
                 // subtracting darkness mask from darkness
 

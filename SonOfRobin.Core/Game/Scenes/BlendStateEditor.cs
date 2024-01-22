@@ -172,7 +172,7 @@ namespace SonOfRobin
             textList.Add($"ColorBlendFunction: {this.blendState.ColorBlendFunction}");
             textList.Add($"ColorSourceBlend: {this.blendState.ColorSourceBlend}");
             textList.Add($"ColorDestinationBlend: {this.blendState.ColorDestinationBlend}");
-         
+            textList.Add("");
             textList.Add($"BlendFactor: {this.blendState.BlendFactor}");
 
             this.font.DrawText(
