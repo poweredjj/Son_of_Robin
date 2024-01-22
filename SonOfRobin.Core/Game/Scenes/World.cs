@@ -27,24 +27,24 @@ namespace SonOfRobin
 
         public static BlendState lightBlend = new()
         {
-            AlphaBlendFunction = BlendFunction.Add,
-            AlphaSourceBlend = Blend.SourceAlpha,
-            AlphaDestinationBlend = Blend.InverseSourceColor,
+            AlphaBlendFunction = BlendFunction.Subtract,
+            AlphaSourceBlend = Blend.InverseDestinationColor,
+            AlphaDestinationBlend = Blend.DestinationColor,
 
-            ColorBlendFunction = BlendFunction.Add,
-            ColorSourceBlend = Blend.InverseDestinationAlpha,
-            ColorDestinationBlend = Blend.InverseSourceAlpha,
+            ColorBlendFunction = BlendFunction.Subtract,
+            ColorSourceBlend = Blend.DestinationAlpha,
+            ColorDestinationBlend = Blend.InverseDestinationColor,
         };
 
         public static BlendState darknessMaskBlend = new()
         {
             AlphaBlendFunction = BlendFunction.ReverseSubtract,
-            AlphaSourceBlend = Blend.InverseBlendFactor,
-            AlphaDestinationBlend = Blend.SourceColor,
+            AlphaSourceBlend = Blend.SourceAlpha,
+            AlphaDestinationBlend = Blend.InverseSourceColor,
 
-            ColorBlendFunction = BlendFunction.Add,
-            ColorSourceBlend = Blend.InverseDestinationColor,
-            ColorDestinationBlend = Blend.InverseDestinationColor,
+            ColorBlendFunction = BlendFunction.Subtract,
+            ColorSourceBlend = Blend.SourceAlphaSaturation,
+            ColorDestinationBlend = Blend.BlendFactor,
         };
 
         private static readonly BlendState ambientBlend = new()
