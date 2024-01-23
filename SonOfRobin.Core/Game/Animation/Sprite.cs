@@ -661,14 +661,13 @@ namespace SonOfRobin
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
-            //if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize)
-            this.AssignAnim();
+            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize) this.AssignAnim();
 
             AnimFrame oldAnimFrame = this.AnimFrame;
 
             try
             {
-                if (forceRewind || this.currentFrameIndex >= this.Anim.frameArray.Length) this.RewindAnim();
+                if (forceRewind || this.currentFrameIndex >= this.Anim.frameArray.Length) this.RewindAnim(assignFrame: false);
                 this.AnimFrame = this.Anim.frameArray[this.currentFrameIndex];
             }
             catch (KeyNotFoundException)
@@ -702,11 +701,11 @@ namespace SonOfRobin
 
         public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
 
-        public void RewindAnim()
+        public void RewindAnim(bool assignFrame = false)
         {
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = this.AnimFrame.duration;
-            AssignFrame(checkForCollision: false);
+            if (assignFrame) this.AssignFrame(checkForCollision: false);
         }
 
         public void UpdateAnimation()
@@ -716,7 +715,7 @@ namespace SonOfRobin
                 if (this.Anim.switchWhenComplete)
                 {
                     this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.Anim.switchName);
-                    this.RewindAnim();
+                    this.RewindAnim(assignFrame: true);
                 }
 
                 return; // duration == 0 will stop the animation, if there's no anim to switch to 
@@ -725,13 +724,13 @@ namespace SonOfRobin
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
-                AssignFrame(checkForCollision: false);
+                this.AssignFrame(checkForCollision: false);
             }
         }
 
-        public void CharacterStand(bool setEvenIfMissing = false)
+        public void CharacterStand(bool setEvenIfMissing = false, bool force = false)
         {
-            if (this.AnimName.Contains("walk") || this.AnimFinished)
+            if (this.AnimName.Contains("walk") || this.AnimFinished || force)
             {
                 string newAnimName = $"stand-{this.orientation}";
 

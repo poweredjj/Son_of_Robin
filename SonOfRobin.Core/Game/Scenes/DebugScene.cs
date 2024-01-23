@@ -453,7 +453,7 @@ namespace SonOfRobin
                 player.sprite.AssignNewName(newAnimName: $"{animName}-{player.sprite.orientation}", setEvenIfMissing: false);
                 // player.sprite.AssignNewName(newAnimName: $"damage-{player.sprite.orientation}", setEvenIfMissing: false);
 
-                player.sprite.RewindAnim();
+                player.sprite.RewindAnim(assignFrame: true);
             }
 
             //if (Keyboard.HasBeenPressed(Keys.F1))

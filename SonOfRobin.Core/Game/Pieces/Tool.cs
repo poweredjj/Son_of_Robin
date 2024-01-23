@@ -210,7 +210,7 @@ namespace SonOfRobin
             {
                 player.sprite.SetOrientationByMovement(target.sprite.position - player.sprite.position);
                 player.sprite.AssignNewName(newAnimName: $"attack-{player.sprite.orientation}", setEvenIfMissing: false);
-                player.sprite.RewindAnim();
+                player.sprite.RewindAnim(assignFrame: true);
             }
 
             if (target.GetType() == typeof(Plant))
