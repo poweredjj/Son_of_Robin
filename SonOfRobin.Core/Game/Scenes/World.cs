@@ -1633,8 +1633,14 @@ namespace SonOfRobin
 
                     SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
                     this.shadowMergeInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
+                    SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask1, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
                     SonOfRobinGame.SpriteBatch.End();
+
+                    //if (SonOfRobinGame.CurrentUpdate % 60 == 0)
+                    //{
+                    //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask1.png"), texture: SonOfRobinGame.tempShadowMask1); // for testing
+                    //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask2.png"), texture: SonOfRobinGame.tempShadowMask2); // for testing
+                    //}
                 }
                 else // simpler operation for non-shadow casters
                 {
@@ -1645,12 +1651,6 @@ namespace SonOfRobin
                     SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.lightSphere, SonOfRobinGame.tempShadowMask1.Bounds, Color.White);
                     SonOfRobinGame.SpriteBatch.End();
                 }
-
-                //if (SonOfRobinGame.CurrentUpdate % 60 == 0)
-                //{
-                //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask1.png"), texture: SonOfRobinGame.tempShadowMask1); // for testing
-                //    GfxConverter.SaveTextureAsPNG(pngPath: Path.Combine(SonOfRobinGame.gameDataPath, "tempShadowMask2.png"), texture: SonOfRobinGame.tempShadowMask2); // for testing
-                //}
 
                 // subtracting darkness mask from darkness
 

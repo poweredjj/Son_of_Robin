@@ -7,7 +7,7 @@
 #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-Texture2D ShadowTexture : register(t0);
+Texture2D ShadowTexture : register(t0); // must match the texture used in SpriteBatch.Draw()
 Texture2D LightTexture : register(t1);
 
 float4 drawColor;
