@@ -95,7 +95,7 @@ namespace SonOfRobin
 
         public Dictionary<string, Object> Serialize()
         {
-            var markerPosDict = new Dictionary<Vector2, byte[]>();
+            var markerPosDict = new Dictionary<string, byte[]>();
             foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
             {
                 Color markerColor = kvp.Key;
@@ -104,7 +104,7 @@ namespace SonOfRobin
                 if (markerPiece == null) continue;
 
                 var colorArray = new byte[] { markerColor.R, markerColor.G, markerColor.B, markerColor.A };
-                markerPosDict[markerPiece.sprite.position] = colorArray;
+                markerPosDict[$"{(int)markerPiece.sprite.position.X}|{(int)markerPiece.sprite.position.Y}"] = colorArray;
             }
 
             var mapDataDict = new Dictionary<string, Object>
@@ -119,10 +119,28 @@ namespace SonOfRobin
         {
             var mapDataDict = (Dictionary<string, Object>)mapData;
 
-            var markerPosDict = (Dictionary<Vector2, byte[]>)mapDataDict["markerPosDict"];
+            Dictionary<string, byte[]> markerPosDict;
+
+            try
+            {
+                markerPosDict = (Dictionary<string, byte[]>)mapDataDict["markerPosDict"];
+            }
+            catch (InvalidCastException)
+            {
+                MessageLog.Add(debugMessage: true, text: $"Cannot deserialize markers - invalid format.");
+                return;
+            }
+
             foreach (var kvp in markerPosDict)
             {
-                Vector2 markerPos = kvp.Key;
+                string markerPosStr = kvp.Key;
+
+                int separatorPos = markerPosStr.IndexOf("|");
+
+                int posX = Convert.ToInt32(markerPosStr.Substring(0 , separatorPos));
+                int posY = Convert.ToInt32(markerPosStr.Substring(separatorPos + 1, markerPosStr.Length - separatorPos - 1));
+
+                Vector2 markerPos = new Vector2(posX, posY);
                 var colorArray = (byte[])kvp.Value;
 
                 Color markerColor = new(r: colorArray[0], g: colorArray[1], b: colorArray[2], alpha: colorArray[3]);
