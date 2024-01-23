@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static SonOfRobin.AmbientLight;
 
 namespace SonOfRobin
 {
@@ -1422,11 +1421,10 @@ namespace SonOfRobin
             AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
 
-            if ((Preferences.drawSunShadows &&
-                sunShadowsOpacity > 0f) ||
-                (AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
-            {
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);
+            if ((Preferences.drawSunShadows && sunShadowsOpacity > 0f) ||
+                (Preferences.drawLightSourcedShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
+            {                  
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);              
             }
 
             // drawing sun shadows onto darkness mask

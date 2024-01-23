@@ -91,11 +91,25 @@ namespace SonOfRobin
         public static bool alwaysRun = false;
         public static bool destroyMapMarkerWhenReached = true;
         public static bool smartCamera = true;
-        public static bool softShadows = true;
-        public static bool drawAllShadows = true;
         public static bool mapShowLocationNames = true; // not saved
         public static bool pickupsHighlighted = false; // not saved
         public static bool zoomedOut = false; // used to store virtual button value
+        public static int displayResX = 1920;
+        public static int displayResY = 1080;
+        public static bool showFieldControlTips = true;
+        public static float fieldControlTipsScale = 0.4f;
+        private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
+        public static float mapMarkerScale = 0.025f; // screen height percentage used to draw markers
+        public static float MapMarkerRealSize { get { return SonOfRobinGame.ScreenHeight * mapMarkerScale; } }
+        public static bool showHints = true;
+        public static bool highQualityWater = true;
+        public static bool plantsSway = true;
+        public static int maxFlameLightsPerCell = 3;
+        private static bool showControlTips = true;
+        public static bool softShadows = true;
+        public static bool drawAllShadows = true;
+        public static bool drawSunShadows = true;
+        public static bool drawLightSourcedShadows = true;
 
         public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
@@ -131,22 +145,6 @@ namespace SonOfRobin
                 InputMapper.RebuildMappings();
             }
         }
-
-        public static int displayResX = 1920;
-        public static int displayResY = 1080;
-        public static bool showFieldControlTips = true;
-        public static float fieldControlTipsScale = 0.4f;
-        private static ButtonScheme.Type controlTipsScheme = ButtonScheme.Type.XboxSeries;
-        public static float mapMarkerScale = 0.025f; // screen height percentage used to draw markers
-        public static float MapMarkerRealSize { get { return SonOfRobinGame.ScreenHeight * mapMarkerScale; } }
-        public static bool showHints = true;
-        public static bool highQualityWater = true;
-        public static bool plantsSway = true;
-        public static int maxFlameLightsPerCell = 3;
-
-        public static bool drawSunShadows = true;
-        public static bool drawLightSourcedShadows = true;
-        private static bool showControlTips = true;
 
         public static bool ShowControlTips
         {
