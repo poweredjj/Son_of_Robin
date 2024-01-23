@@ -296,7 +296,7 @@ namespace SonOfRobin
                 // Resize the image
                 image.Mutate(x => x.Resize(new ResizeOptions
                 {
-                    Size = new SixLabors.ImageSharp.Size(newWidth, newHeight),
+                    Size = new Size(newWidth, newHeight),
                     Mode = ResizeMode.Max
                 }));
 
