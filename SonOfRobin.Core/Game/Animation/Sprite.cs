@@ -845,18 +845,18 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    // drawing with rotation, taking sway into account
+                    // drawing with rotation (mostly for sway)
 
                     Sprite fruitSprite = fruit.sprite;
 
                     Vector2 rotationOriginOverride = new Vector2(this.GfxRect.Left, this.GfxRect.Top) - new Vector2(fruitSprite.GfxRect.Left, fruitSprite.GfxRect.Top);
                     rotationOriginOverride += new Vector2((float)this.AnimFrame.gfxWidth * 0.5f, this.AnimFrame.gfxHeight);
-                    rotationOriginOverride /= fruitSprite.AnimFrame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
+                    rotationOriginOverride /= fruitSprite.AnimFrame.scale;
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
-
-                    fruitSprite.AnimFrame.Draw(position: new Vector2(fruitSprite.GfxRect.Center.X, fruitSprite.GfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, opacity: this.opacity, rotationOriginOverride: rotationOriginOverride);
+                    
+                    fruitSprite.AnimFrame.Draw(position: fruitSprite.position, color: fruitSprite.color, rotation: this.rotation, opacity: this.opacity, rotationOriginOverride: rotationOriginOverride);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }
