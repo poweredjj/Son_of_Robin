@@ -571,7 +571,7 @@ namespace SonOfRobin
             //    new TextWindow(text: "Original vs upscaled: | |", imageList: new List<Texture2D> { textureToUpscale, upscaledTexture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: false);
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F5) || VirtButton.HasButtonBeenPressed(VButName.DebugClockAdvance))
+            if (Keyboard.HasBeenPressed(Keys.F5))
             {
                 if (world == null) return;
 
