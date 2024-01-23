@@ -413,7 +413,7 @@ namespace SonOfRobin
             }
 
             if (this.HasBeenRemoved) return;
-            
+
             this.processedSteps++;
             this.currentStepName = "replacing save slot data";
             if (Directory.Exists(this.savePath))
@@ -446,12 +446,32 @@ namespace SonOfRobin
         {
             GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.FinalRenderTarget, maxWidth: 800, maxHeight: 600);
 
+            bool savedCorrectly = this.SavedCorrectly;
+
             MessageLog.Add(debugMessage: true, text: $"Game saved in slot {this.saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
 
-            if (this.showSavedMessage)
+            if (savedCorrectly)
             {
-                new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
-                Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
+                if (this.showSavedMessage)
+                {
+                    new TextWindow(text: "Game has been saved.", textColor: Color.White, bgColor: Color.DarkGreen, useTransition: false, animate: false);
+                    Sound.QuickPlay(name: SoundData.Name.Ding2, volume: 1f);
+                }
+            }
+            else
+            {
+                MessageLog.Add(debugMessage: true, text: $"Error while saving in slot {this.saveSlotName}.", textColor: Color.OrangeRed);
+                new TextWindow(text: "Error while saving (reason unknown).", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false);
+                Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
+            }
+        }
+
+        private bool SavedCorrectly
+        {
+            get
+            {
+                SaveHeaderInfo saveInfo = new(folderName: Path.GetFileName(this.saveSlotName));
+                return saveInfo.saveIsCorrect;
             }
         }
 
