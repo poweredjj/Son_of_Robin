@@ -1,6 +1,5 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +11,14 @@ namespace SonOfRobin
     {
         public struct ImageInfo
         {
-            public readonly Texture2D texture;
+            public readonly ImageObj image;
             public readonly int markerStart;
             public readonly int markerLength;
             public readonly Rectangle rectangle; // scaled at 100%, need to be adjusted for other scales
 
-            public ImageInfo(Texture2D texture, int markerIndex, int markerLength, Rectangle rectangle)
+            public ImageInfo(ImageObj image, int markerIndex, int markerLength, Rectangle rectangle)
             {
-                this.texture = texture;
+                this.image = image;
                 this.markerStart = markerIndex;
                 this.markerLength = markerLength;
                 this.rectangle = rectangle;
@@ -27,14 +26,14 @@ namespace SonOfRobin
 
             public bool Equals(ImageInfo otherInfo)
             {
-                return this.texture == otherInfo.texture &&
+                return this.image.Equals(otherInfo.image) &&
                        this.markerStart == otherInfo.markerStart &&
                        this.markerLength == otherInfo.markerLength;
             }
 
             public Rectangle GetAdjustedRectangle(float scale, Vector2 basePos, bool treatImagesAsSquares)
             {
-                Rectangle scaledRect = new Rectangle(
+                Rectangle scaledRect = new(
                     x: (int)(this.rectangle.X * scale) + (int)basePos.X,
                     y: (int)(this.rectangle.Y * scale) + (int)basePos.Y,
                     width: (int)((treatImagesAsSquares ? this.rectangle.Height : this.rectangle.Width) * scale),
@@ -55,8 +54,8 @@ namespace SonOfRobin
         private readonly string textWithResizedMarkers;
         private readonly List<ImageInfo> imageInfoList;
 
-        private List<Texture2D> ImageList
-        { get { return this.imageInfoList.Select(info => info.texture).ToList(); } }
+        private List<ImageObj> ImageList
+        { get { return this.imageInfoList.Select(info => info.image).ToList(); } }
 
         private readonly bool treatImagesAsSquares;
         private readonly bool animate;
@@ -80,9 +79,9 @@ namespace SonOfRobin
         private string AnimatedText
         { get { return this.textWithResizedMarkers.Substring(0, this.charCounter); } }
 
-        public TextWithImages(SpriteFontBase font, string text, List<Texture2D> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
+        public TextWithImages(SpriteFontBase font, string text, List<ImageObj> imageList, bool animate = false, int framesPerChar = 0, int charsPerFrame = 1, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, Helpers.AlignX imageAlignX = Helpers.AlignX.Center)
         {
-            if (imageList == null) imageList = new List<Texture2D>();
+            if (imageList == null) imageList = [];
 
             this.font = font;
             this.textOriginal = text;
@@ -126,7 +125,7 @@ namespace SonOfRobin
             return true;
         }
 
-        public bool ImageListEqual(List<Texture2D> imageListToCompare)
+        public bool ImageListEqual(List<ImageObj> imageListToCompare)
         {
             if (this.imageInfoList.Count == 0 && imageListToCompare == null) return true;
             return this.ImageList == imageListToCompare;
@@ -147,21 +146,21 @@ namespace SonOfRobin
             this.AnimationFinished = false;
         }
 
-        private void ValidateImagesCount(List<Texture2D> imageList)
+        private void ValidateImagesCount(List<ImageObj> imageList)
         {
             MatchCollection matches = Regex.Matches(this.textOriginal, $@"\{imageMarker}"); // $@ is needed for "\" character inside interpolated string
 
             if (imageList.Count != matches.Count) throw new ArgumentException($"TextWindow - count of markers ({matches.Count}) and images ({imageList.Count}) does not match.\n{this.textOriginal}");
         }
 
-        private (string, List<ImageInfo>) GetTextWithResizedMarkersAndImageInfo(List<Texture2D> imageList)
+        private (string, List<ImageInfo>) GetTextWithResizedMarkersAndImageInfo(List<ImageObj> imageList)
         {
             if (imageList.Count == 0) return (this.textOriginal.ToString(), new List<ImageInfo>());
 
             int imageNo = 0;
             string newText = "";
 
-            List<ImageInfo> newImageInfoList = new List<ImageInfo>();
+            List<ImageInfo> newImageInfoList = new();
 
             int resizedTextCharCounter = 0;
             for (int charCounter = 0; charCounter < this.TextOriginal.Length; charCounter++)
@@ -170,7 +169,7 @@ namespace SonOfRobin
 
                 if (newCharacter == imageMarker)
                 {
-                    Texture2D image = imageList[imageNo];
+                    ImageObj image = imageList[imageNo];
 
                     newCharacter = GetResizedMarker(font: font, image: image, treatImagesAsSquares: this.treatImagesAsSquares, minMarkerLength: this.minMarkerWidthMultiplier);
                     newText += newCharacter; // has to go before GetImageMarkerRect()
@@ -179,7 +178,7 @@ namespace SonOfRobin
                     int length = newCharacter.Length;
 
                     Rectangle markerRect = GetImageMarkerRect(font: this.font, text: newText, start: start, length: length);
-                    newImageInfoList.Add(new ImageInfo(texture: image, markerIndex: start, markerLength: length, rectangle: markerRect));
+                    newImageInfoList.Add(new ImageInfo(image: image, markerIndex: start, markerLength: length, rectangle: markerRect));
 
                     resizedTextCharCounter += length;
                     imageNo++;
@@ -194,7 +193,7 @@ namespace SonOfRobin
             return (newText, newImageInfoList);
         }
 
-        private static string GetResizedMarker(SpriteFontBase font, Texture2D image, bool treatImagesAsSquares, float minMarkerLength = 0)
+        private static string GetResizedMarker(SpriteFontBase font, ImageObj image, bool treatImagesAsSquares, float minMarkerLength = 0)
         {
             float imageScale = (float)image.Height / Helpers.MeasureStringCorrectly(font: font, stringToMeasure: " ").Y;
             int targetWidth = (int)((float)(treatImagesAsSquares ? image.Height : image.Width) / imageScale);
@@ -272,7 +271,7 @@ namespace SonOfRobin
 
             string currentText = this.AnimatedText;
 
-            Vector2 textScaleVector = new Vector2(textScale);
+            Vector2 textScaleVector = new(textScale);
 
             if (drawShadow && shadowColor.A > 0)
             {
@@ -293,11 +292,12 @@ namespace SonOfRobin
 
                     if (drawShadow)
                     {
-                        Rectangle imageShadowRect = new Rectangle(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
-                        Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageShadowRect, color: shadowColor, drawTestRect: false, alignX: this.imageAlignX);
+                        Rectangle imageShadowRect = new(x: imageRect.X + ((int)shadowOffset.X * 2), y: imageRect.Y + ((int)shadowOffset.Y * 2), width: imageRect.Width, height: imageRect.Height);
+
+                        imageInfo.image.DrawInsideRect(rect: imageShadowRect, color: shadowColor, alignX: this.imageAlignX);
                     }
 
-                    Helpers.DrawTextureInsideRect(texture: imageInfo.texture, rectangle: imageRect, color: Color.White * imageOpacity, drawTestRect: false, alignX: this.imageAlignX);
+                    imageInfo.image.DrawInsideRect(rect: imageRect, color: Color.White * imageOpacity, alignX: this.imageAlignX);
                 }
                 imageNo++;
             }

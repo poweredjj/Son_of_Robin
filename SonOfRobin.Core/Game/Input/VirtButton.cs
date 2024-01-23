@@ -132,6 +132,11 @@ namespace SonOfRobin
             buttonsByName[name] = this;
         }
 
+        public static ImageObj GetLabelImageObj(VButName name)
+        {
+            return new TextureObj(GetLabelTexture(name));
+        }
+
         public static Texture2D GetLabelTexture(VButName name)
         {
             return labelTexturesByNames.ContainsKey(name) ? TextureBank.GetTexture($"input/VirtButton/{labelTexturesByNames[name]}") : null;
@@ -332,11 +337,11 @@ namespace SonOfRobin
 
             if (this.IsActive)
             {
-                Rectangle srcRectPressed = new Rectangle(0, 0, this.texturePressed.Width, this.texturePressed.Height);
+                Rectangle srcRectPressed = new(0, 0, this.texturePressed.Width, this.texturePressed.Height);
                 SonOfRobinGame.SpriteBatch.Draw(this.texturePressed, gfxRect, srcRectPressed, this.bgColorPressed * opacityMultiplier);
             }
 
-            Rectangle srcRectReleased = new Rectangle(0, 0, this.textureReleased.Width, this.textureReleased.Height);
+            Rectangle srcRectReleased = new(0, 0, this.textureReleased.Width, this.textureReleased.Height);
             SonOfRobinGame.SpriteBatch.Draw(this.textureReleased, gfxRect, srcRectReleased, this.bgColorReleased * opacityMultiplier);
 
             Rectangle wholeLabelRect = gfxRect;
@@ -352,7 +357,7 @@ namespace SonOfRobin
 
                 foreach (string currentLabel in labelLines)
                 {
-                    Rectangle currentLabelRect = new Rectangle(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
+                    Rectangle currentLabelRect = new(x: wholeLabelRect.X, y: wholeLabelRect.Y + labelRectYOffset, width: wholeLabelRect.Width, height: labelRectHeight);
 
                     Helpers.DrawTextInsideRect(font: font, text: currentLabel, rectangle: currentLabelRect, color: this.textColor * opacityMultiplier, effect: FontSystemEffect.Stroked, effectAmount: 2, drawTestRect: false);
 

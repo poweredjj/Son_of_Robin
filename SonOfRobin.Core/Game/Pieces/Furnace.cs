@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,7 +130,7 @@ namespace SonOfRobin
             {
                 // visualAid is needed to emit particles from the chimney (cannot emit from secondary location using only one emitter)
                 this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.ParticleEmitterEnding, world: this.world, position: new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5), randomPlacement: false, precisePlacement: true);
-                this.visualAid.sprite.AssignNewPackage(newAnimPackage: AnimData.PkgName.WhiteSpotLayerTwo, checkForCollision: false);
+                this.visualAid.sprite.AssignNewPackage(newAnimPkgName: AnimData.PkgName.WhiteSpotLayerTwo, checkForCollision: false);
                 this.visualAid.sprite.opacity = 0.001f; // to draw particles only
                 ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
             }
@@ -169,7 +168,7 @@ namespace SonOfRobin
                 int smeltingDuration = this.smeltingDoneFrame - this.smeltingStartFrame;
                 int smeltingCurrentFrame = this.world.CurrentUpdate - this.smeltingStartFrame;
 
-                new StatBar(label: "", value: smeltingCurrentFrame, valueMax: smeltingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
+                new StatBar(label: "", value: smeltingCurrentFrame, valueMax: smeltingDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 128, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.Flame));
             }
 
             base.DrawStatBar();
@@ -207,25 +206,25 @@ namespace SonOfRobin
 
             if (storedMats.Count == 0 && storedFuel.Count == 0)
             {
-                new TextWindow(text: $"I need at least one | | | material and some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need at least one | | | material and some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedMats.Count == 0)
             {
-                new TextWindow(text: "I don't have any | | | materials.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.GlassSand), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I don't have any | | | materials.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedFuel.Count == 0)
             {
-                new TextWindow(text: $"I need some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need some | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} to start smelting.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
             if (storedMats.Count > storedFuel.Count)
             {
-                new TextWindow(text: $"I need more | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName}.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: $"I need more | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 

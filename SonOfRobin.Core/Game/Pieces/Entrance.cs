@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 
@@ -38,7 +37,7 @@ namespace SonOfRobin
 
             if (this.isBlocked)
             {
-                new TextWindow(text: "I can't enter this | cave, because the entrance has crumbled...", imageList: new List<Texture2D> { this.sprite.CroppedAnimFrame.Texture }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
+                new TextWindow(text: "I can't enter this | cave, because the entrance has crumbled...", imageList: new List<ImageObj> { this.sprite.AnimFrame.imageObj }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, checkForDuplicate: true, autoClose: true, inputType: Scene.InputTypes.None, blockInputDuration: 45, priority: 1, animSound: world.DialogueSound);
                 return;
             }
 
@@ -46,7 +45,7 @@ namespace SonOfRobin
             {
                 if (this.level.levelType == Level.LevelType.Island)
                 {
-                    this.sprite.AssignNewName(newAnimName: "blocked", checkForCollision: false);
+                    this.sprite.AssignNewName(newAnimName: "blocked");
                     this.isBlocked = true;
                     this.world.Player.cavesVisited++;
                 }
@@ -66,7 +65,7 @@ namespace SonOfRobin
             string fullText = $"Entering {this.targetLevel.levelType.ToString().ToLower()}{levelText}.";
             if (this.targetLevel.depth == 0) fullText = "Going out.";
 
-            MessageLog.Add(text: fullText, texture: PieceInfo.GetTexture(this.name), avoidDuplicates: true);
+            MessageLog.Add(text: fullText, imageObj: PieceInfo.GetImageObj(this.name), avoidDuplicates: true);
 
             this.world.EnterNewLevel(this.targetLevel);
         }

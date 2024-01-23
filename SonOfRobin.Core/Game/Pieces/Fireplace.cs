@@ -123,7 +123,7 @@ namespace SonOfRobin
             if (storedFuel.Count == 0)
             {
                 if (showMessage) new TextWindow(text: "I don't have wood or coal to burn.", textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
-                else MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), texture: this.sprite.CroppedAnimFrame.Texture);
+                else MessageLog.Add(text: $"{Helpers.FirstCharToUpperCase(this.readableName)} has burned out.", bgColor: new Color(105, 3, 18), imageObj: this.sprite.AnimFrame.imageObj);
                 return false;
             }
 
@@ -191,7 +191,7 @@ namespace SonOfRobin
                 int burningDuration = this.burnAllFuelEndFrame - this.burnStartFrame;
                 int burningCurrentFrame = burningDuration - (this.world.CurrentUpdate - this.burnStartFrame);
 
-                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.WoodLogRegular).Texture);
+                new StatBar(label: "", value: burningCurrentFrame, valueMax: burningDuration, colorMin: new Color(255, 0, 0), colorMax: new Color(255, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.WoodLogRegular));
             }
 
             base.DrawStatBar();

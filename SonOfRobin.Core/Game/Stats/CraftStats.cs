@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,7 +187,7 @@ namespace SonOfRobin
             int pieceCounter = 0;
 
             var textLines = new List<string>();
-            var imageList = new List<Texture2D>();
+            var imageList = new List<ImageObj>();
 
             bool showPageCounter = pieceNames.Count() > entriesPerPage;
 
@@ -198,7 +197,7 @@ namespace SonOfRobin
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
                 textLines.Add($"|  x{pieceCount}  {pieceInfo.readableName}");
-                imageList.Add(pieceInfo.Texture);
+                imageList.Add(pieceInfo.imageObj);
 
                 pieceCounter++;
                 if (pieceCounter >= entriesPerPage || pieceName == pieceNames.Last())

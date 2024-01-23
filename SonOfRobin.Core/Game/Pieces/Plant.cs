@@ -107,7 +107,7 @@ namespace SonOfRobin
             var occupiedSlots = this.PieceStorage.OccupiedSlots;
             if (occupiedSlots.Count == 0)
             {
-                if (showMessage) MessageLog.Add(text: $"There is nothing left to shake off from {this.readableName}.", bgColor: new Color(105, 3, 18), texture: this.sprite.CroppedAnimFrame.Texture, avoidDuplicates: true);
+                if (showMessage) MessageLog.Add(text: $"There is nothing left to shake off from {this.readableName}.", bgColor: new Color(105, 3, 18), imageObj: this.sprite.AnimFrame.imageObj, avoidDuplicates: true);
                 return false;
             }
 
@@ -122,7 +122,7 @@ namespace SonOfRobin
 
             this.PieceStorage.DropPiecesFromSlot(slot: occupiedSlots[0], addMovement: true);
             // swapping from "has_fruits", if the plant has such animation
-            if (this.sprite.AnimName == "has_fruits" && this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName(newAnimName: "default", checkForCollision: false);
+            if (this.sprite.AnimName == "has_fruits" && this.alive && this.PieceStorage.OccupiedSlotsCount == 0) this.sprite.AssignNewName(newAnimName: "default");
 
             return true;
         }

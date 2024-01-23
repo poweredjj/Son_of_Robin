@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -179,7 +178,7 @@ namespace SonOfRobin
                     var bonusPiecesDict = bonusPieces.GroupBy(piece => piece.name).ToDictionary(piece => piece.Key, piece => piece.Count());
 
                     var textLines = new List<string> { "Got bonus items:\n" };
-                    var imageList = new List<Texture2D>();
+                    var imageList = new List<ImageObj>();
 
                     foreach (var kvp in bonusPiecesDict)
                     {
@@ -188,7 +187,7 @@ namespace SonOfRobin
 
                         if (count == 1) textLines.Add($"| {pieceInfo.readableName}");
                         else textLines.Add($"| {pieceInfo.readableName} x{count}");
-                        imageList.Add(pieceInfo.Texture);
+                        imageList.Add(pieceInfo.imageObj);
                     }
 
                     taskChain.Add(new HintMessage(text: String.Join("\n", textLines), boxType: HintMessage.BoxType.GreenBox, delay: 0, blockInputDefaultDuration: false, useTransition: true, imageList: imageList, startingSound: SoundData.Name.Ding1).ConvertToTask());

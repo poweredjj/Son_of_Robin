@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -140,7 +139,7 @@ namespace SonOfRobin
             if (missingMaterials.Count > 0 && !Preferences.debugAllowConstructionWithoutMaterials)
             {
                 var textList = new List<string>();
-                var imageList = new List<Texture2D>();
+                var imageList = new List<ImageObj>();
 
                 foreach (var kvp in missingMaterials)
                 {
@@ -150,7 +149,7 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(materialName);
 
                     textList.Add($"| {pieceInfo.readableName} x{missingCount}");
-                    imageList.Add(pieceInfo.CroppedFrame.Texture);
+                    imageList.Add(pieceInfo.imageObj);
                 }
 
                 string materialsList = String.Join("\n", textList);
@@ -162,7 +161,7 @@ namespace SonOfRobin
 
             if (player.FatiguePercent > 0.5f)
             {
-                new TextWindow(text: "I'm | too tired to work on this now...", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Bed) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
+                new TextWindow(text: "I'm | too tired to work on this now...", imageList: new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.Bed) }, textColor: Color.Black, bgColor: Color.White, useTransition: false, animate: true, animSound: this.world.DialogueSound);
                 return;
             }
 
@@ -204,7 +203,7 @@ namespace SonOfRobin
                 newConstrSite.constrLevel = newConstructionLevel;
                 newConstrSite.ClearAndConfigureStorage();
                 newConstrSite.RefreshTriggerDescription();
-                newConstrSite.sprite.AssignNewSize(newAnimSize: (byte)newConstructionLevel, checkForCollision: false);
+                newConstrSite.sprite.AssignNewSize((byte)newConstructionLevel);
             }
 
             world.ActiveLevel.stateMachineTypesManager.DisableMultiplier();
@@ -305,12 +304,12 @@ namespace SonOfRobin
             else Sound.QuickPlay(name: SoundData.Name.Ding1);
 
             string constructionMessage;
-            var imageList = new List<Texture2D>();
+            var imageList = new List<ImageObj>();
 
             if (buildingFinished)
             {
                 constructionMessage = $"| {Helpers.FirstCharToUpperCase(nextLevelPiece.readableName)} construction finished!";
-                imageList.Add(nextLevelPiece.pieceInfo.Texture);
+                imageList.Add(nextLevelPiece.pieceInfo.imageObj);
             }
             else
             {
@@ -348,7 +347,7 @@ namespace SonOfRobin
 
         public override void DrawStatBar()
         {
-            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Hammer).Texture);
+            new StatBar(label: "", value: this.PieceStorage.StoredPiecesCount - 1, valueMax: this.NeededMaterialsCount, colorMin: new Color(0, 152, 163), colorMax: new Color(0, 216, 232), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.Hammer));
 
             base.DrawStatBar();
         }

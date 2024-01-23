@@ -94,7 +94,7 @@ namespace SonOfRobin
             // if there's no room for more fruits - new one should just go to waste, resetting currentMass (to avoid adding fruit every frame from now on)
             this.currentMass = 0; // resetting whether or not new fruit can fit
 
-            if (this.plant.sprite.CheckIfAnimNameExists("has_fruits")) this.plant.sprite.AssignNewName(newAnimName: "has_fruits", checkForCollision: false);
+            if (this.plant.sprite.CheckIfAnimNameExists("has_fruits")) this.plant.sprite.AssignNewName(newAnimName: "has_fruits");
         }
 
         public void SetFruitPos(BoardPiece fruit)

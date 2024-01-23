@@ -19,21 +19,21 @@ struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR0;
-	float2 TextureCoordinates : TEXCOORD0;
+	float2 UV : TEXCOORD0;
 };
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f
 
-	float4 originalColor = tex2D(s0, input.TextureCoordinates);
+	float4 originalColor = tex2D(s0, input.UV);
     if (checkAlpha && originalColor.a <= 0.4) return originalColor * drawColor;
 
 	// Calculate burning effect
-	float burnVal = sin((input.TextureCoordinates.y + time + phaseModifier) * 5) * 0.1;
+    float burnVal = sin((input.UV.y + time + phaseModifier) * 5) * 0.1;
 	float3 burnColor = float3(1.0, 1.0, 0.0) * burnVal;
 
-	float4 fireColor = float4(1.0, 0.0, 0.0, 1.0) * (1.0 - input.TextureCoordinates.y);
+    float3 fireColor = float3(1.0, 0.0, 0.0) * (1.0 - input.UV.y);
 
 	// Modify color calculation to add burning effect
 	float4 finalColor;

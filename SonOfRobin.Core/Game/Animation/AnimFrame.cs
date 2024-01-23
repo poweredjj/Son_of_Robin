@@ -1,364 +1,125 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace SonOfRobin
 {
-    public class AnimFrame
+    public readonly struct AnimFrame
     {
-        public readonly string atlasName;
-        public readonly string id;
-        public readonly string textureID; // some id parameters are irrevelant to the texture itself, so alternative id is used
-        private readonly float depthPercent;
+        public static readonly Vector2 defaultShadowOriginFactor = new(0.5f, 0.98f);
 
-        public readonly int gfxWidth;
-        public readonly int gfxHeight;
-        public readonly int colWidth;
-        public readonly int colHeight;
-        public readonly Vector2 gfxOffset;
-        public readonly Vector2 colOffset;
-        private readonly string pngPath;
-        public readonly Vector2 textureSize;
-        public readonly Rectangle textureRect;
-        public readonly Rectangle colBounds;
+        public readonly string atlasName;
+        public readonly Rectangle cropRect;
+        public readonly Vector2 gfxOffsetBase;
+        public readonly Vector2 gfxOffsetCorrection;
+        public readonly bool castsShadow;
+        public readonly bool hasFlatShadow;
+        public readonly Vector2 shadowOriginFactor; // base multiplier for shadowOrigin
+        public readonly Vector2 shadowOrigin; // final shadowOrigin
+        public readonly Vector2 shadowPosOffset; // for non-flat shadows
+        public readonly float shadowHeightMultiplier; // for non-flat shadows
+
+        public readonly int gfxWidth; // final draw size
+        public readonly int gfxHeight; // final draw size
         public readonly Vector2 rotationOrigin;
+        public readonly SpriteEffects spriteEffects;
         public readonly int layer;
-        public readonly short duration;
+        public readonly int duration;
         public readonly float scale;
         public readonly bool ignoreWhenCalculatingMaxSize;
-        private Texture2D texture;
-        public readonly bool cropped;
-        public readonly int srcAtlasX;
-        public readonly int srcAtlasY;
-        public readonly int srcWidth;
-        public readonly int srcHeight;
-        public readonly bool mirrorX;
-        private string PngName { get { return $"{this.textureID}.png"; } }
-        private bool PngPathExists { get { return AnimData.foundFramePngs.Contains(this.PngName) || this.atlasName.Contains("_processed_"); } }
+        public readonly ImageObj imageObj;
+
+        public AnimFrame(string atlasName, int layer, Rectangle cropRect, float scale = 1f, int duration = 0, Vector2 gfxOffsetCorrection = default, bool mirrorX = false, bool mirrorY = false, bool ignoreWhenCalculatingMaxSize = false, Vector2 shadowOriginFactor = default, Vector2 shadowPosOffset = default, float shadowHeightMultiplier = 1f, bool hasFlatShadow = true, bool castsShadow = true)
+        {
+            if (shadowOriginFactor == default) shadowOriginFactor = defaultShadowOriginFactor;
+            if (shadowPosOffset == default) shadowPosOffset = Vector2.Zero;
+
+            this.atlasName = atlasName;
+            this.scale = scale;
+            this.cropRect = cropRect;
+
+            this.castsShadow = castsShadow;
+            this.hasFlatShadow = hasFlatShadow;
+            this.shadowPosOffset = shadowPosOffset;
+            this.shadowOriginFactor = shadowOriginFactor;
+            this.shadowOrigin = new Vector2((float)this.cropRect.Width * shadowOriginFactor.X, this.cropRect.Height * shadowOriginFactor.Y);
+            this.shadowHeightMultiplier = shadowHeightMultiplier;
+
+            this.gfxWidth = (int)(this.cropRect.Width * this.scale);
+            this.gfxHeight = (int)(this.cropRect.Height * this.scale);
+
+            // base - needed to properly align rect with position
+            this.gfxOffsetBase = new Vector2(-(float)this.cropRect.Width / 2f, -(float)this.cropRect.Height / 2f) * this.scale;
+            // correction - added on top of base, as a way to control final offset value
+            this.gfxOffsetCorrection = (gfxOffsetCorrection == default ? Vector2.Zero : gfxOffsetCorrection) * this.scale;
+
+            this.rotationOrigin = new Vector2((float)this.cropRect.Width / 2f, (float)this.cropRect.Height / 2f);
+
+            if (mirrorX && mirrorY) this.spriteEffects = SpriteEffects.FlipHorizontally | SpriteEffects.FlipVertically;
+            else if (mirrorX) this.spriteEffects = SpriteEffects.FlipHorizontally;
+            else if (mirrorY) this.spriteEffects = SpriteEffects.FlipVertically;
+            else this.spriteEffects = SpriteEffects.None;
+
+            this.layer = layer;
+            this.duration = duration;
+            this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
+
+            this.imageObj = new AnimFrameObj(this);
+        }
 
         public Texture2D Texture
         {
             get
             {
-                if (this.texture == null)
-                {
-                    // MessageLog.Add(debugMessage: true, text: $"Loading anim frame: {Path.GetFileName(this.pngPath)}...");
-                    this.texture = this.pngPath.Contains("_processed_") ? TextureBank.GetTexture(this.atlasName) : GfxConverter.LoadTextureFromPNG(this.pngPath);
-                    if (this.texture == null)
-                    {
-                        this.texture = TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
-                        AnimData.jsonDict.Remove(this.id); // deleting json entry...
-                        AnimData.SaveJsonDict(asContentTemplate: false); // ...and saving it, to be rebuilt on next run
-                    }
-                    else AnimData.loadedFramesCount++;
-                }
-                return this.texture;
+                Texture2D texture = TextureBank.GetTexture(this.atlasName);
+                texture ??= TextureBank.GetTexture(TextureBank.TextureName.GfxCorrupted);
+                return texture;
             }
         }
 
-        public static AnimFrame GetFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop = false, bool mirrorX = false, float scale = 1f, float depthPercent = 0.25f, int padding = 1, bool ignoreWhenCalculatingMaxSize = false, Rectangle colBoundsOverride = default, Vector2 additionalGfxOffset = default)
+        public Rectangle GetGfxRectForPos(Vector2 position)
         {
-            // some frames are duplicated and can be reused (this can be verified by checking ID)
-
-            string id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent);
-
-            if (AnimData.frameById.ContainsKey(id)) return AnimData.frameById[id];
-
-            Dictionary<string, Object> jsonData = null;
-            try
-            { jsonData = (Dictionary<string, Object>)AnimData.jsonDict[id]; }
-            catch (InvalidCastException) { }
-            catch (KeyNotFoundException) { }
-
-            if (jsonData != null)
-            {
-                AnimFrame deserializedFrame = new(jsonData);
-                if (deserializedFrame.PngPathExists) return deserializedFrame;
-            }
-
-            return new AnimFrame(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent, padding: padding, ignoreWhenCalculatingMaxSize: ignoreWhenCalculatingMaxSize, colBoundsOverride: colBoundsOverride, additionalGfxOffset: additionalGfxOffset);
+            return new(
+                x: (int)(position.X + this.gfxOffsetBase.X + this.gfxOffsetCorrection.X),
+                y: (int)(position.Y + this.gfxOffsetBase.Y + this.gfxOffsetCorrection.Y),
+                width: this.gfxWidth,
+                height: this.gfxHeight);
         }
 
-        private static string GetID(string atlasName, int atlasX, int atlasY, int width, int height, int layer, int duration, bool crop, bool mirrorX, float scale, float depthPercent)
+        private int CalculateHeightForSubmergeCorrection(int submergeCorrection)
         {
-            return $"{atlasName.Replace("/", "+")}_{atlasX},{atlasY}_{width}x{height}_{layer}_{duration}_{crop}_{mirrorX}_{scale}_{depthPercent}";
+            return submergeCorrection > 0 ? Math.Max(this.cropRect.Height / 2, this.cropRect.Height - submergeCorrection) : this.cropRect.Height;
         }
 
-        private AnimFrame(Dictionary<string, Object> jsonData)
+        public void Draw(Vector2 position, Color color, float rotation, float opacity, int submergeCorrection = 0, Vector2 rotationOriginOverride = default, float scale = 1f)
         {
-            this.atlasName = (string)jsonData["atlasName"];
-            this.id = (string)jsonData["id"];
-            this.textureID = (string)jsonData["textureID"];
-            this.depthPercent = (float)(double)jsonData["depthPercent"];
-            this.colWidth = (int)(Int64)jsonData["colWidth"];
-            this.colHeight = (int)(Int64)jsonData["colHeight"];
-            this.gfxWidth = (int)(Int64)jsonData["gfxWidth"];
-            this.gfxHeight = (int)(Int64)jsonData["gfxHeight"];
-            this.colOffset = new Vector2((float)(double)jsonData["colOffsetX"], (float)(double)jsonData["colOffsetY"]);
-            this.gfxOffset = new Vector2((float)(double)jsonData["gfxOffsetX"], (float)(double)jsonData["gfxOffsetY"]);
-            this.textureSize = new Vector2((float)(double)jsonData["textureSizeX"], (float)(double)jsonData["textureSizeY"]);
-            this.textureRect = (Rectangle)jsonData["textureRect"];
-            this.colBounds = (Rectangle)jsonData["colBounds"];
-            this.rotationOrigin = new Vector2((float)(double)jsonData["rotationOriginX"], (float)(double)jsonData["rotationOriginY"]);
-            this.pngPath = (string)jsonData["pngPath"];
-            this.layer = (int)(Int64)jsonData["layer"];
-            this.duration = (short)(Int64)jsonData["duration"];
-            this.scale = (float)(double)jsonData["scale"];
-            this.ignoreWhenCalculatingMaxSize = (bool)jsonData["ignoreWhenCalculatingMaxSize"];
-            this.cropped = (bool)jsonData["cropped"];
-            this.srcAtlasX = (int)(Int64)jsonData["srcAtlasX"];
-            this.srcAtlasY = (int)(Int64)jsonData["srcAtlasY"];
-            this.srcWidth = (int)(Int64)jsonData["srcWidth"];
-            this.srcHeight = (int)(Int64)jsonData["srcHeight"];
-            this.mirrorX = (bool)jsonData["mirrorX"];
-
-            AnimData.frameById[this.id] = this;
-        }
-
-        public AnimFrame GetCroppedFrameCopy()
-        {
-            if (this.cropped || (this.srcWidth == 1 && this.srcHeight == 1)) return this;
-
-            return GetFrame(atlasName: this.atlasName, atlasX: this.srcAtlasX, atlasY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, layer: this.layer, duration: this.duration, crop: true, mirrorX: mirrorX, scale: this.scale, depthPercent: this.depthPercent, ignoreWhenCalculatingMaxSize: true);
-        }
-
-        private AnimFrame(string atlasName, int atlasX, int atlasY, int width, int height, int layer, short duration, bool crop, bool mirrorX, float scale, float depthPercent, int padding, bool ignoreWhenCalculatingMaxSize, Rectangle colBoundsOverride = default, Vector2 additionalGfxOffset = default)
-        {
-            // should not be invoked from other classes directly
-
-            // id and textureID should retain width == 0 and height == 0, to properly name json + png and avoid having to load each atlas
-
-            this.id = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: layer, duration: duration, crop: crop, mirrorX: mirrorX, scale: scale, depthPercent: depthPercent);
-            this.textureID = GetID(atlasName: atlasName, atlasX: atlasX, atlasY: atlasY, width: width, height: height, layer: 0, duration: 0, crop: crop, mirrorX: mirrorX, scale: 0, depthPercent: 0);
-
-            AnimData.frameById[this.id] = this;
-            this.pngPath = Path.Combine(SonOfRobinGame.animCachePath, this.PngName);
-
-            this.cropped = crop;
-            this.srcAtlasX = atlasX;
-            this.srcAtlasY = atlasY;
-            this.srcWidth = width;
-            this.srcHeight = height;
-
-            this.depthPercent = depthPercent;
-            this.atlasName = atlasName;
-            this.scale = scale;
-            this.mirrorX = mirrorX;
-            this.layer = layer;
-            this.duration = duration; // duration == 0 will stop the animation
-            this.ignoreWhenCalculatingMaxSize = ignoreWhenCalculatingMaxSize;
-
-            if (AnimData.textureDict.ContainsKey(this.textureID)) this.texture = AnimData.textureDict[this.textureID];
-            else
-            {
-                // MessageLog.Add(debugMessage: true, text: $"AnimFrame - loading atlas texture {this.atlasName}");
-
-                if (this.atlasName.StartsWith("_processed_") && this.srcWidth == 0 && this.srcHeight == 0)
-                {
-                    // for processed textures (copied from graphics_cache folder back to content/gfx)
-                    this.texture = TextureBank.GetTexture(this.atlasName);
-                }
-                else
-                {
-                    Texture2D atlasTexture = TextureBank.GetTexture(this.atlasName);
-                    if (this.srcWidth == 0) this.srcWidth = atlasTexture.Width;
-                    if (this.srcHeight == 0) this.srcHeight = atlasTexture.Height;
-                    Rectangle cropRect = GetCropRect(texture: atlasTexture, textureX: this.srcAtlasX, textureY: this.srcAtlasY, width: this.srcWidth, height: this.srcHeight, crop: crop);
-
-                    // padding makes the edge texture filtering smooth and allows for border effects outside original texture edges
-                    this.texture = GfxConverter.CropTextureAndAddPaddingGpu(baseTexture: atlasTexture, cropRect: cropRect, padding: padding, mirrorX: this.mirrorX);
-                    GfxConverter.SaveTextureAsPNG(pngPath: this.pngPath, texture: this.texture);
-                }
-
-                AnimData.foundFramePngs.Add(this.PngName);
-                AnimData.textureDict[this.textureID] = this.texture;
-            }
-
-            this.textureSize = new Vector2(this.Texture.Width, this.Texture.Height);
-            this.textureRect = new Rectangle(x: 0, y: 0, width: this.Texture.Width, height: this.Texture.Height);
-            this.rotationOrigin = this.textureSize * 0.5f; // rotationOrigin must not take scale into account, to work properly
-
-            this.colBounds = colBoundsOverride == default ? this.FindCollisionBounds() : colBoundsOverride;
-
-            this.colWidth = (int)(this.colBounds.Width * scale);
-            this.colHeight = (int)(this.colBounds.Height * scale);
-
-            this.gfxWidth = (int)(this.texture.Width * scale);
-            this.gfxHeight = (int)(this.texture.Height * scale);
-
-            this.colOffset = new Vector2(-(int)(this.colBounds.Width * 0.5f), -(int)(this.colBounds.Height * 0.5f)); // has to go first...
-            this.gfxOffset = new Vector2(this.colOffset.X - this.colBounds.X, this.colOffset.Y - this.colBounds.Y) + additionalGfxOffset; // because it is used here
-
-            this.colOffset *= scale;
-            this.gfxOffset *= scale;
-
-            AnimData.jsonDict[this.id] = this.Serialize();
-        }
-
-        private Dictionary<string, object> Serialize()
-        {
-            return new Dictionary<string, Object> {
-                { "atlasName", this.atlasName },
-                { "id", this.id },
-                { "textureID", this.textureID },
-                { "depthPercent", this.depthPercent },
-                { "colWidth", this.colWidth },
-                { "colHeight", this.colHeight },
-                { "gfxWidth", this.gfxWidth },
-                { "gfxHeight", this.gfxHeight },
-                { "colOffsetX", this.colOffset.X },
-                { "colOffsetY", this.colOffset.Y },
-                { "gfxOffsetX", this.gfxOffset.X },
-                { "gfxOffsetY", this.gfxOffset.Y },
-                { "textureSizeX", this.textureSize.X },
-                { "textureSizeY", this.textureSize.Y },
-                { "textureRect", this.textureRect },
-                { "colBounds", this.colBounds },
-                { "rotationOriginX", this.rotationOrigin.X },
-                { "rotationOriginY", this.rotationOrigin.Y },
-                { "pngPath", this.pngPath },
-                { "layer", this.layer },
-                { "duration", this.duration },
-                { "scale", this.scale },
-                { "ignoreWhenCalculatingMaxSize", this.ignoreWhenCalculatingMaxSize },
-                { "cropped", this.cropped },
-                { "mirrorX", this.mirrorX },
-                { "srcAtlasX", this.srcAtlasX },
-                { "srcAtlasY", this.srcAtlasY },
-                { "srcWidth", this.srcWidth },
-                { "srcHeight", this.srcHeight },
-                };
-        }
-
-        private Rectangle FindCollisionBounds()
-        {
-            int sliceWidth = this.texture.Width;
-            int sliceHeight = this.texture.Height;
-
-            if (this.layer == 1)
-            {
-                // checking bottom part of the frame for collision bounds
-                sliceHeight = Math.Max((int)(this.texture.Height * this.depthPercent), 20);
-                sliceHeight = Math.Min(sliceHeight, this.texture.Height);
-            }
-
-            int sliceX = 0;
-            int sliceY = this.texture.Height - sliceHeight;
-
-            Rectangle boundsRect = FindNonTransparentPixelsRect(texture: this.texture, textureX: sliceX, textureY: sliceY, width: sliceWidth, height: sliceHeight, minAlpha: 240); // 240
-
-            // bounds value would be incorrect without adding the base slice value
-
-            boundsRect.X += sliceX;
-            boundsRect.Y += sliceY;
-
-            return boundsRect;
-        }
-
-        private static Rectangle FindNonTransparentPixelsRect(Texture2D texture, int textureX, int textureY, int width, int height, int minAlpha)
-        {
-            Color[] colorData = new Color[width * height];
-            Rectangle extractRegion = new(textureX, textureY, width, height);
-            texture.GetData<Color>(0, extractRegion, colorData, 0, width * height);
-
-            int xMin = width;
-            int xMax = 0;
-            int yMin = height;
-            int yMax = 0;
-
-            bool opaquePixelsFound = false;
-            int[] alphaValues = { minAlpha, 1 }; // if there are no desired alpha values, minimum value is used instead
-
-            foreach (int currentMinAlpha in alphaValues)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int yMultipliedInput = y * width;
-
-                    for (int x = 0; x < width; x++)
-                    {
-                        Color pixel = colorData[yMultipliedInput + x];
-
-                        if (pixel.A >= minAlpha) // looking for non-transparent pixels
-                        {
-                            opaquePixelsFound = true;
-                            if (x < xMin) xMin = x;
-                            if (x > xMax) xMax = x;
-                            if (y < yMin) yMin = y;
-                            if (y > yMax) yMax = y;
-                        }
-                    }
-                }
-
-                if (opaquePixelsFound) break;
-            }
-
-            if (!opaquePixelsFound) // resetting to the whole size, if bounds could not be found
-            {
-                xMin = 0;
-                xMax = width;
-                yMin = 0;
-                yMax = height;
-            }
-
-            return new Rectangle(x: xMin, y: yMin, width: xMax - xMin + 1, height: yMax - yMin + 1);
-        }
-
-        public static Rectangle GetCropRect(Texture2D texture, int textureX, int textureY, int width, int height, bool crop)
-        {
-            if (crop)
-            {
-                var croppedBounds = FindNonTransparentPixelsRect(texture: texture, textureX: textureX, textureY: textureY, width: width, height: height, minAlpha: 1);
-                croppedBounds.X += textureX;
-                croppedBounds.Y += textureY;
-                return croppedBounds;
-            }
-            else return new Rectangle(x: textureX, y: textureY, width: width, height: height);
-        }
-
-        public void Draw(Rectangle destRect, Color color, float opacity, int submergeCorrection = 0)
-        {
-            // invoke from Sprite class
-
-            Texture2D textureToDraw = this.Texture;
-
-            int correctedSourceHeight = this.Texture.Height;
-            if (submergeCorrection > 0)
-            {
-                // first pass - whole sprite visible through water
-                SonOfRobinGame.SpriteBatch.Draw(textureToDraw, destRect, this.textureRect, Color.Blue * opacity * 0.2f);
-
-                correctedSourceHeight = Math.Max(textureToDraw.Height / 2, textureToDraw.Height - submergeCorrection);
-                destRect.Height = (int)(correctedSourceHeight * this.scale);
-            }
-
-            Rectangle sourceRectangle = new(x: 0, y: 0, width: textureToDraw.Width, correctedSourceHeight);
-
-            SonOfRobinGame.SpriteBatch.Draw(textureToDraw, destRect, sourceRectangle, color * opacity);
-        }
-
-        public void DrawWithRotation(Vector2 position, Color color, float rotation, float opacity, Vector2 rotationOriginOverride)
-        {
-            // invoke from Sprite class
+            // destRect should not be used to draw, because of reduced (integer only) draw precision
 
             Vector2 rotationOriginToUse = this.rotationOrigin;
 
-            if (rotationOriginOverride != Vector2.Zero)
+            if (rotationOriginOverride != default)
             {
                 rotationOriginToUse = rotationOriginOverride;
                 position += (rotationOriginToUse - this.rotationOrigin) * this.scale;
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(this.Texture, position: position, sourceRectangle: this.textureRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: SpriteEffects.None, layerDepth: 0);
+            int correctedSourceHeight = this.CalculateHeightForSubmergeCorrection(submergeCorrection);
+
+            if (submergeCorrection > 0)
+            {
+                // first pass - whole sprite visible through water
+
+                SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: this.cropRect, color: Color.Blue * opacity * 0.2f, rotation: rotation, origin: rotationOriginToUse, scale: this.scale, effects: this.spriteEffects, layerDepth: 0);
+            }
+
+            Rectangle srcRect = new(x: this.cropRect.X, y: this.cropRect.Y, width: this.cropRect.Width, correctedSourceHeight);
+
+            SonOfRobinGame.SpriteBatch.Draw(texture: this.Texture, position: position + this.gfxOffsetCorrection, sourceRectangle: srcRect, color: color * opacity, rotation: rotation, origin: rotationOriginToUse, scale: this.scale * scale, effects: this.spriteEffects, layerDepth: 0);
         }
 
-        public void DrawAndKeepInRectBounds(Rectangle destBoundsRect, Color color, float opacity = 1f)
+        public void DrawInsideRect(Rectangle rect, Color color, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center, bool drawTestRect = false)
         {
-            // general use
-
-            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: destBoundsRect, color: color * opacity);
+            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: rect, srcRect: this.cropRect, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
         }
     }
 }

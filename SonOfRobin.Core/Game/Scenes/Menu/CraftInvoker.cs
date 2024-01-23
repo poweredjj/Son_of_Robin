@@ -24,7 +24,7 @@ namespace SonOfRobin
                 this.isEmpty = isEmpty;
                 this.name = name;
                 this.text = text;
-                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
+                this.frame = PieceInfo.GetInfo(name).animFrame;
                 this.bgColor = bgColor;
                 this.counter = counter;
             }
@@ -35,7 +35,7 @@ namespace SonOfRobin
                 this.isMain = false;
                 this.isEmpty = true;
                 this.name = PieceTemplate.Name.Empty;
-                this.frame = PieceInfo.GetInfo(name).CroppedFrame;
+                this.frame = PieceInfo.GetInfo(name).animFrame;
                 this.text = "";
                 this.bgColor = Color.White;
                 this.counter = 0;
@@ -51,7 +51,7 @@ namespace SonOfRobin
         {
             this.recipe = recipe;
             this.storageList = storageList;
-            this.drawParamsList = new List<InvokerDrawParams>();
+            this.drawParamsList = [];
 
             bool canBeCrafted = recipe.CheckIfStorageContainsAllIngredients(storageList);
 
@@ -88,7 +88,7 @@ namespace SonOfRobin
             base.Invoke();
         }
 
-        public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
+        public override void Draw(bool active, string textOverride = null, List<ImageObj> imageList = null)
         {
             if (active)
             {
@@ -182,31 +182,31 @@ namespace SonOfRobin
             bool canBeCrafted = this.recipe.CheckIfStorageContainsAllIngredients(storageList);
 
             var entryList = new List<InfoWindow.TextEntry> {
-                new InfoWindow.TextEntry(imageList: new List<Texture2D> { PieceInfo.GetInfo(this.recipe.pieceToCreate).Texture }, text:$"|  {pieceInfo.readableName}" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
-                new InfoWindow.TextEntry(text: pieceInfo.description, color: Color.White, animate: true, charsPerFrame: 2)};
+                new(imageList: [PieceInfo.GetImageObj(this.recipe.pieceToCreate)], text:$"|  { pieceInfo.readableName }" , color: Color.White, scale: 1.5f, animate: true, charsPerFrame: 2),
+                new(text: pieceInfo.description, color: Color.White, animate: true, charsPerFrame: 2)};
 
             if (pieceInfo.buffList != null)
             {
                 foreach (Buff buff in pieceInfo.buffList)
                 {
-                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? new List<Texture2D> { buff.iconTexture } : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
+                    entryList.Add(new InfoWindow.TextEntry(text: (buff.iconTexture != null ? "| " : "") + buff.description, imageList: buff.iconTexture != null ? [new TextureObj(buff.iconTexture)] : null, color: buff.isPositive ? Color.Cyan : new Color(255, 120, 70), scale: 1f, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Center));
                 }
             }
 
             float smallScale = 0.7f;
 
             var extInfoTextList = new List<string>();
-            var extInfoImageList = new List<Texture2D>();
+            var extInfoImageList = new List<ImageObj>();
 
             var durabilityTypeList = new List<Type> { typeof(Tool), typeof(PortableLight), typeof(Projectile) };
             if (durabilityTypeList.Contains(pieceInfo.type))
             {
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHeart));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleHeart));
 
                 if (pieceInfo.toolIndestructible)
                 {
                     extInfoTextList.Add($"|  |");
-                    extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleInfinity));
+                    extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleInfinity));
                 }
                 else extInfoTextList.Add($"| {Math.Round(pieceInfo.maxHitPoints)}");
             }
@@ -214,37 +214,37 @@ namespace SonOfRobin
             if (pieceInfo.toolRange > 0)
             {
                 extInfoTextList.Add($"| {pieceInfo.toolRange}");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArea));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleArea));
             }
 
             if (pieceInfo.cookerFoodMassMultiplier > 0)
             {
                 extInfoTextList.Add($"| x{pieceInfo.cookerFoodMassMultiplier}");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleBurger));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleBurger));
             }
 
             if (pieceInfo.fertileGroundSoilWealthMultiplier > 0)
             {
                 extInfoTextList.Add($"| x{pieceInfo.fertileGroundSoilWealthMultiplier}");
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSapling));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleSapling));
             }
 
             float fatigue = (int)(recipe.GetRealFatigue(craftStats: world.craftStats, player: world.Player) / world.Player.maxFatigue * 100);
             fatigue = world.Player.GetFinalFatigueValue(fatigue);
 
             extInfoTextList.Add($"| {(int)fatigue}%");
-            extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleSleep));
+            extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleSleep));
 
             TimeSpan duration = IslandClock.ConvertUpdatesCountToTimeSpan(recipe.GetRealDuration(craftStats: world.craftStats, player: world.Player));
             bool endsAtNight = duration >= world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Night);
             string durationString = string.Format("| {0:D1}:{1:D2}", (int)Math.Floor(duration.TotalHours), duration.Minutes);
             if (endsAtNight) durationString = $"{durationString} | |";
             extInfoTextList.Add(durationString);
-            extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass));
+            extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass));
             if (endsAtNight)
             {
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleArrowRight));
-                extInfoImageList.Add(TextureBank.GetTexture(TextureBank.TextureName.SimpleMoon));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowRight));
+                extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleMoon));
             }
 
             entryList.Add(new InfoWindow.TextEntry(text: String.Join("  ", extInfoTextList), imageList: extInfoImageList, scale: smallScale, color: Color.White));
@@ -254,7 +254,7 @@ namespace SonOfRobin
 
             if (pieceInfo.type == typeof(Projectile))
             {
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {pieceInfo.projectileHitMultiplier}", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {pieceInfo.projectileHitMultiplier}", imageList: [TextureBank.GetImageObj(TextureBank.TextureName.Biceps)], scale: smallScale, color: Color.White));
             }
 
             if (!canBeCrafted)
@@ -262,13 +262,13 @@ namespace SonOfRobin
                 var missingPiecesDict = PieceStorage.CheckMultipleStoragesForSpecifiedPieces(storageList: this.storageList, quantityByPiece: this.recipe.ingredients);
 
                 var ingredientsTextLines = new List<string>();
-                var missingIngredientsImages = new List<Texture2D>();
+                var missingIngredientsImages = new List<ImageObj>();
 
                 foreach (var kvp in missingPiecesDict)
                 {
                     PieceInfo.Info missingPieceInfo = PieceInfo.GetInfo(kvp.Key);
                     ingredientsTextLines.Add($"|  {missingPieceInfo.readableName} x{kvp.Value}");
-                    missingIngredientsImages.Add(missingPieceInfo.Texture);
+                    missingIngredientsImages.Add(missingPieceInfo.imageObj);
                 }
 
                 entryList.Add(new InfoWindow.TextEntry(text: "Missing ingredients:\n" + String.Join("\n", ingredientsTextLines), color: Color.DarkOrange, scale: 1f, imageList: missingIngredientsImages, animate: true, charsPerFrame: 2, minMarkerWidthMultiplier: 1.2f, imageAlignX: Helpers.AlignX.Center));
@@ -279,7 +279,7 @@ namespace SonOfRobin
 
             if (recipeLevelCurrent == recipeLevelMax)
             {
-                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.Star) }, color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
+                entryList.Add(new InfoWindow.TextEntry(text: "Level master |", imageList: [TextureBank.GetImageObj(TextureBank.TextureName.Star)], color: Color.Gold, scale: 1f, animate: true, charsPerFrame: 1));
             }
             else entryList.Add(new InfoWindow.TextEntry(text: $"Level {recipeLevelCurrent + 1}/{recipeLevelMax + 1}", color: Color.GreenYellow, scale: 1f, animate: true, charsPerFrame: 1));
 
@@ -290,10 +290,10 @@ namespace SonOfRobin
         {
             int middleMargin = (int)(cellRect.Width * 0.05f);
 
-            Rectangle leftRect = new Rectangle(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
-            Rectangle rightRect = new Rectangle(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
+            Rectangle leftRect = new(cellRect.X, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
+            Rectangle rightRect = new(cellRect.X + (cellRect.Width / 2) + middleMargin, cellRect.Y, (cellRect.Width / 2) - middleMargin, cellRect.Height);
 
-            frame.DrawAndKeepInRectBounds(destBoundsRect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
+            frame.DrawInsideRect(rect: leftRect, color: gfxCol * this.menu.viewParams.Opacity);
             this.DrawText(text: text, containingRect: rightRect, txtCol: txtCol);
         }
 
@@ -306,7 +306,7 @@ namespace SonOfRobin
 
             float textScale = Math.Min(maxTextWidth / textSize.X, maxTextHeight / textSize.Y);
 
-            Vector2 textPos = new Vector2(
+            Vector2 textPos = new(
                 containingRect.Center.X - (textSize.X / 2 * textScale),
                 containingRect.Center.Y - (textSize.Y / 2 * textScale));
 

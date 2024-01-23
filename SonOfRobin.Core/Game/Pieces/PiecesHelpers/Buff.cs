@@ -242,7 +242,7 @@ namespace SonOfRobin
                 BuffEngine.BuffType.ExtendSprintDuration => TextureBank.GetTexture(TextureBank.TextureName.BuffSprint),
                 BuffEngine.BuffType.LowHP => TextureBank.GetTexture(TextureBank.TextureName.BuffLowHP),
                 BuffEngine.BuffType.Tired => TextureBank.GetTexture(TextureBank.TextureName.Bed),
-                BuffEngine.BuffType.Hungry => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).Texture,
+                BuffEngine.BuffType.Hungry => TextureBank.GetTexture(TextureBank.TextureName.BuffHungry),
                 BuffEngine.BuffType.Heat => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
                 BuffEngine.BuffType.HeatProtection => TextureBank.GetTexture(TextureBank.TextureName.BuffHeat),
                 BuffEngine.BuffType.SwampProtection => TextureBank.GetTexture(TextureBank.TextureName.BuffPoison),

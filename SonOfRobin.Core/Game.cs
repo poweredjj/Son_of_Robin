@@ -26,8 +26,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 0.6041f;
-        public static readonly DateTime lastChanged = new(2024, 01, 02);
+        public const float version = 0.6042f;
+        public static readonly DateTime lastChanged = new(2024, 01, 23);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -36,12 +36,12 @@ namespace SonOfRobin
         public static bool fakeMobileMode = false;
         public static Platform platform;
         public static OS os;
-
+        
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+          // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
-
+        
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
         public static RasterizerState RasterizeStateNoCulling { get; private set; }
@@ -58,6 +58,7 @@ namespace SonOfRobin
         public static Effect EffectDistort { get; private set; }
         public static Effect EffectRain { get; private set; }
         public static Effect EffectHeatMaskDistortion { get; private set; }
+        public static Effect EffectShadowMerge { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -79,8 +80,9 @@ namespace SonOfRobin
         public static Texture2D GradientBottom { get; private set; }
         public static Texture2D SplashScreenTexture { get; private set; }
 
-        public static readonly ParallelOptions defaultParallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount };
-        public static RenderTarget2D tempShadowMask;
+        public static readonly ParallelOptions defaultParallelOptions = new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
+        public static RenderTarget2D tempShadowMask1;
+        public static RenderTarget2D tempShadowMask2;
         public static Texture2D lightSphere;
         public static readonly SimpleFps fps = new();
         public static readonly Random random = new();
@@ -93,7 +95,6 @@ namespace SonOfRobin
         public static readonly string gameDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SonOfRobin_data");
         public static readonly string worldTemplatesPath = Path.Combine(gameDataPath, "world_templates");
         public static readonly string saveGamesPath = Path.Combine(gameDataPath, "savegames");
-        public static readonly string animCachePath = Path.Combine(gameDataPath, "graphics_cache");
         public static readonly string errorsPath = Path.Combine(gameDataPath, "errors");
         public static readonly string prefsPath = Path.Combine(gameDataPath, "preferences.json");
         public static string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
@@ -152,7 +153,6 @@ namespace SonOfRobin
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
             if (!Directory.Exists(worldTemplatesPath)) Directory.CreateDirectory(worldTemplatesPath);
             if (!Directory.Exists(saveGamesPath)) Directory.CreateDirectory(saveGamesPath);
-            if (!Directory.Exists(animCachePath)) Directory.CreateDirectory(animCachePath);
             if (!Directory.Exists(errorsPath)) Directory.CreateDirectory(errorsPath);
 
             Preferences.Initialize(); // to set some default values
@@ -203,6 +203,7 @@ namespace SonOfRobin
             KeepScreenOn = true;
 
             new InitialLoader();
+            // new AnimViewer(); // for testing
         }
 
         public void OnResize(Object sender, EventArgs e)
@@ -256,6 +257,7 @@ namespace SonOfRobin
             EffectDistort = ContentMgr.Load<Effect>("effects/Distort");
             EffectRain = ContentMgr.Load<Effect>("effects/Rain");
             EffectHeatMaskDistortion = ContentMgr.Load<Effect>("effects/HeatMaskDistortion");
+            EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");
         }
 
         public static void LoadInitialTextures()

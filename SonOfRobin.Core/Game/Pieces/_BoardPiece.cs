@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,20 +67,20 @@ namespace SonOfRobin
             Indestructible,
         }
 
-        public static Texture2D GetTextureForCategory(Category category)
+        public static ImageObj GetTextureForCategory(Category category)
         {
             return category switch
             {
-                Category.Wood => PieceInfo.GetTexture(PieceTemplate.Name.TreeBig),
-                Category.Stone => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.MineralsSmall3).Texture,
-                Category.Metal => PieceInfo.GetTexture(PieceTemplate.Name.Anvil),
-                Category.SmallPlant => PieceInfo.GetTexture(PieceTemplate.Name.GrassRegular),
-                Category.Flesh => TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal),
-                Category.Leather => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Leather).Texture,
-                Category.Dirt => PieceInfo.GetTexture(PieceTemplate.Name.Hole),
-                Category.Crystal => PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositSmall),
-                _ => AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim).Texture,
-            }; ;
+                Category.Wood => PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig),
+                Category.Stone => AnimData.GetImageObj(AnimData.PkgName.MineralsSmall3),
+                Category.Metal => PieceInfo.GetImageObj(PieceTemplate.Name.Anvil),
+                Category.SmallPlant => PieceInfo.GetImageObj(PieceTemplate.Name.GrassRegular),
+                Category.Flesh => TextureBank.GetImageObj(textureName: TextureBank.TextureName.Animal),
+                Category.Leather => AnimData.GetImageObj(AnimData.PkgName.Leather),
+                Category.Dirt => PieceInfo.GetImageObj(PieceTemplate.Name.Hole),
+                Category.Crystal => PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositSmall),
+                _ => AnimData.GetImageObj(AnimData.PkgName.NoAnim),
+            };
         }
 
         protected const float passiveMovementMultiplier = 100f;
@@ -132,7 +131,7 @@ namespace SonOfRobin
             this.id = id;
             this.pieceInfo = PieceInfo.TryToGetInfo(this.name);
 
-            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPackage: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
+            this.sprite = new Sprite(boardPiece: this, id: this.id, world: this.world, animPkgName: animPackage, animSize: animSize, animName: animName, visible: visible, allowedTerrain: allowedTerrain, lightEngine: lightEngine);
 
             this.activeSoundPack = new ActiveSoundPack(this);
             this.activeState = activeState;
@@ -175,8 +174,6 @@ namespace SonOfRobin
             get { return this.hitPoints; }
             set { this.hitPoints = Math.Clamp(value: value, min: 0, max: this.maxHitPoints); }
         }
-
-        public bool HasFlatShadow { get { return this.pieceInfo.hasFlatShadow || Math.Abs(this.sprite.rotation) > 0.3f; } }
 
         public bool AreEnemiesNearby
         {
@@ -313,10 +310,7 @@ namespace SonOfRobin
                 if (this.world == null || !this.sprite.IsInCameraRect || Preferences.debugShowAnimSizeChangeInCamera) // size change should not be visible
                 {
                     int previousSpriteSize = this.sprite.AnimSize;
-                    bool spriteSizeSetCorrectly = this.SetSpriteSizeByMass();
-
-                    // cannot change mass, if there is no room to expand
-                    if (!spriteSizeSetCorrectly && previousSpriteSize < this.sprite.AnimSize) this.mass = this.pieceInfo.maxMassForSize[this.sprite.AnimSize];
+                    this.SetSpriteSizeByMass();
 
                     if (previousSpriteSize != this.sprite.AnimSize && this.PieceStorage != null && this.GetType() == typeof(Plant))
                     {
@@ -327,14 +321,13 @@ namespace SonOfRobin
             }
         }
 
-        private bool SetSpriteSizeByMass()
+        private void SetSpriteSizeByMass()
         {
             byte newSpriteSize = this.SpriteSize;
-            if (this.sprite.AnimSize == newSpriteSize) return true;
-            if (!this.pieceInfo.canShrink && this.sprite.AnimSize > newSpriteSize) return true;
+            if (this.sprite.AnimSize == newSpriteSize) return;
+            if (!this.pieceInfo.canShrink && this.sprite.AnimSize > newSpriteSize) return;
 
             this.sprite.AssignNewSize(newSpriteSize);
-            return this.sprite.AnimSize == newSpriteSize;
         }
 
         public float HitPointsPercent
@@ -395,7 +388,7 @@ namespace SonOfRobin
             if (this.DestructionDelay == 0) return;
 
             // duration value "-1" should be replaced with animation duration
-            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.GetAnimDuration() - 1 : this.DestructionDelay, boardPiece: this);
+            new LevelEvent(eventName: LevelEvent.EventName.Destruction, level: this.level, delay: this.DestructionDelay == -1 ? this.sprite.Anim.duration - 1 : this.DestructionDelay, boardPiece: this);
         }
 
         public virtual Dictionary<string, Object> Serialize()
@@ -474,9 +467,9 @@ namespace SonOfRobin
 
         public virtual void DrawStatBar()
         {
-            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture);
+            new StatBar(label: "", value: (int)this.HitPoints, valueMax: (int)this.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: true, image: AnimData.GetImageObj(AnimData.PkgName.Heart));
 
-            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture);
+            if (Preferences.debugShowStatBars && this.HeatLevel > 0) new StatBar(label: "", value: (int)(this.HeatLevel * 100f), valueMax: 100, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: this.sprite.GfxRect.Center.X, posY: this.sprite.GfxRect.Bottom, ignoreIfAtMax: false, image: AnimData.GetImageObj(AnimData.PkgName.Flame));
 
             StatBar.FinishThisBatch();
         }
@@ -513,7 +506,7 @@ namespace SonOfRobin
 
             if (this.GetType() == typeof(Animal))
             {
-                this.sprite.CharacterStand(checkForCollision: false);
+                this.sprite.CharacterStand();
                 this.sprite.rotation = (float)(Random.NextSingle() * Math.PI);
             }
 

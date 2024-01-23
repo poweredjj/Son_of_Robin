@@ -129,7 +129,7 @@ namespace SonOfRobin
 
             int meatCount = meatList.Count;
             // collision check must be turned off, to work if player is nearby
-            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off", checkForCollision: false);
+            this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off");
 
             this.showStatBarsTillFrame = this.world.CurrentUpdate + 1000;
 

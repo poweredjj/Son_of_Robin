@@ -1,7 +1,6 @@
 ﻿using FontStashSharp;
 using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -141,9 +140,9 @@ namespace SonOfRobin
 
                 StatBar.ChangeBatchFont(spriteFontBase: SonOfRobinGame.FontFreeSansBold.GetFont(12));
 
-                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Burger).Texture);
-                new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: TextureBank.GetTexture(TextureBank.TextureName.Bed));
-                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, texture: AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Heart).Texture);
+                new StatBar(width: width, height: height, label: "food", value: (int)player.fedLevel, valueMax: (int)player.maxFedLevel, colorMin: new Color(0, 128, 255), colorMax: new Color(0, 255, 255), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, image: AnimData.GetImageObj(AnimData.PkgName.Burger));
+                new StatBar(width: width, height: height, label: "fatigue", value: (int)player.Fatigue, valueMax: (int)player.maxFatigue, colorMin: new Color(255, 255, 0), colorMax: new Color(255, 0, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, image: TextureBank.GetImageObj(TextureBank.TextureName.Bed));
+                new StatBar(width: width, height: height, label: "health", value: (int)player.HitPoints, valueMax: (int)player.maxHitPoints, colorMin: new Color(255, 0, 0), colorMax: new Color(0, 255, 0), posX: posX, posY: posY, ignoreIfAtMax: false, centerX: false, drawFromTop: true, labelAtLeft: true, vOffsetCorrection: vOffsetCorrection, image: AnimData.GetImageObj(AnimData.PkgName.Heart));
 
                 currentPosY = StatBar.BatchHeight + 5; // must be invoked before drawing bars
 
@@ -161,8 +160,8 @@ namespace SonOfRobin
                 int occupiedSlotCount = player.PieceStorage.OccupiedSlots.Count + (player.ToolStorage.OccupiedSlots.Count - 1); // -1 to count out hand "tool"
                 int totalSlotCount = player.PieceStorage.AllSlots.Count + (player.ToolStorage.AllSlots.Count - 1); // -1 to count out hand "tool"
 
-                Rectangle occupiedRect = new Rectangle(x: counterRect.X, y: counterRect.Y, width: counterSize / 2, height: counterSize / 2);
-                Rectangle totalRect = new Rectangle(x: counterRect.X + (counterSize / 2), y: counterRect.Y + (counterSize / 2), width: counterSize / 2, height: counterSize / 2);
+                Rectangle occupiedRect = new(x: counterRect.X, y: counterRect.Y, width: counterSize / 2, height: counterSize / 2);
+                Rectangle totalRect = new(x: counterRect.X + (counterSize / 2), y: counterRect.Y + (counterSize / 2), width: counterSize / 2, height: counterSize / 2);
                 Rectangle slashRect = counterRect;
                 slashRect.X += (int)(slashRect.Width * 0.2f);
 
@@ -289,7 +288,7 @@ namespace SonOfRobin
 
                         Camera camera = this.world.camera;
                         Vector2 markerPos = markerPiece.sprite.position;
-                        Texture2D markerTexture = markerPiece.sprite.AnimFrame.Texture;
+                        ImageObj markerImage = markerPiece.sprite.AnimFrame.imageObj;
 
                         float tipsHeight = 0; // to avoid drawing marker under ControlTips
                         if (Preferences.ShowControlTips)
@@ -299,8 +298,8 @@ namespace SonOfRobin
                         }
 
                         float markerHeight = Preferences.MapMarkerRealSize * this.world.viewParams.ScaleY;
-                        float markerScale = markerHeight / markerTexture.Height;
-                        float markerWidth = markerTexture.Width * markerScale;
+                        float markerScale = markerHeight / markerImage.Height;
+                        float markerWidth = markerImage.Width * markerScale;
 
                         float cameraLeft = this.world.viewParams.PosX * -1;
                         float cameraRight = cameraLeft + camera.viewRect.Width;
@@ -316,6 +315,8 @@ namespace SonOfRobin
 
                         markerPos += offset;
 
+                        markerPos += new Vector2(markerWidth / 2, markerHeight / 2);
+
                         Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
                         markerScreenPos.X -= this.viewParams.DrawPos.X;
                         markerScreenPos.Y -= this.viewParams.DrawPos.Y;
@@ -325,12 +326,12 @@ namespace SonOfRobin
                         markerScreenPosRightBottom.X -= this.viewParams.DrawPos.X;
                         markerScreenPosRightBottom.Y -= this.viewParams.DrawPos.Y;
 
-                        float markerDrawScale = (markerScreenPosRightBottom.Y - markerScreenPos.Y) / (float)markerTexture.Height;
+                        float markerDrawScale = (markerScreenPosRightBottom.Y - markerScreenPos.Y) / (float)markerImage.Height;
 
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
-                        SonOfRobinGame.SpriteBatch.Draw(texture: markerTexture, position: markerScreenPos, scale: markerDrawScale, sourceRectangle: markerTexture.Bounds, color: Color.White * markerPiece.sprite.opacity, rotation: 0, origin: Vector2.Zero, effects: SpriteEffects.None, layerDepth: 0);
+                        markerPiece.sprite.AnimFrame.Draw(position: markerScreenPos, color: Color.White, rotation: 0f, opacity: markerPiece.sprite.opacity, scale: markerDrawScale);
                     }
                 }
             }

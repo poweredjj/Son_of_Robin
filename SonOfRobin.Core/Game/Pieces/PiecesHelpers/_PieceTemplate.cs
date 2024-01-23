@@ -394,7 +394,7 @@ namespace SonOfRobin
                         spectator.speed = 5;
                         spectator.sprite.opacity = 0.5f;
                         spectator.sprite.color = new Color(150, 255, 255);
-                        spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: spectator.sprite.AnimFrame.textureSize, priority: 0, framesLeft: -1));
+                        spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: new Vector2(spectator.sprite.AnimFrame.Texture.Width, spectator.sprite.AnimFrame.Texture.Height), priority: 0, framesLeft: -1));
 
                         return spectator;
                     }
@@ -698,7 +698,7 @@ namespace SonOfRobin
 
                 case Name.MineralsSmall:
                     {
-                        var packageNames = new AnimData.PkgName[] { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsMossySmall4 };
+                        var packageNames = new AnimData.PkgName[] { AnimData.PkgName.MineralsSmall1, AnimData.PkgName.MineralsSmall2, AnimData.PkgName.MineralsSmall3, AnimData.PkgName.MineralsSmall4, AnimData.PkgName.MineralsSmall5, AnimData.PkgName.MineralsSmall6, AnimData.PkgName.MineralsSmall7, AnimData.PkgName.MineralsSmall8, AnimData.PkgName.MineralsSmall9, AnimData.PkgName.MineralsSmall10 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Length)];
 
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
@@ -2811,7 +2811,7 @@ namespace SonOfRobin
 
                 case Name.HastePlayerClone:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: world?.Player != null ? world.Player.sprite.AnimPackage : AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "haste player clone", description: "Haste player clone.", activeState: BoardPiece.State.HasteCloneFollowPlayer, visible: true);
+                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: world?.Player != null ? world.Player.sprite.AnimPkg.name : AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "haste player clone", description: "Haste player clone.", activeState: BoardPiece.State.HasteCloneFollowPlayer, visible: true);
 
                         return visualEffect;
                     }

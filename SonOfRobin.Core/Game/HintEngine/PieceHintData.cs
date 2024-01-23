@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SonOfRobin
@@ -466,346 +465,346 @@ namespace SonOfRobin
                 case PieceHint.Type.CrateAnother:
                     return new List<HintMessage> {
                         new HintMessage(text: "I should check what's inside this | crate.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CrateRegular) }, blockInputDefaultDuration: true) };
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CrateRegular) }, blockInputDefaultDuration: true) };
 
                 case PieceHint.Type.TentModernPacked:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.TentModernPacked).readableName} is in good shape.\nI should be able to | assemble it.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentModernPacked), PieceInfo.GetTexture(PieceTemplate.Name.TentModern) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TentModernPacked), PieceInfo.GetImageObj(PieceTemplate.Name.TentModern) })};
 
                 case PieceHint.Type.WoodNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could get some wood using my | bare hands,\nbut an | axe would be better.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple), PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.KnifeSimple), PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone) })};
 
                 case PieceHint.Type.WoodPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could use my | axe to get some wood.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone) })};
 
                 case PieceHint.Type.DigSiteNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think that something could be buried | here.\nIf I had a | shovel, I could dig there.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BeachDigSite), PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BeachDigSite), PieceInfo.GetImageObj(PieceTemplate.Name.ShovelStone) })};
 
                 case PieceHint.Type.DigSitePositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could use my | shovel to dig | here.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ShovelStone), PieceInfo.GetTexture(PieceTemplate.Name.ForestDigSite) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.ShovelStone), PieceInfo.GetImageObj(PieceTemplate.Name.ForestDigSite) })};
 
                 case PieceHint.Type.StoneNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "If I had a | pickaxe, I could mine stones from this | mineral.\nRegular | axe could work too, but not as effective.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.MineralsSmall), PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.MineralsSmall), PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone) })};
 
                 case PieceHint.Type.StonePositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could use my | pickaxe to mine | stones.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.MineralsSmall) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.MineralsSmall) })};
 
                 case PieceHint.Type.CrystalNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: $"Wow, this | crystal looks very strong.\nI think that a pickaxe made of wood or stone\nwould be too weak to break it.\nMaybe an | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} could work, though?",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron) } )};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeIron) } )};
 
                 case PieceHint.Type.CrystalPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.PickaxeIron).readableName} should be enough to break this | crystal.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeIron), PieceInfo.GetTexture(PieceTemplate.Name.CrystalDepositBig) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeIron), PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositBig) })};
 
                 case PieceHint.Type.AnimalNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think I need some | | weapon to hunt this animal.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.SpearWood), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.SpearWood), PieceInfo.GetImageObj(PieceTemplate.Name.BowBasic) })};
 
                 case PieceHint.Type.AnimalBow:
                     return new List<HintMessage> {
                         new HintMessage(text: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.BowBasic).readableName} should be great for hunting.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BowBasic) })};
 
                 case PieceHint.Type.AnimalSpear:
                     return new List<HintMessage> {
                         new HintMessage(text: $"My | {PieceInfo.GetInfo(PieceTemplate.Name.SpearWood).readableName} should be great for animal hunting.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.SpearWood) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.SpearWood) })};
 
                 case PieceHint.Type.AnimalAxe:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could try to use my | axe to hunt this animal.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AxeStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone) })};
 
                 case PieceHint.Type.BowNoAmmo:
                     return new List<HintMessage> {
                         new HintMessage(text: "I need | arrows...",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ArrowStone) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.ArrowStone) })};
 
                 case PieceHint.Type.ClamField:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Clam).readableName} should be edible after cooking.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Clam) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Clam) })};
 
                 case PieceHint.Type.ClamInventory:
                     return new List<HintMessage> {
                         new HintMessage(text: $"I cannot eat this | {PieceInfo.GetInfo(PieceTemplate.Name.Clam).readableName} raw.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Clam) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Clam) })};
 
                 case PieceHint.Type.FruitTree:
                     return new List<HintMessage> {
                         new HintMessage(text: "This fruit looks edible. I should shake it off this | tree.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TreeBig) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig) })};
 
                 case PieceHint.Type.BananaTree:
                     return new List<HintMessage> {
                         new HintMessage(text: "A | banana! It could be possible, to shake it off | this tree.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Banana), PieceInfo.GetTexture(PieceTemplate.Name.BananaTree) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Banana), PieceInfo.GetImageObj(PieceTemplate.Name.BananaTree) })};
 
                 case PieceHint.Type.TomatoPlant:
                     return new List<HintMessage> {
                         new HintMessage(text: "A | tomato... Looks tasty.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Tomato) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Tomato) })};
 
                 case PieceHint.Type.IronDepositNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think this is an | iron deposit.\nIf I had a | pickaxe, I could mine | iron ore.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.IronDeposit), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.IronOre) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronDeposit), PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre) })};
 
                 case PieceHint.Type.IronDepositPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could use my | pickaxe to mine | iron ore here |.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.IronOre), PieceInfo.GetTexture(PieceTemplate.Name.IronDeposit) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.IronDeposit) })};
 
                 case PieceHint.Type.CoalDepositNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think this | is a coal deposit.\nIf I had a | pickaxe, I could get | coal.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit), PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.Coal) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit), PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.Coal) })};
 
                 case PieceHint.Type.CoalDepositPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I could use my | pickaxe to mine | coal here |.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.PickaxeStone), PieceInfo.GetTexture(PieceTemplate.Name.Coal), PieceInfo.GetTexture(PieceTemplate.Name.CoalDeposit) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.PickaxeStone), PieceInfo.GetImageObj(PieceTemplate.Name.Coal), PieceInfo.GetImageObj(PieceTemplate.Name.CoalDeposit) })};
 
                 case PieceHint.Type.HotPlate:
                     return new List<HintMessage> {
                         new HintMessage(text: "| I can cook simple meals now!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HotPlate) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HotPlate) })};
 
                 case PieceHint.Type.Cooker:
                     return new List<HintMessage> {
                         new HintMessage(text: "| Now I can cook like a pro!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CookingPot) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CookingPot) })};
 
                 case PieceHint.Type.Furnace:
                     return new List<HintMessage> {
                         new HintMessage(text: "Finally! Now I can | smelt!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.FurnaceComplete) })};
 
                 case PieceHint.Type.LeatherPositive:
                     return new List<HintMessage> {
-                    new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Leather), PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall), PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall)}, blockInputDefaultDuration: true)};
+                    new HintMessage(text: $"If I had more | { PieceInfo.GetInfo(PieceTemplate.Name.Leather).readableName },\nI could make a | backpack or a | belt.", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.Leather), PieceInfo.GetImageObj(PieceTemplate.Name.BackpackSmall), PieceInfo.GetImageObj(PieceTemplate.Name.BeltSmall)}, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.BackpackPositive:
                     return new List<HintMessage> {
                     new HintMessage(text: "This backpack | will allow me to carry more items.\nI should equip it now.",
-                    imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.BackpackSmall)}, blockInputDefaultDuration: true)};
+                    imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.BackpackSmall)}, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.BeltPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I should equip my | belt now.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BeltSmall) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BeltSmall) })};
 
                 case PieceHint.Type.MapPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: $"I should equip this {PieceInfo.GetInfo(PieceTemplate.Name.Map).readableName} | to use it.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Map) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Map) })};
 
                 case PieceHint.Type.RedExclamation:
                     return new List<HintMessage> {
                         new HintMessage(text: "This animal is | attacking me!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BubbleExclamationRed) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BubbleExclamationRed) })};
 
                 case PieceHint.Type.Acorn:
                     return new List<HintMessage> {
                         new HintMessage(text: $"After cooking, this | {PieceInfo.GetInfo(PieceTemplate.Name.Acorn).readableName} should be edible.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Acorn) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Acorn) })};
 
                 case PieceHint.Type.TorchNegative:
                     return new List<HintMessage> {
                         new HintMessage("It's getting dark.", blockInputDefaultDuration: true),
-                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchSmall), PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall)  }, blockInputDefaultDuration: true)};
+                        new HintMessage(text: "I need some light. A | torch, maybe?\nOr a | bonfire?", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchSmall), PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall)  }, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.TorchPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "This | torch will make navigating at night a lot easier.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TorchBig) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TorchBig) })};
 
                 case PieceHint.Type.Fireplace:
                     return new List<HintMessage> {
                         new HintMessage(text: "This | bonfire looks ok.\nAll I need now is some | | | wood...?",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CampfireSmall), PieceInfo.GetTexture(PieceTemplate.Name.Stick), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetTexture(PieceTemplate.Name.WoodPlank) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CampfireSmall), PieceInfo.GetImageObj(PieceTemplate.Name.Stick), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WoodPlank) })};
 
                 case PieceHint.Type.HerbsRed:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think I could use these | herbs to make a healing potion.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsRed) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsRed) })};
 
                 case PieceHint.Type.HerbsYellow:
                     return new List<HintMessage> {
                         new HintMessage(text: "These | herbs could be used to make a strength potion.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsYellow) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsYellow) })};
 
                 case PieceHint.Type.HerbsViolet:
                     return new List<HintMessage> {
                         new HintMessage(text: "Hmm... These | herbs should make my fatigue go away.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsViolet)})};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsViolet)})};
 
                 case PieceHint.Type.HerbsCyan:
                     return new List<HintMessage> {
                         new HintMessage(text: "Hmm... These | herbs sure look interesting.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsCyan) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsCyan) })};
 
                 case PieceHint.Type.HerbsBlue:
                     return new List<HintMessage> {
                         new HintMessage(text: "These | herbs could be used to make a stamina potion.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlue) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsBlue) })};
 
                 case PieceHint.Type.HerbsBlack:
                     return new List<HintMessage> {
                         new HintMessage(text: "These | herbs look poisonous.\nThey could be useful.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.HerbsBlack) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.HerbsBlack) })};
 
                 case PieceHint.Type.GlassSand:
                     return new List<HintMessage> {
                         new HintMessage(text: "This | is no ordinary sand!\nIt can be used to make glass.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.GlassSand) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand) })};
 
                 case PieceHint.Type.CanBuildWorkshop:
                     return new List<HintMessage> {
                         new HintMessage(text: $"If I had more | wood, I could build an | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.WoodLogRegular).Texture, PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular), PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopEssential) })};
 
                 case PieceHint.Type.DangerousBear:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.Bear).readableName} looks very dangerous!\nI'd rather stay away.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Bear) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Bear) })};
 
                 case PieceHint.Type.DigSiteGlass:
                     return new List<HintMessage> {
                         new HintMessage(text: "This spot | looks interesting. I might find something useful there.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.GlassDigSite) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.GlassDigSite) })};
 
                 case PieceHint.Type.CarrotPlant:
                     return new List<HintMessage> {
                         new HintMessage(text: "A | carrot... Looks tasty.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Carrot) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Carrot) })};
 
                 case PieceHint.Type.ExplosiveGas:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This gas seems to be | flammable.\nI should take care when using || {PieceInfo.GetInfo(PieceTemplate.Name.ArrowExploding).readableName} there.",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.Flame).Texture, PieceInfo.GetTexture(PieceTemplate.Name.ArrowExploding), PieceInfo.GetTexture(PieceTemplate.Name.BowBasic) })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.ArrowExploding), PieceInfo.GetImageObj(PieceTemplate.Name.BowBasic) })};
 
                 case PieceHint.Type.TreasureJar:
                     return new List<HintMessage> {
                         new HintMessage(text: $"I need to destroy this | {PieceInfo.GetInfo(PieceTemplate.Name.JarTreasureRich).readableName} to see what's inside.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.JarTreasureRich) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.JarTreasureRich) })};
 
                 case PieceHint.Type.CandleForLantern:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.LanternEmpty).readableName} will not work without a | {PieceInfo.GetInfo(PieceTemplate.Name.Candle).readableName} inside.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.LanternEmpty), PieceInfo.GetTexture(PieceTemplate.Name.Candle) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.LanternEmpty), PieceInfo.GetImageObj(PieceTemplate.Name.Candle) })};
 
                 case PieceHint.Type.CoffeeRaw:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This is | {PieceInfo.GetInfo(PieceTemplate.Name.CoffeeRaw).readableName}!\nI could roast it in a | {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetTexture(PieceTemplate.Name.FurnaceComplete) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetImageObj(PieceTemplate.Name.FurnaceComplete) })};
 
                 case PieceHint.Type.SharedChest:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.ChestCrystal).readableName} defies the laws of physics, somehow.\nEvery other | {PieceInfo.GetInfo(PieceTemplate.Name.ChestCrystal).readableName} will share the items that are stored inside.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ChestCrystal), PieceInfo.GetTexture(PieceTemplate.Name.ChestCrystal) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.ChestCrystal), PieceInfo.GetImageObj(PieceTemplate.Name.ChestCrystal) })};
 
                 case PieceHint.Type.CanDestroyEssentialWorkshop:
                     return new List<HintMessage> {
                         new HintMessage(text: $"Now that I have this | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopBasic).readableName},\nI could destroy | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopEssential).readableName}\nto get back some | construction materials.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetTexture(PieceTemplate.Name.WoodLogRegular) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopBasic), PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopEssential), PieceInfo.GetImageObj(PieceTemplate.Name.WoodLogRegular) })};
 
                 case PieceHint.Type.AlchemyLab:
                     return new List<HintMessage> {
                         new HintMessage(text: "| I can start brewing\n| potions now!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PotionRed).Texture })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), AnimData.GetImageObj(AnimData.PkgName.PotionRed) })};
 
                 case PieceHint.Type.PoisonousMeat:
                     return new List<HintMessage> {
                         new HintMessage(text: $"This | {PieceInfo.GetInfo(PieceTemplate.Name.MeatRawRegular).readableName} looks poisonous.\nI should | cook or | dry it before eating.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MeatRawRegular), PieceInfo.GetTexture(PieceTemplate.Name.HotPlate), PieceInfo.GetTexture(PieceTemplate.Name.MeatDryingRackRegular) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.MeatRawRegular), PieceInfo.GetImageObj(PieceTemplate.Name.HotPlate), PieceInfo.GetImageObj(PieceTemplate.Name.MeatDryingRackRegular) })};
 
                 case PieceHint.Type.MakeOilPositiveFat:
                     return new List<HintMessage> {
                         new HintMessage(text: $"I could use my | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName}\nto make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom this | {PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), PieceInfo.GetImageObj(PieceTemplate.Name.BottleOfOil), PieceInfo.GetImageObj(PieceTemplate.Name.Fat) })};
 
                 case PieceHint.Type.MakeOilNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: $"If I had an | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName},\nI could make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom this | {PieceInfo.GetInfo(PieceTemplate.Name.Fat).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.Fat) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), PieceInfo.GetImageObj(PieceTemplate.Name.BottleOfOil), PieceInfo.GetImageObj(PieceTemplate.Name.Fat) })};
 
                 case PieceHint.Type.MakeOilPositiveSeeds:
                     return new List<HintMessage> {
                         new HintMessage(text: $"I could use my | {PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).readableName}\nto make a | {PieceInfo.GetInfo(PieceTemplate.Name.BottleOfOil).readableName}\nfrom these | {PieceInfo.GetInfo(PieceTemplate.Name.SeedsGeneric).readableName}.",
-                        imageList: new List<Texture2D> { PieceInfo.GetInfo(PieceTemplate.Name.AlchemyLabStandard).Texture, PieceInfo.GetTexture(PieceTemplate.Name.BottleOfOil), PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.AlchemyLabStandard), PieceInfo.GetImageObj(PieceTemplate.Name.BottleOfOil), PieceInfo.GetImageObj(PieceTemplate.Name.SeedsGeneric) })};
 
                 case PieceHint.Type.PlantingNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "I need a | fertile ground to plant these seeds.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FertileGroundMedium) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.FertileGroundMedium) })};
 
                 case PieceHint.Type.PlantingPositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "Now I can plant seeds | | |.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.SeedsGeneric), PieceInfo.GetTexture(PieceTemplate.Name.Acorn), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.SeedsGeneric), PieceInfo.GetImageObj(PieceTemplate.Name.Acorn), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw) })};
 
                 case PieceHint.Type.WoodenFenceNegative:
                     return new List<HintMessage> {
                         new HintMessage(text: "Maybe I should build a | wooden fence, to protect my | | crops.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort), PieceInfo.GetTexture(PieceTemplate.Name.CarrotPlant), PieceInfo.GetTexture(PieceTemplate.Name.CoffeeRaw) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.FenceHorizontalShort), PieceInfo.GetImageObj(PieceTemplate.Name.CarrotPlant), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw) })};
 
                 case PieceHint.Type.WoodenFencePositive:
                     return new List<HintMessage> {
                         new HintMessage(text: "I might be able to jump over this | fence.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.FenceHorizontalShort) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.FenceHorizontalShort) })};
 
                 case PieceHint.Type.DeadAnimal:
                     return world != null && world.Player.Skill == Player.SkillName.Hunter ?
                         new List<HintMessage> {
                         new HintMessage(text: $"I know how to | process this animal right now,\nbut if I had a | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName}, I could get more | meat.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple), PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), PieceInfo.GetTexture(PieceTemplate.Name.MeatRawPrime) })} :
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.KnifeSimple), PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopMeatHarvesting), PieceInfo.GetImageObj(PieceTemplate.Name.MeatRawPrime) })} :
                         new List<HintMessage> {
                         new HintMessage(text: $"I need to use | {PieceInfo.GetInfo(PieceTemplate.Name.WorkshopMeatHarvesting).readableName}\nto process this animal.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopMeatHarvesting) })};
 
                 case PieceHint.Type.HarvestingWorkshop:
                     return new List<HintMessage> {
                         new HintMessage(text: "| Now I can harvest meat from | animals!",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.WorkshopMeatHarvesting), TextureBank.GetTexture(textureName: TextureBank.TextureName.Animal)})};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.WorkshopMeatHarvesting), TextureBank.GetImageObj(textureName: TextureBank.TextureName.Animal)})};
 
                 case PieceHint.Type.SwampDigSite:
                     return new List<HintMessage> {
                         new HintMessage(text: "I think that | something valuable could be | buried | here...",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.ChestTreasureBig), PieceInfo.GetTexture(PieceTemplate.Name.ShovelIron), PieceInfo.GetTexture(PieceTemplate.Name.SwampDigSite) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.ChestTreasureBig), PieceInfo.GetImageObj(PieceTemplate.Name.ShovelIron), PieceInfo.GetImageObj(PieceTemplate.Name.SwampDigSite) })};
 
                 case PieceHint.Type.CineCrateStarting:
                     return new List<HintMessage> {
                         new HintMessage(text: "I've seen | crates like this on the ship.\nIt could contain valuable supplies.\nI should try to | break it open.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.CrateStarting), PieceInfo.GetTexture(PieceTemplate.Name.KnifeSimple) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.CrateStarting), PieceInfo.GetImageObj(PieceTemplate.Name.KnifeSimple) })};
 
                 case PieceHint.Type.CineTentModernCantPack:
                     return new List<HintMessage> {
-                        new HintMessage(text: "I won't be able to | pack this | tent back without damaging it.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.TentModernPacked), PieceInfo.GetTexture(PieceTemplate.Name.TentModern) }),
-                        new HintMessage(text: "I cannot | take it with me.\nIt will have to | stay assembled here.", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.BackpackMedium), PieceInfo.GetTexture(PieceTemplate.Name.TentModern) })
+                        new HintMessage(text: "I won't be able to | pack this | tent back without damaging it.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TentModernPacked), PieceInfo.GetImageObj(PieceTemplate.Name.TentModern) }),
+                        new HintMessage(text: "I cannot | take it with me.\nIt will have to | stay assembled here.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.BackpackMedium), PieceInfo.GetImageObj(PieceTemplate.Name.TentModern) })
                     };
 
                 case PieceHint.Type.ConstructionSite:
                     return new List<HintMessage> {
                         new HintMessage(text: "Well, this looks like a nice construction site.",
-                        imageList: new List<Texture2D> { })};
+                        imageList: new List<ImageObj> { })};
 
                 case PieceHint.Type.CineSmallBase:
                     return new List<HintMessage> { };
@@ -813,21 +812,21 @@ namespace SonOfRobin
                 case PieceHint.Type.CineRuins:
                     return new List<HintMessage> {
                         new HintMessage(text: "I didn't expect that I'd find | ruins here.\nSome people must have lived here a long ago...\nI should look around.",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.RuinsWallHorizontal1).Texture })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.RuinsWallHorizontal1) })};
 
                 case PieceHint.Type.CineCave:
                     return new List<HintMessage> {
                         new HintMessage(text: "This looks like a | cave.\nI wonder what's inside?\nStill, it might be dangerous...",
-                        imageList: new List<Texture2D> { AnimData.GetCroppedFrameForPackage(AnimData.PkgName.CaveEntrance).Texture })};
+                        imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.CaveEntrance) })};
 
                 case PieceHint.Type.CineTotem:
                     return new List<HintMessage> {
                         new HintMessage(text: $"Hmm...\nI can feel mysterious aura surrounding this | {PieceInfo.GetInfo(PieceTemplate.Name.Totem).readableName}.\nMaybe I should examine it.",
-                        imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Totem) })};
+                        imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Totem) })};
 
                 case PieceHint.Type.CineLookForSurvivors1:
                     return new List<HintMessage> {
-                   new HintMessage(text: "Are there other | | survivors?", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.PlayerBoy), PieceInfo.GetTexture(PieceTemplate.Name.PlayerGirl)}, blockInputDefaultDuration: true),
+                   new HintMessage(text: "Are there other | | survivors?", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.PlayerBoy), PieceInfo.GetImageObj(PieceTemplate.Name.PlayerGirl)}, blockInputDefaultDuration: true),
                    new HintMessage(text: "I should look for them... ", blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineLookForSurvivors2:
@@ -837,30 +836,30 @@ namespace SonOfRobin
 
                 case PieceHint.Type.CineLookForSurvivors3:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.SkullAndBones).Texture }, blockInputDefaultDuration: true),
-                    new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron), PieceInfo.GetTexture(PieceTemplate.Name.Meal), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)};
+                    new HintMessage(text: "I guess I'm the only one here...\nAll the other passengers have... | Well...", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.SkullAndBones) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "No point in thinking about it now.\nI have to focus on | | | my own survival!", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.AxeIron), PieceInfo.GetImageObj(PieceTemplate.Name.Meal), PieceInfo.GetImageObj(PieceTemplate.Name.TentMedium)}, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineLookForSurvivors4:
                     return new List<HintMessage> {
-                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.PalmTree).Texture }, blockInputDefaultDuration: true),
-                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<Texture2D>{ AnimData.GetCroppedFrameForPackage(AnimData.PkgName.BoatCompleteStanding).Texture }, blockInputDefaultDuration: true)};
+                    new HintMessage(text: "I don't want to stay on | this island forever...", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.PalmTree) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I think I have an idea how to build a | boat!", imageList: new List<ImageObj>{ AnimData.GetImageObj(AnimData.PkgName.BoatCompleteStanding) }, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineDay1:
                     return new List<HintMessage> {
                     new HintMessage(text: "A day has passed already.\nIs there any way for me to return home?", blockInputDefaultDuration: true),
-                    new HintMessage(text: "Right now, there are more important matters.\nLike | food, | shelter...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.Apple), PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true)};
+                    new HintMessage(text: "Right now, there are more important matters.\nLike | food, | shelter...", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.Apple), PieceInfo.GetImageObj(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true)};
 
                 case PieceHint.Type.CineDay2:
                     return new List<HintMessage> {
                     new HintMessage(text: "Another day has passed.", blockInputDefaultDuration: true),
-                    new HintMessage(text: "I guess I'm gonna | live here for a while...", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "I guess I'm gonna | live here for a while...", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.TentMedium) }, blockInputDefaultDuration: true),
                     };
 
                 case PieceHint.Type.CineDay3:
                     return new List<HintMessage> {
                     new HintMessage(text: "What day is it?", blockInputDefaultDuration: true),
                     new HintMessage(text: "I've lost the track of time already...", blockInputDefaultDuration: true),
-                    new HintMessage(text: "Well, what matters is that I can | survive.", imageList: new List<Texture2D>{ PieceInfo.GetTexture(PieceTemplate.Name.AxeIron) }, blockInputDefaultDuration: true),
+                    new HintMessage(text: "Well, what matters is that I can | survive.", imageList: new List<ImageObj>{ PieceInfo.GetImageObj(PieceTemplate.Name.AxeIron) }, blockInputDefaultDuration: true),
                     };
 
                 default:

@@ -99,18 +99,23 @@ namespace SonOfRobin
             }
         }
 
-        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0)
+        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0, Rectangle srcRect = default)
         {
-            float scale = Math.Min((float)rectangle.Width / (float)texture.Width, (float)rectangle.Height / (float)texture.Height);
+            if (srcRect == default) srcRect = texture.Bounds;
+
+            int srcWidth = srcRect.Width;
+            int srcHeight = srcRect.Height;
+
+            float scale = Math.Min((float)rectangle.Width / (float)srcWidth, (float)rectangle.Height / (float)srcHeight);
 
             if (rotation != 0)
             {
                 // rotated textured must fit inside the rect too
-                float rotatedScale = Math.Min((float)rectangle.Width / (float)texture.Height, (float)rectangle.Height / (float)texture.Width);
+                float rotatedScale = Math.Min((float)rectangle.Width / (float)srcHeight, (float)rectangle.Height / (float)srcWidth);
                 if (rotatedScale < scale) scale = rotatedScale;
             }
 
-            Vector2 scaledTexture = new Vector2(texture.Width * scale, texture.Height * scale);
+            Vector2 scaledTexture = new(srcWidth * scale, srcHeight * scale);
 
             if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: rectangle, color: Color.White, thickness: 1f);
 
@@ -130,16 +135,15 @@ namespace SonOfRobin
                 _ => throw new ArgumentException($"Unsupported alignY - {alignY}."),
             };
 
-            Rectangle destRect = new Rectangle(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(texture.Width * scale), height: (int)(texture.Height * scale));
+            Rectangle destRect = new(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(srcWidth * scale), height: (int)(srcHeight * scale));
             if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: destRect, color: Color.Green, thickness: 1f);
 
-            if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, destinationRectangle: destRect, color: color);
+            if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, destinationRectangle: destRect, color: color);
             else
             {
-                destRect.X += destRect.Width / 2;
-                destRect.Y += destRect.Height / 2;
+                destRect.Offset(destRect.Width / 2, destRect.Height / 2);
 
-                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: texture.Bounds, origin: new Vector2(texture.Width * 0.5f, texture.Height * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, origin: new Vector2(srcWidth * 0.5f, srcHeight * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
             }
 
             return destRect;
@@ -620,32 +624,32 @@ namespace SonOfRobin
 
             var textList = new List<TextWithImages>();
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "|  Son of Robin\n", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx) }));
+            textList.Add(new TextWithImages(font: fontTitle, text: "|  Son of Robin\n", imageList: new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.LoadingGfx) }));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
-            textList.Add(new TextWithImages(font: fontText, text: "Developed with  |  MonoGame framework", imageList: new List<Texture2D> { TextureBank.GetTexture(TextureBank.TextureName.MonoGame) }));
-            textList.Add(new TextWithImages(font: fontText, text: "Sounds:  |  freesound.org", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.MusicNote) }));
-            textList.Add(new TextWithImages(font: fontText, text: "Text rendering: FontStashSharp library", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Controller icons:  |  Nicolae (Xelu) Berbece", imageList: new List<Texture2D> { ButtonScheme.dpad }));
-            textList.Add(new TextWithImages(font: fontText, text: "FastNoiseLite library: Jordan Peck", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Studies.Joystick library: Luiz Ossinho", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "ImageSharp library: Six Labors", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Earcut polygon triangulation library: Oberbichler + Mapbox", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Free graphics assets: RPGMaker forums, opengameart.org, other sites", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Developed with  |  MonoGame framework", imageList: new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.MonoGame) }));
+            textList.Add(new TextWithImages(font: fontText, text: "Sounds:  |  freesound.org", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.MusicNote) }));
+            textList.Add(new TextWithImages(font: fontText, text: "Text rendering: FontStashSharp library", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Controller icons:  |  Nicolae (Xelu) Berbece", imageList: new List<ImageObj> { new TextureObj(ButtonScheme.dpad) }));
+            textList.Add(new TextWithImages(font: fontText, text: "FastNoiseLite library: Jordan Peck", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Studies.Joystick library: Luiz Ossinho", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "ImageSharp library: Six Labors", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Earcut polygon triangulation library: Oberbichler + Mapbox", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Free graphics assets: RPGMaker forums, opengameart.org, other sites", imageList: new List<ImageObj>()));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
-            textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<Texture2D> { ButtonScheme.dpad, ButtonScheme.dpad }));
+            textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<ImageObj> { new TextureObj(ButtonScheme.dpad), new TextureObj(ButtonScheme.dpad) }));
 
-            textList.Add(new TextWithImages(font: fontText, text: "Faye", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Hellwoman", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Glonfindel", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "Kaeru  |", imageList: new List<Texture2D> { PieceInfo.GetTexture(PieceTemplate.Name.Frog) }));
-            textList.Add(new TextWithImages(font: fontText, text: "Retro Marek", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Faye", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Hellwoman", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Glonfindel", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Kaeru  |", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Frog) }));
+            textList.Add(new TextWithImages(font: fontText, text: "Retro Marek", imageList: new List<ImageObj>()));
 
-            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<Texture2D>()));
-            textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2023", imageList: new List<Texture2D>()));
+            textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2023", imageList: new List<ImageObj>()));
 
             return textList;
         }

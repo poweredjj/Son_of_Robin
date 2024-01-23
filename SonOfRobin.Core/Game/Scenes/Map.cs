@@ -272,7 +272,7 @@ namespace SonOfRobin
             {
                 if (this.world.HintEngine.shownTutorials.Contains(Tutorials.Type.TooDarkToReadMap))
                 {
-                    MessageLog.Add(text: "Too dark to read the map.", texture: PieceInfo.GetTexture(PieceTemplate.Name.Map), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                    MessageLog.Add(text: "Too dark to read the map.", imageObj: PieceInfo.GetImageObj(PieceTemplate.Name.Map), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 }
                 else Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.TooDarkToReadMap, world: this.world, ignoreDelay: true, ignoreHintsSetting: true);
             }
@@ -417,7 +417,7 @@ namespace SonOfRobin
                 }
 
                 Sound.QuickPlay(SoundData.Name.Error);
-                MessageLog.Add(text: "Cannot place new marker - all markers are in use.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
+                MessageLog.Add(text: "Cannot place new marker - all markers are in use.", imageObj: PieceInfo.GetImageObj(PieceTemplate.Name.MapMarker), bgColor: new Color(105, 3, 18), avoidDuplicates: true);
                 return;
             }
 
@@ -662,9 +662,9 @@ namespace SonOfRobin
                     opacity = 0.6f;
                 }
 
-                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation(checkForCollision: false);
+                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
 
-                sprite.AnimFrame.Draw(destRect: destRect, color: Color.White, opacity: opacity);
+                sprite.AnimFrame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
             // drawing named locations
@@ -746,7 +746,7 @@ namespace SonOfRobin
                         markerPiece.sprite.effectCol.AddEffect(new ColorizeInstance(color: markerColor, priority: 0));
                         markerPiece.sprite.effectCol.TurnOnNextEffect(scene: this, currentUpdateToUse: this.world.CurrentUpdate, drawColor: Color.White);
 
-                        markerPiece.sprite.AnimFrame.DrawAndKeepInRectBounds(destBoundsRect: markerRect, color: Color.White);
+                        markerPiece.sprite.AnimFrame.DrawInsideRect(rect: markerRect, color: Color.White);
 
                         SonOfRobinGame.SpriteBatch.End();
                         SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
@@ -762,8 +762,8 @@ namespace SonOfRobin
                 int crosshairHalfSize = crossHairSize / 2;
 
                 Rectangle crosshairRect = new(x: (int)this.camera.CurrentPos.X - crosshairHalfSize, y: (int)this.camera.CurrentPos.Y - crosshairHalfSize, width: crossHairSize, height: crossHairSize);
-                AnimFrame crosshairFrame = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).CroppedFrame;
-                crosshairFrame.DrawAndKeepInRectBounds(destBoundsRect: crosshairRect, color: Color.White);
+                ImageObj crosshairImageObj = PieceInfo.GetInfo(PieceTemplate.Name.Crosshair).imageObj;
+                crosshairImageObj.DrawInsideRect(rect: crosshairRect, color: Color.White);
             }
 
             // drawing camera rect (debug)

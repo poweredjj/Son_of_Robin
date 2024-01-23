@@ -22,14 +22,14 @@ namespace SonOfRobin
             private readonly Vector2 textPos;
             private readonly Color bgColor;
             public readonly Rectangle bgRect;
-            private readonly Texture2D image;
+            private readonly ImageObj image;
             private readonly Texture2D highlightTexture;
             private readonly Rectangle highlightRect;
             private readonly Rectangle imageRect;
             public Vector2 basePos;
             public bool markedForDeletion;
 
-            public Message(TriSliceBG triSliceBG, bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, Texture2D image = null)
+            public Message(TriSliceBG triSliceBG, bool isDebug, string message, Color textColor, Color bgColor, int lastDeletionFrame, int messagesCount, ImageObj image = null)
             {
                 this.markedForDeletion = false;
                 this.triSliceBG = triSliceBG;
@@ -117,7 +117,7 @@ namespace SonOfRobin
                 if (this.image != null)
                 {
                     SonOfRobinGame.SpriteBatch.Draw(this.highlightTexture, this.HighlightRectWithOffset, this.highlightTexture.Bounds, Color.White * opacity * 0.85f);
-                    Helpers.DrawTextureInsideRect(texture: this.image, rectangle: this.ImageRectWithOffset, color: Color.White * opacity, drawTestRect: false);
+                    this.image.DrawInsideRect(rect: this.ImageRectWithOffset, color: Color.White * opacity);
                 }
 
                 this.font.DrawText(
@@ -207,9 +207,9 @@ namespace SonOfRobin
             int maxDrawHeight = 0;
 
             bool debugActive = GetTopSceneOfType(typeof(DebugScene)) != null;
-            Rectangle debugTextRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, (int)DebugScene.lastTextSize.Y);
+            Rectangle debugTextRect = new(0, 0, SonOfRobinGame.ScreenWidth, (int)DebugScene.lastTextSize.Y);
 
-            Rectangle drawAreaRect = new Rectangle(0, maxDrawHeight, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight - maxDrawHeight);
+            Rectangle drawAreaRect = new(0, maxDrawHeight, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight - maxDrawHeight);
 
             for (int messageNo = messagesToDisplay.Count - 1; messageNo >= 0; messageNo--)
             {
@@ -233,7 +233,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.End();
         }
 
-        public static void Add(string text, bool debugMessage = false, bool avoidDuplicates = false, Color textColor = default, Color bgColor = default, Texture2D texture = null)
+        public static void Add(string text, bool debugMessage = false, bool avoidDuplicates = false, Color textColor = default, Color bgColor = default, ImageObj imageObj = null)
         {
             if (SonOfRobinGame.MessageLog == null)
             {
@@ -269,7 +269,7 @@ namespace SonOfRobin
 
             if (debugMessage && !Preferences.DebugMode) return;
 
-            Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: texture, lastDeletionFrame: messageLog.MaxDeletionFrame, messagesCount: messageLog.messages.Count);
+            Message message = new Message(triSliceBG: messageLog.triSliceBG, isDebug: debugMessage, message: text, textColor: textColor, bgColor: bgColor, image: imageObj, lastDeletionFrame: messageLog.MaxDeletionFrame, messagesCount: messageLog.messages.Count);
 
             if (messageLog.messages.Count > 0) messageLog.baseline += messageMargin + message.bgRect.Height;
 

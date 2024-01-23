@@ -69,7 +69,7 @@ namespace SonOfRobin
             }
 
             if (swayEventsBySpriteID.ContainsKey(targetSprite.id)) return;
-            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(world: this.world, sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown);
+            this.swayEventsBySpriteID[targetSprite.id] = new SwayEvent(sourceSprite: sourceSprite, targetSprite: targetSprite, targetRotation: targetRotation, playSound: playSound, rotationSlowdown: rotationSlowdown);
         }
 
         public void FinishAndRemoveAllEvents()
@@ -94,7 +94,7 @@ namespace SonOfRobin
             {
                 SwayEvent swayEvent = kvp.Value;
 
-                swayEvent.Update(this.world);
+                swayEvent.Update();
                 if (swayEvent.HasEnded) spriteIDsToRemove.Add(kvp.Key);
             }
 
@@ -130,7 +130,7 @@ namespace SonOfRobin
         public readonly int rotationSlowdown;
         public bool HasEnded { get; private set; }
 
-        public SwayEvent(World world, Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true, int rotationSlowdown = 4)
+        public SwayEvent(Sprite targetSprite, Sprite sourceSprite, float targetRotation = 0, bool playSound = true, int rotationSlowdown = 4)
         {
             if (rotationSlowdown < 1) throw new ArgumentOutOfRangeException($"Rotation slowdown cannot be less than 1 - {rotationSlowdown}");
 
@@ -139,7 +139,7 @@ namespace SonOfRobin
             this.targetSprite = targetSprite;
 
             this.originalRotation = this.targetSprite.rotation;
-            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.AnimFrame.textureSize.X * 0.5f, targetSprite.AnimFrame.textureSize.Y);
+            this.targetSprite.rotationOriginOverride = new Vector2(targetSprite.AnimFrame.cropRect.Width * 0.5f, targetSprite.AnimFrame.cropRect.Height);
             this.targetRotation = targetRotation;
             this.rotationSlowdown = rotationSlowdown;
 
@@ -157,10 +157,10 @@ namespace SonOfRobin
                 }
             }
 
-            this.Update(world);
+            this.Update();
         }
 
-        public void Update(World world)
+        public void Update()
         {
             if (!this.targetSprite.IsInCameraRect || !this.targetSprite.boardPiece.exists)
             {

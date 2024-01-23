@@ -1291,13 +1291,15 @@ namespace SonOfRobin
             bool shadowLeftSide = sunLightData.sunPos.X < 0;
             bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
 
-            foreach (Sprite shadowSprite in spritesCastingShadows.OrderBy(s => s.AnimFrame.layer).ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
+            foreach (Sprite shadowSprite in spritesCastingShadows
+                .OrderBy(s => s.AnimFrame.layer)
+                .ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
             {
-                if (shadowSprite.boardPiece.pieceInfo.shadowNotDrawn) continue;
+                if (!shadowSprite.AnimFrame.castsShadow) continue;
 
                 Rectangle gfxRect = shadowSprite.GfxRect;
 
-                if (!shadowSprite.GfxRect.Intersects(cameraRect) && !shadowSprite.boardPiece.HasFlatShadow)
+                if (!shadowSprite.GfxRect.Intersects(cameraRect) && !shadowSprite.AnimFrame.hasFlatShadow)
                 {
                     if (shadowSprite.position.Y < cameraRect.Top &&
                         (shadowTopSide || gfxRect.Height * sunLightData.sunShadowsLength < Math.Abs(cameraRect.Top - shadowSprite.position.Y)))

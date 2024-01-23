@@ -62,6 +62,7 @@ namespace SonOfRobin
             BuffWidth = 42,
             BuffHeight = 43,
             BuffPoisonRemove = 44,
+            BuffHungry = 157,
 
             RepeatingOceanFloor = 45,
             RepeatingWaterCaustics = 46,
@@ -203,7 +204,7 @@ namespace SonOfRobin
             { TextureName.MonoGame, "monogame" },
             { TextureName.BackpackMediumOutline, "backpack_medium_outline" },
             { TextureName.Star, "star" },
-            { TextureName.FogCloud, "_processed_weather_fog_1" },
+            { TextureName.FogCloud, "weather_fog_1" },
             { TextureName.GfxCorrupted, "gfx_corrupted" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
@@ -225,6 +226,7 @@ namespace SonOfRobin
             { TextureName.BuffWidth, "buffs/buff_width" },
             { TextureName.BuffHeight, "buffs/buff_height" },
             { TextureName.BuffPoisonRemove, "buffs/buff_poison_remove" },
+            { TextureName.BuffHungry, "burger" },
 
             { TextureName.SimpleArrowUp, "simple_icons/arrow_up" },
             { TextureName.SimpleArrowRight, "simple_icons/arrow_right" },
@@ -392,6 +394,16 @@ namespace SonOfRobin
         public static Texture2D GetTexture(TextureName textureName, bool persistent = true)
         {
             return GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent);
+        }
+
+        public static ImageObj GetImageObj(TextureName textureName, bool persistent = true)
+        {
+            return new TextureObj(GetTexture(fileName: filenamesForTextureNames[textureName], persistent: persistent));
+        }
+
+        public static ImageObj GetImageObj(string fileName, bool persistent = true)
+        {
+            return new TextureObj(GetTexture(fileName: fileName, persistent: persistent));
         }
 
         public static Texture2D GetTexture(string fileName, bool persistent = true)

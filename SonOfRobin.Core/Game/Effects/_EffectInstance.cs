@@ -29,7 +29,7 @@ namespace SonOfRobin
             this.effect.Parameters["drawColor"].SetValue(drawColor.ToVector4());
             this.lastFrameFired = currentUpdate;
             if (this.framesLeft > -1) this.framesLeft -= 1;
-            effect.CurrentTechnique.Passes[0].Apply();
+            this.effect.CurrentTechnique.Passes[0].Apply();
         }
     }
 }

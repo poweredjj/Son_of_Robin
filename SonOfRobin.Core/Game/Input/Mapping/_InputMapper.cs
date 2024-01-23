@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SonOfRobin
 {
@@ -165,6 +166,11 @@ namespace SonOfRobin
                 new Mapping(action: Action.SecretLicenceBypass, anyInputList: new List<object> { Keys.LeftControl, Buttons.Start, VButName.Return });
             }
         }
+        public static List<ImageObj> GetImageObjs(Action action)
+        {
+            return GetTextures(action).Select(i => (ImageObj)new TextureObj(i)).ToList();
+        }
+
 
         public static List<Texture2D> GetTextures(Action action)
         {
@@ -175,6 +181,11 @@ namespace SonOfRobin
             }
 
             return detailedMappings[action].TextureList;
+        }
+
+        public static ImageObj GetImageObj(Action action)
+        {
+            return new TextureObj(GetTexture(action));
         }
 
         public static Texture2D GetTexture(Action action)

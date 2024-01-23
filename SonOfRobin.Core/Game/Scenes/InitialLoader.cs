@@ -17,8 +17,7 @@ namespace SonOfRobin
             LoadEffects,
             DeleteObsoleteTemplates,
             CreateMeshDefinitions,
-            LoadAnimsJson,
-            ProcessAnims,
+            CreateAnims,
             CheckCellSize,
             PopulatePieceHints,
             BuildMappings,
@@ -50,8 +49,7 @@ namespace SonOfRobin
             { Step.LoadEffects, "loading effects" },
             { Step.DeleteObsoleteTemplates, "deleting obsolete templates" },
             { Step.CreateMeshDefinitions, "creating mesh definitions" },
-            { Step.LoadAnimsJson, "loading animation data" },
-            { Step.ProcessAnims, "processing animation data" },
+            { Step.CreateAnims, "creating animation data" },
             { Step.CheckCellSize, "checking cell size" },
             { Step.PopulatePieceHints, "populating hints data" },
             { Step.BuildMappings, "building input mappings" },
@@ -68,7 +66,6 @@ namespace SonOfRobin
         private readonly SpriteFontBase font;
         private readonly Texture2D splashScreenTexture;
         private int mobileWaitingTimes;
-        private readonly Queue<AnimData.PkgName> animPackagesToLoadQueue;
 
         private DateTime lastFunnyActionNameCreated;
         private string lastFunnyActionName;
@@ -107,14 +104,13 @@ namespace SonOfRobin
             this.startTime = DateTime.Now;
             this.lastFunnyActionNameCreated = DateTime.MinValue;
             this.lastFunnyActionName = "";
-            this.usedFunnyWordsList = new List<string>();
+            this.usedFunnyWordsList = [];
             this.currentStep = 0;
 
             int fontSize = Math.Min((int)(((SonOfRobinGame.ScreenWidth / 40) / 8) * 8), 8 * 3);
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(fontSize);
             this.splashScreenTexture = SonOfRobinGame.SplashScreenTexture;
             this.mobileWaitingTimes = SonOfRobinGame.platform == Platform.Mobile ? 30 : 0;
-            this.animPackagesToLoadQueue = new Queue<AnimData.PkgName>(AnimData.allPkgNames);
 
             SonOfRobinGame.Game.IsFixedTimeStep = false; // if turned on, some screen updates will be missing
         }
@@ -153,29 +149,8 @@ namespace SonOfRobin
                     MeshDefinition.CreateMeshDefinitions();
                     break;
 
-                case Step.LoadAnimsJson:
-                    if (!AnimData.LoadJsonDict()) AnimData.PurgeDiskCache();
-                    break;
-
-                case Step.ProcessAnims:
-                    DateTime loadingStartTime = DateTime.Now;
-                    TimeSpan maxLoadingDuration = TimeSpan.FromSeconds(0.25f);
-
-                    while (true)
-                    {
-                        if (this.animPackagesToLoadQueue.Count > 0) AnimData.LoadPackage(this.animPackagesToLoadQueue.Dequeue());
-
-                        TimeSpan loadingDuration = DateTime.Now - loadingStartTime;
-                        if (loadingDuration > maxLoadingDuration || this.animPackagesToLoadQueue.Count == 0) break;
-                    }
-
-                    if (this.animPackagesToLoadQueue.Count > 0) this.currentStep--;
-                    else
-                    {
-                        AnimData.SaveJsonDict(asContentTemplate: false);
-                        AnimData.DisposeUsedAtlasses();
-                    }
-
+                case Step.CreateAnims:
+                    AnimData.PrepareAllAnims();
                     break;
 
                 case Step.CheckCellSize:
@@ -293,8 +268,8 @@ namespace SonOfRobin
 
             this.font.DrawText(batch: SonOfRobinGame.SpriteBatch, text: text, position: new Vector2(textPosX, textPosY), color: Color.White);
 
-            float currentStepNo = (int)this.currentStep + (AnimData.LoadedPkgs.Count / 10);
-            float allSteps = allStepsCount + (AnimData.allPkgNames.Length / 10);
+            float currentStepNo = (int)this.currentStep;
+            float allSteps = allStepsCount;
 
             int progressBarFullLength = (int)(SonOfRobinGame.ScreenWidth * 0.8f);
             int progressBarCurrentLength = (int)(progressBarFullLength * (currentStepNo / allSteps));

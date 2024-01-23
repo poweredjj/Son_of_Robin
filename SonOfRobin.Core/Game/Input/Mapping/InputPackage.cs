@@ -232,11 +232,11 @@ namespace SonOfRobin
             // converting duplicates dictionary to image list and error list
 
             List<string> errorList = new();
-            List<Texture2D> imageList = new();
+            List<ImageObj> imageList = new();
 
             foreach (var kvp in duplicatedNamesByTextures)
             {
-                imageList.Add(kvp.Key);
+                imageList.Add(new TextureObj(kvp.Key));
                 string error = "| " + String.Join(", ", kvp.Value.ToArray());
                 errorList.Add(error);
             }

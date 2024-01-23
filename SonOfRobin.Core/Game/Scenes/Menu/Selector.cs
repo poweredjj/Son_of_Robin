@@ -40,7 +40,7 @@ namespace SonOfRobin
 
             if (valueList != null)
             {
-                this.valueDict = new Dictionary<object, object> { };
+                this.valueDict = [];
                 foreach (var value in valueList)
                 {
                     this.valueDict[value] = value.ToString();
@@ -126,7 +126,7 @@ namespace SonOfRobin
             new InputGrabber(targetObj: this.targetObj, targetPropertyName: this.propertyName, grabButtons: this.captureButtons, grabKeys: this.captureKeys);
         }
 
-        public override void Draw(bool active, string textOverride = null, List<Texture2D> imageList = null)
+        public override void Draw(bool active, string textOverride = null, List<ImageObj> imageList = null)
         {
             if (this.captureModeActive)
             {
@@ -151,20 +151,25 @@ namespace SonOfRobin
             {
                 base.Draw(active: active, textOverride: textOverride);
             }
-            else if (activeNameType == typeof(Texture2D) || (activeNameType == typeof(RenderTarget2D)))
+            else if (activeNameType == typeof(RenderTarget2D) || activeNameType == typeof(Texture2D))
             {
-                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: new List<Texture2D> { (Texture2D)this.ActiveName });
+                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [new TextureObj((Texture2D)this.ActiveName)]);
+            }
+            else if (activeNameType == typeof(TextureObj) || activeNameType == typeof(AnimFrameObj)) // every class inherited from ImageObj must be checked here
+            {
+                base.Draw(active: active, textOverride: $"{this.name}   <  |  >", imageList: [(ImageObj)this.ActiveName]);
             }
             else if (activeNameType == typeof(List<object>))
             {
                 var objectList = (List<object>)this.ActiveName;
 
                 string text = (string)objectList[0];
-                Texture2D texture = (Texture2D)objectList[1];
+                ImageObj imageObj = (ImageObj)objectList[1];
 
-                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<Texture2D> { texture });
+                base.Draw(active: active, textOverride: $"{this.name}   < {text}   |  >", imageList: new List<ImageObj> { imageObj });
                 return;
             }
+            else throw new ArgumentException($"Unsupported activeNameType - {activeNameType}");
         }
 
         public override void ProcessTouch()

@@ -1,6 +1,5 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using MonoGame.Extended;
 using System;
@@ -41,7 +40,7 @@ namespace SonOfRobin
             }
         }
 
-        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, bool noInput = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<Texture2D> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, int maxWidth = 90, bool drawShadow = true, Helpers.AlignX imageAlignX = Helpers.AlignX.Center) :
+        public TextWindow(string text, Color textColor, Color bgColor, bool animate = true, int framesPerChar = 0, int charsPerFrame = 1, bool useTransition = true, bool checkForDuplicate = false, bool blocksUpdatesBelow = false, int blockInputDuration = 0, Scheduler.TaskName closingTask = Scheduler.TaskName.Empty, object closingTaskHelper = null, bool useTransitionOpen = false, bool useTransitionClose = false, bool autoClose = false, bool noInput = false, InputTypes inputType = InputTypes.Normal, int priority = 0, List<ImageObj> imageList = null, SoundData.Name startingSound = SoundData.Name.Empty, Sound animSound = null, bool treatImagesAsSquares = false, float minMarkerWidthMultiplier = 0, int maxWidth = 90, bool drawShadow = true, Helpers.AlignX imageAlignX = Helpers.AlignX.Center) :
 
             base(inputType: inputType, priority: priority, blocksUpdatesBelow: blocksUpdatesBelow, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, startingSound: startingSound, waitForOtherScenesOfTypeToEnd: true)
         {

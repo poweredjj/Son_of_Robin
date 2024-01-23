@@ -5,6 +5,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace SonOfRobin
 {
@@ -40,18 +41,18 @@ namespace SonOfRobin
 
         public float opacity;
         public OpacityFade opacityFade;
+        public AnimPkg AnimPkg { get; private set; }
+        public Anim Anim { get; private set; }
         public AnimFrame AnimFrame { get; private set; }
-        public AnimFrame CroppedAnimFrame { get { return AnimData.GetCroppedFrameForPackage(this.AnimPackage); } }
         public Color color;
         private bool visible;
 
         public LightEngine lightEngine;
         public ParticleEngine particleEngine;
-        public AnimData.PkgName AnimPackage { get; private set; }
         public byte AnimSize { get; private set; }
         public string AnimName { get; private set; }
         private byte currentFrameIndex;
-        private short currentFrameTimeLeft; // measured in game frames
+        private int currentFrameTimeLeft; // measured in game frames
         public Rectangle GfxRect { get; private set; }
         public Rectangle ColRect { get; private set; }
 
@@ -63,7 +64,7 @@ namespace SonOfRobin
         public Cell currentCell; // current cell, that is containing the sprite
         public bool IsOnBoard { get; private set; }
 
-        public Sprite(World world, int id, BoardPiece boardPiece, AnimData.PkgName animPackage, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
+        public Sprite(World world, int id, BoardPiece boardPiece, AnimData.PkgName animPkgName, byte animSize, string animName, AllowedTerrain allowedTerrain, bool visible = true, LightEngine lightEngine = null)
         {
             this.id = id; // duplicate from BoardPiece class
             this.boardPiece = boardPiece;
@@ -73,9 +74,9 @@ namespace SonOfRobin
             this.orientation = Orientation.right;
             this.lastOrientationChangeFrame = 0;
             this.OrientationAngle = 0f;
-            this.AnimPackage = animPackage;
-            this.AnimSize = animSize;
+            this.AnimPkg = AnimData.pkgByName[animPkgName];
             this.AnimName = animName;
+            this.AnimSize = animSize;
             this.color = Color.White;
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = 0;
@@ -96,9 +97,6 @@ namespace SonOfRobin
             this.lightEngine = lightEngine;
             if (this.lightEngine != null) this.lightEngine.AssignSprite(this);
         }
-
-        public string CompleteAnimID
-        { get { return GetCompleteAnimId(animPackage: this.AnimPackage, animSize: this.AnimSize, animName: this.AnimName); } }
 
         public bool IsInCameraRect
         { get { return this.world.camera.viewRect.Contains(this.position); } }
@@ -250,7 +248,7 @@ namespace SonOfRobin
             {
                 { "posX", (int)this.position.X },
                 { "posY", (int)this.position.Y },
-                { "animPackage", this.AnimPackage },
+                { "animPackage", this.AnimPkg.name },
             };
 
             PieceInfo.Info pieceInfo = this.boardPiece.pieceInfo;
@@ -277,7 +275,7 @@ namespace SonOfRobin
 
             this.position = new Vector2((int)(Int64)spriteDict["posX"], (int)(Int64)spriteDict["posY"]);
 
-            this.AnimPackage = (AnimData.PkgName)(Int64)spriteDict["animPackage"];
+            this.AnimPkg = AnimData.pkgByName[(AnimData.PkgName)(Int64)spriteDict["animPackage"]];
             if (spriteDict.ContainsKey("animName")) this.AnimName = (string)spriteDict["animName"];
             if (spriteDict.ContainsKey("animSize")) this.AnimSize = (byte)(Int64)spriteDict["animSize"];
             this.AssignFrame(checkForCollision: false);
@@ -304,22 +302,6 @@ namespace SonOfRobin
         {
             if (!this.IsOnBoard) throw new ArgumentException($"Trying to get an ext value of '{this.boardPiece.name}' that is not on board.");
             return this.boardPiece.level.grid.ExtBoardProps.GetValue(name: name, x: (int)position.X, y: (int)position.Y);
-        }
-
-        public static string GetCompleteAnimId(AnimData.PkgName animPackage, int animSize, string animName)
-        { return $"{animPackage}-{animSize}-{animName}"; }
-
-        public int GetAnimDuration()
-        {
-            int duration = 0;
-
-            if (AnimData.frameArrayById.ContainsKey(this.CompleteAnimID))
-            {
-                foreach (var frame in AnimData.frameArrayById[this.CompleteAnimID])
-                { duration += frame.duration; }
-            }
-
-            return duration;
         }
 
         public bool MoveToClosestFreeSpot(Vector2 startPosition, bool checkIsOnBoard = true, bool ignoreDensity = false, int maxDistance = 170)
@@ -405,7 +387,7 @@ namespace SonOfRobin
 
             Orientation newOrientation;
 
-            bool hasUpDownAnim = !AnimData.packagesLeftRightOnly.Contains(this.AnimPackage);
+            bool hasUpDownAnim = !this.AnimPkg.horizontalOrientationsOnly;
             if (!hasUpDownAnim) movement.Y = 0;
 
             if (Math.Abs(movement.X) > Math.Abs(movement.Y)) newOrientation = (movement.X < 0) ? Orientation.left : Orientation.right;
@@ -482,7 +464,7 @@ namespace SonOfRobin
                 newAnimPackage = AnimData.PkgName.WhiteSpotLayerTwo;
             }
 
-            particleEmitter.sprite.AssignNewPackage(newAnimPackage: newAnimPackage, checkForCollision: false);
+            particleEmitter.sprite.AssignNewPackage(newAnimPkgName: newAnimPackage, checkForCollision: false);
 
             this.particleEngine.ReassignSprite(particleEmitter.sprite);
         }
@@ -626,80 +608,72 @@ namespace SonOfRobin
 
         private void UpdateRects()
         {
-            this.GfxRect = new(
-                x: (int)(position.X + this.AnimFrame.gfxOffset.X),
-                y: (int)(position.Y + this.AnimFrame.gfxOffset.Y),
-                width: this.AnimFrame.gfxWidth,
-                height: this.AnimFrame.gfxHeight);
-
-            this.ColRect = new(
-                x: (int)(position.X + this.AnimFrame.colOffset.X),
-                y: (int)(position.Y + this.AnimFrame.colOffset.Y),
-                width: this.AnimFrame.colWidth,
-                height: this.AnimFrame.colHeight);
+            this.ColRect = this.AnimPkg.GetColRectForPos(this.position);
+            this.GfxRect = this.AnimFrame.GetGfxRectForPos(this.position);
         }
 
-        public void AssignNewPackage(AnimData.PkgName newAnimPackage, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewPackage(AnimData.PkgName newAnimPkgName, bool checkForCollision = true)
         {
-            if (this.AnimPackage == newAnimPackage) return;
+            if (this.AnimPkg.name == newAnimPkgName) return;
 
-            AnimData.PkgName oldAnimPackage = this.AnimPackage;
+            AnimPkg oldAnimPackage = this.AnimPkg;
 
-            if (setEvenIfMissing || CheckIfAnimPackageExists(newAnimPackage))
-            {
-                this.AnimPackage = newAnimPackage;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimPackage = oldAnimPackage;
-            }
+            this.AnimPkg = AnimData.pkgByName[newAnimPkgName];
+            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
+            if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
         }
 
-        public void AssignNewSize(byte newAnimSize, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewSize(byte newAnimSize)
         {
             if (this.AnimSize == newAnimSize) return;
 
-            byte oldAnimSize = this.AnimSize;
-
-            if (setEvenIfMissing || CheckIfAnimSizeExists(newAnimSize))
-            {
-                this.AnimSize = newAnimSize;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimSize = oldAnimSize;
-            }
+            this.AnimSize = newAnimSize;
+            this.AssignFrame(forceRewind: true, checkForCollision: false);
         }
 
-        public void AssignNewName(string newAnimName, bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void AssignNewName(string newAnimName, bool setEvenIfMissing = false)
         {
             if (this.AnimName == newAnimName) return;
-
-            string oldAnimName = this.AnimName;
 
             if (setEvenIfMissing || this.CheckIfAnimNameExists(newAnimName))
             {
                 this.AnimName = newAnimName;
-                bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
-                if (!frameAssignedCorrectly) this.AnimName = oldAnimName;
+                this.AssignFrame(forceRewind: true, checkForCollision: false);
             }
         }
 
-        public void AssignFrameForce(AnimFrame animFrame)
+        public void SetIdenticalAnimFrame(Sprite sprite)
         {
             // does not check collisions, use with caution
-            this.AnimFrame = animFrame;
+
+            this.AnimPkg = sprite.AnimPkg;
+            this.AnimSize = sprite.AnimSize;
+            this.Anim = sprite.Anim;
+            this.currentFrameIndex = 0;
+            this.currentFrameTimeLeft = 0;
+            this.AnimFrame = sprite.AnimFrame;
+        }
+
+        private void AssignAnim()
+        {
+            this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.AnimName);
         }
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
         {
+            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize) this.AssignAnim();
+
             AnimFrame oldAnimFrame = this.AnimFrame;
 
             try
             {
-                if (forceRewind || this.currentFrameIndex >= AnimData.frameArrayById[this.CompleteAnimID].Length) this.RewindAnim();
-                this.AnimFrame = AnimData.frameArrayById[this.CompleteAnimID][this.currentFrameIndex];
+                if (forceRewind || this.currentFrameIndex >= this.Anim.frameArray.Length) this.RewindAnim(assignFrame: false);
+                this.AnimFrame = this.Anim.frameArray[this.currentFrameIndex];
             }
             catch (KeyNotFoundException)
             {
                 // MessageLog.Add(debugMessage: true, text: $"Anim frame not found {this.CompleteAnimID}.");
-                this.AnimFrame = AnimData.GetCroppedFrameForPackage(AnimData.PkgName.NoAnim);
+                this.AnimFrame = AnimData.pkgByName[AnimData.PkgName.NoAnim].presentationFrame;
             }
 
             this.currentFrameTimeLeft = this.AnimFrame.duration;
@@ -720,47 +694,43 @@ namespace SonOfRobin
             return !collisionDetected;
         }
 
-        public bool CheckIfAnimPackageExists(AnimData.PkgName animPackageToCheck)
-        {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: animPackageToCheck, animSize: this.AnimSize, animName: this.AnimName);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
-        }
-
-        public bool CheckIfAnimSizeExists(byte animSizeToCheck)
-        {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: animSizeToCheck, animName: this.AnimName);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
-        }
-
         public bool CheckIfAnimNameExists(string animNameToCheck)
         {
-            string completeAnimIdToCheck = GetCompleteAnimId(animPackage: this.AnimPackage, animSize: this.AnimSize, animName: animNameToCheck);
-            return AnimData.frameArrayById.ContainsKey(completeAnimIdToCheck);
-        }
-
-        public void RewindAnim()
-        {
-            this.currentFrameIndex = 0;
-            this.currentFrameTimeLeft = this.AnimFrame.duration;
+            return this.AnimPkg.GetAnimNamesForSize(this.AnimSize).Contains(animNameToCheck);
         }
 
         public bool AnimFinished { get { return this.AnimFrame.duration == 0; } }
 
-        public void UpdateAnimation(bool checkForCollision)
+        public void RewindAnim(bool assignFrame = false)
         {
-            if (this.AnimFrame.duration == 0) return; // duration == 0 will stop the animation
+            this.currentFrameIndex = 0;
+            this.currentFrameTimeLeft = this.AnimFrame.duration;
+            if (assignFrame) this.AssignFrame(checkForCollision: false);
+        }
 
+        public void UpdateAnimation()
+        {
+            if (this.AnimFinished)
+            {
+                if (this.Anim.switchWhenComplete)
+                {
+                    this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.Anim.switchName);
+                    this.RewindAnim(assignFrame: true);
+                }
+
+                return; // duration == 0 will stop the animation, if there's no anim to switch to 
+            }
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
             {
                 this.currentFrameIndex++;
-                AssignFrame(checkForCollision: checkForCollision);
+                this.AssignFrame(checkForCollision: false);
             }
         }
 
-        public void CharacterStand(bool setEvenIfMissing = true, bool checkForCollision = true)
+        public void CharacterStand(bool setEvenIfMissing = false, bool force = false)
         {
-            if (this.AnimName.Contains("walk") || this.AnimFinished)
+            if (this.AnimName.Contains("walk") || this.AnimFinished || force)
             {
                 string newAnimName = $"stand-{this.orientation}";
 
@@ -770,12 +740,14 @@ namespace SonOfRobin
                     if (this.CheckIfAnimNameExists(weakAnimName)) newAnimName = weakAnimName;
                 }
 
-                this.AssignNewName(newAnimName: newAnimName, setEvenIfMissing: setEvenIfMissing, checkForCollision: checkForCollision);
+                this.AssignNewName(newAnimName: newAnimName, setEvenIfMissing: setEvenIfMissing);
             }
         }
 
-        public void CharacterWalk(bool setEvenIfMissing = true)
-        { this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing); }
+        public void CharacterWalk(bool setEvenIfMissing = false)
+        {
+            this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing);
+        }
 
         public void Draw(bool calculateSubmerge = true)
         {
@@ -840,31 +812,17 @@ namespace SonOfRobin
             if (Preferences.debugShowStatBars || this.boardPiece.ShowStatBars) this.boardPiece.DrawStatBar();
         }
 
-        public void DrawRoutine(bool calculateSubmerge, int offsetX = 0, int offsetY = 0)
+        public void DrawRoutine(bool calculateSubmerge, Vector2 offset = default)
         {
             if (!this.IsOnBoard) return;
 
-            Rectangle destRect = this.GfxRect;
-            if (offsetX != 0 || offsetY != 0)
+            int submergeCorrection = 0;
+            if (this.rotation == 0 && !this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
             {
-                destRect.X += offsetX;
-                destRect.Y += offsetY;
+                submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
             }
 
-            if (this.rotation == 0)
-            {
-                int submergeCorrection = 0;
-                if (!this.boardPiece.pieceInfo.floatsOnWater && calculateSubmerge && this.IsInWater)
-                {
-                    submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
-                }
-
-                this.AnimFrame.Draw(destRect: destRect, color: this.color, submergeCorrection: submergeCorrection, opacity: this.opacity);
-            }
-            else
-            {
-                this.AnimFrame.DrawWithRotation(position: new Vector2(destRect.Center.X, destRect.Center.Y), color: this.color, rotation: this.rotation, rotationOriginOverride: this.rotationOriginOverride, opacity: this.opacity);
-            }
+            this.AnimFrame.Draw(position: this.position + offset, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: rotationOriginOverride);
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
         }
@@ -887,18 +845,18 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    // drawing with rotation, taking sway into account
+                    // drawing with rotation (mostly for sway)
 
                     Sprite fruitSprite = fruit.sprite;
 
                     Vector2 rotationOriginOverride = new Vector2(this.GfxRect.Left, this.GfxRect.Top) - new Vector2(fruitSprite.GfxRect.Left, fruitSprite.GfxRect.Top);
                     rotationOriginOverride += new Vector2((float)this.AnimFrame.gfxWidth * 0.5f, this.AnimFrame.gfxHeight);
-                    rotationOriginOverride /= fruitSprite.AnimFrame.scale; // DrawWithRotation() will multiply rotationOriginOverride by target frame scale
+                    rotationOriginOverride /= fruitSprite.AnimFrame.scale;
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
-
-                    fruitSprite.AnimFrame.DrawWithRotation(position: new Vector2(fruitSprite.GfxRect.Center.X, fruitSprite.GfxRect.Center.Y), color: fruitSprite.color, rotation: this.rotation, rotationOriginOverride: rotationOriginOverride, opacity: this.opacity);
+                    
+                    fruitSprite.AnimFrame.Draw(position: fruitSprite.position, color: fruitSprite.color, rotation: this.rotation, opacity: this.opacity, rotationOriginOverride: rotationOriginOverride);
 
                     fruitSprite.rotation = originalFruitRotation;
                 }
@@ -907,8 +865,7 @@ namespace SonOfRobin
 
         public void DrawAndKeepInRectBounds(Rectangle destRect, float opacity)
         {
-            AnimFrame frameToDraw = this.AnimFrame.cropped ? this.AnimFrame : this.CroppedAnimFrame;
-            frameToDraw.DrawAndKeepInRectBounds(destBoundsRect: destRect, color: this.color * opacity);
+            this.AnimFrame.DrawInsideRect(rect: destRect, color: this.color * opacity);
         }
 
         private void DrawState()
@@ -925,47 +882,41 @@ namespace SonOfRobin
             stateFont.DrawText(batch: SonOfRobinGame.SpriteBatch, text: stateTxt, position: txtPos, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
         }
 
-        public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f, float opacityForce = default)
         {
             float distance = Vector2.Distance(lightPos, this.position);
             AnimFrame frame = this.AnimFrame;
 
-            if (this.boardPiece.HasFlatShadow)
+            if (this.AnimFrame.hasFlatShadow)
             {
-                float xDiff = this.position.X - lightPos.X;
-                float yDiff = this.position.Y - lightPos.Y;
-
-                float xLimit = this.GfxRect.Width / 8;
-                float yLimit = this.GfxRect.Height / 8;
-
-                float offsetX = Math.Clamp(value: xDiff / 6f, min: -xLimit, max: xLimit);
-                float offsetY = Math.Clamp(value: yDiff / 6f, min: -yLimit, max: yLimit);
-
+                Vector2 diff = this.position - lightPos;
+                Vector2 limit = new(this.GfxRect.Width / 8, this.GfxRect.Height / 8);
+                Vector2 offset = Vector2.Clamp(value1: diff / 6f, min: -limit, max: limit);
                 Rectangle simulRect = this.GfxRect;
-                simulRect.X += (int)offsetX;
-                simulRect.Y += (int)offsetY;
+                simulRect.Offset(offset);
+
                 if (!this.world.camera.viewRect.Intersects(simulRect)) return;
 
                 Color originalColor = this.color;
                 this.color = color;
-                this.DrawRoutine(calculateSubmerge: true, offsetX: (int)offsetX + drawOffsetX, offsetY: (int)offsetY + drawOffsetY);
+                this.DrawRoutine(calculateSubmerge: true, offset: offset + new Vector2(drawOffsetX, drawOffsetY));
                 this.color = originalColor;
             }
             else
             {
                 float xScale = frame.scale;
-                float yScale = Math.Max(frame.scale / distance * 100f, frame.scale * 0.3f);
-                yScale = Math.Min(yScale, frame.scale * 3f);
-                if (yScaleForce != 0) yScale = frame.scale * yScaleForce;
+                float yScale = frame.scale / distance * 100f;
+                yScale = yScaleForce == 0 ? Math.Min(yScale, frame.scale * 3f) : frame.scale * yScaleForce;
+                yScale *= frame.shadowHeightMultiplier;
+                yScale = Math.Max(yScale, frame.scale * 0.8f);
 
                 SonOfRobinGame.SpriteBatch.Draw(
                     frame.Texture,
-                    position:
-                    new Vector2(this.position.X + drawOffsetX, this.position.Y + drawOffsetY),
-                    sourceRectangle: frame.textureRect,
-                    color: color * this.opacity,
+                    position: this.position + frame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
+                    sourceRectangle: frame.cropRect,
+                    color: color * (opacityForce == default ? this.opacity: opacityForce),
                     rotation: shadowAngle + (float)(Math.PI / 2f),
-                    origin: new Vector2(-frame.gfxOffset.X / frame.scale, -(frame.gfxOffset.Y + frame.colOffset.Y) / frame.scale),
+                    origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
                     effects: SpriteEffects.None,
                     layerDepth: 0);

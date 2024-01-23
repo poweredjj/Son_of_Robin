@@ -54,7 +54,7 @@ namespace SonOfRobin
             {
                 this.Destroy(); // will be destroyed right away if map was enabled by using god mode
                 this.world.map.soundMarkerRemove.Play();
-                MessageLog.Add(text: "Map marker has been reached.", texture: PieceInfo.GetTexture(PieceTemplate.Name.MapMarker));
+                MessageLog.Add(text: "Map marker has been reached.", imageObj: PieceInfo.GetImageObj(PieceTemplate.Name.MapMarker));
             }
         }
 
@@ -264,7 +264,7 @@ namespace SonOfRobin
                 new OpacityFade(sprite: this.sprite, destOpacity: 0, duration: 60, destroyPiece: true);
             }
 
-            this.sprite.AssignFrameForce(this.world.Player.sprite.AnimFrame);
+            this.sprite.SetIdenticalAnimFrame(this.world.Player.sprite);
         }
 
         public override void SM_EndingBoatCruise()
