@@ -45,6 +45,7 @@ namespace Studies.Joystick.Input
             {
                 FixedLocation = new Vector2(aliveZoneSize * aliveZoneFollowFactor, TouchPanel.DisplayHeight - aliveZoneSize * aliveZoneFollowFactor)
             };
+
             RightStick = new Stick(deadZoneSize,
                 new Rectangle((int)(TouchPanel.DisplayWidth * 0.5f), 100, (int)(TouchPanel.DisplayWidth * 0.5f), TouchPanel.DisplayHeight - 100),
                 aliveZoneSize, aliveZoneFollowFactor, aliveZoneFollowSpeed, edgeSpacing)

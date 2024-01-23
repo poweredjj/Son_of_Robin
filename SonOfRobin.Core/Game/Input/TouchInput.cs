@@ -351,14 +351,16 @@ namespace SonOfRobin
         {
             if (screenWidth == SonOfRobinGame.ScreenWidth && screenHeight == SonOfRobinGame.ScreenHeight) return;
 
+            screenWidth = SonOfRobinGame.ScreenWidth;
+            screenHeight = SonOfRobinGame.ScreenHeight;
+            TouchPanel.DisplayWidth = SonOfRobinGame.ScreenWidth;
+            TouchPanel.DisplayHeight = SonOfRobinGame.ScreenHeight;
+
             SetEmulationByMouse();
 
             dualStick = new DualStick(aliveZoneSize: TouchPanel.DisplayHeight * 0.25f, deadZoneSize: 16f); // DualStick accepts touch panel size values
             dualStick.LeftStick.SetAsFixed();
             dualStick.RightStick.SetAsFixed();
-
-            screenWidth = SonOfRobinGame.ScreenWidth;
-            screenHeight = SonOfRobinGame.ScreenHeight;
         }
 
         public static void SetEmulationByMouse()
