@@ -496,6 +496,9 @@ namespace SonOfRobin
                     {
                         this.CreateAndPlacePlayer();
 
+                        this.Player.sprite.orientation = Sprite.Orientation.right;
+                        this.Player.sprite.CharacterStand(force: true);
+                                                
                         if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                         PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                     }
@@ -689,8 +692,8 @@ namespace SonOfRobin
 
                 if (this.Player.sprite.IsOnBoard)
                 {
-                    this.Player.sprite.orientation = Sprite.Orientation.up;
-                    this.Player.sprite.CharacterStand();
+                    this.Player.sprite.orientation = Sprite.Orientation.right;
+                    this.Player.sprite.CharacterStand(force: true);
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
