@@ -1615,11 +1615,11 @@ namespace SonOfRobin
                         .OrderBy(s => s.AnimFrame.layer)
                         .ThenBy(s => s.BlocksMovement)
                         .ThenBy(s => s.position.Y))
-                        //.ThenByDescending(s => Vector2.DistanceSquared(lightSprite.position, s.position)))
                     {
                         if (!lightRect.Intersects(shadowSprite.GfxRect) || !shadowSprite.AnimFrame.castsShadow) continue;
 
-                        if (shadowSprite != lightSprite) shadowSprite.DrawShadow(color: Color.Black, lightPos: lightSprite.position, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightSprite.position, end: shadowSprite.position), drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y);
+                        if (shadowSprite != lightSprite) shadowSprite.DrawShadow(color: Color.Black, lightPos: lightSprite.position, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightSprite.position, end: shadowSprite.position), drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y, opacityForce: 1f);
+                       
                         shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y)); // "erasing" original sprite from shadow
                     }
                     SonOfRobinGame.SpriteBatch.End();

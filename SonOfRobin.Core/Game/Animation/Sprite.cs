@@ -5,6 +5,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace SonOfRobin
 {
@@ -882,7 +883,7 @@ namespace SonOfRobin
             stateFont.DrawText(batch: SonOfRobinGame.SpriteBatch, text: stateTxt, position: txtPos, color: Color.White, effect: FontSystemEffect.Stroked, effectAmount: 1);
         }
 
-        public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f)
+        public void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, int drawOffsetX = 0, int drawOffsetY = 0, float yScaleForce = 0f, float opacityForce = default)
         {
             float distance = Vector2.Distance(lightPos, this.position);
             AnimFrame frame = this.AnimFrame;
@@ -914,7 +915,7 @@ namespace SonOfRobin
                     frame.Texture,
                     position: this.position + frame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
                     sourceRectangle: frame.cropRect,
-                    color: color * opacity,
+                    color: color * (opacityForce == default ? this.opacity: opacityForce),
                     rotation: shadowAngle + (float)(Math.PI / 2f),
                     origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
