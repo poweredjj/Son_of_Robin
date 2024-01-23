@@ -985,19 +985,19 @@ namespace SonOfRobin
 
                         World world = World.GetTopWorld();
 
-                        var saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", SaveHeaderManager.NewSaveSlotName }, { "showMessage", true } };
+                        var newSaveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", null }, { "showMessage", true } };
 
-                        new Invoker(menu: menu, name: "new save", taskName: Scheduler.TaskName.SaveGame, executeHelper: saveParams, rebuildsMenu: true,
+                        new Invoker(menu: menu, name: "new save", taskName: Scheduler.TaskName.SaveGame, executeHelper: newSaveParams, rebuildsMenu: true,
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "make new save", color: Color.White, scale: 1f) });
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
-                            saveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
-
                             Scheduler.ExecutionDelegate showConfMenuDlgt = () =>
                             {
-                                CreateConfirmationMenu(question: "The save will be overwritten. Continue?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", saveParams } });
+                                var replaceSaveParams = new Dictionary<string, Object> { { "world", world }, { "saveSlotName", saveInfo.folderName }, { "showMessage", true } };
+
+                                CreateConfirmationMenu(question: "The save will be overwritten. Continue?", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.SaveGame }, { "executeHelper", replaceSaveParams } });
                             };
                             Invoker saveInvoker = new Invoker(menu: menu, name: "| " + saveInfo.FullDescription, imageList: saveInfo.AddInfoImgObjList, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showConfMenuDlgt, closesMenu: true, infoWindowMaxLineHeightPercentOverride: 0.35f, invokedByDoubleTouch: true);
 

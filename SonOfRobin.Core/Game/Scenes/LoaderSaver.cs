@@ -127,9 +127,9 @@ namespace SonOfRobin
             }
 
             this.processedSteps = 0;
-            this.saveSlotName = saveSlotName;
+            this.saveSlotName = saveSlotName == null ? SaveHeaderManager.NewSaveSlotName : saveSlotName;
             this.saveTempPath = this.GetSaveTempPath();
-            this.savePath = Path.Combine(SonOfRobinGame.saveGamesPath, saveSlotName);
+            this.savePath = Path.Combine(SonOfRobinGame.saveGamesPath, this.saveSlotName);
             this.ErrorOccured = false;
             this.currentStepName = "";
             this.gridTemplateFound = false;
@@ -175,6 +175,7 @@ namespace SonOfRobin
             {
                 currentTempPath = Path.Combine(SonOfRobinGame.saveGamesPath, $"{tempPrefix}{tempNo}");
                 if (!Directory.Exists(this.savePath)) break;
+                else tempNo++;
             }
 
             return currentTempPath;
@@ -182,7 +183,7 @@ namespace SonOfRobin
 
         private string GetCurrentPiecesPath(int packageNo)
         {
-            return Path.Combine(this.saveMode ? saveTempPath : savePath, $"{piecesPrefix}{packageNo}.json");
+            return Path.Combine(this.saveMode ? this.saveTempPath : this.savePath, $"{piecesPrefix}{packageNo}.json");
         }
 
         public override void Remove()
@@ -212,7 +213,6 @@ namespace SonOfRobin
 
             if (InputMapper.IsPressed(InputMapper.Action.GlobalCancelReturnSkip))
             {
-                if (this.saveMode) DeleteAllSaveTemps();
                 SonOfRobinGame.FullScreenProgressBar.TurnOff();
                 this.Remove();
 
@@ -412,12 +412,8 @@ namespace SonOfRobin
                 FileReaderWriter.SaveJson(path: eventPath, savedObj: eventData, compress: true);
             }
 
-            if (this.HasBeenRemoved) // in case of cancelled save
-            {
-                Directory.Delete(path: this.saveTempPath, recursive: true);
-                return;
-            }
-
+            if (this.HasBeenRemoved) return;
+            
             this.processedSteps++;
             this.currentStepName = "replacing save slot data";
             if (Directory.Exists(this.savePath))
@@ -450,7 +446,7 @@ namespace SonOfRobin
         {
             GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.FinalRenderTarget, maxWidth: 800, maxHeight: 600);
 
-            MessageLog.Add(debugMessage: true, text: $"Game saved in slot {saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
+            MessageLog.Add(debugMessage: true, text: $"Game saved in slot {this.saveSlotName} (time elapsed {this.TimeElapsed}s).", textColor: Color.LightBlue);
 
             if (this.showSavedMessage)
             {
