@@ -488,7 +488,7 @@ namespace SonOfRobin
                 showControlTips = false;
                 enableTouchJoysticks = true;
                 rumbleEnabled = false;
-                mapMarkerScale = lowRes ? 1.0f : 1.5f;
+                mapMarkerScale = lowRes ? 0.0125f : 0.025f;
                 messageLogScale = lowRes ? 1.0f : 1.5f;
                 messageLogAtRight = true;
             }
@@ -496,7 +496,7 @@ namespace SonOfRobin
             {
                 showControlTips = true;
                 mapMarkerScale = 0.025f;
-                messageLogScale = 1f;
+                messageLogScale = 1.0f;
                 messageLogAtRight = false;
             }
 
