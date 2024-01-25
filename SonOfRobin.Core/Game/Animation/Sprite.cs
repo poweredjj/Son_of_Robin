@@ -619,7 +619,7 @@ namespace SonOfRobin
             AnimPkg oldAnimPackage = this.AnimPkg;
 
             this.AnimPkg = AnimData.pkgByName[newAnimPkgName];
-            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision);
+            bool frameAssignedCorrectly = this.AssignFrame(forceRewind: true, checkForCollision: checkForCollision, forceAssignAnim: true);
             if (!frameAssignedCorrectly) this.AnimPkg = oldAnimPackage;
         }
 
@@ -659,9 +659,9 @@ namespace SonOfRobin
             this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.AnimName);
         }
 
-        private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true)
+        private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true, bool forceAssignAnim = false)
         {
-            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize) this.AssignAnim();
+            if (this.Anim.name != this.AnimName || this.Anim.size != this.AnimSize || forceAssignAnim) this.AssignAnim();
 
             AnimFrame oldAnimFrame = this.AnimFrame;
 

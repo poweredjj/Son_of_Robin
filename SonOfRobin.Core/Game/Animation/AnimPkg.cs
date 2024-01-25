@@ -69,7 +69,14 @@ namespace SonOfRobin
 
         public Anim GetAnim(int size, string name)
         {
-            return this.animDict[size][name];
+            try
+            {
+                return this.animDict[size][name];
+            }
+            catch (KeyNotFoundException)
+            {
+                return this.animDict[size][this.GetAnimNamesForSize(size)[0]];
+            }
         }
 
         public string[] GetAnimNamesForSize(int size)

@@ -704,7 +704,7 @@ namespace SonOfRobin
 
                 while (true)
                 {
-                    var packageNames = new AnimData.PkgName[] { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack, AnimData.PkgName.DragonBonesTestFemaleMage };
+                    var packageNames = new AnimData.PkgName[] { AnimData.PkgName.PlayerBoy, AnimData.PkgName.PlayerGirl, AnimData.PkgName.FoxGinger, AnimData.PkgName.Frog1, AnimData.PkgName.BearBlack, AnimData.PkgName.BearBrown, AnimData.PkgName.DragonBonesTestFemaleMage };
 
                     AnimData.PkgName targetPackage = packageNames[0];
 
