@@ -13,7 +13,7 @@ namespace SonOfRobin
         private const int posY = 4;
 
         private readonly SpriteFontBase itemCounterFont;
-        private readonly SpriteFontBase buffFont;
+        private SpriteFontBase buffFont;
         private readonly SpriteFontBase locationFont;
         private readonly World world;
         private bool isHidden;
@@ -82,7 +82,6 @@ namespace SonOfRobin
 
         public PlayerPanel(World world) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
-            this.buffFont = SonOfRobinGame.FontVCROSD.GetFont(18);
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(60);
             this.itemCounterFont = SonOfRobinGame.FontTommy.GetFont(60);
 
@@ -96,6 +95,10 @@ namespace SonOfRobin
         public override void Update()
         {
             if (this.ShouldBeHidden) return;
+            if (this.buffFont == null || this.buffFont.FontSize != Preferences.buffFontSize)
+            {
+                this.buffFont = SonOfRobinGame.FontVCROSD.GetFont(Preferences.buffFontSize);
+            }
         }
 
         protected override void AdaptToNewSize()

@@ -192,10 +192,13 @@ namespace SonOfRobin
                             globalScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f, 4f });
                         }
 
-                        new Selector(menu: menu, name: "menu scale", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f }, targetObj: preferences, propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
+                        new Selector(menu: menu, name: "menu size", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f }, targetObj: preferences, propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
 
-                        new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
-                        new Selector(menu: menu, name: "messages scale", valueDict: new Dictionary<object, object> { { 0.5f, "micro" }, { 0.7f, "small" }, { 1f, "medium" }, { 1.5f, "big" }, { 2f, "huge" } }, targetObj: preferences, propertyName: "messageLogScale");
+                        new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");  
+                        
+                        new Selector(menu: menu, name: "status font size", valueDict: Preferences.namesForBuffFontSize, targetObj: preferences, propertyName: "buffFontSize");
+
+                        new Selector(menu: menu, name: "messages size", valueDict: new Dictionary<object, object> { { 0.5f, "micro" }, { 0.7f, "small" }, { 1f, "medium" }, { 1.5f, "big" }, { 2f, "huge" } }, targetObj: preferences, propertyName: "messageLogScale");
 
                         new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
 

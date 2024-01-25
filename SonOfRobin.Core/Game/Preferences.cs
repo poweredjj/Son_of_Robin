@@ -20,7 +20,8 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 50, "low" }, { 40, "medium" }, { 20, "high" }, { 10, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
-        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.075f, "huge" }, { 0.1f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.075f, "huge" }, { 0.1f, "gigantic" } }; 
+        public static readonly Dictionary<Object, Object> namesForBuffFontSize = new() { { 6, "micro" }, { 12, "small" }, { 18, "normal" }, { 24, "big" }, { 30, "huge" } };
 
         public static readonly List<PieceTemplate.Name> startingItemNames = new() { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
@@ -71,11 +72,11 @@ namespace SonOfRobin
 
         private static bool debugMode = false;
 
+        public static int buffFontSize = 18;
         public static float menuScale = 0.75f;
         public static float worldScale = 1.5f;
         public static float messageLogScale = 1f;
         public static bool messageLogAtRight = false;
-
         public static bool CanZoomOut
         { get { return worldScale >= 1; } }
 
@@ -490,6 +491,7 @@ namespace SonOfRobin
                 rumbleEnabled = false;
                 mapMarkerScale = lowRes ? 0.0125f : 0.025f;
                 messageLogScale = lowRes ? 1.0f : 1.5f;
+                buffFontSize = lowRes ? 12 : 18;
                 messageLogAtRight = true;
             }
             else
@@ -497,6 +499,7 @@ namespace SonOfRobin
                 showControlTips = true;
                 mapMarkerScale = 0.025f;
                 messageLogScale = 1.0f;
+                buffFontSize = 18;
                 messageLogAtRight = false;
             }
 
@@ -567,6 +570,7 @@ namespace SonOfRobin
             prefsData["drawAllShadows"] = drawAllShadows;
             prefsData["drawLightSourcedShadows"] = drawLightSourcedShadows;
             prefsData["softShadows"] = softShadows;
+            prefsData["buffFontSize"] = buffFontSize;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -639,6 +643,7 @@ namespace SonOfRobin
                     drawAllShadows = (bool)prefsData["drawAllShadows"];
                     drawLightSourcedShadows = (bool)prefsData["drawLightSourcedShadows"];
                     softShadows = (bool)prefsData["softShadows"];
+                    buffFontSize = (int)(Int64)prefsData["buffFontSize"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);
