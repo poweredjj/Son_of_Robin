@@ -54,7 +54,7 @@ namespace SonOfRobin
             this.font = SonOfRobinGame.FontPressStart2P.GetFont(8 * 1);
             this.pos = new Vector2(80, 80);
             this.rot = 0f;
-            this.playSpeed = 1; // 1
+            this.playSpeed = 1;
             this.showColRect = false;
             this.showGfxRect = false;
             this.showEffect = false;

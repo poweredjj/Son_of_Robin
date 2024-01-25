@@ -1152,9 +1152,9 @@ namespace SonOfRobin
 
                 case PkgName.Anvil:
                     {
-                        AnimFrame frame = new AnimFrame(atlasName: "anvil", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 50, height: 33), scale: 1f, gfxOffsetCorrection: new Vector2(1f, -4f), shadowOriginFactor: new Vector2(0.5f, 0.87f), hasFlatShadow: false);
+                        AnimFrame frame = new AnimFrame(atlasName: "anvil", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 256, height: 160), scale: 0.2f, gfxOffsetCorrection: new Vector2(4f, -30f), shadowOriginFactor: new Vector2(0.5f, 0.87f), shadowHeightMultiplier: 0.55f, hasFlatShadow: false);
 
-                        animPkg = new(pkgName: pkgName, colWidth: 34, colHeight: 21);
+                        animPkg = new(pkgName: pkgName, colWidth: 30, colHeight: 20);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frame]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frame]));
                         break;
