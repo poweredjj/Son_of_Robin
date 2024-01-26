@@ -1485,7 +1485,7 @@ namespace SonOfRobin
 
                 case PkgName.BowBasic:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 78, height: 116, scale: 0.25f, layer: 0, animSize: 0, altasName: "bow_basic", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 200, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "bow_basic", hasOnePixelMargin: false);
                         break;
                     }
 
