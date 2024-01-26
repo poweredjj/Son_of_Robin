@@ -1377,7 +1377,7 @@ namespace SonOfRobin
 
                 case PkgName.AxeWood:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 29, height: 34, scale: 0.7f, layer: 0, animSize: 0, altasName: "axe_wooden", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 349, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "axe_wooden", hasOnePixelMargin: false);
                         break;
                     }
 
