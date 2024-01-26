@@ -1920,7 +1920,7 @@ namespace SonOfRobin
 
                 case PkgName.BeltSmall:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 19, scale: 1f, layer: 0, animSize: 0, altasName: "belt_small", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 321, height: 300, scale: 0.04f, layer: 0, animSize: 0, altasName: "belt_small", hasOnePixelMargin: false);
                         break;
                     };
 
