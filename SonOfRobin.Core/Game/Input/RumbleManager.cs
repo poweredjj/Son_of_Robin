@@ -119,6 +119,8 @@ namespace SonOfRobin
 
         public static void AddEvent(RumbleEvent rumbleEvent)
         {
+            if (!Preferences.rumbleEnabled) return;
+
             rumbleEventsList.Add(rumbleEvent);
             lastEventTime = DateTime.Now;
             if (rumbleEvent.bigMotor) lastEventTimeBigMotor = DateTime.Now;
@@ -132,6 +134,12 @@ namespace SonOfRobin
 
         public static void Update()
         {
+            if (!Preferences.rumbleEnabled)
+            {
+                rumbleEventsList.Clear();
+                return;
+            }
+
             var newRumbleEventsList = new List<RumbleEvent>();
 
             SmallMotorCurrentForce = 0;
@@ -149,7 +157,12 @@ namespace SonOfRobin
                 }
             }
 
-            Microsoft.Xna.Framework.Input.GamePad.SetVibration(playerIndex: PlayerIndex.One, leftMotor: BigMotorCurrentForce, rightMotor: SmallMotorCurrentForce);
+            try
+            {
+                Microsoft.Xna.Framework.Input.GamePad.SetVibration(playerIndex: PlayerIndex.One, leftMotor: BigMotorCurrentForce, rightMotor: SmallMotorCurrentForce);
+            }
+            catch (NullReferenceException) // happens on Debian
+            { }
 
             rumbleEventsList = newRumbleEventsList;
         }
