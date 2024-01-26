@@ -2440,7 +2440,7 @@ namespace SonOfRobin
 
                 case PkgName.Hammer:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 182, height: 336, scale: 0.1f, layer: 0, animSize: 0, altasName: "hammer", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 148, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "hammer", hasOnePixelMargin: false);
                         break;
                     };
 
