@@ -1908,13 +1908,13 @@ namespace SonOfRobin
 
                 case PkgName.BackpackBig:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 282, height: 300, scale: 0.12f, layer: 0, animSize: 0, altasName: "backpack_big", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 282, height: 300, scale: 0.11f, layer: 0, animSize: 0, altasName: "backpack_big", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.BackpackLuxurious:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 0, animSize: 0, altasName: "backpack_luxurious", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 285, height: 300, scale: 0.12f, layer: 0, animSize: 0, altasName: "backpack_luxurious", hasOnePixelMargin: false);
                         break;
                     }
 
