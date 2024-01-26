@@ -27,7 +27,7 @@ namespace SonOfRobin
             get
             {
                 int counterSize = CounterSize;
-                Rectangle counterRect = new Rectangle(x: BarWidth + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
+                Rectangle counterRect = new(x: BarWidth + (int)(counterSize * 0.25f), y: posY, width: counterSize, height: counterSize);
                 return counterRect;
             }
         }

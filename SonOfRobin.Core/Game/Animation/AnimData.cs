@@ -1902,7 +1902,7 @@ namespace SonOfRobin
 
                 case PkgName.BackpackMedium:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 46, height: 46, scale: 0.5f, layer: 0, animSize: 0, altasName: "backpack_medium", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 260, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "backpack_medium", hasOnePixelMargin: false);
                         break;
                     }
 
