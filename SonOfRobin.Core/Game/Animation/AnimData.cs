@@ -1950,7 +1950,7 @@ namespace SonOfRobin
 
                 case PkgName.HatSimple:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 28, scale: 0.5f, layer: 0, animSize: 0, altasName: "hat_simple", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 400, height: 240, scale: 0.06f, layer: 0, animSize: 0, altasName: "hat_simple", hasOnePixelMargin: false);
                         break;
                     };
 
