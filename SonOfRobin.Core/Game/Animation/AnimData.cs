@@ -1896,31 +1896,31 @@ namespace SonOfRobin
 
                 case PkgName.BackpackSmall:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 208, height: 181, scale: 0.1f, layer: 1, animSize: 0, altasName: "backpack_small", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 291, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "backpack_small", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.BackpackMedium:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 46, height: 46, scale: 0.5f, layer: 1, animSize: 0, altasName: "backpack_medium", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 46, height: 46, scale: 0.5f, layer: 0, animSize: 0, altasName: "backpack_medium", hasOnePixelMargin: true);
                         break;
                     }
 
                 case PkgName.BackpackBig:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "backpack_big", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 0, animSize: 0, altasName: "backpack_big", hasOnePixelMargin: true);
                         break;
                     }
 
                 case PkgName.BackpackLuxurious:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 1, animSize: 0, altasName: "backpack_luxurious", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 236, height: 258, scale: 0.1f, layer: 0, animSize: 0, altasName: "backpack_luxurious", hasOnePixelMargin: true);
                         break;
                     }
 
                 case PkgName.BeltSmall:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 321, height: 300, scale: 0.04f, layer: 0, animSize: 0, altasName: "belt_small", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 321, height: 300, scale: 0.07f, layer: 0, animSize: 0, altasName: "belt_small", hasOnePixelMargin: false);
                         break;
                     };
 
