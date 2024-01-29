@@ -1401,25 +1401,25 @@ namespace SonOfRobin
 
                 case PkgName.PickaxeWood:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "pickaxe_wood", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 280, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "pickaxe_wood", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.PickaxeStone:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "pickaxe_stone", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 323, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "pickaxe_stone", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.PickaxeIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "pickaxe_iron", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 275, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "pickaxe_iron", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.PickaxeCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 43, height: 40, scale: 0.7f, layer: 0, animSize: 0, altasName: "pickaxe_crystal", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 276, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "pickaxe_crystal", hasOnePixelMargin: false);
                         break;
                     }
 
