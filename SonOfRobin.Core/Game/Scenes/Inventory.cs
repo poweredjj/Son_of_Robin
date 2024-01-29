@@ -409,12 +409,12 @@ namespace SonOfRobin
             {
                 Seed seeds = (Seed)selectedPiece;
 
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(seeds.PlantToGrow) }, scale: smallScale, color: new Color(208, 255, 199)));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {Helpers.FirstCharToUpperCase(PieceInfo.GetInfo(seeds.PlantToGrow).readableName)} seeds.", imageList: [PieceInfo.GetImageObj(seeds.PlantToGrow)], scale: smallScale, color: new Color(208, 255, 199)));
             }
 
             if (selectedPiece.GetType() == typeof(Projectile))
             {
-                entryList.Add(new InfoWindow.TextEntry(text: $"| {selectedPiece.pieceInfo.projectileHitMultiplier}", imageList: new List<ImageObj> { TextureBank.GetImageObj(TextureBank.TextureName.Biceps) }, scale: smallScale, color: Color.White));
+                entryList.Add(new InfoWindow.TextEntry(text: $"| {selectedPiece.pieceInfo.projectileHitMultiplier}", imageList: [TextureBank.GetImageObj(TextureBank.TextureName.Biceps)], scale: smallScale, color: Color.White));
             }
 
             var affinityEntries = PieceInfo.GetCategoryAffinityTextEntryList(pieceName: selectedPiece.name, scale: 1f);
