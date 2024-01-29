@@ -1395,7 +1395,7 @@ namespace SonOfRobin
 
                 case PkgName.AxeCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 50, height: 41, scale: 0.5f, layer: 0, animSize: 0, altasName: "axe_crystal", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 347, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "axe_crystal", hasOnePixelMargin: false);
                         break;
                     }
 
