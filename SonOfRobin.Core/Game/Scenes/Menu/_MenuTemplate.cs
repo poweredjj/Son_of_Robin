@@ -638,7 +638,7 @@ namespace SonOfRobin
                             textLines.Add($"| Food: {Math.Round(player.FedPercent * 100)}%");
                             imageList.Add(AnimData.GetImageObj(AnimData.PkgName.Burger));
 
-                            textLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight}");
+                            textLines.Add($"| Inventory size: {player.InvWidth}x{player.InvHeight} ({player.InvWidth * player.InvHeight})");
                             imageList.Add(AnimData.GetImageObj(AnimData.PkgName.BackpackMedium));
 
                             string toolbarText = $"| Toolbar size: {player.ToolbarWidth}";
