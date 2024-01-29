@@ -6,6 +6,7 @@ using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static SonOfRobin.Helpers;
 
 namespace SonOfRobin
 {
@@ -1338,21 +1339,21 @@ namespace SonOfRobin
 
             Texture2D cursorTexture = TextureBank.GetTexture(TextureBank.TextureName.Cursor);
             int tileSize = this.TileSize;
+            int cursorSize = (int)(tileSize * 0.7f);
+
             Vector2 slotPos = this.GetSlotPos(posX: this.CursorX, posY: this.CursorY, tileSize: this.TileSize, margin: this.Margin);
+            slotPos += new Vector2(tileSize - (cursorSize * 0.5f), tileSize - (cursorSize * 0.5f));
 
-            slotPos += new Vector2(tileSize * 0.5f, tileSize * 0.5f);
-
-            Rectangle sourceRectangle = new(0, 0, cursorTexture.Width, cursorTexture.Height);
-            Rectangle destinationRectangle = new((int)slotPos.X, (int)slotPos.Y, tileSize, tileSize);
+            Rectangle cursorRect = new((int)slotPos.X, (int)slotPos.Y, cursorSize, cursorSize);
 
             if (draggedPieces.Count > 0)
             {
                 BoardPiece shownPiece = draggedPieces[draggedPieces.Count - 1];
-                Rectangle shownPieceRect = new Rectangle(
-                    destinationRectangle.X + (int)(destinationRectangle.Width * 0.75f),
-                    destinationRectangle.Y,
-                    destinationRectangle.Width,
-                    destinationRectangle.Height);
+                Rectangle shownPieceRect = new(
+                    cursorRect.X + (int)(cursorRect.Width * 0.75f),
+                    cursorRect.Y,
+                    cursorRect.Width,
+                    cursorRect.Height);
 
                 shownPiece.sprite.DrawAndKeepInRectBounds(destRect: shownPieceRect, opacity: viewParams.drawOpacity);
 
@@ -1369,7 +1370,7 @@ namespace SonOfRobin
                 DrawQuantity(pieceCount: draggedPieces.Count, destRect: quantityRect, opacity: this.viewParams.drawOpacity);
             }
 
-            SonOfRobinGame.SpriteBatch.Draw(cursorTexture, destinationRectangle, sourceRectangle, Color.White);
+            Helpers.DrawTextureInsideRect(texture: cursorTexture, rectangle: cursorRect, color: Color.White, alignX: AlignX.Left, alignY: AlignY.Top, drawTestRect: false);
         }
     }
 }
