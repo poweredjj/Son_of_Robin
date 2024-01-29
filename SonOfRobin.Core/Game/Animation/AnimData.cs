@@ -1443,7 +1443,7 @@ namespace SonOfRobin
 
                 case PkgName.SpearWood:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 54, height: 54, scale: 0.5f, layer: 0, animSize: 0, altasName: "spear_wood", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 298, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "spear_wood", hasOnePixelMargin: false);
                         break;
                     }
 
