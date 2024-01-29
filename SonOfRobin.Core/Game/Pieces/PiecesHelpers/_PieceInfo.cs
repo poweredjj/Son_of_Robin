@@ -141,9 +141,10 @@ namespace SonOfRobin
                 this.color = piece.sprite.color;
                 this.opacity = piece.sprite.opacity;
                 this.lightEngine = piece.sprite.lightEngine;
+                this.animPkgName = piece.sprite.AnimPkg.name;
                 this.animName = piece.sprite.AnimName;
                 this.animFrame = piece.sprite.AnimFrame;
-                this.imageObj = new AnimFrameObj(this.animFrame);
+                this.imageObj = AnimData.GetImageObj(this.animPkgName);
                 this.eats = this.type == typeof(Animal) ? ((Animal)piece).Eats : null;
                 this.equipType = this.type == typeof(Equipment) ? ((Equipment)piece).equipType : Equipment.EquipType.None;
                 this.cookerFoodMassMultiplier = this.type == typeof(Cooker) ? ((Cooker)piece).foodMassMultiplier : 0f;
@@ -3116,7 +3117,6 @@ namespace SonOfRobin
 
                 // setting some variables, that need params non-present in boardPiece
                 if (this.maxMassForSize != null) piece.sprite.AssignNewSize((byte)(this.maxMassForSize.Length - 1));
-                this.animPkgName = piece.sprite.AnimPkg.name;
 
                 // checking for params, that need to be set
 

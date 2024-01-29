@@ -12,7 +12,8 @@ namespace SonOfRobin
         public readonly bool horizontalOrientationsOnly;
         public AnimFrame presentationFrame; // to be used in messages, menus, etc.
         public List<Anim> AllAnimList { get; private set; } // "flat" list of all anims
-        public int[] AllAnimSizes { get { return this.animDict.Keys.ToArray(); } }
+        public int[] AllAnimSizes
+        { get { return this.animDict.Keys.ToArray(); } }
 
         public AnimPkg(AnimData.PkgName pkgName, int colWidth, int colHeight, bool horizontalOrientationsOnly = false)
         {
