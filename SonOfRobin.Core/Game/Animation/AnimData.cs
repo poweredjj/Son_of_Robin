@@ -1371,7 +1371,7 @@ namespace SonOfRobin
 
                 case PkgName.KnifeSimple:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 24, height: 26, scale: 1f, layer: 0, animSize: 0, altasName: "knife_simple", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 341, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "knife_simple", hasOnePixelMargin: false);
                         break;
                     }
 
