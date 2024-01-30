@@ -1461,7 +1461,7 @@ namespace SonOfRobin
 
                 case PkgName.SpearCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "spear_crystal", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 309, height: 300, scale: 0.12f, layer: 0, animSize: 0, altasName: "spear_crystal", hasOnePixelMargin: false);
                         break;
                     }
 
