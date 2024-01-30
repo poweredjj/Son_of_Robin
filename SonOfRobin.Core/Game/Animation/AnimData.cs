@@ -1497,7 +1497,7 @@ namespace SonOfRobin
 
                 case PkgName.ArrowWood:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 26, scale: 0.75f, layer: 0, animSize: 0, altasName: "arrow_wood", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_wood", hasOnePixelMargin: true);
                         break;
                     }
 
