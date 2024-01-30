@@ -1455,7 +1455,7 @@ namespace SonOfRobin
 
                 case PkgName.SpearIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 57, height: 57, scale: 0.5f, layer: 0, animSize: 0, altasName: "spear_iron", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 310, height: 300, scale: 0.12f, layer: 0, animSize: 0, altasName: "spear_iron", hasOnePixelMargin: false);
                         break;
                     }
 
