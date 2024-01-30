@@ -1479,7 +1479,7 @@ namespace SonOfRobin
 
                 case PkgName.ShovelCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "shovel_crystal", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 257, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "shovel_crystal", hasOnePixelMargin: false);
                         break;
                     }
 
