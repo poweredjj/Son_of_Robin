@@ -1509,7 +1509,7 @@ namespace SonOfRobin
 
                 case PkgName.ArrowIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 27, scale: 0.75f, layer: 0, animSize: 0, altasName: "arrow_iron", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_iron", hasOnePixelMargin: false);
                         break;
                     }
 
