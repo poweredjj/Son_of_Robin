@@ -1467,13 +1467,13 @@ namespace SonOfRobin
 
                 case PkgName.ShovelStone:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "shovel_stone", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 270, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "shovel_stone", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.ShovelIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 34, height: 33, scale: 0.7f, layer: 0, animSize: 0, altasName: "shovel_iron", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 270, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "shovel_iron", hasOnePixelMargin: false);
                         break;
                     }
 
