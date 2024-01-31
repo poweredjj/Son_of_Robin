@@ -2023,11 +2023,11 @@ namespace SonOfRobin
 
                 case PkgName.SmallTorch:
                     {
-                        AnimFrame frameOn = new AnimFrame(atlasName: "small_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.07f, gfxOffsetCorrection: new Vector2(-31, -59));
+                        AnimFrame frameOn = new AnimFrame(atlasName: "torch_small_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 235, height: 300), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -29));
 
-                        AnimFrame frameOff = new AnimFrame(atlasName: "small_torch_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 180, height: 157), scale: 0.07f, gfxOffsetCorrection: new Vector2(8, 1));
+                        AnimFrame frameOff = new AnimFrame(atlasName: "torch_small_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 235, height: 300), scale: 0.1f, gfxOffsetCorrection: new Vector2(0, -29));
 
-                        animPkg = new(pkgName: pkgName, colWidth: 13, colHeight: 12);
+                        animPkg = new(pkgName: pkgName, colWidth: 24, colHeight: 23);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frameOff]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [frameOff]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frameOn]));
@@ -2036,11 +2036,11 @@ namespace SonOfRobin
 
                 case PkgName.BigTorch:
                     {
-                        AnimFrame frameOn = new AnimFrame(atlasName: "big_torch_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 258, height: 278), scale: 0.1f, gfxOffsetCorrection: new Vector2(44, -59));
+                        AnimFrame frameOn = new AnimFrame(atlasName: "torch_big_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 223, height: 300), scale: 0.13f, gfxOffsetCorrection: new Vector2(-3, -35));
 
-                        AnimFrame frameOff = new AnimFrame(atlasName: "big_torch_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 180, height: 157), scale: 0.1f, gfxOffsetCorrection: new Vector2(5, 0));
+                        AnimFrame frameOff = new AnimFrame(atlasName: "torch_big_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 223, height: 300), scale: 0.13f, gfxOffsetCorrection: new Vector2(-3, -35));
 
-                        animPkg = new(pkgName: pkgName, colWidth: 17, colHeight: 16);
+                        animPkg = new(pkgName: pkgName, colWidth: 28, colHeight: 29);
                         animPkg.AddAnim(new(animPkg: animPkg, name: "off", size: 0, frameArray: [frameOff]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [frameOff]));
                         animPkg.AddAnim(new(animPkg: animPkg, name: "on", size: 0, frameArray: [frameOn]));
