@@ -1425,19 +1425,19 @@ namespace SonOfRobin
 
                 case PkgName.ScytheStone:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "scythe_stone", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 232, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "scythe_stone", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.ScytheIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "scythe_iron", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 224, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "scythe_iron", hasOnePixelMargin: false);
                         break;
                     }
 
                 case PkgName.ScytheCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 26, height: 21, scale: 1f, layer: 0, animSize: 0, altasName: "scythe_crystal", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 237, height: 300, scale: 0.1f, layer: 0, animSize: 0, altasName: "scythe_crystal", hasOnePixelMargin: false);
                         break;
                     }
 
