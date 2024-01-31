@@ -1187,23 +1187,24 @@ namespace SonOfRobin
                                 { Name.Stick, 4 },
                             } },
 
-                            { 1, new Dictionary<Name, int>{
-                                { Name.Granite, 5 },
+                           { 1, new Dictionary<Name, int>{
+                                { Name.Clay, 1 },
+                                { Name.Fat, 3 },
+                                { Name.Leather, 3 },
                                 { Name.Stone, 2 },
                             } },
 
                             { 2, new Dictionary<Name, int>{
-                                { Name.Clay, 3 },
-                                { Name.Fat, 5 },
-                                { Name.HideCloth, 3 },
+                                { Name.Granite, 2 },
+                                { Name.Stone, 5 },
                             } },
                         };
 
                         Dictionary<int, string> descriptionsForLevels = new()
                         {
                             { 0, "base" },
-                            { 1, "top" },
-                            { 2, "insulation" },
+                            { 1, "insulation" },
+                            { 2, "top" },
                         };
 
                         BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceConstructionSite, allowedTerrain: AllowedTerrain.GetFieldCraft(), materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.FurnaceComplete, readableName: "furnace construction site", description: "Furnace construction site.");
