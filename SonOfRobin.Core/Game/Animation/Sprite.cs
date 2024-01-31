@@ -705,7 +705,7 @@ namespace SonOfRobin
         {
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = this.AnimFrame.duration;
-            if (assignFrame) this.AssignFrame(checkForCollision: false);
+            if (assignFrame) this.AssignFrame(checkForCollision: false, forceRewind: true);
         }
 
         public void UpdateAnimation()
@@ -714,7 +714,7 @@ namespace SonOfRobin
             {
                 if (this.Anim.switchWhenComplete)
                 {
-                    this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.Anim.switchName);
+                    this.AnimName = this.Anim.switchName;
                     this.RewindAnim(assignFrame: true);
                 }
 
