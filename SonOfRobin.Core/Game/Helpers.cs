@@ -99,7 +99,7 @@ namespace SonOfRobin
             }
         }
 
-        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0, Rectangle srcRect = default)
+        public static Rectangle DrawTextureInsideRect(Texture2D texture, Rectangle rectangle, Color color, AlignX alignX = AlignX.Center, AlignY alignY = AlignY.Center, bool drawTestRect = false, float rotation = 0, Rectangle srcRect = default, SpriteEffects spriteEffects = SpriteEffects.None)
         {
             if (srcRect == default) srcRect = texture.Bounds;
 
@@ -138,12 +138,12 @@ namespace SonOfRobin
             Rectangle destRect = new(x: rectangle.X + xOffset, y: rectangle.Y + yOffset, width: (int)(srcWidth * scale), height: (int)(srcHeight * scale));
             if (drawTestRect) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: destRect, color: Color.Green, thickness: 1f);
 
-            if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, destinationRectangle: destRect, color: color);
+            if (rotation == 0) SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, destinationRectangle: destRect, color: color, rotation: 0f, origin: Vector2.Zero, effects: spriteEffects, layerDepth: 0f);
             else
             {
                 destRect.Offset(destRect.Width / 2, destRect.Height / 2);
 
-                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, origin: new Vector2(srcWidth * 0.5f, srcHeight * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: SpriteEffects.None, layerDepth: 0);
+                SonOfRobinGame.SpriteBatch.Draw(texture: texture, sourceRectangle: srcRect, origin: new Vector2(srcWidth * 0.5f, srcHeight * 0.5f), destinationRectangle: destRect, color: color, rotation: rotation, effects: spriteEffects, layerDepth: 0);
             }
 
             return destRect;

@@ -119,7 +119,7 @@ namespace SonOfRobin
 
         public void DrawInsideRect(Rectangle rect, Color color, Helpers.AlignX alignX = Helpers.AlignX.Center, Helpers.AlignY alignY = Helpers.AlignY.Center, bool drawTestRect = false)
         {
-            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: rect, srcRect: this.cropRect, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect);
+            Helpers.DrawTextureInsideRect(texture: this.Texture, rectangle: rect, srcRect: this.cropRect, color: color, alignX: alignX, alignY: alignY, drawTestRect: drawTestRect, spriteEffects: this.spriteEffects);
         }
     }
 }
