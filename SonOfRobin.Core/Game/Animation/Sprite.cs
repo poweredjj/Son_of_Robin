@@ -918,7 +918,7 @@ namespace SonOfRobin
                     rotation: shadowAngle + (float)(Math.PI / 2f),
                     origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
-                    effects: SpriteEffects.None,
+                    effects: frame.spriteEffects,
                     layerDepth: 0);
             }
         }
