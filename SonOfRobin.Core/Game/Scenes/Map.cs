@@ -682,7 +682,9 @@ namespace SonOfRobin
 
                 if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
 
-                sprite.AnimFrame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
+                AnimFrame frame = sprite.boardPiece.GetType() == typeof(Player) ? sprite.Anim.frameArray[0] : sprite.AnimFrame;
+
+                frame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
             // drawing named locations
@@ -749,7 +751,7 @@ namespace SonOfRobin
             if (this.Mode == MapMode.Full)
             {
                 int markerSizePixels = (int)(Preferences.MapMarkerRealSize * this.viewParams.ScaleY);
-                Rectangle markerRect = new Rectangle(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
+                Rectangle markerRect = new(x: 0, y: 0, width: markerSizePixels, height: markerSizePixels);
 
                 foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
