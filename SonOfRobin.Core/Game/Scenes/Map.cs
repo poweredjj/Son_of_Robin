@@ -680,10 +680,7 @@ namespace SonOfRobin
                     opacity = 0.6f;
                 }
 
-                if (Preferences.debugAllowMapAnimation) sprite.UpdateAnimation();
-
-                AnimFrame frame = sprite.boardPiece.GetType() == typeof(Player) ? sprite.Anim.frameArray[0] : sprite.AnimFrame;
-
+                AnimFrame frame = sprite.Anim.frameArray[0];
                 frame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
