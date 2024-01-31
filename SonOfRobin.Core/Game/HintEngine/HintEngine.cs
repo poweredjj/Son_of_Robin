@@ -799,9 +799,9 @@ namespace SonOfRobin
 
                             if (this.world.craftStats.CraftedPiecesTotal > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
-                                textList.Add(new TextWithImages(font: fontText, text: "| General craft", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WorkshopAdvanced) }, minMarkerWidthMultiplier: 2f));
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| General craft", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WorkshopAdvanced) }, minMarkerWidthMultiplier: 2f));
 
                                 textList.Add(new TextWithImages(font: fontText, text: $"| Items crafted: {this.world.craftStats.CraftedPiecesTotal}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.AxeIron) }, minMarkerWidthMultiplier: 2f));
 
@@ -812,7 +812,7 @@ namespace SonOfRobin
 
                             if (this.world.cookStats.TotalCookCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| Cooking", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.CookingPot) }, minMarkerWidthMultiplier: 2f));
 
@@ -823,7 +823,7 @@ namespace SonOfRobin
 
                             if (this.world.brewStats.TotalCookCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| Potion brewing", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.AlchemyLabStandard) }, minMarkerWidthMultiplier: 2f));
 
@@ -834,7 +834,7 @@ namespace SonOfRobin
 
                             if (this.world.smeltStats.TotalCookCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| Smelting", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.IronBar) }, minMarkerWidthMultiplier: 2f));
 
@@ -843,7 +843,7 @@ namespace SonOfRobin
 
                             if (this.world.meatHarvestStats.TotalHarvestCount > 0)
                             {
-                                textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
 
                                 textList.Add(new TextWithImages(font: fontTitle, text: "| meat harvesting", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.MeatRawPrime) }, minMarkerWidthMultiplier: 2f));
 

@@ -649,7 +649,7 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Retro Marek", imageList: new List<ImageObj>()));
 
             textList.Add(new TextWithImages(font: fontText, text: " ", imageList: new List<ImageObj>()));
-            textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2023", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "developed by Ahoy Games 2021 - 2024", imageList: new List<ImageObj>()));
 
             return textList;
         }
