@@ -1522,8 +1522,8 @@ namespace SonOfRobin
                 case PkgName.ArrowExploding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 20);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 27, height: 27), scale: 0.75f, gfxOffsetCorrection: new Vector2(0, 0))]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 32, height: 32), scale: 0.75f, gfxOffsetCorrection: new Vector2(-3, -2))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 294, height: 300), scale: 0.08f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 297, height: 300), scale: 0.08f)]));
                         break;
                     }
 
