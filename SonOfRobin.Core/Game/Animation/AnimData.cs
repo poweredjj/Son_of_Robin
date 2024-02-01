@@ -1956,7 +1956,7 @@ namespace SonOfRobin
 
                 case PkgName.BootsProtective:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 20, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "boots_protective", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 238, height: 400, scale: 0.06f, layer: 1, animSize: 0, altasName: "boots_protective", hasOnePixelMargin: false);
                         break;
                     };
 
