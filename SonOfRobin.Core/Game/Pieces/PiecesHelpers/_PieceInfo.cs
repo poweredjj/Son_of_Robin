@@ -3065,7 +3065,6 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.allowedDensity = new AllowedDensity(radius: 6000, maxNoOfPiecesSameClass: 0);
-                        this.blocksMovement = true;
                         this.delayAfterCreationMinutes = 30;
                         break;
 
@@ -3074,7 +3073,6 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.allowedDensity = new AllowedDensity(radius: 500, maxNoOfPiecesBlocking: 0);
-                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.CaveExit:
@@ -3082,7 +3080,6 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.allowedDensity = new AllowedDensity(radius: 1000, maxNoOfPiecesSameClass: 0);
-                        this.blocksMovement = true;
                         break;
 
                     case PieceTemplate.Name.CaveExitEmergency:
@@ -3090,7 +3087,6 @@ namespace SonOfRobin
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
                         this.allowedDensity = new AllowedDensity(radius: 1000, maxNoOfPiecesSameClass: 0);
-                        this.blocksMovement = true;
                         break;
 
                     default:

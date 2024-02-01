@@ -2603,15 +2603,15 @@ namespace SonOfRobin
                 case PkgName.CaveEntrance:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 92, colHeight: 53);
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrame(atlasName: "cave_entrance_open", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "blocked", size: 0, frameArray: [new AnimFrame(atlasName: "cave_entrance_blocked", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrame(atlasName: "cave_entrance_open", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "blocked", size: 0, frameArray: [new AnimFrame(atlasName: "cave_entrance_blocked", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 47, height: 28), scale: 2f)]));
                         break;
                     }
 
                 case PkgName.CaveExit:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 84, colHeight: 55);
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrame(atlasName: "cave_exit", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 43, height: 29), scale: 2f, gfxOffsetCorrection: new Vector2(-0, -0))]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "default", size: 0, frameArray: [new AnimFrame(atlasName: "cave_exit", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 43, height: 29), scale: 2f, gfxOffsetCorrection: new Vector2(-0, -0))]));
                         break;
                     }
 
