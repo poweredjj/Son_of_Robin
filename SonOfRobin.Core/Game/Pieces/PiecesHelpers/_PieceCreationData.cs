@@ -38,6 +38,8 @@ namespace SonOfRobin
 
         public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level level)
         {
+            float areaMultiplier = (level.width / 1000) * (level.height / 1000) / 10; // 90 for 30k x 30k
+
             var dataList = new List<PieceCreationData>
             {
                 new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: 1000, levelType: Level.LevelType.Island),
@@ -99,7 +101,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2, levelType: Level.LevelType.Island),
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: 6, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: (int)Math.Max(areaMultiplier / 15, 1), levelType: Level.LevelType.Island),
 
                 // cave
 
