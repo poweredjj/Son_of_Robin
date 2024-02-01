@@ -119,7 +119,7 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    if (this.sprite.opacity > 0)
+                    if (this.sprite.opacity > 0 && this.level.levelType == Level.LevelType.Island) // to avoid distorting boat in OpenSea level
                     {
                         ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDraw, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 5));
                         if (this.sprite.opacity > 0.3f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterWaveDistort, particlesToEmit: 1, duration: (int)(this.sprite.opacity * 3));
