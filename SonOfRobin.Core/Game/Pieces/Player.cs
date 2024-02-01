@@ -859,7 +859,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.CurrentUpdate % 121 == 0) this.world.HintEngine.CheckForPieceHintToShow();
+            if (this.world.CurrentUpdate % 121 == 0 && this.CanSeeAnything) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(energyAmount: 1.0f, addFatigue: false);
             this.Walk();
