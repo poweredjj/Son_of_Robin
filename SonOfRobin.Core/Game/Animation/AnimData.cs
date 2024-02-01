@@ -1974,7 +1974,7 @@ namespace SonOfRobin
 
                 case PkgName.BootsAllTerrain:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 26, scale: 1f, layer: 1, animSize: 0, altasName: "boots_all_terrain", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 260, height: 400, scale: 0.06f, layer: 1, animSize: 0, altasName: "boots_all_terrain", hasOnePixelMargin: false);
                         break;
                     };
 
