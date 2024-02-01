@@ -95,9 +95,20 @@ namespace SonOfRobin
         public override void Update()
         {
             if (this.ShouldBeHidden) return;
-            if (this.buffFont == null || this.buffFont.FontSize != Preferences.buffFontSize)
+
+            // not used at the moment
+        }
+
+        private SpriteFontBase BuffFont
+        {
+            get
             {
-                this.buffFont = SonOfRobinGame.FontVCROSD.GetFont(Preferences.buffFontSize);
+                if (this.buffFont == null || this.buffFont.FontSize != Preferences.buffFontSize)
+                {
+                    this.buffFont = SonOfRobinGame.FontVCROSD.GetFont(Preferences.buffFontSize);
+                }
+
+                return this.buffFont;
             }
         }
 
@@ -123,7 +134,7 @@ namespace SonOfRobin
             bool shouldBeHidden = this.ShouldBeHidden;
             this.HideOrShow(!shouldBeHidden);
 
-            if ((shouldBeHidden && !this.transManager.HasAnyTransition)) return;
+            if (shouldBeHidden && !this.transManager.HasAnyTransition) return;
 
             this.AdaptToNewSize();
 
@@ -195,7 +206,7 @@ namespace SonOfRobin
 
             // drawing buff bars
             {
-                Vector2 shadowOffset = new Vector2(2, 2);
+                Vector2 shadowOffset = new(2, 2);
                 Color shadowColor = Color.Black * 0.7f;
 
                 if (player.buffEngine.BuffList.Where(buff => buff.playerPanelText != null).Any())
@@ -226,10 +237,10 @@ namespace SonOfRobin
                             opacity *= (float)Helpers.ConvertRange(oldMin: buff.endFrame, oldMax: buff.endFrame - 30, newMin: 0, newMax: 1, oldVal: this.world.CurrentUpdate, clampToEdges: true);
                         }
 
-                        RichTextLayout richTextLayout = new RichTextLayout { Font = this.buffFont, Text = buffTextFormatted };
+                        RichTextLayout richTextLayout = new() { Font = this.BuffFont, Text = buffTextFormatted };
                         Point buffTextSize = richTextLayout.Measure(100000);
 
-                        Rectangle buffBGRect = new Rectangle(
+                        Rectangle buffBGRect = new(
                             x: 0,
                             y: currentPosY,
                             width: (int)buffTextSize.X + (bgInflateSize * 4),
