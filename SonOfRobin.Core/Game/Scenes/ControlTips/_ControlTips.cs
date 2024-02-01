@@ -52,6 +52,10 @@ namespace SonOfRobin
         private Scene currentScene;
         private SpriteFontBase debugFont;
 
+        private static int lastUpdateLayoutChanged = 0;
+        public static int UpdatesSinceLayoutChanged
+        { get { return SonOfRobinGame.CurrentUpdate - lastUpdateLayoutChanged; } }
+
         public ControlTips() : base(inputType: InputTypes.None, tipsLayout: TipsLayout.Uninitialized, priority: -2, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: true, alwaysDraws: true, touchLayout: TouchLayout.Empty)
         {
             this.tipCollection = new Dictionary<string, ButtonTip> { };
@@ -197,6 +201,8 @@ namespace SonOfRobin
         private void SwitchToLayout(TipsLayout tipsLayout, bool force = false)
         {
             if (this.currentLayout == tipsLayout && !force) return;
+
+            lastUpdateLayoutChanged = SonOfRobinGame.CurrentUpdate;
 
             // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"Switching layout: '{this.currentLayout}' to '{tipsLayout}'.", color: Color.LightGreen);
 

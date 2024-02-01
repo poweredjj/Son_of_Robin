@@ -209,10 +209,10 @@ namespace SonOfRobin
             return matchingTypes.Count() > 0;
         }
 
-        private static int lastFrameLayoutChanged = 0;
+        private static int lastUpdateLayoutChanged = 0;
 
-        public static int FramesSinceLayoutChanged
-        { get { return SonOfRobinGame.CurrentUpdate - lastFrameLayoutChanged; } }
+        public static int UpdatesSinceLayoutChanged
+        { get { return SonOfRobinGame.CurrentUpdate - lastUpdateLayoutChanged; } }
 
         public static void GetState()
         {
@@ -378,7 +378,7 @@ namespace SonOfRobin
             Preferences preferences = new Preferences();
 
             currentLayout = touchLayout;
-            lastFrameLayoutChanged = SonOfRobinGame.CurrentUpdate;
+            lastUpdateLayoutChanged = SonOfRobinGame.CurrentUpdate;
 
             VirtButton.RemoveAll();
 

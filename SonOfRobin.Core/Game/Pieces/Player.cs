@@ -961,9 +961,10 @@ namespace SonOfRobin
             Vector2 analogWalk = InputMapper.Analog(InputMapper.Action.WorldWalk);
             if (analogWalk != Vector2.Zero) this.pointWalkTarget = Vector2.Zero;
 
-            bool layoutChangedRecently = TouchInput.FramesSinceLayoutChanged < 5;
+            bool touchLayoutChangedRecently = TouchInput.UpdatesSinceLayoutChanged < 6;
+            bool tipsLayoutChangedRecently = ControlTips.UpdatesSinceLayoutChanged < 6;
 
-            if (Preferences.PointToWalk && analogWalk == Vector2.Zero && !layoutChangedRecently)
+            if (Preferences.PointToWalk && analogWalk == Vector2.Zero && !touchLayoutChangedRecently && !tipsLayoutChangedRecently)
             {
                 foreach (TouchLocation touch in TouchInput.TouchPanelState)
                 {
