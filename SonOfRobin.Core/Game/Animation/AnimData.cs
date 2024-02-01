@@ -1962,7 +1962,7 @@ namespace SonOfRobin
 
                 case PkgName.BootsMountain:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 21, height: 25, scale: 1f, layer: 1, animSize: 0, altasName: "boots_mountain", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 286, height: 300, scale: 0.06f, layer: 1, animSize: 0, altasName: "boots_mountain", hasOnePixelMargin: false);
                         break;
                     };
 
