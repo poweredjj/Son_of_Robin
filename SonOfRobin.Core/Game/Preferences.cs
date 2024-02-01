@@ -11,7 +11,6 @@ namespace SonOfRobin
         {
             // lower case, for proper display in menu
             small,
-
             medium,
             large,
             gigantic,
@@ -111,6 +110,7 @@ namespace SonOfRobin
         public static bool drawAllShadows = true;
         public static bool drawSunShadows = true;
         public static bool drawLightSourcedShadows = true;
+        public static MapOverlay.Corner mapCorner = MapOverlay.Corner.TopRight;
 
         public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
@@ -571,6 +571,7 @@ namespace SonOfRobin
             prefsData["drawLightSourcedShadows"] = drawLightSourcedShadows;
             prefsData["softShadows"] = softShadows;
             prefsData["buffFontSize"] = buffFontSize;
+            prefsData["mapCorner"] = mapCorner;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -644,6 +645,7 @@ namespace SonOfRobin
                     drawLightSourcedShadows = (bool)prefsData["drawLightSourcedShadows"];
                     softShadows = (bool)prefsData["softShadows"];
                     buffFontSize = (int)(Int64)prefsData["buffFontSize"];
+                    mapCorner = (MapOverlay.Corner)(Int64)prefsData["mapCorner"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

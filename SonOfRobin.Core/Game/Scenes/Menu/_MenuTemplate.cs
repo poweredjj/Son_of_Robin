@@ -202,6 +202,8 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
 
+                        new Selector(menu: menu, name: "map corner", valueDict: new Dictionary<object, object> { { MapOverlay.Corner.TopLeft, "top left" }, { MapOverlay.Corner.TopRight, "top right" }, { MapOverlay.Corner.BottomLeft, "bottom left" }, { MapOverlay.Corner.BottomRight, "bottom right" }, }, targetObj: preferences, propertyName: "mapCorner");
+
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);

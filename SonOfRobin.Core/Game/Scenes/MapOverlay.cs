@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 
@@ -6,14 +7,21 @@ namespace SonOfRobin
 {
     public class MapOverlay : Scene
     {
+        public enum Corner: byte { TopLeft, TopRight, BottomLeft, BottomRight }
+
         // Simple renderer of final map surface.
         // Allows for transitions independent from base map.
 
+        private static readonly Color frameColor = new(71, 37, 0);
+
         private readonly Map map;
+        private Rectangle drawRect;
+        private Corner corner;
 
         public MapOverlay(Map map) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.map = map;
+            this.corner = Preferences.mapCorner;
         }
 
         public void AddTransition(bool setInstantly)
@@ -35,16 +43,18 @@ namespace SonOfRobin
                 case Map.MapMode.Mini:
                     float scaleMini = 3f;
 
+                    bool atLeft = Preferences.mapCorner == Corner.BottomLeft || Preferences.mapCorner == Corner.TopLeft;
+                    bool atTop = Preferences.mapCorner == Corner.TopLeft || Preferences.mapCorner == Corner.TopRight;
+
                     int widthMini = (int)((float)Map.FinalMapToDisplaySize.X / scaleMini);
                     int heightMini = (int)((float)Map.FinalMapToDisplaySize.Y / scaleMini);
-                    int margin = (int)(SonOfRobinGame.ScreenWidth * 0.05f);
+                    int margin = (int)(SonOfRobinGame.ScreenWidth * 0.01f);
 
-                    int posXMini = (int)((SonOfRobinGame.ScreenWidth - (widthMini + margin)) * scaleMini);
-                    int posYMini = (int)((SonOfRobinGame.ScreenHeight - (heightMini + margin)) * scaleMini);
+                    int posXMini = atLeft ? margin : (int)((SonOfRobinGame.ScreenWidth - widthMini) * scaleMini) - margin;
+                    int posYMini = atTop ? margin : (int)((SonOfRobinGame.ScreenHeight - heightMini) * scaleMini) - margin;
 
                     this.viewParams.PosX = posXMini;
                     this.viewParams.PosY = posYMini;
-                    if (!setInstantly) this.viewParams.PosY += heightMini * scaleMini;
 
                     this.viewParams.Opacity = 0.7f;
                     this.viewParams.ScaleX = scaleMini;
@@ -80,11 +90,14 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.map.Mode}.");
             }
+
+            this.corner = Preferences.mapCorner;
         }
 
         public override void Update()
         {
             this.map.blocksDrawsBelow = this.map.Mode == Map.MapMode.Full && this.viewParams.ScaleX == 1;
+            if (this.corner != Preferences.mapCorner) this.AddTransition(setInstantly: false);
         }
 
         public override void Draw()
@@ -98,7 +111,13 @@ namespace SonOfRobin
             float opacity = 1f - this.map.world.cineCurtains.showPercentage;
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
-            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight), Color.White * opacity * this.viewParams.drawOpacity);
+
+            this.drawRect = new Rectangle(0, 0, SonOfRobinGame.ScreenWidth, SonOfRobinGame.ScreenHeight);
+
+            SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.drawRect, Color.White * opacity * this.viewParams.drawOpacity);
+
+            if (this.map.Mode == Map.MapMode.Mini && !this.transManager.HasAnyTransition) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.drawRect, color: frameColor * opacity * 0.7f, thickness: 6);
+
             SonOfRobinGame.SpriteBatch.End();
         }
     }
