@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public class MapOverlay : Scene
     {
-        public enum Corner: byte { TopLeft, TopRight, BottomLeft, BottomRight }
+        public enum Corner: byte { TopLeft, TopRight, TopCenter, BottomLeft, BottomCenter, BottomRight }
 
         // Simple renderer of final map surface.
         // Allows for transitions independent from base map.
@@ -16,12 +16,10 @@ namespace SonOfRobin
 
         private readonly Map map;
         private Rectangle drawRect;
-        private Corner corner;
 
         public MapOverlay(Map map) : base(inputType: InputTypes.None, priority: 1, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.map = map;
-            this.corner = Preferences.mapCorner;
             this.viewParams.Opacity = 0;
         }
 
@@ -42,16 +40,17 @@ namespace SonOfRobin
                     break;
 
                 case Map.MapMode.Mini:
-                    float scaleMini = 3f;
+                    float scaleMini = Preferences.miniMapScale;
 
-                    bool atLeft = Preferences.mapCorner == Corner.BottomLeft || Preferences.mapCorner == Corner.TopLeft;
-                    bool atTop = Preferences.mapCorner == Corner.TopLeft || Preferences.mapCorner == Corner.TopRight;
+                    bool atLeft = Preferences.miniMapCorner == Corner.BottomLeft || Preferences.miniMapCorner == Corner.TopLeft;
+                    bool atTop = Preferences.miniMapCorner == Corner.TopLeft || Preferences.miniMapCorner == Corner.TopRight || Preferences.miniMapCorner == Corner.TopCenter;
+                    bool xCenter = Preferences.miniMapCorner == Corner.TopCenter || Preferences.miniMapCorner == Corner.BottomCenter;
 
                     int widthMini = (int)((float)Map.FinalMapToDisplaySize.X / scaleMini);
                     int heightMini = (int)((float)Map.FinalMapToDisplaySize.Y / scaleMini);
                     int margin = (int)(SonOfRobinGame.ScreenWidth * 0.01f);
 
-                    int posXMini = atLeft ? margin : (int)((SonOfRobinGame.ScreenWidth - widthMini) * scaleMini) - margin;
+                    int posXMini = atLeft ? margin : (int)(((SonOfRobinGame.ScreenWidth - widthMini) * (xCenter ? 0.5f : 1f) * scaleMini) - (margin * (xCenter ? 0f : 1f)));
                     int posYMini = atTop ? margin : (int)((SonOfRobinGame.ScreenHeight - heightMini) * scaleMini) - margin;
 
                     this.viewParams.PosX = posXMini;
@@ -61,7 +60,7 @@ namespace SonOfRobin
                     this.viewParams.ScaleY = scaleMini;
 
                     this.transManager.AddMultipleTransitions(outTrans: true, duration: setInstantly ? 1 : duration, endCopyToBase: true,
-                        paramsToChange: new Dictionary<string, float> { { "Opacity", 0.7f } });
+                        paramsToChange: new Dictionary<string, float> { { "Opacity", 0.8f } });
 
                     break;
 
@@ -91,14 +90,11 @@ namespace SonOfRobin
                 default:
                     throw new ArgumentException($"Unsupported mode - {this.map.Mode}.");
             }
-
-            this.corner = Preferences.mapCorner;
         }
 
         public override void Update()
         {
             this.map.blocksDrawsBelow = this.map.Mode == Map.MapMode.Full && this.viewParams.ScaleX == 1;
-            if (this.corner != Preferences.mapCorner) this.AddTransition(setInstantly: false);
         }
 
         public override void Draw()
@@ -117,7 +113,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Draw(this.map.FinalMapToDisplay, this.drawRect, Color.White * opacity * this.viewParams.drawOpacity);
 
-            if (this.map.Mode == Map.MapMode.Mini && !this.transManager.HasAnyTransition) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.drawRect, color: frameColor * opacity * 0.7f, thickness: 6);
+            if (this.map.Mode == Map.MapMode.Mini && !this.transManager.HasAnyTransition) SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: this.drawRect, color: frameColor * opacity * 0.7f, thickness: Preferences.miniMapScale * 2f);
 
             SonOfRobinGame.SpriteBatch.End();
         }

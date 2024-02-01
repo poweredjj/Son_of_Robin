@@ -202,7 +202,9 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
 
-                        new Selector(menu: menu, name: "minimap position", valueDict: new Dictionary<object, object> { { MapOverlay.Corner.TopLeft, "top left" }, { MapOverlay.Corner.TopRight, "top right" }, { MapOverlay.Corner.BottomLeft, "bottom left" }, { MapOverlay.Corner.BottomRight, "bottom right" }, }, targetObj: preferences, propertyName: "mapCorner", resizesAllScenes: true);
+                        new Selector(menu: menu, name: "minimap position", valueDict: new Dictionary<object, object> { { MapOverlay.Corner.TopLeft, "top left" }, { MapOverlay.Corner.TopCenter, "top center" }, { MapOverlay.Corner.TopRight, "top right" }, { MapOverlay.Corner.BottomLeft, "bottom left" }, { MapOverlay.Corner.BottomCenter, "bottom center" }, { MapOverlay.Corner.BottomRight, "bottom right" }, }, targetObj: preferences, propertyName: "miniMapCorner", resizesAllScenes: true);
+
+                        new Selector(menu: menu, name: "minimap size", valueDict: Preferences.namesForMiniMapSize, targetObj: preferences, propertyName: "miniMapScale", resizesAllScenes: true);
 
                         foreach (Entry entry in menu.entryList)
                         {

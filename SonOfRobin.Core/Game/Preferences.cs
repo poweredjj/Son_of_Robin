@@ -19,6 +19,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 50, "low" }, { 40, "medium" }, { 20, "high" }, { 10, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
+        public static readonly Dictionary<Object, Object> namesForMiniMapSize = new() { { 6f, "micro" }, { 5f, "very small" }, { 4f, "small" }, { 3.5f, "medium" }, { 3f, "bigger" }, { 2.5f, "big" }, { 2f, "huge" } }; 
         public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.075f, "huge" }, { 0.1f, "gigantic" } }; 
         public static readonly Dictionary<Object, Object> namesForBuffFontSize = new() { { 6, "micro" }, { 12, "very small" }, { 18, "small" }, { 24, "normal" }, { 30, "big" }, { 36, "huge" }, { 42, "gigantic" } };
 
@@ -110,7 +111,8 @@ namespace SonOfRobin
         public static bool drawAllShadows = true;
         public static bool drawSunShadows = true;
         public static bool drawLightSourcedShadows = true;
-        public static MapOverlay.Corner mapCorner = MapOverlay.Corner.TopRight;
+        public static MapOverlay.Corner miniMapCorner = MapOverlay.Corner.TopRight;
+        public static float miniMapScale = 3.5f;
 
         public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
@@ -493,6 +495,7 @@ namespace SonOfRobin
                 messageLogScale = lowRes ? 1.0f : 1.5f;
                 buffFontSize = lowRes ? 12 : 30;
                 messageLogAtRight = true;
+                miniMapCorner = MapOverlay.Corner.TopCenter;
             }
             else
             {
@@ -501,6 +504,7 @@ namespace SonOfRobin
                 messageLogScale = 1.0f;
                 buffFontSize = 18;
                 messageLogAtRight = false;
+                miniMapCorner = MapOverlay.Corner.TopLeft;
             }
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
@@ -571,7 +575,8 @@ namespace SonOfRobin
             prefsData["drawLightSourcedShadows"] = drawLightSourcedShadows;
             prefsData["softShadows"] = softShadows;
             prefsData["buffFontSize"] = buffFontSize;
-            prefsData["mapCorner"] = mapCorner;
+            prefsData["mapCorner"] = miniMapCorner;
+            prefsData["miniMapScale"] = miniMapScale;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -645,7 +650,8 @@ namespace SonOfRobin
                     drawLightSourcedShadows = (bool)prefsData["drawLightSourcedShadows"];
                     softShadows = (bool)prefsData["softShadows"];
                     buffFontSize = (int)(Int64)prefsData["buffFontSize"];
-                    mapCorner = (MapOverlay.Corner)(Int64)prefsData["mapCorner"];
+                    miniMapCorner = (MapOverlay.Corner)(Int64)prefsData["mapCorner"];
+                    miniMapScale = (float)(double)prefsData["miniMapScale"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);
