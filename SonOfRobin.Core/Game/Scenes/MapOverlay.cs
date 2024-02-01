@@ -22,6 +22,7 @@ namespace SonOfRobin
         {
             this.map = map;
             this.corner = Preferences.mapCorner;
+            this.viewParams.Opacity = 0;
         }
 
         public void AddTransition(bool setInstantly)
@@ -55,12 +56,12 @@ namespace SonOfRobin
 
                     this.viewParams.PosX = posXMini;
                     this.viewParams.PosY = posYMini;
-
-                    this.viewParams.Opacity = 0.7f;
+                   
                     this.viewParams.ScaleX = scaleMini;
                     this.viewParams.ScaleY = scaleMini;
 
-                    if (!setInstantly) this.transManager.AddMultipleTransitions(outTrans: true, duration: duration, endCopyToBase: true, paramsToChange: new Dictionary<string, float> { { "PosY", posYMini } });
+                    this.transManager.AddMultipleTransitions(outTrans: true, duration: setInstantly ? 1 : duration, endCopyToBase: true,
+                        paramsToChange: new Dictionary<string, float> { { "Opacity", 0.7f } });
 
                     break;
 
@@ -77,12 +78,12 @@ namespace SonOfRobin
                     {
                         this.transManager.AddMultipleTransitions(outTrans: true, duration: duration, endCopyToBase: true,
                             paramsToChange: new Dictionary<string, float> {
-                        { "Opacity", 1f },
-                        { "PosX", 0 },
-                        { "PosY", 0 },
-                        { "ScaleX", 1f },
-                        { "ScaleY", 1f },
-                        });
+                                { "Opacity", 1f },
+                                { "PosX", 0 },
+                                { "PosY", 0 },
+                                { "ScaleX", 1f },
+                                { "ScaleY", 1f },
+                            });
                     }
 
                     break;
