@@ -1968,7 +1968,7 @@ namespace SonOfRobin
 
                 case PkgName.BootsSpeed:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 27, height: 31, scale: 1f, layer: 1, animSize: 0, altasName: "boots_speed", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 366, height: 300, scale: 0.05f, layer: 1, animSize: 0, altasName: "boots_speed", hasOnePixelMargin: false);
                         break;
                     };
 
