@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 
 namespace SonOfRobin
 {
@@ -83,8 +84,16 @@ namespace SonOfRobin
             {
                 string piecesText = targetsThatCannotBeHit.Count == 1 ? targetsThatCannotBeHit[0].readableName : $"these targets ({targetsThatCannotBeHit.Count})";
 
+                string message = $"Do you really want to hit {piecesText}?";
+
+                if (targetsThatCannotBeHit.Count == 1 && targetsThatCannotBeHit[0].GetType() == typeof(ConstructionSite))
+                {
+                    message = $"Really want to hit {piecesText}? You will lose used materials.";
+                }
+
                 var confirmationData = new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.AllowPiecesToBeHit }, { "executeHelper", targetsThatCannotBeHit } };
-                MenuTemplate.CreateConfirmationMenu(question: $"Do you really want to hit {piecesText}?", confirmationData: confirmationData, blocksUpdatesBelow: true);
+
+                MenuTemplate.CreateConfirmationMenu(question: message, confirmationData: confirmationData, blocksUpdatesBelow: true);
 
                 return;
             }
