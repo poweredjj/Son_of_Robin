@@ -1992,7 +1992,7 @@ namespace SonOfRobin
 
                 case PkgName.Dungarees:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 17, height: 27, scale: 1f, layer: 0, animSize: 0, altasName: "dungarees", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 181, height: 400, scale: 0.1f, layer: 0, animSize: 0, altasName: "dungarees", hasOnePixelMargin: false);
                         break;
                     };
 
