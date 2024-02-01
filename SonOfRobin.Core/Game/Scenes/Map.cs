@@ -886,10 +886,10 @@ namespace SonOfRobin
 
         // static variables are down here for easier editing
 
-        private static readonly List<Type> typesShownAlways = new List<Type> { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace) };
-        private static readonly List<PieceTemplate.Name> namesShownAlways = new List<PieceTemplate.Name> { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort };
-        private static readonly List<Type> typesShownIfDiscovered = new List<Type> { typeof(Container), typeof(Entrance) };
-        private static readonly List<PieceTemplate.Name> namesShownIfDiscovered = new List<PieceTemplate.Name> { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.Totem, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig };
+        private static readonly HashSet<Type> typesShownAlways = new() { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace), typeof(Furnace), typeof(MeatDryingRack), typeof(MeatHarvestingWorkshop)  };
+        private static readonly HashSet<PieceTemplate.Name> namesShownAlways = new() { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort, PieceTemplate.Name.FenceHorizontalLong, PieceTemplate.Name.FenceVerticalLong };
+        private static readonly HashSet<Type> typesShownIfDiscovered = new() { typeof(Container), typeof(Entrance) };
+        private static readonly HashSet<PieceTemplate.Name> namesShownIfDiscovered = new() { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.Totem, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor };
 
         private void BGSpritesTaskLoop()
         {
@@ -919,7 +919,7 @@ namespace SonOfRobin
 
                 try
                 {
-                    cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.ColMovement, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
+                    cameraSprites.AddRange(this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, visitedByPlayerOnly: !Preferences.DebugShowWholeMap, rectangle: worldCameraRectForSpriteSearch, addPadding: false));
                 }
                 catch (InvalidOperationException) // collection modified while iterating
                 {
