@@ -1572,7 +1572,7 @@ namespace SonOfRobin
                 case Name.GlassDigSite:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
-                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax, max: Terrain.rocksLevelMin) },
+                            { Terrain.Name.Height, new AllowedRange(min: Terrain.waterLevelMax + 10, max: Terrain.rocksLevelMin) },
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 

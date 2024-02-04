@@ -1567,9 +1567,9 @@ namespace SonOfRobin
 
                         var frameList = new List<AnimFrame>();
 
-                        frameList.Add(new AnimFrame(atlasName: "dig_site_glass", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 450, castsShadow: false));
+                        frameList.Add(new AnimFrame(atlasName: "dig_site_glass", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 3 * 60, castsShadow: false));
 
-                        foreach (int frameNo in new List<int> { 1, 2, 3, 2, 1 })
+                        foreach (int frameNo in new List<int> { 1, 2, 3, 3, 2, 1 })
                         {
                             frameList.Add(new AnimFrame(atlasName: $"dig_site_glass_shine_{frameNo}", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 80, height: 80), scale: 1f, duration: 2, castsShadow: false));
                         }

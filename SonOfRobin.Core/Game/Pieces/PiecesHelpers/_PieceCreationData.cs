@@ -74,7 +74,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.3f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.ForestDigSite, multiplier: 0.22f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.DesertDigSite, multiplier: 0.1f, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.08f, maxAmount: 200, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.GlassDigSite, multiplier: 0.08f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.SwampDigSite, multiplier: 0.11f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.RuinsDigSite, multiplier: 0.12f, levelType: Level.LevelType.Island),
 
