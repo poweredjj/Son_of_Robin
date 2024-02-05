@@ -232,6 +232,7 @@ namespace SonOfRobin
 
             Grid.RemoveSprite(this);
             this.position = new Vector2(-500, -500);  // to fail if trying to use in the future
+            this.currentCell = null;
             this.IsOnBoard = false;
         }
 
