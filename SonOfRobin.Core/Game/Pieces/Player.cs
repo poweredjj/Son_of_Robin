@@ -163,6 +163,7 @@ namespace SonOfRobin
                 foreach (BoardPiece piece in storage.GetAllPieces())
                 {
                     piece.level = this.world.ActiveLevel;
+                    piece.sprite.currentCell = null;
                 }
             }
 
