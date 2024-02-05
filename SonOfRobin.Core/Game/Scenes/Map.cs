@@ -137,7 +137,7 @@ namespace SonOfRobin
 
                 int separatorPos = markerPosStr.IndexOf("|");
 
-                int posX = Convert.ToInt32(markerPosStr.Substring(0 , separatorPos));
+                int posX = Convert.ToInt32(markerPosStr.Substring(0, separatorPos));
                 int posY = Convert.ToInt32(markerPosStr.Substring(separatorPos + 1, markerPosStr.Length - separatorPos - 1));
 
                 Vector2 markerPos = new Vector2(posX, posY);
@@ -886,7 +886,7 @@ namespace SonOfRobin
 
         // static variables are down here for easier editing
 
-        private static readonly HashSet<Type> typesShownAlways = new() { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace), typeof(Furnace), typeof(MeatDryingRack), typeof(MeatHarvestingWorkshop)  };
+        private static readonly HashSet<Type> typesShownAlways = new() { typeof(Player), typeof(Workshop), typeof(Cooker), typeof(Shelter), typeof(AlchemyLab), typeof(Fireplace), typeof(Furnace), typeof(MeatDryingRack), typeof(MeatHarvestingWorkshop), typeof(ConstructionSite) };
         private static readonly HashSet<PieceTemplate.Name> namesShownAlways = new() { PieceTemplate.Name.MapMarker, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort, PieceTemplate.Name.FenceHorizontalLong, PieceTemplate.Name.FenceVerticalLong };
         private static readonly HashSet<Type> typesShownIfDiscovered = new() { typeof(Container), typeof(Entrance) };
         private static readonly HashSet<PieceTemplate.Name> namesShownIfDiscovered = new() { PieceTemplate.Name.CrateStarting, PieceTemplate.Name.CrateRegular, PieceTemplate.Name.Totem, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.CrystalDepositBig, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor };
