@@ -1,11 +1,9 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 
 namespace SonOfRobin
 {
@@ -278,7 +276,7 @@ namespace SonOfRobin
             this.AnimPkg = AnimData.pkgByName[(AnimData.PkgName)(Int64)spriteDict["animPackage"]];
             if (spriteDict.ContainsKey("animName")) this.AnimName = (string)spriteDict["animName"];
             if (spriteDict.ContainsKey("animSize")) this.AnimSize = (byte)(Int64)spriteDict["animSize"];
-            this.AssignFrame(checkForCollision: false);
+            this.AssignFrame(checkForCollision: false, forceAssignAnim: true, forceRewind: true);
 
             if (spriteDict.ContainsKey("hasBeenDiscovered")) this.hasBeenDiscovered = (bool)spriteDict["hasBeenDiscovered"];
             if (spriteDict.ContainsKey("allowedTerrain")) this.allowedTerrain = AllowedTerrain.Deserialize(spriteDict["allowedTerrain"]);
@@ -718,7 +716,7 @@ namespace SonOfRobin
                     this.RewindAnim(assignFrame: true);
                 }
 
-                return; // duration == 0 will stop the animation, if there's no anim to switch to 
+                return; // duration == 0 will stop the animation, if there's no anim to switch to
             }
             this.currentFrameTimeLeft--;
             if (this.currentFrameTimeLeft <= 0)
@@ -855,7 +853,7 @@ namespace SonOfRobin
 
                     float originalFruitRotation = fruitSprite.rotation;
                     fruitSprite.rotation = this.rotation;
-                    
+
                     fruitSprite.AnimFrame.Draw(position: fruitSprite.position, color: fruitSprite.color, rotation: this.rotation, opacity: this.opacity, rotationOriginOverride: rotationOriginOverride);
 
                     fruitSprite.rotation = originalFruitRotation;
@@ -914,7 +912,7 @@ namespace SonOfRobin
                     frame.Texture,
                     position: this.position + frame.shadowPosOffset + new Vector2(drawOffsetX, drawOffsetY),
                     sourceRectangle: frame.cropRect,
-                    color: color * (opacityForce == default ? this.opacity: opacityForce),
+                    color: color * (opacityForce == default ? this.opacity : opacityForce),
                     rotation: shadowAngle + (float)(Math.PI / 2f),
                     origin: frame.shadowOrigin,
                     scale: new Vector2(xScale, yScale),
