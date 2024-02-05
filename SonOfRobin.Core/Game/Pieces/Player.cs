@@ -395,7 +395,7 @@ namespace SonOfRobin
                 {
                     if (sprite.boardPiece.pieceInfo.canBePickedUp &&
                         !sprite.boardPiece.IsBurning && (sprite.boardPiece.GetType() != typeof(Animal) || !sprite.boardPiece.alive)
-                        && !sprite.boardPiece.HasPassiveMovement)
+                        && (sprite.boardPiece.GetType() != typeof(Projectile) || !sprite.boardPiece.HasPassiveMovement))
                     {
                         piecesToPickUp.Add(sprite.boardPiece);
                     }
