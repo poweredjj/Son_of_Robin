@@ -8,7 +8,7 @@ namespace SonOfRobin
     public class Yield
     {
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new() { };
-        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken, PieceTemplate.Name.TentModernPacked };
+        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken, PieceTemplate.Name.TentModernPacked, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.TorchSmall, PieceTemplate.Name.Burger, PieceTemplate.Name.GlassesVelvet, PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.ChestTreasureNormal, PieceTemplate.Name.ChestTreasureBig, PieceTemplate.Name.HumanSkeleton };
 
         public readonly struct DroppedPiece
         {

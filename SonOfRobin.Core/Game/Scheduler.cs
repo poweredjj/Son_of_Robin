@@ -1308,8 +1308,8 @@ namespace SonOfRobin
 
                                 foreach (List<BoardPiece> duplicatedPieceList in duplicatedPiecesByID.Values)
                                 {
-                                    var uniqueNameArray = duplicatedPieceList.Select(p => p.readableName).Distinct().ToArray();
-                                    string uniqueNames = String.Join(", ", uniqueNameArray);
+                                    var uniqueNamesArray = duplicatedPieceList.Select(p => p.readableName).Distinct().ToArray();
+                                    string uniqueNames = String.Join(", ", uniqueNamesArray);
 
                                     errorsFound.Add($"- ID {duplicatedPieceList[0].id} x{duplicatedPieceList.Count} {uniqueNames}");
                                 }
