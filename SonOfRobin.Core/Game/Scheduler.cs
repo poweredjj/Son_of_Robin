@@ -1308,7 +1308,10 @@ namespace SonOfRobin
 
                                 foreach (List<BoardPiece> duplicatedPieceList in duplicatedPiecesByID.Values)
                                 {
-                                    errorsFound.Add($"- {duplicatedPieceList[0].readableName} ID {duplicatedPieceList[0].id} x{duplicatedPieceList.Count}");
+                                    var uniqueNameArray = duplicatedPieceList.Select(p => p.readableName).Distinct().ToArray();
+                                    string uniqueNames = String.Join(", ", uniqueNameArray);
+
+                                    errorsFound.Add($"- ID {duplicatedPieceList[0].id} x{duplicatedPieceList.Count} {uniqueNames}");
                                 }
                             }
 
@@ -1316,6 +1319,8 @@ namespace SonOfRobin
                             string message = errorsFound.Count > 0 ? String.Join("\n", errorsFound) : "No incorrect pieces found.";
 
                             // showing message
+
+                            MessageLog.Add(debugMessage: true, text: message);
 
                             new TextWindow(text: message, animate: false, useTransition: false, bgColor: isCorrect ? Color.Green : Color.DarkRed, textColor: Color.White);
 
