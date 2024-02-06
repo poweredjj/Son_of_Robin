@@ -1345,7 +1345,7 @@ namespace SonOfRobin
                             {
                                 piece.canBeHit = true;
                             }
-;
+
                             return;
                         }
 

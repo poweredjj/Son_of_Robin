@@ -309,13 +309,7 @@ namespace SonOfRobin
 
         public static BoardPiece CreateAndPlaceOnBoard(Name templateName, World world, Vector2 position, bool randomPlacement = false, bool ignoreCollisions = false, bool precisePlacement = false, int id = -1, bool closestFreeSpot = false, int minDistanceOverride = -1, int maxDistanceOverride = -1, bool ignoreDensity = false, bool createdByPlayer = false)
         {
-            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id);
-
-            if (createdByPlayer)
-            {
-                boardPiece.createdByPlayer = true;
-                boardPiece.canBeHit = false; // to protect item from accidental player hit
-            }
+            BoardPiece boardPiece = CreatePiece(templateName: templateName, world: world, id: id, createdByPlayer: createdByPlayer);
 
             boardPiece.PlaceOnBoard(randomPlacement: randomPlacement, position: position, ignoreCollisions: ignoreCollisions, precisePlacement: precisePlacement, closestFreeSpot: closestFreeSpot, minDistanceOverride: minDistanceOverride, maxDistanceOverride: maxDistanceOverride, ignoreDensity: ignoreDensity, addPlannedDestruction: true);
 
@@ -337,9 +331,11 @@ namespace SonOfRobin
             return boardPiece;
         }
 
-        public static BoardPiece CreatePiece(Name templateName, World world, int id = -1)
+        public static BoardPiece CreatePiece(Name templateName, World world, int id = -1, bool createdByPlayer = false)
         {
             if (id == -1) id = Helpers.GetUniqueID();
+
+            BoardPiece boardPiece;
 
             switch (templateName)
             {
@@ -347,28 +343,28 @@ namespace SonOfRobin
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.NoAnim, allowedTerrain: allowedTerrain, readableName: "empty", description: "Should not be used.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PlayerBoy:
                     {
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "boy", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
+                        boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerBoy, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "boy", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PlayerGirl:
                     {
-                        BoardPiece boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "girl", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
+                        boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlayerGirl, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "girl", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PlayerTestDemoness:
                     {
-                        Player boardPiece = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DragonBonesTestFemaleMage, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "demoness", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking)
+                        Player player = new Player(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DragonBonesTestFemaleMage, allowedTerrain: CreatePlayerAllowedTerrain(), readableName: "demoness", description: "This is you.", activeState: BoardPiece.State.PlayerControlledWalking)
                         {
                             maxFatigue = 50000,
                             maxHitPoints = 100000,
@@ -377,12 +373,14 @@ namespace SonOfRobin
                             strength = 100,
                         };
 
-                        boardPiece.fedLevel = boardPiece.maxFedLevel;
-                        boardPiece.HitPoints = boardPiece.maxHitPoints;
-                        boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true);
-                        boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
+                        player.fedLevel = player.maxFedLevel;
+                        player.HitPoints = player.maxHitPoints;
+                        player.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.Red * 1f, isActive: false, castShadows: true);
+                        player.sprite.lightEngine.AssignSprite(player.sprite);
 
-                        return boardPiece;
+                        boardPiece = player;
+
+                        break;
                     }
 
                 case Name.PlayerGhost:
@@ -396,7 +394,9 @@ namespace SonOfRobin
                         spectator.sprite.color = new Color(150, 255, 255);
                         spectator.sprite.effectCol.AddEffect(new BorderInstance(outlineColor: Color.SkyBlue * 0.7f, textureSize: new Vector2(spectator.sprite.AnimFrame.Texture.Width, spectator.sprite.AnimFrame.Texture.Height), priority: 0, framesLeft: -1));
 
-                        return spectator;
+                        boardPiece = spectator;
+
+                        break;
                     }
 
                 case Name.GrassRegular:
@@ -406,9 +406,9 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 50, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.");
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.53f, readableName: "regular grass", description: "A regular grass.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GrassGlow:
@@ -419,10 +419,10 @@ namespace SonOfRobin
 
                         // readableName is the same as "regular grass", to make it appear identical to the regular grass
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassRegular, allowedTerrain: allowedTerrain,
                             maxAge: 1000, massTakenMultiplier: 0.49f, readableName: "regular grass", description: "A special type of grass.", lightEngine: new LightEngine(size: 0, opacity: 0.3f, colorActive: true, color: Color.Blue * 3f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: true, castShadows: false));
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GrassDesert:
@@ -432,10 +432,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 115) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GrassDesert, allowedTerrain: allowedTerrain,
                              maxAge: 900, massTakenMultiplier: 0.63f, readableName: "desert grass", description: "A grass, that grows on sand.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PlantPoison:
@@ -447,10 +447,10 @@ namespace SonOfRobin
                         },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PlantPoison, allowedTerrain: allowedTerrain,
                             maxAge: 950, massTakenMultiplier: 0.63f, readableName: "poisonous plant", description: "Poisonous plant.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Rushes:
@@ -460,9 +460,9 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 128, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.");
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rushes, allowedTerrain: allowedTerrain, maxAge: 600, massTakenMultiplier: 0.62f, readableName: "rushes", description: "A water plant.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WaterLily:
@@ -476,10 +476,10 @@ namespace SonOfRobin
                         },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, false } });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                             maxAge: 1800, massTakenMultiplier: 0.4f, readableName: "water lily", description: "A water plant.", maxHitPoints: 10);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FlowersPlain:
@@ -492,10 +492,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                            maxAge: 550, massTakenMultiplier: 1f, readableName: "regular flower", description: "A flower.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FlowersRed:
@@ -505,10 +505,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 140, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersRed, allowedTerrain: allowedTerrain,
                            maxAge: 550, massTakenMultiplier: 1f, readableName: "red flower", description: "A red flower.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FlowersMountain:
@@ -517,10 +517,10 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min:Terrain.rocksLevelMin, max: Terrain.volcanoEdgeMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FlowersYellow2, allowedTerrain: allowedTerrain,
                          maxAge: 4000, massTakenMultiplier: 0.98f, readableName: "mountain flower", description: "A mountain flower.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TreeSmall:
@@ -533,10 +533,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 80, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                              maxAge: 30000, massTakenMultiplier: 1.35f, maxHitPoints: 50, readableName: "small tree", description: "A small tree.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TreeBig:
@@ -546,10 +546,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
                             maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, readableName: "big tree", description: "A big tree.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Oak:
@@ -561,10 +561,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Acorn);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
                             maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "oak", description: "Acorns can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.AppleTree:
@@ -576,10 +576,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 500f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Apple);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
                             maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "apple tree", description: "Apples can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CherryTree:
@@ -591,10 +591,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 6, oneFruitMass: 120f, yOffsetPercent: -0.1f, areaWidthPercent: 0.72f, areaHeightPercent: 0.65f, fruitName: Name.Cherry);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeBig, allowedTerrain: allowedTerrain,
                             maxAge: 30000, massTakenMultiplier: 3.1f, maxHitPoints: 100, fruitEngine: fruitEngine, readableName: "cherry tree", description: "Cherries can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BananaTree:
@@ -606,10 +606,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 250f, yOffsetPercent: -0.29f, areaWidthPercent: 0.85f, areaHeightPercent: 0.3f, fruitName: Name.Banana);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
                             maxAge: 15000, massTakenMultiplier: 1.5f, maxHitPoints: 160, fruitEngine: fruitEngine, readableName: "banana tree", description: "Bananas can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PalmTree:
@@ -619,10 +619,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 210) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PalmTree, allowedTerrain: allowedTerrain,
                             maxAge: 15000, massTakenMultiplier: 1.5f, maxHitPoints: 160, readableName: "palm tree", description: "A palm tree.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TomatoPlant:
@@ -634,10 +634,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 4, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.Tomato);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TomatoPlant, allowedTerrain: allowedTerrain,
                            maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "tomato plant", description: "Tomatoes can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CoffeeShrub:
@@ -649,10 +649,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 2, oneFruitMass: 50f, yOffsetPercent: -0.05f, areaWidthPercent: 0.85f, areaHeightPercent: 0.8f, fruitName: Name.CoffeeRaw);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeShrub, allowedTerrain: allowedTerrain,
                            maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "coffee shrub", description: "Coffee can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CarrotPlant:
@@ -664,10 +664,10 @@ namespace SonOfRobin
 
                         var fruitEngine = new FruitEngine(maxNumber: 1, oneFruitMass: 50f, yOffsetPercent: -0.1f, areaWidthPercent: 0.8f, areaHeightPercent: 0.7f, fruitName: Name.Carrot, hiddenFruits: true);
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CarrotPlant, allowedTerrain: allowedTerrain,
                            maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, fruitEngine: fruitEngine, readableName: "carrot plant", description: "Carrots can grow on it.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Cactus:
@@ -677,10 +677,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cactus, allowedTerrain: allowedTerrain,
                             maxAge: 30000, maxHitPoints: 80, massTakenMultiplier: 1.65f, readableName: "cactus", description: "A desert plant.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MushroomPlant:
@@ -690,10 +690,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 100, max: 255) },
                         });
 
-                        BoardPiece boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MushroomPlant, allowedTerrain: allowedTerrain,
+                        boardPiece = new Plant(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MushroomPlant, allowedTerrain: allowedTerrain,
                            maxHitPoints: 40, maxAge: 1000, massTakenMultiplier: 0.855f, readableName: "mushroom plant", description: "Growing mushrooms.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MineralsSmall:
@@ -706,10 +706,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                                maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MineralsMossySmall:
@@ -722,10 +722,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                               maxHitPoints: 60, readableName: "small minerals", description: "Can be mined for stone.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MineralsBig:
@@ -738,10 +738,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                               maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MineralsMossyBig:
@@ -753,19 +753,19 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 129, max: 255) },
                         });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                               maxHitPoints: 100, readableName: "big minerals", description: "Can be mined for stone.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Backlight:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Backlight, allowedTerrain: allowedTerrain, readableName: "backlight", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Backlight, allowedTerrain: allowedTerrain, readableName: "backlight", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BloodSplatter:
@@ -774,193 +774,193 @@ namespace SonOfRobin
 
                         var packageNames = new AnimData.PkgName[] { AnimData.PkgName.BloodSplatter1, AnimData.PkgName.BloodSplatter2, AnimData.PkgName.BloodSplatter3 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Length)];
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                              readableName: "bloodSplatter", description: "A pool of blood.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Attack:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, allowedTerrain: allowedTerrain, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Attack, allowedTerrain: allowedTerrain, readableName: "attack", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MapMarker:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, allowedTerrain: allowedTerrain, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MapMarker, allowedTerrain: allowedTerrain, readableName: "map marker", description: "Map marker.", activeState: BoardPiece.State.MapMarkerShowAndCheck, visible: false);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Miss:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Miss, allowedTerrain: allowedTerrain, readableName: "miss", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Miss, allowedTerrain: allowedTerrain, readableName: "miss", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Zzz:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, allowedTerrain: allowedTerrain, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Zzz, allowedTerrain: allowedTerrain, readableName: "zzz", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.Heart:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, allowedTerrain: allowedTerrain, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Heart, allowedTerrain: allowedTerrain, readableName: "heart", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Orbiter:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, allowedTerrain: allowedTerrain, readableName: "orbiter", description: "Moves randomly around target.", activeState: BoardPiece.State.OscillateAroundTarget);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, allowedTerrain: allowedTerrain, readableName: "orbiter", description: "Moves randomly around target.", activeState: BoardPiece.State.OscillateAroundTarget);
                         boardPiece.sprite.Visible = false;
 
                         // needs visualAid (target) set to work correctly
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MusicNote:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MusicNoteSmall, allowedTerrain: allowedTerrain, readableName: "music note", description: "Sound visual.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MusicNoteSmall, allowedTerrain: allowedTerrain, readableName: "music note", description: "Sound visual.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Crosshair:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, allowedTerrain: allowedTerrain, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crosshair, allowedTerrain: allowedTerrain, readableName: "crosshair", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BubbleExclamationRed:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, allowedTerrain: allowedTerrain, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationRed, allowedTerrain: allowedTerrain, readableName: "red exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.BubbleExclamationBlue:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, allowedTerrain: allowedTerrain, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleExclamationBlue, allowedTerrain: allowedTerrain, readableName: "blue exclamation", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.BubbleCraftGreen:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, allowedTerrain: allowedTerrain, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BubbleCraftGreen, allowedTerrain: allowedTerrain, readableName: "green exclamation with plus", description: "A visual effect.", activeState: BoardPiece.State.Empty);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.CookingTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "cooking starter", description: "Starts cooking.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "cooking starter", description: "Starts cooking.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SmeltingTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "smelting starter", description: "Starts smelting.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "smelting starter", description: "Starts smelting.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BrewTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "brewing starter", description: "Starts brewing.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "brewing starter", description: "Starts brewing.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.UpgradeTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, allowedTerrain: allowedTerrain, readableName: "upgrade", description: "Upgrades item.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Upgrade, allowedTerrain: allowedTerrain, readableName: "upgrade", description: "Upgrades item.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MeatHarvestTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: allowedTerrain, readableName: "harvest", description: "Harvests meat from the animal.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: allowedTerrain, readableName: "harvest", description: "Harvests meat from the animal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.OfferTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "offer", description: "Offers gifts to gods.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ConstructTrigger:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Construct next level.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hammer, allowedTerrain: allowedTerrain, readableName: "construct", description: "Construct next level.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FireplaceTriggerOn:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "fireplace on", description: "Ignites the fireplace.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "fireplace on", description: "Ignites the fireplace.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FireplaceTriggerOff:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, allowedTerrain: allowedTerrain, readableName: "fireplace off", description: "Extinginguishes fire.");
+                        boardPiece = new Trigger(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WaterDrop, allowedTerrain: allowedTerrain, readableName: "fireplace off", description: "Extinginguishes fire.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CrateStarting:
@@ -969,10 +969,10 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
                               maxHitPoints: 5, readableName: "supply crate", description: "Contains valuable items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CrateRegular:
@@ -981,10 +981,10 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ChestWooden:
@@ -992,10 +992,10 @@ namespace SonOfRobin
                         byte storageWidth = 3;
                         byte storageHeight = 2;
 
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestWooden, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestWooden, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, readableName: "wooden chest", description: $"Can store items ({storageWidth}x{storageHeight}).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ChestStone:
@@ -1003,10 +1003,10 @@ namespace SonOfRobin
                         byte storageWidth = 4;
                         byte storageHeight = 4;
 
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestStone, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestStone, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 50, readableName: "stone chest", description: $"Can store items ({storageWidth}x{storageHeight}).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ChestIron:
@@ -1014,21 +1014,21 @@ namespace SonOfRobin
                         byte storageWidth = 6;
                         byte storageHeight = 4;
 
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, allowedTerrain: AllowedTerrain.GetFieldCraft(), storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).");
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestIron, allowedTerrain: AllowedTerrain.GetFieldCraft(), storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 60, readableName: "iron chest", description: $"Can store items ({storageWidth}x{storageHeight}).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ChestCrystal:
                     {
-                        BoardPiece boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: AllowedTerrain.GetFieldCraft(), storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.");
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestCrystal, allowedTerrain: AllowedTerrain.GetFieldCraft(), storageWidth: 1, storageHeight: 1, maxHitPoints: 300, readableName: "crystal chest", description: "All crystal chests share their contents.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ChestTreasureNormal:
                     {
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureBlue, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 2, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
@@ -1047,25 +1047,25 @@ namespace SonOfRobin
 
                         while (true)
                         {
-                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: treasureChest);
+                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: boardPiece);
 
                             if (chestContents.Count >= 2)
                             {
                                 foreach (BoardPiece piece in chestContents)
                                 {
-                                    treasureChest.PieceStorage.AddPiece(piece);
-                                    if (treasureChest.PieceStorage.EmptySlotsCount == 0) break;
+                                    boardPiece.PieceStorage.AddPiece(piece);
+                                    if (boardPiece.PieceStorage.EmptySlotsCount == 0) break;
                                 }
                                 break;
                             }
                         }
 
-                        return treasureChest;
+                        break;
                     }
 
                 case Name.ChestTreasureBig:
                     {
-                        var treasureChest = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ChestTreasureRed, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), storageWidth: 3, storageHeight: 2, maxHitPoints: 50, readableName: "treasure chest", description: "Contains treasure.", animName: "closed");
 
                         // this yield is used to randomize chest contents every time
                         var chestContentsYield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
@@ -1083,98 +1083,98 @@ namespace SonOfRobin
 
                         while (true)
                         {
-                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: treasureChest);
+                            List<BoardPiece> chestContents = chestContentsYield.GetAllPieces(piece: boardPiece);
 
                             if (chestContents.Count >= 4)
                             {
                                 foreach (BoardPiece piece in chestContents)
                                 {
-                                    treasureChest.PieceStorage.AddPiece(piece);
-                                    if (treasureChest.PieceStorage.EmptySlotsCount == 0) break;
+                                    boardPiece.PieceStorage.AddPiece(piece);
+                                    if (boardPiece.PieceStorage.EmptySlotsCount == 0) break;
                                 }
                                 break;
                             }
                         }
 
-                        return treasureChest;
+                        break;
                     }
 
                 case Name.JarTreasureRich:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.");
 
-                        return decoration;
+                        break;
                     }
 
                 case Name.JarTreasurePoor:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarWhole, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "sealed jar", description: "Contains supplies.");
 
-                        return decoration;
+                        break;
                     }
 
                 case Name.JarBroken:
                     {
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.GroundAll });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.JarBroken, allowedTerrain: allowedTerrain,
                               maxHitPoints: 20, readableName: "broken jar", description: "Broken Jar.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopEssential:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopEssential, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopEssential, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftEssential, maxHitPoints: 30, readableName: "essential workshop", description: "Essential crafting workshop.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopBasic:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopBasic, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopBasic, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftBasic, maxHitPoints: 30, readableName: "basic workshop", description: "Basic crafting workshop.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopAdvanced:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftAdvanced, maxHitPoints: 80, readableName: "advanced workshop", description: "Advanced crafting workshop.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopMaster:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMaster, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMaster, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftMaster, maxHitPoints: 80, readableName: "master workshop", description: "Master's crafting workshop.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopLeatherBasic:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherBasic, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherBasic, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftLeatherBasic, maxHitPoints: 30, readableName: "basic leather workshop", description: "For making basic items out of leather.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WorkshopLeatherAdvanced:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopLeatherAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftLeatherAdvanced, maxHitPoints: 30, readableName: "advanced leather workshop", description: "For making advanced items out of leather.", canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FurnaceConstructionSite:
@@ -1207,81 +1207,82 @@ namespace SonOfRobin
                             { 2, "top" },
                         };
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceConstructionSite, allowedTerrain: AllowedTerrain.GetFieldCraft(), materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.FurnaceComplete, maxHitPoints: 80, readableName: "furnace construction site", description: "Furnace construction site.");
+                        boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceConstructionSite, allowedTerrain: AllowedTerrain.GetFieldCraft(), materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.FurnaceComplete, maxHitPoints: 80, readableName: "furnace construction site", description: "Furnace construction site.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FurnaceComplete:
                     {
-                        BoardPiece boardPiece = new Furnace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceComplete, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Furnace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FurnaceComplete, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                             maxHitPoints: 200, readableName: "furnace", description: "For ore smelting.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Anvil:
                     {
-                        BoardPiece boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Anvil, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Workshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Anvil, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               craftMenuTemplate: MenuTemplate.Name.CraftAnvil, maxHitPoints: 80, readableName: "anvil", description: "For metal forming.", emitsLightWhenCrafting: true, lightEngine: new LightEngine(size: 0, opacity: 1f, colorActive: true, color: Color.Orange * 0.25f, addedGfxRectMultiplier: 8f, isActive: false, castShadows: true), canBeUsedDuringRain: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HotPlate:
                     {
-                        var hotPlate = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, canBeUsedDuringRain: false);
+                        boardPiece = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HotPlate, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 20, foodMassMultiplier: 2.6f, readableName: "hot plate", description: "For cooking.", ingredientSpace: 1, canBeUsedDuringRain: false);
 
-                        hotPlate.sprite.AssignNewName("off");
-                        return hotPlate;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.CookingPot:
                     {
-                        var cookingPot = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, canBeUsedDuringRain: true);
+                        boardPiece = new Cooker(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CookingPot, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, foodMassMultiplier: 3.2f, readableName: "cooking pot", description: "For cooking. Can be used during rain.", ingredientSpace: 3, canBeUsedDuringRain: true);
 
-                        cookingPot.sprite.AssignNewName("off");
-                        return cookingPot;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.AlchemyLabStandard:
                     {
-                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1);
+                        boardPiece = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabStandard, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "alchemy lab", description: "For potion brewing.", boosterSpace: 1);
 
-                        alchemyLab.sprite.AssignNewName("off");
-                        return alchemyLab;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.AlchemyLabAdvanced:
                     {
-                        var alchemyLab = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3);
+                        boardPiece = new AlchemyLab(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AlchemyLabAdvanced, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "advanced alchemy lab", description: "For advanced potion brewing.", boosterSpace: 3);
 
-                        alchemyLab.sprite.AssignNewName("off");
-                        return alchemyLab;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.WorkshopMeatHarvesting:
                     {
-                        var meatHarvestingWorkshop = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat workshop", description: "For animal processing.");
+                        boardPiece = new MeatHarvestingWorkshop(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WorkshopMeatHarvesting, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat workshop", description: "For animal processing.");
 
-                        meatHarvestingWorkshop.sprite.AssignNewName("off");
-                        return meatHarvestingWorkshop;
+                        boardPiece.sprite.AssignNewName("off");
+
+                        break;
                     }
 
                 case Name.MeatDryingRackRegular:
                     {
-                        var meatDryingRack = new MeatDryingRack(name: templateName, storageWidth: 2, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackRegular, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat drying rack", description: "Regular rack for meat drying.");
+                        boardPiece = new MeatDryingRack(name: templateName, storageWidth: 2, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackRegular, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 30, readableName: "meat drying rack", description: "Regular rack for meat drying.");
 
-                        meatDryingRack.sprite.AssignNewName("off");
-                        return meatDryingRack;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.MeatDryingRackWide:
                     {
-                        var meatDryingRack = new MeatDryingRack(name: templateName, storageWidth: 3, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackWide, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 50, readableName: "meat drying rack (wide)", description: "Wide rack for meat drying.");
+                        boardPiece = new MeatDryingRack(name: templateName, storageWidth: 3, storageHeight: 2, world: world, id: id, animPackage: AnimData.PkgName.MeatDryingRackWide, allowedTerrain: AllowedTerrain.GetFieldCraft(), maxHitPoints: 50, readableName: "meat drying rack (wide)", description: "Wide rack for meat drying.");
 
-                        meatDryingRack.sprite.AssignNewName("off");
-                        return meatDryingRack;
+                        boardPiece.sprite.AssignNewName("off");
+                        break;
                     }
 
                 case Name.Totem:
@@ -1292,9 +1293,9 @@ namespace SonOfRobin
                             },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
-                        var totem = new Totem(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Totem, allowedTerrain: allowedTerrain, maxHitPoints: 30, readableName: "totem", description: "A totem with magical powers.");
+                        boardPiece = new Totem(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Totem, allowedTerrain: allowedTerrain, maxHitPoints: 30, readableName: "totem", description: "A totem with magical powers.");
 
-                        return totem;
+                        break;
                     }
 
                 case Name.BoatConstructionSite:
@@ -1358,9 +1359,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.BoatCompleteStanding, maxHitPoints: 60, readableName: "boat construction site", description: "Boat construction site.");
+                        boardPiece = new ConstructionSite(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatConstruction, allowedTerrain: allowedTerrain, materialsForLevels: ingredientsForLevels, descriptionsForLevels: descriptionsForLevels, convertsIntoWhenFinished: Name.BoatCompleteStanding, maxHitPoints: 60, readableName: "boat construction site", description: "Boat construction site.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BoatCompleteStanding:
@@ -1368,28 +1369,28 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteStanding, allowedTerrain: allowedTerrain,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteStanding, allowedTerrain: allowedTerrain,
                              rotatesWhenDropped: true, readableName: "boat", description: "Can be used to escape the island.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BoatCompleteCruising:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteCruising, allowedTerrain: allowedTerrain, readableName: "boat", description: "Actively used to escape the island.", activeState: BoardPiece.State.EndingBoatCruise);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BoatCompleteCruising, allowedTerrain: allowedTerrain, readableName: "boat", description: "Actively used to escape the island.", activeState: BoardPiece.State.EndingBoatCruise);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ShipRescue:
                     {
                         var allowedTerrain = new AllowedTerrain();
 
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShipRescue, allowedTerrain: allowedTerrain, readableName: "rescue ship", description: "Appears at game end and rescues the player.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShipRescue, allowedTerrain: allowedTerrain, readableName: "rescue ship", description: "Appears at game end and rescues the player.", activeState: BoardPiece.State.Empty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.RuinsColumn:
@@ -1398,10 +1399,10 @@ namespace SonOfRobin
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() { { Terrain.Name.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) } },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsColumn, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsColumn, allowedTerrain: allowedTerrain,
                                maxHitPoints: 40, readableName: "column base", description: "Ancient column remains.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.RuinsRubble:
@@ -1410,10 +1411,10 @@ namespace SonOfRobin
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() { { Terrain.Name.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) } },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsRubble, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.RuinsRubble, allowedTerrain: allowedTerrain,
                                maxHitPoints: 40, readableName: "rubble", description: "A pile of rubble.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.RuinsWall:
@@ -1425,10 +1426,10 @@ namespace SonOfRobin
                             rangeDict: new Dictionary<Terrain.Name, AllowedRange>() { { Terrain.Name.Biome, new AllowedRange(min: Terrain.biomeMin, max: 255) } },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain,
                                maxHitPoints: 130, readableName: "wall", description: "Ancient wall remains.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Clam:
@@ -1436,17 +1437,17 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.GroundAll },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.OuterBeach, true } });
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, allowedTerrain: allowedTerrain,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clam, allowedTerrain: allowedTerrain,
                              rotatesWhenDropped: true, readableName: "clam", description: "Have to be cooked before eating.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Stick:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stick, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stick, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Stone:
@@ -1454,9 +1455,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stone, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "stone", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stone, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "stone", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Granite:
@@ -1464,9 +1465,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Granite, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "granite", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Granite, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "granite", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Clay:
@@ -1474,9 +1475,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clay, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "clay", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Clay, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "clay", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Rope:
@@ -1484,9 +1485,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Rope, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "rope", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HideCloth:
@@ -1494,41 +1495,41 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HideCloth, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "hidecloth", description: "Crafting material.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HideCloth, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "hidecloth", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WoodLogRegular:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogRegular, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogRegular, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              maxHitPoints: 5, rotatesWhenDropped: true, readableName: "regular wood log", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WoodLogHard:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogHard, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodLogHard, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              maxHitPoints: 5, rotatesWhenDropped: true, readableName: "hard wood log", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.WoodPlank:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodPlank,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WoodPlank,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), maxHitPoints: 5, rotatesWhenDropped: true, readableName: "wood plank", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronNail:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Nail, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Nail, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                               maxHitPoints: 1, rotatesWhenDropped: true, readableName: "nail", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BeachDigSite:
@@ -1537,10 +1538,10 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax + 5), (byte)(Terrain.waterLevelMax + 25)) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 20, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ForestDigSite:
@@ -1550,10 +1551,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.DesertDigSite:
@@ -1563,10 +1564,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GlassDigSite:
@@ -1576,10 +1577,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 90) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteGlass, allowedTerrain: allowedTerrain,
                             maxHitPoints: 30, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SwampDigSite:
@@ -1587,10 +1588,10 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
                             maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.RuinsDigSite:
@@ -1598,94 +1599,94 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeRuins, true } });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteRuins, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteRuins, allowedTerrain: allowedTerrain,
                             maxHitPoints: 40, readableName: "dig site", description: "May contain some buried items.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Coal:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Coal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "coal", description: "Used for smelting (using a funace).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Crystal:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crystal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crystal, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                             rotatesWhenDropped: true, readableName: "crystal", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronOre:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronOre, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "iron ore", description: "Can be used to make iron bars (using a furnace).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GlassSand:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassSand, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              readableName: "glass sand", description: "Can be used to make glass (using a furnace).");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronBar:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronBar,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronBar,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron bar", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronRod:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronRod,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronRod,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron rod", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronPlate:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronPlate,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "iron plate", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SeedsGeneric:
                     {
                         // stackSize should be 1, to avoid mixing different kinds of seeds together
 
-                        BoardPiece boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "seeds", description: "Can be planted.");
+                        boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeedBag, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "seeds", description: "Can be planted.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Acorn:
                     {
-                        BoardPiece acorn = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Acorn, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              readableName: "acorn", description: "Can be planted or cooked.");
 
-                        ((Seed)acorn).PlantToGrow = Name.Oak; // every "non-generic" seed must have its PlantToGrow attribute set
+                        ((Seed)boardPiece).PlantToGrow = Name.Oak; // every "non-generic" seed must have its PlantToGrow attribute set
 
-                        return acorn;
+                        break;
                     }
 
                 case Name.CoffeeRaw:
                     {
-                        BoardPiece coffeeRaw = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "raw coffee", description: "Can be planted or roasted (using a furnace).");
+                        boardPiece = new Seed(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRaw, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), readableName: "raw coffee", description: "Can be planted or roasted (using a furnace).");
 
-                        ((Seed)coffeeRaw).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
+                        ((Seed)boardPiece).PlantToGrow = Name.CoffeeShrub; // every "non-generic" seed must have its PlantToGrow attribute set
 
-                        return coffeeRaw;
+                        break;
                     }
 
                 case Name.CoffeeRoasted:
@@ -1694,49 +1695,49 @@ namespace SonOfRobin
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: (float)-350, isPermanent: true),
                         };
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", buffList: buffList);
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoffeeRoasted, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, readableName: "roasted coffee", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Apple:
                     {
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
+                        boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Apple, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
                              readableName: "apple", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Cherry:
                     {
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
+                        boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Cherry, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
                              readableName: "cherry", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Banana:
                     {
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
+                        boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Banana, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
                              readableName: "banana", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Tomato:
                     {
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
+                        boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Tomato, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: true,
                              readableName: "tomato", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Carrot:
                     {
-                        BoardPiece boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: false,
+                        boardPiece = new Fruit(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Carrot, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), mightContainSeeds: false,
                              readableName: "carrot", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsGreen:
@@ -1744,10 +1745,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.MaxHP, value: 50f, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "green herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsViolet:
@@ -1755,10 +1756,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Fatigue, value: -120f, isPermanent: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "violet herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsBlack:
@@ -1766,10 +1767,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-15, autoRemoveDelay: 60 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlack, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "black herbs", description: "Contain poison.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsBrown:
@@ -1777,10 +1778,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Strength, value: (int)-1, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBrown, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBrown, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "brown herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsDarkViolet:
@@ -1788,10 +1789,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Speed, value: -0.5f, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkViolet, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark violet herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsDarkGreen:
@@ -1799,10 +1800,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Speed, value: 0.5f, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsDarkGreen, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "dark green herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsBlue:
@@ -1810,10 +1811,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.RemovePoison, value: null, isPermanent: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsBlue, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "blue herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsCyan:
@@ -1821,10 +1822,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Haste, value: (int)2, autoRemoveDelay: 60 * 30, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsCyan, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "cyan herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsRed:
@@ -1832,10 +1833,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.HP, value: (float)200, isPermanent: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsRed, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "red herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HerbsYellow:
@@ -1843,36 +1844,36 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                              new Buff(type: BuffEngine.BuffType.Strength, value: (int)2, autoRemoveDelay: 60 * 60 * 3, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HerbsYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "yellow herbs", description: "Potion ingredient.", buffList: buffList);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.EmptyBottle:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.EmptyBottle, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "empty bottle", description: "Can be used to make a potion.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PotionGeneric:
                     {
                         // A generic potion, which animPackage and buffs will be set later.
 
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionTransparent, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "potion", description: "A potion.", buffList: null);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BottleOfOil:
                     {
-                        BoardPiece boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Potion(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PotionLightYellow, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "bottle of oil", description: "Crafting material.", buffList: null);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MeatRawRegular:
@@ -1880,11 +1881,11 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawRegular,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList,
                              rotatesWhenDropped: true, readableName: "raw meat", description: "Poisonous, but safe after cooking.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MeatRawPrime:
@@ -1892,10 +1893,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatRawPrime,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList, rotatesWhenDropped: true, readableName: "prime raw meat", description: "Poisonous, but safe after cooking.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Mushroom:
@@ -1903,11 +1904,11 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)-30, autoRemoveDelay: 16 * 60, canKill: true, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Mushroom,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList,
                              rotatesWhenDropped: true, readableName: "mushroom", description: "Poisonous, but safe after cooking.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.MeatDried:
@@ -1915,44 +1916,44 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.RegenPoison, value: (int)20, autoRemoveDelay: 60 * 60, increaseIDAtEveryUse: true)};
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MeatDried, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), buffList: buffList, rotatesWhenDropped: true, readableName: "dried meat", description: "Can be eaten or cooked.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Fat:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Fat,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Fat,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              rotatesWhenDropped: true, readableName: "fat", description: "Can be cooked or crafted.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Leather:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Leather,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Leather,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                              rotatesWhenDropped: true, readableName: "leather", description: "Crafting material.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Burger:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Burger,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              rotatesWhenDropped: true, readableName: "burger", description: "Will remain fresh forever.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Meal:
                     {
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MealStandard,
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MealStandard,
                             allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "cooked meal", description: "Can be eaten.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Rabbit:
@@ -1966,10 +1967,10 @@ namespace SonOfRobin
 
                         var allowedTerrain = new AllowedTerrain(rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.GroundAll });
 
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                        boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
                             maxHitPoints: 150, maxAge: 30000, maxStamina: 300, eats: new List<Name> { Name.GrassRegular, Name.GrassDesert, Name.FlowersMountain, Name.FlowersPlain, Name.Apple, Name.Cherry, Name.TomatoPlant, Name.Tomato, Name.Meal, Name.Carrot, Name.CarrotPlant, Name.Mushroom }, strength: 30, readableName: "rabbit", description: "A small animal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Fox:
@@ -1985,10 +1986,10 @@ namespace SonOfRobin
 
                         var eats = new List<Name> { Name.Rabbit, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal, Name.Mushroom };
 
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                        boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
                          maxHitPoints: 300, maxAge: 30000, maxStamina: 800, eats: eats, strength: 30, readableName: "fox", description: "An animal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Bear:
@@ -2003,10 +2004,10 @@ namespace SonOfRobin
                         var eats = new List<Name> { Name.MushroomPlant, Name.Mushroom, Name.MeatRawRegular, Name.MeatRawPrime, Name.Fat, Name.Burger, Name.MeatDried, Name.Meal };
                         eats.AddRange(PieceInfo.GetPlayerNames());
 
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), speed: 1.5f,
+                        boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), speed: 1.5f,
                          maxHitPoints: 650, maxAge: 30000, maxStamina: 1200, eats: eats, strength: 75, readableName: "bear", description: "Cave animal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Frog:
@@ -2022,213 +2023,213 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName> { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.WaterMedium, AllowedTerrain.RangeName.GroundSand }
                             );
 
-                        BoardPiece boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
+                        boardPiece = new Animal(name: templateName, world: world, id: id, maleAnimPkgName: maleAnimPkgName, femaleAnimPkgName: femaleAnimPkgName, allowedTerrain: allowedTerrain, speed: 1.5f,
                             maxHitPoints: 150, maxAge: 30000, maxStamina: 200, eats: new List<Name> { Name.WaterLily, Name.Rushes }, strength: 30, readableName: "frog", description: "A water animal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.KnifeSimple:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.KnifeSimple, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 1, readableName: "simple knife", description: "An old knife.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.AxeWood:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 75, readableName: "wooden axe", description: "Basic logging tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.AxeStone:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 100, readableName: "stone axe", description: "Average logging tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.AxeIron:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 170, readableName: "iron axe", description: "Advanced logging tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.AxeCrystal:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.AxeCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 200, readableName: "crystal axe", description: "Deluxe logging tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ShovelStone:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 80, readableName: "stone shovel", description: "Basic shovel.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ShovelIron:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 100, readableName: "iron shovel", description: "Advanced shovel.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ShovelCrystal:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ShovelCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 120, readableName: "crystal shovel", description: "Deluxe shovel.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SpearWood:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 50, readableName: "wooden spear", description: "Essential melee weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SpearStone:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 75, readableName: "stone spear", description: "Simple melee weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SpearIron:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 120, readableName: "iron spear", description: "Advanced melee weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.SpearCrystal:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SpearCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 250, readableName: "crystal spear", description: "Deluxe melee weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PickaxeWood:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeWood, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 75, readableName: "wooden pickaxe", description: "Basic mining tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PickaxeStone:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 100, readableName: "stone pickaxe", description: "Average mining tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PickaxeIron:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 170, readableName: "iron pickaxe", description: "Advanced mining tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.PickaxeCrystal:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.PickaxeCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 200, readableName: "crystal pickaxe", description: "Deluxe mining tool.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ScytheStone:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheStone, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 120, readableName: "stone scythe", description: "Can cut down small plants.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ScytheIron:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheIron, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 200, readableName: "iron scythe", description: "Can cut down small plants easily.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ScytheCrystal:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ScytheCrystal, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 250, readableName: "crystal scythe", description: "Brings an end to all small plants.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BowBasic:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowBasic, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 150, readableName: "basic bow", description: "Projectile weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BowAdvanced:
                     {
-                        BoardPiece boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
+                        boardPiece = new Tool(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BowAdvanced, allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(),
                               maxHitPoints: 300, readableName: "advanced bow", description: "Projectile weapon.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ArrowWood:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: new AllowedTerrain(), maxHitPoints: 15, readableName: "wooden arrow", description: "Very weak arrow.");
+                        boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowWood, allowedTerrain: new AllowedTerrain(), maxHitPoints: 15, readableName: "wooden arrow", description: "Very weak arrow.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ArrowStone:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: new AllowedTerrain(), maxHitPoints: 25, readableName: "stone arrow", description: "Basic arrow.");
+                        boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowStone, allowedTerrain: new AllowedTerrain(), maxHitPoints: 25, readableName: "stone arrow", description: "Basic arrow.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ArrowIron:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: new AllowedTerrain(), maxHitPoints: 40, readableName: "iron arrow", description: "Strong arrow.");
+                        boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowIron, allowedTerrain: new AllowedTerrain(), maxHitPoints: 40, readableName: "iron arrow", description: "Strong arrow.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ArrowExploding:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowExploding, allowedTerrain: new AllowedTerrain(), maxHitPoints: 1, readableName: "exploding arrow", description: "Will start a fire.", lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
+                        boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowExploding, allowedTerrain: new AllowedTerrain(), maxHitPoints: 1, readableName: "exploding arrow", description: "Will start a fire.", lightEngine: new LightEngine(size: 100, opacity: 0.8f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true));
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.ArrowCrystal:
                     {
-                        BoardPiece boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: new AllowedTerrain(), maxHitPoints: 50, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
+                        boardPiece = new Projectile(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.ArrowCrystal, allowedTerrain: new AllowedTerrain(), maxHitPoints: 50, readableName: "crystal arrow", description: "Deluxe arrow. Deals serious damage.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TentModernPacked:
@@ -2236,9 +2237,9 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 0, max: Terrain.volcanoEdgeMin) }});
 
-                        BoardPiece boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentModernPacked, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "packed tent", description: "Can be assembled into a comfortable shelter.");
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentModernPacked, allowedTerrain: allowedTerrain, rotatesWhenDropped: true, readableName: "packed tent", description: "Can be assembled into a comfortable shelter.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TentModern:
@@ -2247,10 +2248,10 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, minFatiguePercentPossibleToGet: 0f, updateMultiplier: 10, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentModern, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentModern, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                              maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "modern tent", description: "Modern tent for sleeping.\nAlso allows waiting inside.", lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TentSmall:
@@ -2260,10 +2261,10 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new(minFedPercent: 0.2f, fatigueRegen: 0.56f, hitPointsChange: 0.05f, minFatiguePercentPossibleToGet: 0.25f, updateMultiplier: 8, canBeAttacked: false, waitingAfterSleepPossible: false, wakeUpBuffs: wakeUpBuffs);
 
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentSmall, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                              maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "small tent", description: "Basic shelter for sleeping.\nNot very comfortable.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TentMedium:
@@ -2272,10 +2273,10 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new(minFedPercent: 0.3f, fatigueRegen: 0.8f, hitPointsChange: 0.1f, minFatiguePercentPossibleToGet: 0f, updateMultiplier: 10, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentMedium, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentMedium, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                              maxHitPoints: 120, sleepEngine: sleepEngine, readableName: "medium tent", description: "Average shelter for sleeping.\nAlso allows waiting inside.", lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TentBig:
@@ -2286,10 +2287,10 @@ namespace SonOfRobin
 
                         SleepEngine sleepEngine = new(minFedPercent: 0.5f, fatigueRegen: 1.3f, hitPointsChange: 0.25f, minFatiguePercentPossibleToGet: 0f, updateMultiplier: 14, canBeAttacked: false, waitingAfterSleepPossible: true, wakeUpBuffs: wakeUpBuffs);
 
-                        BoardPiece boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Shelter(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TentBig, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                              maxHitPoints: 200, sleepEngine: sleepEngine, readableName: "big tent", description: "Luxurious shelter for sleeping.\nAlso allows waiting inside.", lightEngine: new LightEngine(size: 0, opacity: 0.45f, colorActive: false, color: Color.Transparent, addedGfxRectMultiplier: 4f, isActive: true, castShadows: true));
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BackpackSmall:
@@ -2298,10 +2299,10 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)2),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, equipType: Equipment.EquipType.Backpack,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackSmall, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small backpack", description: "Expands inventory space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BackpackMedium:
@@ -2310,10 +2311,10 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)3),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, equipType: Equipment.EquipType.Backpack,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackMedium, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium backpack", description: "Expands inventory space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BackpackBig:
@@ -2322,10 +2323,10 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)4),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)2)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, equipType: Equipment.EquipType.Backpack,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackBig, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big backpack", description: "Expands inventory space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BackpackLuxurious:
@@ -2334,10 +2335,10 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.InvWidth, value: (byte)5),
                             new Buff(type: BuffEngine.BuffType.InvHeight, value: (byte)3)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackLuxurious, equipType: Equipment.EquipType.Backpack,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BackpackLuxurious, equipType: Equipment.EquipType.Backpack,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "luxurious backpack", description: "Expands inventory space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BeltSmall:
@@ -2345,10 +2346,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)1)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, equipType: Equipment.EquipType.Belt,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltSmall, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "small belt", description: "Expands belt space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BeltMedium:
@@ -2356,10 +2357,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)3)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, equipType: Equipment.EquipType.Belt,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltMedium, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "medium belt", description: "Expands belt space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BeltBig:
@@ -2367,10 +2368,10 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)5)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, equipType: Equipment.EquipType.Belt,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltBig, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "big belt", description: "Expands belt space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BeltLuxurious:
@@ -2378,20 +2379,20 @@ namespace SonOfRobin
                         var buffList = new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.ToolbarWidth, value: (byte)6)};
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltLuxurious, equipType: Equipment.EquipType.Belt,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BeltLuxurious, equipType: Equipment.EquipType.Belt,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "luxurious belt", description: "Expands belt space.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Map:
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.EnableMap, value: null) };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, equipType: Equipment.EquipType.Map,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Map, equipType: Equipment.EquipType.Map,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "map", description: "Keeps track of visited places.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HatSimple:
@@ -2401,10 +2402,10 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.HeatProtection, value: null)
                         };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, equipType: Equipment.EquipType.Head,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HatSimple, equipType: Equipment.EquipType.Head,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "hat", description: "Simple hat.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BootsProtective:
@@ -2414,20 +2415,20 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.SwampProtection, value: null)
                         };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, equipType: Equipment.EquipType.Legs,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsProtective, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "protective boots", description: "Allow safe walking over swamp area.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BootsMountain:
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.FastMountainWalking, value: null) };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsMountain, equipType: Equipment.EquipType.Legs,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsMountain, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "mountain boots", description: "Allow fast walking in the mountains.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BootsAllTerrain:
@@ -2437,10 +2438,10 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.FastMountainWalking, value: null),
                         };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsAllTerrain, equipType: Equipment.EquipType.Legs,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsAllTerrain, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "all terrain boots", description: "Allow walking over any terrain.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.BootsSpeed:
@@ -2450,30 +2451,30 @@ namespace SonOfRobin
                             new Buff(type: BuffEngine.BuffType.ExtendSprintDuration, value: 60 * 2),
                         };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsSpeed, equipType: Equipment.EquipType.Legs,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BootsSpeed, equipType: Equipment.EquipType.Legs,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "boots of speed", description: "Increase speed.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GlovesStrength:
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.Strength, value: 1) };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlovesStrength, equipType: Equipment.EquipType.Accessory,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlovesStrength, equipType: Equipment.EquipType.Accessory,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "gloves of strength", description: "Increase strength.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.GlassesVelvet:
                     {
                         var buffList = new List<Buff> { new Buff(type: BuffEngine.BuffType.CanSeeThroughFog, value: null) };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassesBlue, equipType: Equipment.EquipType.Accessory,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.GlassesBlue, equipType: Equipment.EquipType.Accessory,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "velvet glasses", description: "Pair of mysterious glasses.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Dungarees:
@@ -2484,56 +2485,56 @@ namespace SonOfRobin
                            new Buff(type: BuffEngine.BuffType.MaxFatigue, value: 400f),
                         };
 
-                        BoardPiece boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, equipType: Equipment.EquipType.Chest,
+                        boardPiece = new Equipment(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Dungarees, equipType: Equipment.EquipType.Chest,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, buffList: buffList, maxHitPoints: 100, readableName: "dungarees", description: "Dungarees.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TorchSmall:
                     {
                         LightEngine storedLightEngine = new LightEngine(size: 400, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
+                        boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SmallTorch, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, maxHitPoints: 250, readableName: "small torch", description: "A portable light source.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TorchBig:
                     {
                         LightEngine storedLightEngine = new LightEngine(size: 600, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
+                        boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BigTorch, canBeUsedDuringRain: false, storedLightEngine: storedLightEngine,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, maxHitPoints: 600, readableName: "big torch", description: "Burns for a long time.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.LanternFull:
                     {
                         LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
 
-                        BoardPiece boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
+                        boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.LanternEmpty:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.LanternFrame, allowedTerrain: new AllowedTerrain(),
                              maxHitPoints: 400, readableName: "empty lantern", description: "Needs a candle to be put inside.", rotatesWhenDropped: true);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Candle:
                     {
-                        Decoration decoration = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: new AllowedTerrain(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Candle, allowedTerrain: new AllowedTerrain(),
                              maxHitPoints: 100, readableName: "candle", description: "Can be put inside lantern.", rotatesWhenDropped: true);
 
-                        return decoration;
+                        break;
                     }
 
                 case Name.CampfireSmall:
@@ -2544,10 +2545,11 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.volcanoEdgeMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireSmall, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 1, maxHitPoints: 30, readableName: "small campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
+                        boardPiece = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireSmall, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 1, maxHitPoints: 30, readableName: "small campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
-                        fireplace.sprite.AssignNewName("off");
-                        return fireplace;
+                        boardPiece.sprite.AssignNewName("off");
+
+                        break;
                     }
 
                 case Name.CampfireMedium:
@@ -2558,41 +2560,42 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.volcanoEdgeMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        var fireplace = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireMedium, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "medium campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
+                        boardPiece = new Fireplace(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CampfireMedium, allowedTerrain: allowedTerrain, storageWidth: 2, storageHeight: 2, maxHitPoints: 30, readableName: "medium campfire", description: "When burning, emits light and scares off animals.", lightEngine: new LightEngine(size: range * 6, opacity: 1.0f, colorActive: true, color: Color.Orange * 0.3f, isActive: false, castShadows: true), scareRange: range);
 
-                        fireplace.sprite.AssignNewName("off");
-                        return fireplace;
+                        boardPiece.sprite.AssignNewName("off");
+
+                        break;
                     }
 
                 case Name.PredatorRepellant:
                     {
-                        BoardPiece boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SkullAndBones, allowedTerrain: new AllowedTerrain(), readableName: "predator repellent", description: "Scares predators and is invisible.", activeState: BoardPiece.State.ScareAnimalsAway, visible: false);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SkullAndBones, allowedTerrain: new AllowedTerrain(), readableName: "predator repellent", description: "Scares predators and is invisible.", activeState: BoardPiece.State.ScareAnimalsAway, visible: false);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.Hole:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Hole, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              maxHitPoints: 1, readableName: "hole", description: "Empty dig site.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.TreeStump:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.TreeStump, allowedTerrain: AllowedTerrain.GetBeachToVolcano(),
                              maxHitPoints: 50, readableName: "tree stump", description: "This was once a tree.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.HumanSkeleton:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: new AllowedTerrain(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.HumanSkeleton, allowedTerrain: new AllowedTerrain(),
                               maxHitPoints: 100, readableName: "skeleton", description: "Human remains.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.LavaFlame:
@@ -2601,13 +2604,13 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        VisualEffect lavaFlame = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 180, opacity: 0.45f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: false, castShadows: true));
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Flame, allowedTerrain: allowedTerrain, readableName: "lava flame", description: "Decorational flame on lava.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 180, opacity: 0.45f, colorActive: true, color: Color.Orange * 0.6f, addedGfxRectMultiplier: 4f, isActive: true, glowOnlyAtNight: false, castShadows: true));
 
-                        lavaFlame.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
-                        ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.LavaFlame, particlesToEmit: 1);
-                        ParticleEngine.TurnOn(sprite: lavaFlame.sprite, preset: ParticleEngine.Preset.HeatBig, particlesToEmit: 1);
+                        boardPiece.sprite.AssignNewSize((byte)BoardPiece.Random.Next(1, 4));
+                        ParticleEngine.TurnOn(sprite: boardPiece.sprite, preset: ParticleEngine.Preset.LavaFlame, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: boardPiece.sprite, preset: ParticleEngine.Preset.HeatBig, particlesToEmit: 1);
 
-                        return lavaFlame;
+                        break;
                     }
 
                 case Name.WaterEdgeDistort:
@@ -2616,12 +2619,12 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.waterLevelMax - 40), max: (byte)(Terrain.waterLevelMax - 7)) },
                         });
 
-                        VisualEffect waterEdgeDistort = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "water edge distortion", description: "Distorts water edge.", activeState: BoardPiece.State.Empty, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "water edge distortion", description: "Distorts water edge.", activeState: BoardPiece.State.Empty, visible: true);
 
-                        waterEdgeDistort.sprite.opacity = 0;
-                        ParticleEngine.TurnOn(sprite: waterEdgeDistort.sprite, preset: ParticleEngine.Preset.DistortWaterEdge, particlesToEmit: 1);
+                        boardPiece.sprite.opacity = 0;
+                        ParticleEngine.TurnOn(sprite: boardPiece.sprite, preset: ParticleEngine.Preset.DistortWaterEdge, particlesToEmit: 1);
 
-                        return waterEdgeDistort;
+                        break;
                     }
 
                 case Name.WeatherFog:
@@ -2629,11 +2632,11 @@ namespace SonOfRobin
                         var packageNames = new AnimData.PkgName[] { AnimData.PkgName.WeatherFog1, AnimData.PkgName.WeatherFog2, AnimData.PkgName.WeatherFog3, AnimData.PkgName.WeatherFog4, AnimData.PkgName.WeatherFog5, AnimData.PkgName.WeatherFog6, AnimData.PkgName.WeatherFog7, AnimData.PkgName.WeatherFog8, AnimData.PkgName.WeatherFog9 };
                         var animPkg = packageNames[BoardPiece.Random.Next(packageNames.Length)];
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: new AllowedTerrain(), readableName: "weather fog", description: "Localized clump of fog.", activeState: BoardPiece.State.WeatherFogMoveRandomly);
 
-                        visualEffect.sprite.opacity = (SonOfRobinGame.random.NextSingle() * 0.2f) + 0.15f;
+                        boardPiece.sprite.opacity = (SonOfRobinGame.random.NextSingle() * 0.2f) + 0.15f;
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.SwampGas:
@@ -2644,12 +2647,12 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Swamp gas.", activeState: BoardPiece.State.FogMoveRandomly);
 
-                        visualEffect.sprite.color = Color.LimeGreen;
-                        visualEffect.sprite.opacity = 0.4f;
+                        boardPiece.sprite.color = Color.LimeGreen;
+                        boardPiece.sprite.opacity = 0.4f;
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.SwampGeyser:
@@ -2659,14 +2662,14 @@ namespace SonOfRobin
                             { Terrain.Name.Biome, new AllowedRange(min: 190, max: 255) }},
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "Swamp geyser.", activeState: BoardPiece.State.Empty);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: allowedTerrain, readableName: "swamp geyser", description: "Swamp geyser.", activeState: BoardPiece.State.Empty);
 
-                        visualEffect.sprite.opacity = 0;
+                        boardPiece.sprite.opacity = 0;
 
-                        ParticleEngine.TurnOn(sprite: visualEffect.sprite, preset: ParticleEngine.Preset.SwampGas, particlesToEmit: 1);
-                        ParticleEngine.TurnOn(sprite: visualEffect.sprite, preset: ParticleEngine.Preset.HeatMedium, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: boardPiece.sprite, preset: ParticleEngine.Preset.SwampGas, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: boardPiece.sprite, preset: ParticleEngine.Preset.HeatMedium, particlesToEmit: 1);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.LavaGas:
@@ -2678,19 +2681,19 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Lava gas.", activeState: BoardPiece.State.FogMoveRandomly, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: animPkg, allowedTerrain: allowedTerrain, readableName: "gas", description: "Lava gas.", activeState: BoardPiece.State.FogMoveRandomly, visible: true);
 
-                        visualEffect.sprite.color = new Color(255, 206, 28);
-                        visualEffect.sprite.opacity = 0.45f;
+                        boardPiece.sprite.color = new Color(255, 206, 28);
+                        boardPiece.sprite.opacity = 0.45f;
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.Explosion:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, allowedTerrain: new AllowedTerrain(), readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true));
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Explosion, allowedTerrain: new AllowedTerrain(), readableName: "explosion", description: "An explosion.", activeState: BoardPiece.State.Empty, visible: true, lightEngine: new LightEngine(size: 150, opacity: 1f, colorActive: true, color: Color.Orange * 0.3f, isActive: true, castShadows: true));
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.SeaWave:
@@ -2698,12 +2701,12 @@ namespace SonOfRobin
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeaWave, allowedTerrain: allowedTerrain, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.SeaWave, allowedTerrain: allowedTerrain, readableName: "sea wave", description: "Sea wave.", activeState: BoardPiece.State.SeaWaveMove, visible: true);
 
-                        visualEffect.sprite.opacity = 0f;
-                        if (world != null) visualEffect.sprite.AssignNewSize((byte)world.random.Next(0, 7));
+                        boardPiece.sprite.opacity = 0f;
+                        if (world != null) boardPiece.sprite.AssignNewSize((byte)world.random.Next(0, 7));
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.SoundSeaWind:
@@ -2711,11 +2714,11 @@ namespace SonOfRobin
                         AllowedTerrain allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, true } });
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient sea wind sound", description: "Ambient sound for sea wind.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.White;
+                        boardPiece.sprite.color = Color.White;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.SoundLakeWaves:
@@ -2724,11 +2727,11 @@ namespace SonOfRobin
                             rangeNameList: new List<AllowedTerrain.RangeName>() { AllowedTerrain.RangeName.WaterShallow, AllowedTerrain.RangeName.NoBiome },
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.Sea, false } });
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lake waves sound", description: "Ambient sound for lake waves.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.Blue;
+                        boardPiece.sprite.color = Color.Blue;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.SoundNightCrickets:
@@ -2738,11 +2741,11 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient night crickets sound", description: "Ambient sound for crickets at night.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.Black;
+                        boardPiece.sprite.color = Color.Black;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.SoundNoonCicadas:
@@ -2752,11 +2755,11 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 120, max: 255) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient noon cicadas sound", description: "Ambient sound for cicadas at noon.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.Green;
+                        boardPiece.sprite.color = Color.Green;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.SoundLava:
@@ -2765,11 +2768,11 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: (byte)(Terrain.lavaMin + 1), max: 255) },
                         });
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lava sound", description: "Ambient sound for lava.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient lava sound", description: "Ambient sound for lava.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.Yellow;
+                        boardPiece.sprite.color = Color.Yellow;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.SoundCaveWaterDrip:
@@ -2778,43 +2781,43 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 100, max: Terrain.volcanoEdgeMin - 1) },
                         });
 
-                        AmbientSound ambientSound = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient cave water", description: "Ambient sound for cave water dripping.", visible: Preferences.debugShowSounds);
+                        boardPiece = new AmbientSound(name: templateName, world: world, id: id, allowedTerrain: allowedTerrain, readableName: "ambient cave water", description: "Ambient sound for cave water dripping.", visible: Preferences.debugShowSounds);
 
-                        ambientSound.sprite.color = Color.Blue;
+                        boardPiece.sprite.color = Color.Blue;
 
-                        return ambientSound;
+                        break;
                     }
 
                 case Name.ParticleEmitterEnding:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: new AllowedTerrain(), readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerZero, allowedTerrain: new AllowedTerrain(), readableName: "particle emitter", description: "Emits particles.", activeState: BoardPiece.State.EmitParticles, visible: true);
 
-                        visualEffect.sprite.opacity = 0f;
+                        boardPiece.sprite.opacity = 0f;
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.ParticleEmitterWeather:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerThree, allowedTerrain: new AllowedTerrain(), readableName: "weather particle emitter", description: "Emits particles (for weather effects).", activeState: BoardPiece.State.Empty, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.WhiteSpotLayerThree, allowedTerrain: new AllowedTerrain(), readableName: "weather particle emitter", description: "Emits particles (for weather effects).", activeState: BoardPiece.State.Empty, visible: true);
 
-                        visualEffect.sprite.opacity = 0f;
+                        boardPiece.sprite.opacity = 0f;
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.EmptyVisualEffect:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "empty visual effect", description: "Empty visual effect.", activeState: BoardPiece.State.Empty, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "empty visual effect", description: "Empty visual effect.", activeState: BoardPiece.State.Empty, visible: true);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.HastePlayerClone:
                     {
-                        VisualEffect visualEffect = new VisualEffect(name: templateName, world: world, id: id, animPackage: world?.Player != null ? world.Player.sprite.AnimPkg.name : AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "haste player clone", description: "Haste player clone.", activeState: BoardPiece.State.HasteCloneFollowPlayer, visible: true);
+                        boardPiece = new VisualEffect(name: templateName, world: world, id: id, animPackage: world?.Player != null ? world.Player.sprite.AnimPkg.name : AnimData.PkgName.Empty, allowedTerrain: new AllowedTerrain(), readableName: "haste player clone", description: "Haste player clone.", activeState: BoardPiece.State.HasteCloneFollowPlayer, visible: true);
 
-                        return visualEffect;
+                        break;
                     }
 
                 case Name.FertileGroundSmall:
@@ -2823,9 +2826,9 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundSmall, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (small)", description: "Seeds can be planted here.", maxHitPoints: 60);
+                        boardPiece = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundSmall, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (small)", description: "Seeds can be planted here.", maxHitPoints: 60);
 
-                        return patch;
+                        break;
                     }
 
                 case Name.FertileGroundMedium:
@@ -2834,9 +2837,9 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", maxHitPoints: 80);
+                        boardPiece = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundMedium, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (medium)", description: "Seeds can be planted here.", maxHitPoints: 80);
 
-                        return patch;
+                        break;
                     }
 
                 case Name.FertileGroundLarge:
@@ -2845,41 +2848,41 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 105, max: Terrain.rocksLevelMin) },
                         }, extPropertiesDict: ExtBoardProps.GetNoBiomeExtProps());
 
-                        FertileGround patch = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundLarge, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (large)", description: "Seeds can be planted here.", maxHitPoints: 100);
+                        boardPiece = new FertileGround(world: world, id: id, animPackage: AnimData.PkgName.FertileGroundLarge, name: templateName, allowedTerrain: allowedTerrain, readableName: "fertile ground (large)", description: "Seeds can be planted here.", maxHitPoints: 100);
 
-                        return patch;
+                        break;
                     }
 
                 case Name.FenceHorizontalShort:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalShort, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalShort, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 120, readableName: "short fence (horizontal)", description: "A short fence.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FenceVerticalShort:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalShort, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalShort, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 120, readableName: "short fence (vertical)", description: "A short fence.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FenceHorizontalLong:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceHorizontalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 220, readableName: "long fence (horizontal)", description: "A long fence.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.FenceVerticalLong:
                     {
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.FenceVerticalLong, allowedTerrain: AllowedTerrain.GetFieldCraft(),
                               maxHitPoints: 220, readableName: "long fence (vertical)", description: "A long fence.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CaveEntranceOutside:
@@ -2889,10 +2892,10 @@ namespace SonOfRobin
                             { Terrain.Name.Humidity, new AllowedRange(min: 0, max: 128) },
                         });
 
-                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                        boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 1, levelType: Level.LevelType.Cave, hasWater: false, activeState: BoardPiece.State.CaveEntranceDisappear);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CaveEntranceInside:
@@ -2901,10 +2904,10 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 118, max: 123) },
                             });
 
-                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
+                        boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveEntrance, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave entrance", description: "Cave entrance.", goesDown: true, maxDepth: 4, levelType: Level.LevelType.Cave, hasWater: false, activeState: BoardPiece.State.CaveEntranceDisappear);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CaveExit:
@@ -2913,13 +2916,13 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 118, max: 119) },
                             });
 
-                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                        boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave, hasWater: false); // levelType and hasWater are ignored here
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CaveExitEmergency:
@@ -2930,13 +2933,13 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 118, max: Terrain.volcanoEdgeMin - 1) },
                             });
 
-                        BoardPiece boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
+                        boardPiece = new Entrance(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CaveExit, allowedTerrain: allowedTerrain,
                               maxHitPoints: 220, readableName: "cave exit", description: "Cave exit.", goesDown: false, maxDepth: 9999, levelType: Level.LevelType.Cave, hasWater: false); // levelType and hasWater are ignored here
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 500, opacity: 1.0f, colorActive: true, color: Color.LightBlue * 0.3f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CaveWeakMinerals:
@@ -2945,10 +2948,10 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: 135) },
                             });
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MineralsCave, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.MineralsCave, allowedTerrain: allowedTerrain,
                                maxHitPoints: 10, readableName: "weak minerals", description: "Weak cave minerals.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.IronDeposit:
@@ -2956,10 +2959,10 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
                             maxHitPoints: 250, readableName: "iron deposit", description: "Can be mined for iron.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CoalDeposit:
@@ -2967,10 +2970,10 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
                             maxHitPoints: 250, readableName: "coal deposit", description: "Can be mined for coal.");
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CrystalDepositBig:
@@ -2978,13 +2981,13 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
                             maxHitPoints: 250, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 400, opacity: 1.2f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
-                        return boardPiece;
+                        break;
                     }
 
                 case Name.CrystalDepositSmall:
@@ -2992,17 +2995,25 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(rangeDict: new Dictionary<Terrain.Name, AllowedRange>() {
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
-                        BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
                             maxHitPoints: 125, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 650, opacity: 0.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
 
-                        return boardPiece;
+                        break;
                     }
 
                 default: { throw new ArgumentException($"Unsupported template name - {templateName}."); }
             }
+
+            if (createdByPlayer) // has to be checked for every created piece
+            {
+                boardPiece.createdByPlayer = true;
+                boardPiece.canBeHit = false; // to protect item from accidental player hit
+            }
+
+            return boardPiece; // every piece created should be returned here
         }
 
         private static AllowedTerrain CreatePlayerAllowedTerrain()
