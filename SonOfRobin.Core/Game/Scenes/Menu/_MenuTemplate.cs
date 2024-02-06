@@ -20,7 +20,7 @@ namespace SonOfRobin
             Controls,
             Gamepad,
             Keyboard,
-            Scale,
+            Interface,
             OtherOptions,
             CreateNewIsland,
             RestartIsland,
@@ -145,7 +145,7 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "sound", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Sound } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "sound settings", color: Color.White, scale: 1f) });
 
-                        new Invoker(menu: menu, name: "scale", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Scale } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "scale settings", color: Color.White, scale: 1f) });
+                        new Invoker(menu: menu, name: "interface", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Interface } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "interface settings", color: Color.White, scale: 1f) });
 
                         new Invoker(menu: menu, name: "other", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.OtherOptions } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "misc. settings", color: Color.White, scale: 1f) });
 
@@ -162,49 +162,41 @@ namespace SonOfRobin
                         return menu;
                     }
 
-                case Name.Scale:
+                case Name.Interface:
                     {
-                        Menu menu = new(templateName: templateName, name: "SCALE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
+                        Menu menu = new(templateName: templateName, name: "INTERFACE", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
-                        var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
-                        if (SonOfRobinGame.platform == Platform.Mobile)
+                        new Selector(menu: menu, name: "FPS counter", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowFpsCounter", rebuildsMenu: true);
+
+                        if (Preferences.ShowFpsCounter)
                         {
-                            for (int i = 0; i < worldScaleList.Count; i++)
-                            {
-                                worldScaleList[i] = (float)worldScaleList[i] * 2f;
-                            }
-                        }
+                            new Selector(menu: menu, name: "FPS counter position", valueDict: new Dictionary<object, object> { { true, "right" }, { false, "left" } }, targetObj: preferences, propertyName: "FpsCounterPosRight");
+                            new Selector(menu: menu, name: "FPS graph", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FpsCounterShowGraph", rebuildsMenu: true);
 
-                        if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
-                        {
-                            worldScaleList.InsertRange(0, new List<Object> { 0.01f, 0.04f, 0.075f, 0.1f, 0.125f, 0.25f, 0.3f, 0.4f, 0.5f });
-                            worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
-                        }
-                        worldScaleList = worldScaleList.Distinct().ToList();
-
-                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "worldScale", resizesAllScenes: true);
-
-                        var globalScaleList = new List<Object> { 1f, 1.5f, 2f };
-
-                        if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
-                        {
-                            globalScaleList.InsertRange(0, new List<Object> { 0.5f, 0.75f, });
-                            globalScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f, 4f });
+                            if (Preferences.FpsCounterShowGraph) new Selector(menu: menu, name: "FPS graph length", valueDict: new Dictionary<object, object> { { 70, "short" }, { 120, "medium" }, { 250, "long" } }, targetObj: preferences, propertyName: "FpsCounterGraphLength");
                         }
 
                         new Selector(menu: menu, name: "menu size", valueList: new List<Object> { 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 2.5f }, targetObj: preferences, propertyName: "menuScale", rebuildsMenu: true, rebuildsMenuInstantScroll: true);
-
-                        new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");  
-                        
-                        new Selector(menu: menu, name: "status font size", valueDict: Preferences.namesForBuffFontSize, targetObj: preferences, propertyName: "buffFontSize");
 
                         new Selector(menu: menu, name: "messages size", valueDict: new Dictionary<object, object> { { 0.5f, "micro" }, { 0.7f, "small" }, { 1f, "medium" }, { 1.5f, "big" }, { 2f, "huge" } }, targetObj: preferences, propertyName: "messageLogScale");
 
                         new Selector(menu: menu, name: "messages side", valueDict: new Dictionary<object, object> { { false, "left" }, { true, "right" } }, targetObj: preferences, propertyName: "messageLogAtRight");
 
+                        new Selector(menu: menu, name: "control tips (general)", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowControlTips");
+
+                        new Selector(menu: menu, name: "control tips (field)", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showFieldControlTips", rebuildsMenu: true);
+
                         new Selector(menu: menu, name: "minimap position", valueDict: new Dictionary<object, object> { { MapOverlay.Corner.TopLeft, "top left" }, { MapOverlay.Corner.TopCenter, "top center" }, { MapOverlay.Corner.TopRight, "top right" }, { MapOverlay.Corner.BottomLeft, "bottom left" }, { MapOverlay.Corner.BottomCenter, "bottom center" }, { MapOverlay.Corner.BottomRight, "bottom right" }, }, targetObj: preferences, propertyName: "miniMapCorner", resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "minimap size", valueDict: Preferences.namesForMiniMapSize, targetObj: preferences, propertyName: "miniMapScale", resizesAllScenes: true);
+
+                        new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
+
+                        new Selector(menu: menu, name: "auto remove map marker", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "destroyMapMarkerWhenReached");
+
+                        new Selector(menu: menu, name: "status font size", valueDict: Preferences.namesForBuffFontSize, targetObj: preferences, propertyName: "buffFontSize");
+
+                        new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
 
                         foreach (Entry entry in menu.entryList)
                         {
@@ -227,10 +219,25 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "import save", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.ImportSave } });
 
-                        new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
-                        new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
+                        var worldScaleList = new List<Object> { 0.75f, 1f, 1.25f, 1.5f, 2f };
+                        if (SonOfRobinGame.platform == Platform.Mobile)
+                        {
+                            for (int i = 0; i < worldScaleList.Count; i++)
+                            {
+                                worldScaleList[i] = (float)worldScaleList[i] * 2f;
+                            }
+                        }
 
-                        new Selector(menu: menu, name: "auto remove map marker", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "destroyMapMarkerWhenReached");
+                        if (Preferences.debugEnableExtremeZoomLevels || SonOfRobinGame.ThisIsWorkMachine || SonOfRobinGame.ThisIsHomeMachine)
+                        {
+                            worldScaleList.InsertRange(0, new List<Object> { 0.01f, 0.04f, 0.075f, 0.1f, 0.125f, 0.25f, 0.3f, 0.4f, 0.5f });
+                            worldScaleList.AddRange(new List<Object> { 2.5f, 3f, 3.5f });
+                        }
+                        worldScaleList = worldScaleList.Distinct().ToList();
+
+                        new Selector(menu: menu, name: "show hints", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showHints");
+
+                        new Selector(menu: menu, name: "world scale", valueList: worldScaleList, targetObj: preferences, propertyName: "worldScale", resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "plants / animals processing time", valueDict: new Dictionary<object, object> { { 0.2f, "20%" }, { 0.3f, "30%" }, { 0.4f, "40%" }, { 0.5f, "50%" }, { 0.6f, "60%" }, { 0.7f, "70%" }, { 0.8f, "80%" }, { 0.9f, "90%" }, { 0.95f, "95%" } }, targetObj: preferences, propertyName: "StateMachinesDurationFramePercent", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "max time used to process\nanimals and plants for each frame", color: Color.White, scale: 1f) });
 
@@ -256,16 +263,6 @@ namespace SonOfRobin
 
                         Menu menu = new(templateName: templateName, name: "GRAPHICS", blocksUpdatesBelow: false, canBeClosedManually: true, closingTask: Scheduler.TaskName.SavePrefs, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
-                        new Selector(menu: menu, name: "FPS counter", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowFpsCounter", rebuildsMenu: true);
-
-                        if (Preferences.ShowFpsCounter)
-                        {
-                            new Selector(menu: menu, name: "FPS counter position", valueDict: new Dictionary<object, object> { { true, "right" }, { false, "left" } }, targetObj: preferences, propertyName: "FpsCounterPosRight");
-                            new Selector(menu: menu, name: "FPS graph", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FpsCounterShowGraph", rebuildsMenu: true);
-
-                            if (Preferences.FpsCounterShowGraph) new Selector(menu: menu, name: "FPS graph length", valueDict: new Dictionary<object, object> { { 70, "short" }, { 120, "medium" }, { 250, "long" } }, targetObj: preferences, propertyName: "FpsCounterGraphLength");
-                        }
-
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
                             new Selector(menu: menu, name: "fullscreen mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FullScreenMode", rebuildsMenu: true);
@@ -276,8 +273,8 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);    
-                        
+                        new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);
+
                         new Selector(menu: menu, name: "light-sourced shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawLightSourcedShadows", rebuildsMenu: true, resizesAllScenes: true);
 
                         if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softShadows", resizesAllScenes: true);
@@ -364,10 +361,6 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "gamepad type", valueDict: new Dictionary<object, object> { { ButtonScheme.Type.Xbox360, "Xbox 360" }, { ButtonScheme.Type.XboxSeries, "Xbox Series" }, { ButtonScheme.Type.DualShock4, "Dual Shock 4" }, { ButtonScheme.Type.DualSense, "Dual Sense" }, { ButtonScheme.Type.SwitchProController, "Switch Pro Controller" } }, targetObj: preferences, propertyName: "ControlTipsScheme");
 
                         new Selector(menu: menu, name: "rumble", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "rumbleEnabled");
-
-                        new Selector(menu: menu, name: "show control tips (general)", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "ShowControlTips");
-
-                        new Selector(menu: menu, name: "show control tips (field)", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showFieldControlTips", rebuildsMenu: true);
 
                         if (Preferences.showFieldControlTips) new Selector(menu: menu, name: "field tips scale", valueDict: Preferences.namesForFieldControlTipsScale, targetObj: preferences, propertyName: "fieldControlTipsScale");
 
