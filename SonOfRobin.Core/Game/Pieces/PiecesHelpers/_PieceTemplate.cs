@@ -1588,7 +1588,7 @@ namespace SonOfRobin
                         var allowedTerrain = new AllowedTerrain(
                             extPropertiesDict: new Dictionary<ExtBoardProps.Name, bool> { { ExtBoardProps.Name.BiomeSwamp, true } });
 
-                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSite, allowedTerrain: allowedTerrain,
+                        boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.DigSiteSwamp, allowedTerrain: allowedTerrain,
                             maxHitPoints: 50, readableName: "dig site", description: "May contain some buried items.");
 
                         break;

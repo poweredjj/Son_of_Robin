@@ -223,6 +223,7 @@ namespace SonOfRobin
             DigSite = 151,
             DigSiteGlass = 152,
             DigSiteRuins = 153,
+            DigSiteSwamp = 308,
 
             Coal = 154,
             IronOre = 155,
@@ -1558,6 +1559,12 @@ namespace SonOfRobin
                 case PkgName.DigSite:
                     {
                         animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "dig_site", hasOnePixelMargin: true, castsShadow: false);
+                        break;
+                    }
+
+                case PkgName.DigSiteSwamp:
+                    {
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 80, height: 80, scale: 1f, layer: 0, animSize: 0, altasName: "dig_site_swamp", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     }
 

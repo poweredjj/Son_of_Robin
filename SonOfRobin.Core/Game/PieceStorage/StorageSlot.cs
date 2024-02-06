@@ -182,9 +182,9 @@ namespace SonOfRobin
 
             var slotData = new Dictionary<string, object>
             {
-                { "locked", this.locked},
-                { "hidden", this.hidden},
-                { "label", this.label},
+                { "locked", this.locked },
+                { "hidden", this.hidden },
+                { "label", this.label },
                 { "allowedPieceNames", this.allowedPieceNames },
                 { "stackLimit", this.stackLimit },
                 { "pieceTextureShownWhenEmpty", this.pieceTextureShownWhenEmpty },
