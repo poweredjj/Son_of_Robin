@@ -36,14 +36,21 @@ namespace SonOfRobin
                 this.maxAmount + (this.maxAmountIncreaseForDepthLevel * Math.Max(level.depth - this.minDepth, 0));
         }
 
+        private static int GetMaxAmountProportionalTo30x30k(float areaMultiplier, int noFor30k)
+        {
+            // returns a value for 30x30k map size and proportional to the bigger / smaller area (assumes 30k x 30k area == 90)
+
+            return (int)Math.Max(((float)noFor30k / 90f) * areaMultiplier, 1);
+        }
+
         public static List<PieceCreationData> CreateDataList(int maxAnimalsPerName, Level level)
         {
-            float areaMultiplier = (level.width / 1000) * (level.height / 1000) / 10; // 90 for 30k x 30k
+            float areaMltp = (level.width / 1000) * (level.height / 1000) / 10; // areaMultiplier; 90 for 30k x 30k
 
             var dataList = new List<PieceCreationData>
             {
-                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: 1000, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: 60, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.GrassRegular, multiplier: 1.7f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 1000), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.GrassGlow, multiplier: 0.1f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 60), levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.GrassDesert, multiplier: 2.0f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.PlantPoison, multiplier: 1.0f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.Rushes, multiplier: 2.0f, levelType: Level.LevelType.Island),
@@ -58,9 +65,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: 10, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: 10, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.002f, maxAmount: 4, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 10), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 10), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.002f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 4), levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, levelType: Level.LevelType.Island),
 
@@ -68,7 +75,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.MineralsBig, multiplier: 0.1f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossySmall, multiplier: 0.2f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.MineralsMossyBig, multiplier: 0.1f, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: 25, levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.Clam, multiplier: 1f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 25), levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.CrateRegular, multiplier: 0.1f, maxAmount: 2, levelType: Level.LevelType.Island),
 
                 new PieceCreationData(name: PieceTemplate.Name.BeachDigSite, multiplier: 0.3f, levelType: Level.LevelType.Island),
@@ -101,7 +108,7 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.SoundNoonCicadas, temporaryDecoration: true, tempDecorMultiplier: 1, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.SoundLava, temporaryDecoration: true, tempDecorMultiplier: 2, levelType: Level.LevelType.Island),
 
-                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: (int)Math.Max(areaMultiplier / 15, 1), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CaveEntranceOutside, multiplier: 0.2f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 6), levelType: Level.LevelType.Island),
 
                 // cave
 
