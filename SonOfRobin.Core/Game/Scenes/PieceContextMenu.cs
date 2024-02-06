@@ -346,19 +346,19 @@ namespace SonOfRobin
                     {
                         var invScene = GetSecondTopSceneOfType(typeof(Inventory));
                         if (invScene == null) return;
-                        Inventory secondInventory = (Inventory)invScene;
+
+                        PieceStorage targetStorage = ((Inventory)invScene).storage;
 
                         List<BoardPiece> piecesToMove = this.storage.RemoveAllPiecesFromSlot(slot: this.slot);
-
                         if (piecesToMove.Count == 0) return;
 
                         piecesToMove[0].activeSoundPack.Play(action: PieceSoundPackTemplate.Action.IsDropped, ignore3D: true, ignoreCooldown: true);
                         new RumbleEvent(force: 0.20f, durationSeconds: 0, bigMotor: true, fadeInSeconds: 0.06f, fadeOutSeconds: 0.06f);
 
-                        foreach (BoardPiece piece in piecesToMove)
+                        foreach (BoardPiece pieceToMove in piecesToMove)
                         {
-                            bool pieceMoved = secondInventory.storage.AddPiece(piece);
-                            if (!pieceMoved) this.storage.AddPiece(this.piece);
+                            bool pieceMoved = targetStorage.AddPiece(pieceToMove);
+                            if (!pieceMoved) this.storage.AddPiece(pieceToMove);
                         }
 
                         return;
@@ -573,7 +573,6 @@ namespace SonOfRobin
 
                         return;
                     }
-
 
                 case ContextAction.Extinguish:
                     {
