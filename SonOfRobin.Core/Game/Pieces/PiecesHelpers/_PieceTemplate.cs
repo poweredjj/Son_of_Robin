@@ -2957,7 +2957,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.IronDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "iron deposit", description: "Can be mined for iron.");
+                            maxHitPoints: 250, readableName: "iron deposit", description: "Can be mined for iron.");
 
                         return boardPiece;
                     }
@@ -2968,7 +2968,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: 125) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CoalDeposit, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "coal deposit", description: "Can be mined for coal.");
+                            maxHitPoints: 250, readableName: "coal deposit", description: "Can be mined for coal.");
 
                         return boardPiece;
                     }
@@ -2979,7 +2979,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositBig, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 300, readableName: "big crystal deposit", description: "Can be mined for crystals.");
+                            maxHitPoints: 250, readableName: "big crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 400, opacity: 1.2f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
@@ -2993,7 +2993,7 @@ namespace SonOfRobin
                             { Terrain.Name.Height, new AllowedRange(min: 116, max: Terrain.volcanoEdgeMin - 4) }});
 
                         BoardPiece boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.CrystalDepositSmall, allowedTerrain: allowedTerrain,
-                            maxHitPoints: 150, readableName: "small crystal deposit", description: "Can be mined for crystals.");
+                            maxHitPoints: 125, readableName: "small crystal deposit", description: "Can be mined for crystals.");
 
                         boardPiece.sprite.lightEngine = new LightEngine(size: 650, opacity: 0.4f, colorActive: true, color: Color.Blue * 5f, isActive: true, castShadows: true);
                         boardPiece.sprite.lightEngine.AssignSprite(boardPiece.sprite);
