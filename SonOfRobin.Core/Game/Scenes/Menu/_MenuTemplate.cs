@@ -1103,7 +1103,7 @@ namespace SonOfRobin
                             var imageList = new List<ImageObj> { PieceInfo.GetImageObj(pieceName) };
                             Dictionary<string, Object> createData = new() { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true);
+                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true, resizesAllScenes: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
