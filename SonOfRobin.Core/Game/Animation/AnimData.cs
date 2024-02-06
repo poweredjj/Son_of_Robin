@@ -1497,33 +1497,33 @@ namespace SonOfRobin
 
                 case PkgName.ArrowWood:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_wood", hasOnePixelMargin: true);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_wood", hasOnePixelMargin: true, castsShadow: false);
                         break;
                     }
 
                 case PkgName.ArrowStone:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 300, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_stone", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 300, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_stone", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     }
 
                 case PkgName.ArrowIron:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_iron", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 299, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_iron", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     }
 
                 case PkgName.ArrowCrystal:
                     {
-                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 298, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_crystal", hasOnePixelMargin: false);
+                        animPkg = MakePackageForSingleImage(pkgName: pkgName, width: 298, height: 300, scale: 0.08f, layer: 0, animSize: 0, altasName: "arrow_crystal", hasOnePixelMargin: false, castsShadow: false);
                         break;
                     }
 
                 case PkgName.ArrowExploding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 20);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 294, height: 300), scale: 0.08f)]));
-                        animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 297, height: 300), scale: 0.08f)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_off", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 294, height: 300), scale: 0.08f, castsShadow: false)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, name: "burning", size: 0, frameArray: [new AnimFrame(atlasName: "arrow_burning_on", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 297, height: 300), scale: 0.08f, castsShadow: false)]));
                         break;
                     }
 
