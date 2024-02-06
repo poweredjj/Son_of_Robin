@@ -175,10 +175,10 @@ namespace SonOfRobin
 
         public Object Serialize()
         {
-            var pieceList = new List<Object> { };
+            var serializedPieceList = new List<Object> { };
 
             foreach (BoardPiece piece in this.pieceList)
-            { if (piece.pieceInfo.serialize) pieceList.Add(piece.Serialize()); }
+            { if (piece.pieceInfo.serialize) serializedPieceList.Add(piece.Serialize()); }
 
             var slotData = new Dictionary<string, object>
             {
@@ -188,7 +188,7 @@ namespace SonOfRobin
                 { "allowedPieceNames", this.allowedPieceNames },
                 { "stackLimit", this.stackLimit },
                 { "pieceTextureShownWhenEmpty", this.pieceTextureShownWhenEmpty },
-                { "pieceList", pieceList },
+                { "pieceList", serializedPieceList },
             };
 
             return slotData;
