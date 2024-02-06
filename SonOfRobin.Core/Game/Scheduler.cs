@@ -1304,10 +1304,18 @@ namespace SonOfRobin
                             if (piecesWithLockedPassiveMovement.Count > 0) errorsFound.Add($"Pieces with locked passive movement: {piecesWithLockedPassiveMovement.Count}.");
                             if (duplicatedPiecesByID.Count > 0)
                             {
-                                errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count}):");
+                                errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count} IDs):");
+
+                                Random random = SonOfRobinGame.random;
 
                                 foreach (List<BoardPiece> duplicatedPieceList in duplicatedPiecesByID.Values)
                                 {
+                                    //Color color = new(random.Next(0, 200), random.Next(0, 200), random.Next(0, 200));
+                                    //foreach (BoardPiece duplicatedPiece in duplicatedPieceList)
+                                    //{
+                                    //    duplicatedPiece.sprite.color = color;
+                                    //}
+
                                     var uniqueNamesArray = duplicatedPieceList.Select(p => p.readableName).Distinct().ToArray();
                                     string uniqueNames = String.Join(", ", uniqueNamesArray);
 

@@ -1219,11 +1219,6 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate checkAllTutorialsDlgt = () => { Tutorials.CheckData(); };
                         new Invoker(menu: menu, name: "check all tutorials", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: checkAllTutorialsDlgt);
 
-                        if (nonDemoWorldActive)
-                        {
-                            new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
-                        }
-
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
                             Scheduler.ExecutionDelegate showAnimViewerDlgt = () => { new AnimViewer(); };
@@ -1244,6 +1239,8 @@ namespace SonOfRobin
                         new Selector(menu: menu, name: "show mesh bounds", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowMeshBounds", resizesAllScenes: true);
                         if (SonOfRobinGame.platform != Platform.Mobile) new Selector(menu: menu, name: "wireframe mode", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowWireframe", resizesAllScenes: true);
                         new Selector(menu: menu, name: "show outside camera", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "debugShowOutsideCamera", resizesAllScenes: true);
+
+                        if (nonDemoWorldActive) new Invoker(menu: menu, name: "check incorrect pieces", taskName: Scheduler.TaskName.CheckForIncorrectPieces);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
                         new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
