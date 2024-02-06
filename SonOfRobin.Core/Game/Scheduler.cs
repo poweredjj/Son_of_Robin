@@ -1206,11 +1206,19 @@ namespace SonOfRobin
                             var piecesByID = new Dictionary<int, List<BoardPiece>>();
                             var duplicatedPiecesByID = new Dictionary<int, List<BoardPiece>>();
                             var blockedPieces = new List<BoardPiece>();
+                            var piecesWithForeignCurrentCell = new List<BoardPiece>();
+                            var offBoardPiecesWithPassiveMovement = new List<BoardPiece>();
+                            var piecesWithLockedPassiveMovement = new List<BoardPiece>();
 
                             var blockedIgnoredTypesForNonPlants = new List<Type> { };
 
                             foreach (Sprite sprite in world.Grid.GetSpritesFromAllCells(Cell.Group.All))
                             {
+                                if (sprite.currentCell != null && sprite.currentCell.grid.level != world.ActiveLevel) piecesWithForeignCurrentCell.Add(sprite.boardPiece);
+
+                                if (sprite.boardPiece.HasPassiveMovement && !sprite.IsOnBoard) offBoardPiecesWithPassiveMovement.Add(sprite.boardPiece);
+                                if (sprite.boardPiece.HasPassiveMovement && sprite.IsOnBoard && !sprite.gridGroups.Contains(Cell.Group.StateMachinesNonPlants)) piecesWithLockedPassiveMovement.Add(sprite.boardPiece);
+
                                 if (sprite.boardPiece.exists && !sprite.IsOnBoard) incorrectBoardPieces.Add(sprite.boardPiece);
                                 if (piecesByID.ContainsKey(sprite.id)) piecesByID[sprite.id].Add(sprite.boardPiece);
                                 else piecesByID[sprite.id] = new List<BoardPiece> { sprite.boardPiece };
@@ -1291,6 +1299,9 @@ namespace SonOfRobin
                             if (incorrectBoardPieces.Count > 0) errorsFound.Add($"Pieces placed incorrectly on the field: {incorrectBoardPieces.Count}.");
                             if (incorrectStoragePieces.Count > 0) errorsFound.Add($"Pieces placed incorrectly in the storage: {incorrectStoragePieces.Count}.");
                             if (blockedPieces.Count > 0) errorsFound.Add($"Pieces blocked: {blockedPieces.Count}.");
+                            if (piecesWithForeignCurrentCell.Count > 0) errorsFound.Add($"Pieces with foreign current cell: {piecesWithForeignCurrentCell.Count}.");
+                            if (offBoardPiecesWithPassiveMovement.Count > 0) errorsFound.Add($"Off board pieces with passive movement: {offBoardPiecesWithPassiveMovement.Count}.");
+                            if (piecesWithLockedPassiveMovement.Count > 0) errorsFound.Add($"Pieces with locked passive movement: {piecesWithLockedPassiveMovement.Count}.");
                             if (duplicatedPiecesByID.Count > 0)
                             {
                                 errorsFound.Add($"Duplicated pieces ({duplicatedPiecesByID.Count}):");
