@@ -366,6 +366,7 @@ namespace SonOfRobin
             if (selectedPiece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten)
             {
                 float fedPercent = (float)Math.Round(this.piece.world.Player.ConvertMassToFedPercent(selectedPiece.Mass) * 100, 1);
+                fedPercent = Math.Min(fedPercent, 100f); // values above 100% should not be displayed
                 extInfoTextList.Add($"| +{fedPercent}%");
                 extInfoImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.SimpleBurger));
             }
