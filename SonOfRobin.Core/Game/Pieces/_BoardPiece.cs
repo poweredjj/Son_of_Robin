@@ -379,6 +379,7 @@ namespace SonOfRobin
         {
             if (!this.sprite.IsOnBoard) return;
 
+            this.RemovePassiveMovement();
             this.sprite.RemoveFromBoard();
             this.RemoveFromPieceCount();
         }
