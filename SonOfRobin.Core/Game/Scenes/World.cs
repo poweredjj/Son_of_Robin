@@ -1275,12 +1275,14 @@ namespace SonOfRobin
             this.Player.simulatedPieceToBuild?.Destroy();
             this.Player.simulatedPieceToBuild = null;
 
+            int waitDuration = buildDuration * this.Player.buildDurationForOneFrame; // has to be multiplied, to wait for correct amount of time
+
             builtPiece.sprite.opacity = 0f;
             new OpacityFade(sprite: builtPiece.sprite, destOpacity: 1f, duration: buildDuration);
 
-            new LevelEvent(eventName: LevelEvent.EventName.FinishBuilding, level: this.ActiveLevel, delay: buildDuration, boardPiece: null);
-            new LevelEvent(eventName: LevelEvent.EventName.PlaySoundByName, level: this.ActiveLevel, delay: buildDuration, boardPiece: null, eventHelper: plantMode ? SoundData.Name.MovingPlant : SoundData.Name.Chime);
-            new LevelEvent(eventName: LevelEvent.EventName.YieldDropDebris, level: this.ActiveLevel, delay: buildDuration, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "piece", builtPiece }, { "yield", debrisYield } });
+            new LevelEvent(eventName: LevelEvent.EventName.FinishBuilding, level: this.ActiveLevel, delay: waitDuration, boardPiece: null);
+            new LevelEvent(eventName: LevelEvent.EventName.PlaySoundByName, level: this.ActiveLevel, delay: waitDuration, boardPiece: null, eventHelper: plantMode ? SoundData.Name.MovingPlant : SoundData.Name.Chime);
+            new LevelEvent(eventName: LevelEvent.EventName.YieldDropDebris, level: this.ActiveLevel, delay: waitDuration, boardPiece: null, eventHelper: new Dictionary<string, Object> { { "piece", builtPiece }, { "yield", debrisYield } });
         }
 
         public void ExitBuildMode(bool restoreCraftMenu, bool showCraftMessages = false)
