@@ -1026,7 +1026,7 @@ namespace SonOfRobin
             }
 
             this.islandClock.Advance(this.updateMultiplier);
-            this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
+            this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier); // delta counters should only be updated here (to avoid updating on timeskip)
         }
 
         private void ProcessInput()
