@@ -358,7 +358,11 @@ namespace SonOfRobin
                         foreach (BoardPiece pieceToMove in piecesToMove)
                         {
                             bool pieceMoved = targetStorage.AddPiece(pieceToMove);
-                            if (!pieceMoved) this.slot.AddPiece(pieceToMove);
+                            if (!pieceMoved)
+                            {
+                                // sometimes a piece sits inside a slot, that does not allow putting the piece back (so force has to be applied)
+                                this.slot.AddPiece(piece: pieceToMove, force: false);
+                            }
                         }
 
                         return;

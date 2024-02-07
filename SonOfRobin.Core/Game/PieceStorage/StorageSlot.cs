@@ -61,14 +61,13 @@ namespace SonOfRobin
         public List<int> AllPieceIDs
         { get { return pieceList.Select(p => p.id).ToList(); } }
 
-        public void AddPiece(BoardPiece piece)
+        public void AddPiece(BoardPiece piece, bool force = false)
         {
             if (this.locked) return;
 
-            if (!this.CanFitThisPiece(piece)) throw new ArgumentException($"This piece '{piece.name}' cannot fit in this slot.");
+            if (!force && !this.CanFitThisPiece(piece)) throw new ArgumentException($"This piece '{piece.name}' cannot fit in this slot.");
 
-            if (piece?.PieceStorage?.OccupiedSlotsCount > 0)
-            { piece.PieceStorage.DropAllPiecesToTheGround(addMovement: true); }
+            if (piece?.PieceStorage?.OccupiedSlotsCount > 0) piece.PieceStorage.DropAllPiecesToTheGround(addMovement: true);
 
             this.pieceList.Add(piece);
             this.AddRemoveBuffs(piece: piece, add: true);
