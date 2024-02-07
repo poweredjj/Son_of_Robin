@@ -127,18 +127,20 @@ namespace SonOfRobin
         {
             List<BoardPiece> meatList = this.PieceStorage.GetAllPieces();
 
+            bool dryingInProgress = this.DryingInProgress;
+
             int meatCount = meatList.Count;
             // collision check must be turned off, to work if player is nearby
             this.sprite.AssignNewName(newAnimName: meatCount > 0 ? $"on_{meatCount}" : "off");
 
-            this.showStatBarsTillFrame = this.world.CurrentUpdate + 1000;
+            this.showStatBarsTillFrame = dryingInProgress ? int.MaxValue : 0;
 
             foreach (SlotExtensionDrying slotExtension in this.slotExtensionList)
             {
                 slotExtension.Update();
             }
 
-            if (this.world.CurrentUpdate % 30 == 0 && this.DryingInProgress) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MeatDrying, duration: 1);
+            if (this.world.CurrentUpdate % 30 == 0 && dryingInProgress) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.MeatDrying, duration: 1);
         }
 
         private bool DryingInProgress
