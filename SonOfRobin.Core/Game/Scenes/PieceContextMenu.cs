@@ -358,7 +358,7 @@ namespace SonOfRobin
                         foreach (BoardPiece pieceToMove in piecesToMove)
                         {
                             bool pieceMoved = targetStorage.AddPiece(pieceToMove);
-                            if (!pieceMoved) this.storage.AddPiece(pieceToMove);
+                            if (!pieceMoved) this.slot.AddPiece(pieceToMove);
                         }
 
                         return;
