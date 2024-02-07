@@ -22,8 +22,9 @@ namespace SonOfRobin
         public int ElapsedUpdates { get; private set; }
         private bool isPaused;
         private bool initComplete;
+        private readonly World world;
 
-        public IslandClock(int elapsedUpdates = -1)
+        public IslandClock(int elapsedUpdates = -1, World world = null)
         {
             if (elapsedUpdates < -1) throw new ArgumentException($"elapsedUpdates ({elapsedUpdates}) cannot be < 0."); // -1 value is used as a "not initialized" value
 
@@ -38,6 +39,7 @@ namespace SonOfRobin
             }
 
             this.isPaused = false;
+            this.world = world;
         }
 
         public void Initialize(int elapsedUpdates)
@@ -58,15 +60,15 @@ namespace SonOfRobin
             this.isPaused = false;
         }
 
-        public void Advance(int amount = 1, bool ignorePause = false, bool ignoreMultiplier = false)
+        public void Advance(int amount = 1, bool ignorePause = false, bool advanceWorldCurrentUpdate = true)
         {
             if (amount < 1) throw new ArgumentException($"Advance value ({amount}) has to be >= 1.");
             if (!this.initComplete) throw new ArgumentException("Island Clock has not been initialized.");
 
             if (ignorePause || !this.isPaused)
             {
-                if (ignoreMultiplier) this.ElapsedUpdates += amount;
-                else this.ElapsedUpdates += amount;
+                this.ElapsedUpdates += amount;
+                if (advanceWorldCurrentUpdate && this.world != null) this.world.CurrentUpdate += amount;
             }
         }
 

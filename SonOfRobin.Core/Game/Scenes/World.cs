@@ -5,7 +5,6 @@ using MonoGame.Extended.Tweening;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -112,7 +111,8 @@ namespace SonOfRobin
 
         public bool forceRenderNextFrame;
         public int CurrentFrame { get; private set; }
-        public int CurrentUpdate { get; private set; } // can be used to measure time elapsed on island
+        public int CurrentUpdate { get; set; }
+
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
@@ -166,7 +166,7 @@ namespace SonOfRobin
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
-            this.islandClock = this.saveGameData == null ? new IslandClock(0) : new IslandClock();
+            this.islandClock = this.saveGameData == null ? new IslandClock(elapsedUpdates: 0, world: this) : new IslandClock(world: this);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
             this.HintEngine = new HintEngine(world: this);
@@ -498,7 +498,7 @@ namespace SonOfRobin
 
                         this.Player.sprite.orientation = Sprite.Orientation.right;
                         this.Player.sprite.CharacterStand(force: true);
-                                                
+
                         if (this.PlayerName != PieceTemplate.Name.PlayerTestDemoness) PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.CrateStarting, closestFreeSpot: true);
                         PieceTemplate.CreateAndPlaceOnBoard(world: this, position: this.Player.sprite.position, templateName: PieceTemplate.Name.PredatorRepellant, closestFreeSpot: true);
                     }
@@ -1025,7 +1025,6 @@ namespace SonOfRobin
                 else this.StateMachinesProcessNonPlantQueue();
             }
 
-            this.CurrentUpdate += this.updateMultiplier;
             this.islandClock.Advance(this.updateMultiplier);
             this.ActiveLevel.stateMachineTypesManager.IncreaseDeltaCounters(this.updateMultiplier);
         }
@@ -1426,8 +1425,8 @@ namespace SonOfRobin
 
             if ((Preferences.drawSunShadows && sunShadowsOpacity > 0f) ||
                 (Preferences.drawLightSourcedShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
-            {                  
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);              
+            {
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);
             }
 
             // drawing sun shadows onto darkness mask
@@ -1622,7 +1621,7 @@ namespace SonOfRobin
                         if (!lightRect.Intersects(shadowSprite.GfxRect) || !shadowSprite.AnimFrame.castsShadow) continue;
 
                         if (shadowSprite != lightSprite) shadowSprite.DrawShadow(color: Color.Black, lightPos: lightSprite.position, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: lightSprite.position, end: shadowSprite.position), drawOffsetX: -lightRect.X, drawOffsetY: -lightRect.Y, opacityForce: 1f);
-                       
+
                         shadowSprite.DrawRoutine(calculateSubmerge: true, offset: new Vector2(-lightRect.X, -lightRect.Y)); // "erasing" original sprite from shadow
                     }
                     SonOfRobinGame.SpriteBatch.End();
@@ -1658,10 +1657,10 @@ namespace SonOfRobin
                 // subtracting darkness mask from darkness
 
                 SetRenderTarget(DarknessAndHeatMask);
-                
+
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, blendState: darknessMaskBlend);
                 SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.tempShadowMask2, lightRect, Color.White * lightSprite.lightEngine.Opacity);
-                SonOfRobinGame.SpriteBatch.End();               
+                SonOfRobinGame.SpriteBatch.End();
             }
 
             // setting render target back to camera view

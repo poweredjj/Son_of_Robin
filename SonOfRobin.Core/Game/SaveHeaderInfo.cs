@@ -58,7 +58,7 @@ namespace SonOfRobin
                     this.seed = (int)(Int64)headerData["seed"];
                     this.width = (int)(Int64)headerData["width"];
                     this.height = (int)(Int64)headerData["height"];
-                    this.frozenClock = new IslandClock(elapsedUpdates: (int)(Int64)headerData["clockTimeElapsed"]);
+                    this.frozenClock = new IslandClock(elapsedUpdates: (int)(Int64)headerData["clockTimeElapsed"], world: null);
                     this.timePlayed = TimeSpan.Parse((string)headerData["TimePlayed"]);
                     this.playerName = (PieceTemplate.Name)(Int64)headerData["playerName"];
                 }
