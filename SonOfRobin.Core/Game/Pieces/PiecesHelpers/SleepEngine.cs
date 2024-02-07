@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace SonOfRobin
 {
     [Serializable]
-    public struct SleepEngine
+    public readonly struct SleepEngine
     {
         public static readonly SleepEngine OutdoorSleepDry = new SleepEngine(minFedPercent: 0.2f, fatigueRegen: 0.4f, hitPointsChange: -0.1f, minFatiguePercentPossibleToGet: 0.5f, updateMultiplier: 5, waitingAfterSleepPossible: false, canBeAttacked: true, wakeUpBuffs: new List<Buff> {
                             new Buff(type: BuffEngine.BuffType.MaxHP, value: -100f, sleepMinutesNeededForActivation: 60, autoRemoveDelay: 5 * 60 * 60, increaseIDAtEveryUse: true)});
