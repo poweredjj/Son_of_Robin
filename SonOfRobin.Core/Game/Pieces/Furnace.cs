@@ -132,13 +132,13 @@ namespace SonOfRobin
                 this.visualAid = PieceTemplate.CreateAndPlaceOnBoard(templateName: PieceTemplate.Name.ParticleEmitterEnding, world: this.world, position: new Vector2(this.sprite.GfxRect.Center.X, this.sprite.GfxRect.Top + 5), randomPlacement: false, precisePlacement: true);
                 this.visualAid.sprite.AssignNewPackage(newAnimPkgName: AnimData.PkgName.WhiteSpotLayerTwo, checkForCollision: false);
                 this.visualAid.sprite.opacity = 0.001f; // to draw particles only
-                ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
             }
 
             this.IsOn = true;
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
+            ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
 
             if (playSounds)
             {
