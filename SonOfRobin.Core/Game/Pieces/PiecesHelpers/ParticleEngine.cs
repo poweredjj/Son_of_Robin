@@ -1867,7 +1867,7 @@ namespace SonOfRobin
                 sprite.particleEngine.dataByPreset[preset].particleEmitter : null;
         }
 
-        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
         {
             if (duration > 0 && !sprite.IsInCameraRect) return;
 
@@ -1875,7 +1875,7 @@ namespace SonOfRobin
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
             sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
-            if (update) sprite.particleEngine.Update();
+            sprite.particleEngine.Update();
         }
 
         public static void TurnOff(Sprite sprite, Preset preset)

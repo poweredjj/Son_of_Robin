@@ -82,32 +82,32 @@ namespace SonOfRobin
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStarSmall, duration: 6, update: true, particlesToEmit: particlesToEmit);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisStarSmall, duration: 6, particlesToEmit: particlesToEmit);
                             break;
                         }
 
                     case ParticleEngine.Preset.DebrisSoot:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, update: true, particlesToEmit: particlesToEmit);
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DebrisSoot, duration: 1, particlesToEmit: particlesToEmit);
                         break;
 
                     case ParticleEngine.Preset.DustPuff:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DustPuff, duration: 1, update: true, particlesToEmit: SonOfRobinGame.random.Next(1, 6));
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.DustPuff, duration: 1, particlesToEmit: SonOfRobinGame.random.Next(1, 6));
                         break;
 
                     case ParticleEngine.Preset.SmokePuff:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 1, update: true, particlesToEmit: 1);
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: ParticleEngine.Preset.SmokePuff, duration: 1, particlesToEmit: 1);
                         break;
 
                     case ParticleEngine.Preset.DebrisHeart:
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: piece.world, position: piece.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, update: true, particlesToEmit: 1);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.DebrisHeart, duration: 3, particlesToEmit: 1);
                             break;
                         }
 
                     default:
-                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: debrisType, duration: 3, update: true, particlesToEmit: particlesToEmit);
+                        ParticleEngine.TurnOn(sprite: piece.sprite, preset: debrisType, duration: 3, particlesToEmit: particlesToEmit);
                         break;
                 }
             }

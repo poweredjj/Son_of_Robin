@@ -265,7 +265,7 @@ namespace SonOfRobin
                         {
                             BoardPiece particleEmitter = PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.ParticleEmitterEnding, precisePlacement: true);
                             particleEmitter.sprite.AssignNewPackage(AnimData.PkgName.WhiteSpotLayerZero);
-                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, update: true, duration: 6, particlesToEmit: droppedPiecesCount * 5);
+                            ParticleEngine.TurnOn(sprite: particleEmitter.sprite, preset: ParticleEngine.Preset.Excavated, duration: 6, particlesToEmit: droppedPiecesCount * 5);
                         }
 
                         world.HintEngine.CheckForPieceHintToShow(ignorePlayerState: true, typesToCheckOnly: new List<PieceHint.Type> { PieceHint.Type.TreasureJar });
