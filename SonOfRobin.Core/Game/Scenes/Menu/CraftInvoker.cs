@@ -47,7 +47,7 @@ namespace SonOfRobin
         private readonly List<InvokerDrawParams> drawParamsList;
 
         public CraftInvoker(Menu menu, string name, Scheduler.TaskName taskName, Craft.Recipe recipe, List<PieceStorage> storageList, Object executeHelper = null, bool closesMenu = false, bool rebuildsMenu = true) :
-            base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false, invokedByDoubleTouch: true)
+            base(menu: menu, name: name, taskName: taskName, executeHelper: executeHelper, closesMenu: closesMenu, rebuildsMenu: rebuildsMenu, playSound: false, invokedByDoubleTouch: true, resizesAllScenes: true)
         {
             this.recipe = recipe;
             this.storageList = storageList;
