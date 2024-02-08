@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,6 +61,7 @@ namespace SonOfRobin
         public float fedLevel;
         public float maxFatigue;
         private float fatigue;
+        private int pingCooldownUntilFrame;
         public SkillName Skill { get; private set; }
         public int CraftLevel { get; private set; }
         public int CookLevel { get; private set; }
@@ -103,6 +105,7 @@ namespace SonOfRobin
             this.previousStepPos = new Vector2(-100, -100); // initial value, to be changed later
             this.distanceWalked = 0;
             this.pointWalkTarget = Vector2.Zero;
+            this.pingCooldownUntilFrame = 0;
 
             var allowedToolbarPieces = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.LanternEmpty }; // indivitual cases, that will not be added below
 
@@ -937,7 +940,7 @@ namespace SonOfRobin
 
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
-            bool canPing = canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
+            bool canPing = this.world.CurrentUpdate >= this.pingCooldownUntilFrame && canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
 
             if (canPing)
             {
@@ -949,31 +952,52 @@ namespace SonOfRobin
             {
                 if (canPing)
                 {
+                    this.pingCooldownUntilFrame = this.world.CurrentUpdate + (60 * 5);
+
                     Sound.QuickPlay(name: SoundData.Name.SonarPing);
 
                     Rectangle pingRect = this.world.camera.viewRect;
                     pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2); // pingRect should be bigger than viewRect (to continue ping when moving)
 
+                    float highestToolCategoryPower = activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value > 0).Max(kv => kv.Value);
+                    var categoriesPingedSet = new HashSet<Category>(activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value == highestToolCategoryPower).Select(kv => kv.Key));
+
+                    var targetsByDelayDict = new Dictionary<int, Queue<Sprite>>();
+
                     foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
                     {
-                        if (activeToolbarPiece.pieceInfo.toolMultiplierByCategory.TryGetValue(targetSprite.boardPiece.pieceInfo.category, out float value) &&
-                            value > 0 &&
-                            targetSprite.boardPiece != this)
+                        if (categoriesPingedSet.Contains(targetSprite.boardPiece.pieceInfo.category) && targetSprite.boardPiece != this)
                         {
-                            Scheduler.ExecutionDelegate colorizeDlgt = () =>
-                            {
-                                if (targetSprite.IsInCameraRect)
-                                {
-                                    // TODO check why the effect is not visible on dig sites
-                                    targetSprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
-                                    targetSprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 80, fadeFramesLeft: 80));
-                                }
-                            };
-
-                            int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.05f * Preferences.worldScale);
-                            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
+                            int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.005f * (Preferences.worldScale * 2));
+                            if (!targetsByDelayDict.ContainsKey(delay)) targetsByDelayDict[delay] = new Queue<Sprite>();
+                            targetsByDelayDict[delay].Enqueue(targetSprite);
                         }
                     }
+
+                    foreach (var kvp in targetsByDelayDict)
+                    {
+                        int delay = kvp.Key;
+                        Queue<Sprite> targetQueue = kvp.Value;
+
+                        Scheduler.ExecutionDelegate colorizeDlgt = () =>
+                        {
+                            while (true)
+                            {
+                                Sprite targetSprite = targetQueue.Dequeue();
+
+                                if (targetSprite.IsInCameraRect)
+                                {
+                                    targetSprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
+                                    targetSprite.effectCol.AddEffect(new ColorizeInstance(color: Color.White, minAlpha: 0.2f, framesLeft: 40, fadeFramesLeft: 40));
+                                }
+
+                                if (targetQueue.Count  == 0) break;
+                            }
+                        };
+
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
+                    }
+
                 }
                 else Sound.QuickPlay(name: SoundData.Name.Error);
             }
