@@ -935,36 +935,39 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldHighlightPickups)) Preferences.pickupsHighlighted = !Preferences.pickupsHighlighted;
 
-            if (canSeeAnything)
+            BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+
+            bool canPing = canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
+
+            if (canPing)
             {
-                BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+                VirtButton.ButtonHighlightOnNextFrame(VButName.PingArea);
+                ControlTips.TipHighlightOnNextFrame(tipName: "ping");
+            }
 
-                bool canPing = activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
-
+            if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPingArea))
+            {
                 if (canPing)
                 {
-                    VirtButton.ButtonHighlightOnNextFrame(VButName.PingArea);
-                    ControlTips.TipHighlightOnNextFrame(tipName: "ping");
+                    Sound.QuickPlay(name: SoundData.Name.SonarPing);
 
-                    if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPingArea))
+                    Rectangle pingRect = this.world.camera.viewRect;
+                    pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2); // pingRect should be bigger than viewRect (to continue ping when moving)
+
+                    foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
                     {
-                        Sound.QuickPlay(name: SoundData.Name.SonarPing);
-
-                        Rectangle pingRect = this.world.camera.viewRect;
-                        pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2);
-
-                        foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
+                        if (activeToolbarPiece.pieceInfo.toolMultiplierByCategory.TryGetValue(targetSprite.boardPiece.pieceInfo.category, out float value) &&
+                            value > 0 &&
+                            targetSprite.boardPiece != this)
                         {
-                            if (activeToolbarPiece.pieceInfo.toolMultiplierByCategory.ContainsKey(targetSprite.boardPiece.pieceInfo.category) ||
-                                targetSprite.boardPiece == this)
-                            {
-                                continue;
-                            }
-
                             Scheduler.ExecutionDelegate colorizeDlgt = () =>
                             {
-                                targetSprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
-                                targetSprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 900, fadeFramesLeft: 90));
+                                if (targetSprite.IsInCameraRect)
+                                {
+                                    // TODO check why the effect is not visible on dig sites
+                                    targetSprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
+                                    targetSprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 80, fadeFramesLeft: 80));
+                                }
                             };
 
                             int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.05f * Preferences.worldScale);
@@ -972,6 +975,7 @@ namespace SonOfRobin
                         }
                     }
                 }
+                else Sound.QuickPlay(name: SoundData.Name.Error);
             }
 
             bool pickUp = pieceToPickUp != null && (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
