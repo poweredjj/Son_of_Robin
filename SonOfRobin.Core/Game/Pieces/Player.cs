@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -842,6 +841,8 @@ namespace SonOfRobin
                 return;
             }
 
+            bool canSeeAnything = this.CanSeeAnything;
+
             if (!this.buffEngine.HasBuff(BuffEngine.BuffType.Sprint) && !this.buffEngine.HasBuff(BuffEngine.BuffType.SprintCooldown))
             {
                 VirtButton.ButtonHighlightOnNextFrame(VButName.Sprint);
@@ -861,7 +862,7 @@ namespace SonOfRobin
                 }
             }
 
-            if (this.world.CurrentUpdate % 121 == 0 && this.CanSeeAnything) this.world.HintEngine.CheckForPieceHintToShow();
+            if (this.world.CurrentUpdate % 121 == 0 && canSeeAnything) this.world.HintEngine.CheckForPieceHintToShow();
 
             this.ExpendEnergy(energyAmount: 1.0f, addFatigue: false);
             this.Walk();
@@ -934,27 +935,41 @@ namespace SonOfRobin
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldHighlightPickups)) Preferences.pickupsHighlighted = !Preferences.pickupsHighlighted;
 
-            if (Keyboard.HasBeenPressed(Keys.NumPad7) && this.CanSeeAnything) // TODO replace with new, unique mapping
+            if (canSeeAnything)
             {
                 BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
-                if (activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile)
+
+                bool canPing = activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
+
+                if (canPing)
                 {
-                    Sound.QuickPlay(name: SoundData.Name.SonarPing);
+                    VirtButton.ButtonHighlightOnNextFrame(VButName.PingArea);
+                    ControlTips.TipHighlightOnNextFrame(tipName: "ping");
 
-                    // TODO replace GetPiecesInCameraView with a larger rect
-                    foreach (BoardPiece target in this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true)
-                        .Where(
-                        target => activeToolbarPiece.pieceInfo.toolMultiplierByCategory.ContainsKey(target.pieceInfo.category) &&
-                        target != this))
+                    if (InputMapper.HasBeenPressed(InputMapper.Action.WorldPingArea))
                     {
-                        Scheduler.ExecutionDelegate colorizeDlgt = () =>
-                        {
-                            target.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
-                            target.sprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 60 * 2, fadeFramesLeft: 60 * 2));
-                        };
+                        Sound.QuickPlay(name: SoundData.Name.SonarPing);
 
-                        int delay = (int)(Vector2.Distance(this.sprite.position, target.sprite.position) * 0.03f);
-                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
+                        Rectangle pingRect = this.world.camera.viewRect;
+                        pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2);
+
+                        foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
+                        {
+                            if (activeToolbarPiece.pieceInfo.toolMultiplierByCategory.ContainsKey(targetSprite.boardPiece.pieceInfo.category) ||
+                                targetSprite.boardPiece == this)
+                            {
+                                continue;
+                            }
+
+                            Scheduler.ExecutionDelegate colorizeDlgt = () =>
+                            {
+                                targetSprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
+                                targetSprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 900, fadeFramesLeft: 90));
+                            };
+
+                            int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.05f * Preferences.worldScale);
+                            new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
+                        }
                     }
                 }
             }

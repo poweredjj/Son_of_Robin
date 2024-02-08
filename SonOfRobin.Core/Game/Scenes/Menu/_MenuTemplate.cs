@@ -1532,7 +1532,7 @@ namespace SonOfRobin
 
             new Separator(menu: menu, name: "", isEmpty: true);
             new Separator(menu: menu, name: "field");
-            foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "highlightPickups", "sprint", "zoomOut" })
+            foreach (string propertyName in new List<string> { "interact", "useTool", "pickUp", "highlightPickups", "pingArea", "sprint", "zoomOut" })
             { new Selector(menu: menu, name: InputPackage.GetReadablePropertyName(propertyName), valueDict: keysOrButtonsDict, targetObj: newMapping, propertyName: propertyName, captureInput: true, captureKeys: captureKeys, captureButtons: captureButtons); }
 
             new Separator(menu: menu, name: "", isEmpty: true);

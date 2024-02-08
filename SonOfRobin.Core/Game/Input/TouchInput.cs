@@ -440,6 +440,10 @@ namespace SonOfRobin
 
                         new VirtButton(name: VButName.HighlightPickups, label: "HIGHLIGHT", bgColorPressed: Color.LimeGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, switchButton: true, activeCoupledObj: preferences, activeCoupledVarName: "pickupsHighlighted");
 
+                        xPos += xShift;
+
+                        new VirtButton(name: VButName.PingArea, label: "PING", bgColorPressed: Color.Blue, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size, isHighlighted: false);
+
                         return;
                     }
 
