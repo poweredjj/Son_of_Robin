@@ -30,33 +30,35 @@ namespace SonOfRobin
         public List<ParticleEngine.Preset> FinalDebrisTypeList { get; private set; }  // after destroying piece
         private readonly List<DroppedPiece> firstDroppedPieces; // during hitting piece
         private readonly List<DroppedPiece> finalDroppedPieces; // after destroying piece
+        private readonly bool multipliedByBonus;
 
-        public Yield(List<DroppedPiece> firstDroppedPieces = null, List<DroppedPiece> finalDroppedPieces = null, List<ParticleEngine.Preset> firstDebrisTypeList = null, List<ParticleEngine.Preset> finalDebrisTypeList = null)
+        public Yield(List<DroppedPiece> firstDroppedPieces = null, List<DroppedPiece> finalDroppedPieces = null, List<ParticleEngine.Preset> firstDebrisTypeList = null, List<ParticleEngine.Preset> finalDebrisTypeList = null, bool multipliedByBonus = true)
         {
             this.firstDroppedPieces = firstDroppedPieces == null ? new List<DroppedPiece>() : firstDroppedPieces;
             this.finalDroppedPieces = finalDroppedPieces == null ? new List<DroppedPiece>() : finalDroppedPieces;
             this.FirstDebrisTypeList = firstDebrisTypeList == null ? new List<ParticleEngine.Preset>() : firstDebrisTypeList;
             this.FinalDebrisTypeList = finalDebrisTypeList == null ? new List<ParticleEngine.Preset>() : finalDebrisTypeList;
+            this.multipliedByBonus = multipliedByBonus;
         }
 
         public int DropFirstPieces(int hitPower, BoardPiece piece)
         {
-            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: hitPower / piece.maxHitPoints, droppedPieceList: this.firstDroppedPieces, addBonus: this.multipliedByBonus);
             this.DropDebris(piece: piece, firstDebris: true, finalDebris: false);
             return droppedPiecesCount;
         }
 
         public int DropFinalPieces(BoardPiece piece, float chanceMultiplier = 1f, float countMultiplier = 1f)
         {
-            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces);
+            int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces, addBonus: this.multipliedByBonus);
             this.DropDebris(piece: piece, firstDebris: false, finalDebris: true);
             return droppedPiecesCount;
         }
 
         public List<BoardPiece> GetAllPieces(BoardPiece piece)
         {
-            var firstPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.firstDroppedPieces);
-            var finalPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.finalDroppedPieces);
+            var firstPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.firstDroppedPieces, addBonus: this.multipliedByBonus);
+            var finalPieces = GetPieces(piece: piece, chanceMultiplier: 1f, droppedPieceList: this.finalDroppedPieces, addBonus: this.multipliedByBonus);
             return firstPieces.Concat(finalPieces).ToList();
         }
 
@@ -113,7 +115,7 @@ namespace SonOfRobin
             }
         }
 
-        private static List<BoardPiece> GetPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, float countMultiplier = 1f)
+        private static List<BoardPiece> GetPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, bool addBonus, float countMultiplier = 1f)
         {
             Type type = piece.GetType();
 
@@ -143,7 +145,7 @@ namespace SonOfRobin
                 {
                     int dropCount = random.Next(droppedPiece.minNumberToDrop, droppedPiece.maxNumberToDrop + extraDroppedPieces + 1);
                     int bonusCount = 0;
-                    if (countMultiplier != 1 && !piecesNotMultipliedByBonus.Contains(droppedPiece.pieceName))
+                    if (addBonus && countMultiplier != 1 && !piecesNotMultipliedByBonus.Contains(droppedPiece.pieceName))
                     {
                         int originalDropCount = dropCount;
                         dropCount = (int)Math.Max(dropCount * countMultiplier, 1);
@@ -175,10 +177,10 @@ namespace SonOfRobin
             return piecesList;
         }
 
-        private static int DropPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, float countMultiplier = 1f)
+        private static int DropPieces(BoardPiece piece, float chanceMultiplier, List<DroppedPiece> droppedPieceList, bool addBonus, float countMultiplier = 1f)
         {
             int droppedPiecesCount = 0;
-            var piecesToDrop = GetPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: droppedPieceList);
+            var piecesToDrop = GetPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: droppedPieceList, addBonus: addBonus);
             int noOfTries = 10;
 
             foreach (BoardPiece yieldPiece in piecesToDrop)

@@ -129,8 +129,15 @@ namespace SonOfRobin
 
                 foreach (var kvp in this.ingredients)
                 {
-                    for (int i = 0; i < kvp.Value; i++)
-                    { finalDroppedPieces.Add(new Yield.DroppedPiece(pieceName: kvp.Key, chanceToDrop: 70, maxNumberToDrop: 1)); }
+                    PieceTemplate.Name ingredientName = kvp.Key;
+                    int ingredientCount = kvp.Value;
+
+                    if (CraftData.namesExcludedFromAntiCraft.Contains(ingredientName)) continue;
+
+                    for (int i = 0; i < ingredientCount; i++)
+                    {
+                        finalDroppedPieces.Add(new Yield.DroppedPiece(pieceName: ingredientName, chanceToDrop: 70, maxNumberToDrop: 1));
+                    }
                 }
 
                 BoardPiece.Category category = PieceInfo.GetInfo(pieceToCreate).category;
@@ -148,7 +155,7 @@ namespace SonOfRobin
                 };
 
                 Yield.antiCraftRecipes[this.pieceToCreate] = this;
-                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, firstDebrisTypeList: debrisTypeList);
+                return new Yield(firstDroppedPieces: new List<Yield.DroppedPiece> { }, finalDroppedPieces: finalDroppedPieces, firstDebrisTypeList: debrisTypeList, multipliedByBonus: false);
             }
 
             public bool CheckIfStorageContainsAllIngredients(PieceStorage storage)
