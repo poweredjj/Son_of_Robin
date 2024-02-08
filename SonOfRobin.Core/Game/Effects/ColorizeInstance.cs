@@ -8,13 +8,15 @@ namespace SonOfRobin
         private readonly bool checkAlpha;
         private readonly int fadeFramesTotal;
         private int fadeFramesLeft;
+        private float minAlpha;
 
-        public ColorizeInstance(Color color, bool checkAlpha = true, int framesLeft = 1, int priority = 1, int fadeFramesLeft = 0) : base(effect: SonOfRobinGame.EffectColorize, framesLeft: framesLeft, priority: priority)
+        public ColorizeInstance(Color color, bool checkAlpha = true, int framesLeft = 1, int priority = 1, int fadeFramesLeft = 0, float minAlpha = 0.5f) : base(effect: SonOfRobinGame.EffectColorize, framesLeft: framesLeft, priority: priority)
         {
             this.color = color.ToVector4();
             this.checkAlpha = checkAlpha;
             this.fadeFramesTotal = fadeFramesLeft;
             this.fadeFramesLeft = fadeFramesLeft;
+            this.minAlpha = minAlpha;
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor)
@@ -27,6 +29,7 @@ namespace SonOfRobin
                 opacity = (float)this.fadeFramesLeft / (float)this.fadeFramesTotal;
             }
 
+            this.effect.Parameters["minAlpha"].SetValue(this.minAlpha);
             this.effect.Parameters["colorizeColor"].SetValue(this.color);
             this.effect.Parameters["opacity"].SetValue(opacity * this.intensityForTweener);
             this.effect.Parameters["checkAlpha"].SetValue(this.checkAlpha);

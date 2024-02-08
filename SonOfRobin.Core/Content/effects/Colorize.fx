@@ -13,6 +13,7 @@ float4 colorizeColor;
 float opacity;
 bool checkAlpha;
 float4 drawColor;
+float minAlpha;
 
 struct VertexShaderOutput
 {
@@ -27,7 +28,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 originalColor = tex2D(s0, input.TextureCoordinates);
 
-    if (checkAlpha && originalColor.a <= 0.5) return originalColor * drawColor;
+    if (checkAlpha && originalColor.a <= minAlpha)
+        return originalColor * drawColor;
 	
 	float4 gray;
 	gray.rgb = (originalColor.r + originalColor.g + originalColor.b) / 3.0;
