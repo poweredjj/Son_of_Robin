@@ -10546,6 +10546,12 @@
 /processorParam:Quality=Best
 /build:sound/542560__matthewholdensound__owi-crystalshatter-2.ogg
 
+#begin sound/543932__mrlindstrom__sonarping.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/543932__mrlindstrom__sonarping.ogg
+
 #begin sound/544634__eminyildirim__fire-sizzle.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

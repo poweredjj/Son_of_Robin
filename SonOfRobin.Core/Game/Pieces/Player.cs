@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
 using System.Collections.Generic;
@@ -932,6 +933,31 @@ namespace SonOfRobin
             }
 
             if (InputMapper.HasBeenPressed(InputMapper.Action.WorldHighlightPickups)) Preferences.pickupsHighlighted = !Preferences.pickupsHighlighted;
+
+            if (Keyboard.HasBeenPressed(Keys.NumPad7) && this.CanSeeAnything) // TODO replace with new, unique mapping
+            {
+                BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
+                if (activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile)
+                {
+                    Sound.QuickPlay(name: SoundData.Name.SonarPing);
+
+                    // TODO replace GetPiecesInCameraView with a larger rect
+                    foreach (BoardPiece target in this.world.Grid.GetPiecesInCameraView(groupName: Cell.Group.Visible, compareWithCameraRect: true)
+                        .Where(
+                        target => activeToolbarPiece.pieceInfo.toolMultiplierByCategory.ContainsKey(target.pieceInfo.category) &&
+                        target != this))
+                    {
+                        Scheduler.ExecutionDelegate colorizeDlgt = () =>
+                        {
+                            target.sprite.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
+                            target.sprite.effectCol.AddEffect(new ColorizeInstance(color: new Color(255, 255, 0), framesLeft: 60 * 2, fadeFramesLeft: 60 * 2));
+                        };
+
+                        int delay = (int)(Vector2.Distance(this.sprite.position, target.sprite.position) * 0.03f);
+                        new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
+                    }
+                }
+            }
 
             bool pickUp = pieceToPickUp != null && (InputMapper.HasBeenPressed(InputMapper.Action.WorldPickUp) ||
                 (Preferences.PointToInteract && pieceToPickUp.sprite.GfxRect.Contains(this.pointWalkTarget)));

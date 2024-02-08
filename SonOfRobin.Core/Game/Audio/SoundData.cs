@@ -123,6 +123,7 @@ namespace SonOfRobin
             PaperMove1 = 78,
             PaperMove2 = 79,
             TurnPage = 80,
+            SonarPing = 238,
 
             GameOver = 81,
 
@@ -550,6 +551,7 @@ namespace SonOfRobin
             { Name.OpenSeaStormCrash, "441008__girlwithsoundrecorder__rough-baltic-sea_crash" },
             { Name.BoatHorn, "441223__devy32__boat-horn" },
             { Name.MusicBoxEnding, "72650__lg__music-box-01" },
+            { Name.SonarPing, "543932__mrlindstrom__sonarping" },
             };
     }
 }
