@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace SonOfRobin
 {
@@ -50,6 +51,8 @@ namespace SonOfRobin
 
         public int DropFinalPieces(BoardPiece piece, float chanceMultiplier = 1f, float countMultiplier = 1f)
         {
+            piece.world.compendium.AddDestroyedSource(piece.name);
+
             int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces, addBonus: this.multipliedByBonus);
             this.DropDebris(piece: piece, firstDebris: false, finalDebris: true);
             return droppedPiecesCount;
@@ -182,6 +185,8 @@ namespace SonOfRobin
             int droppedPiecesCount = 0;
             var piecesToDrop = GetPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: droppedPieceList, addBonus: addBonus);
             int noOfTries = 10;
+
+            piece.world.compendium.AddMaterialsForSource(sourceName: piece.name, materialsList: piecesToDrop);
 
             foreach (BoardPiece yieldPiece in piecesToDrop)
             {

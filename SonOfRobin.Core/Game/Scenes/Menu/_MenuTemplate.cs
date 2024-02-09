@@ -28,6 +28,7 @@ namespace SonOfRobin
             OpenIslandTemplate,
             Pause,
             Stats,
+            Compendium,
             Load,
             Save,
             Tutorials,
@@ -564,6 +565,8 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "options", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Options } });
 
+                        new Invoker(menu: menu, name: "compendium", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Compendium } });
+
                         new Invoker(menu: menu, name: "stats", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Stats } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "statistics, levels, etc.", color: Color.White, scale: 1f) });
 
@@ -593,6 +596,27 @@ namespace SonOfRobin
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
                         }
+                        return menu;
+                    }
+
+                case Name.Compendium:
+                    {
+                        World world = World.GetTopWorld();
+                        Compendium compendium = world.compendium;
+
+                        Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
+                        {
+                            bgColor = new Color(75, 37, 110) * 0.75f
+                        };
+
+                        foreach (var kvp in compendium.destroyedSources)
+                        {
+                            PieceTemplate.Name sourceName = kvp.Key;
+                            int sourceCount = kvp.Value;
+
+                            new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).readableName} ({sourceCount})", imageList: new List<ImageObj> { PieceInfo.GetImageObj(sourceName) }, taskName: Scheduler.TaskName.Empty);
+                        }
+
                         return menu;
                     }
 

@@ -305,6 +305,7 @@ namespace SonOfRobin
                     { "cookStats", this.world.cookStats.Serialize() },
                     { "brewStats", this.world.brewStats.Serialize() },
                     { "smeltStats", this.world.smeltStats.Serialize() },
+                    { "compendium", this.world.compendium.Serialize() },
                     { "meatHarvestStats", this.world.meatHarvestStats.Serialize() },
                     { "identifiedPieces", this.world.identifiedPieces },
                     { "mapData", this.world.map.Serialize() },

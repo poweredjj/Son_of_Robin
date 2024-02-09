@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace SonOfRobin
 {
@@ -245,6 +246,8 @@ namespace SonOfRobin
             {
                 if (target.GetType() == typeof(Animal))
                 {
+                    world.compendium.AddDestroyedSource(sourceName: target.name);
+
                     PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     target.pieceInfo.Yield.DropDebris(piece: target, particlesToEmit: 100);
                     if (target.alive) target.Kill(); // has to be killed now...
