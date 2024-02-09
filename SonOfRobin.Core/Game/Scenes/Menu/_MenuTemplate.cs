@@ -604,7 +604,7 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
                         Compendium compendium = world.compendium;
                         var materialsBySources = compendium.MaterialsBySources;
-                        var ignoredMaterials = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump };
+                        var ignoredMaterials = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken };
 
                         Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
                         {
@@ -633,24 +633,37 @@ namespace SonOfRobin
 
                                 var extPropertiesDict = allowedTerrain.GetExtPropertiesDict();
 
+                                bool isInBiome = false;
+
                                 foreach (var kvp2 in extPropertiesDict)
                                 {
                                     ExtBoardProps.Name extName = kvp2.Key;
                                     bool extVal = kvp2.Value;
 
+                                    if (extVal && extName.ToString().ToLower().Contains("biome")) isInBiome = true;
+
                                     if (extVal) whereToFindTextLines.Add(extName.ToString().ToLower().Replace("biome", "").Replace("outerbeach", "outer beach"));
                                 }
 
-                                bool isInWater = allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Height) < Terrain.waterLevelMax;
-
-                                if (extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && !extPropertiesDict[ExtBoardProps.Name.Sea] && isInWater)
+                                if (!isInBiome)
                                 {
-                                    whereToFindTextLines.Add("lake");
+                                    bool isInWater = allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Height) < Terrain.waterLevelMax;
+
+                                    if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && !extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("lake");
+                                    if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("sea");
+
+                                    bool isInMountains = allowedTerrain.GetMinValForTerrainName(Terrain.Name.Height) >= Terrain.rocksLevelMin;
+
+                                    if (isInMountains) whereToFindTextLines.Add("mountains");
+                                    if (!isInWater && !isInMountains && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 100) whereToFindTextLines.Add("desert");
                                 }
 
-                                infoTextList.Add(new InfoWindow.TextEntry(text: "where to find:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                                if (whereToFindTextLines.Count > 0)
+                                {
+                                    infoTextList.Add(new InfoWindow.TextEntry(text: "where to find:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
 
-                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", whereToFindTextLines), imageList: whereToFindImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                                    infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", whereToFindTextLines) + "\n", imageList: whereToFindImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                                }
                             }
 
                             // materials dropped
@@ -664,7 +677,7 @@ namespace SonOfRobin
                                 var textLinesMissingMaterials = new List<string>();
                                 var imageListMissingMaterials = new List<ImageObj>();
 
-                                var allMaterialNames = sourcePieceInfo.Yield.AllPieceNames;
+                                var allMaterialNames = sourcePieceInfo.Yield != null ? sourcePieceInfo.Yield.AllPieceNames : [];
 
                                 var foundMaterials = allMaterialNames.Where(name => !ignoredMaterials.Contains(name) && allMaterials.Contains(name));
                                 var missingMaterials = allMaterialNames.Where(name => !ignoredMaterials.Contains(name) && !allMaterials.Contains(name));
@@ -684,7 +697,7 @@ namespace SonOfRobin
 
                                 if (materialsTextLines.Count > 0)
                                 {
-                                    infoTextList.Add(new InfoWindow.TextEntry(text: "\ndrops:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                                    infoTextList.Add(new InfoWindow.TextEntry(text: "drops:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
 
                                     infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", materialsTextLines), imageList: materialsImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
                                 }
