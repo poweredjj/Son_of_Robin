@@ -633,29 +633,38 @@ namespace SonOfRobin
 
                                 var extPropertiesDict = allowedTerrain.GetExtPropertiesDict();
 
-                                bool isInBiome = false;
+                                bool customLocationName = sourcePieceInfo.whereToFind != null;
 
-                                foreach (var kvp2 in extPropertiesDict)
+                                if (customLocationName) whereToFindTextLines.Add(sourcePieceInfo.whereToFind);
+
+                                if (!customLocationName)
                                 {
-                                    ExtBoardProps.Name extName = kvp2.Key;
-                                    bool extVal = kvp2.Value;
+                                    bool isInBiome = false;
 
-                                    if (extVal && extName.ToString().ToLower().Contains("biome")) isInBiome = true;
+                                    foreach (var kvp2 in extPropertiesDict)
+                                    {
+                                        ExtBoardProps.Name extName = kvp2.Key;
+                                        bool extVal = kvp2.Value;
 
-                                    if (extVal) whereToFindTextLines.Add(extName.ToString().ToLower().Replace("biome", "").Replace("outerbeach", "outer beach"));
-                                }
+                                        if (extVal && extName.ToString().Contains("Biome")) isInBiome = true;
 
-                                if (!isInBiome)
-                                {
-                                    bool isInWater = allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Height) < Terrain.waterLevelMax;
+                                        if (extVal) whereToFindTextLines.Add(extName.ToString().ToLower().Replace("biome", "").Replace("outerbeach", "outer beach"));
+                                    }
 
-                                    if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && !extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("lake");
-                                    if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("sea");
+                                    if (!isInBiome)
+                                    {
+                                        bool isInWater = allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Height) < Terrain.waterLevelMax;
 
-                                    bool isInMountains = allowedTerrain.GetMinValForTerrainName(Terrain.Name.Height) >= Terrain.rocksLevelMin;
+                                        if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && !extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("lake");
+                                        if (isInWater && extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && extPropertiesDict[ExtBoardProps.Name.Sea]) whereToFindTextLines.Add("sea");
 
-                                    if (isInMountains) whereToFindTextLines.Add("mountains");
-                                    if (!isInWater && !isInMountains && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 100) whereToFindTextLines.Add("desert");
+                                        bool isInMountains = !isInWater && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Height) >= Terrain.rocksLevelMin;
+
+                                        if (isInMountains) whereToFindTextLines.Add("mountains");
+                                        if (!isInWater && !isInMountains && allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Humidity) < 110 && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 5) whereToFindTextLines.Add("desert");   
+                                        else if (!isInWater && !isInMountains && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) >= 140) whereToFindTextLines.Add("grasslands");
+
+                                    }
                                 }
 
                                 if (whereToFindTextLines.Count > 0)

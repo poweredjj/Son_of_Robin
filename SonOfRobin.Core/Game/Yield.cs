@@ -9,7 +9,8 @@ namespace SonOfRobin
     public class Yield
     {
         public static Dictionary<PieceTemplate.Name, Craft.Recipe> antiCraftRecipes = new() { };
-        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken, PieceTemplate.Name.TentModernPacked, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.TorchSmall, PieceTemplate.Name.Burger, PieceTemplate.Name.GlassesVelvet, PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.ChestTreasureNormal, PieceTemplate.Name.ChestTreasureBig, PieceTemplate.Name.HumanSkeleton, PieceTemplate.Name.TorchSmall, PieceTemplate.Name.TorchBig };
+
+        public static HashSet<PieceTemplate.Name> piecesNotMultipliedByBonus = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken, PieceTemplate.Name.TentModernPacked, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.CrystalDepositSmall, PieceTemplate.Name.TorchSmall, PieceTemplate.Name.Burger, PieceTemplate.Name.GlassesVelvet, PieceTemplate.Name.EmptyBottle, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.ChestTreasureNormal, PieceTemplate.Name.ChestTreasureBig, PieceTemplate.Name.HumanSkeleton, PieceTemplate.Name.TorchSmall, PieceTemplate.Name.TorchBig, PieceTemplate.Name.BeltSmall, PieceTemplate.Name.BeltMedium, PieceTemplate.Name.BeltBig, PieceTemplate.Name.BeltLuxurious, PieceTemplate.Name.BackpackSmall, PieceTemplate.Name.BackpackMedium, PieceTemplate.Name.BackpackBig, PieceTemplate.Name.BackpackLuxurious };
 
         public readonly struct DroppedPiece
         {

@@ -16,6 +16,7 @@ namespace SonOfRobin
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
             public readonly string secretName; // "real" name, that is normally hidden from player and replaced with something else, to make it hard to find the item by the name alone
+            public readonly string whereToFind; // optional text, which replaces generic compendium location
             public readonly string description;
             public readonly AllowedTerrain allowedTerrain;
             public readonly Type type;
@@ -136,6 +137,7 @@ namespace SonOfRobin
                 this.initialActiveState = piece.activeState;
                 this.readableName = piece.readableName;
                 this.secretName = piece.readableName; // normally the same as the "regular" one
+                this.whereToFind = null;
                 this.description = piece.description;
                 this.buffList = piece.buffList;
                 this.canBeHit = piece.canBeHit;
@@ -305,6 +307,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassRegular:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
@@ -322,6 +325,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
+                        this.whereToFind = "grasslands";
                         this.secretName = "glow grass";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
@@ -341,6 +345,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassDesert:
+                        this.whereToFind = "desert";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.8f;
                         this.maxMassForSize = new int[] { 250 };
@@ -382,6 +387,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Rushes:
+                        this.whereToFind = "shore\nshallow water";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.2f;
                         this.maxMassForSize = new int[] { 400 };
@@ -474,6 +480,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.TomatoPlant:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.4f;
                         this.maxMassForSize = new int[] { 450, 900 };
@@ -495,6 +502,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CoffeeShrub:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.4f;
                         this.maxMassForSize = new int[] { 600 };
@@ -516,6 +524,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CarrotPlant:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.4f;
                         this.plantMassToBurn = 9;
@@ -559,6 +568,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.MushroomPlant:
+                        this.whereToFind = "caves";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.6f;
                         this.maxMassForSize = new int[] { 450, 900 };
@@ -580,6 +590,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.TreeSmall:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
@@ -607,6 +618,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.TreeBig:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
@@ -634,6 +646,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Oak:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
@@ -664,6 +677,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.AppleTree:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
@@ -693,6 +707,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CherryTree:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 1000, 2500 };
@@ -722,6 +737,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.PalmTree:
+                        this.whereToFind = "shore";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
@@ -749,6 +765,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BananaTree:
+                        this.whereToFind = "shore";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.65f;
                         this.maxMassForSize = new int[] { 2500, 8000, 10000 };
@@ -1002,6 +1019,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Fox:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 60;
                         this.fireAffinity = 0.65f;
@@ -1034,6 +1052,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Bear:
+                        this.whereToFind = "caves";
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 80;
                         this.fireAffinity = 0.65f;
@@ -1065,6 +1084,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Frog:
+                        this.whereToFind = "shallow water\nshore";
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 10;
                         this.fireAffinity = 0.15f;
@@ -1159,6 +1179,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.JarTreasureRich:
+                        this.secretName = this.readableName += " (good)";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
@@ -1188,6 +1209,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.JarTreasurePoor:
+                        this.secretName = this.readableName += " (poor)";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.4f;
                         this.movesWhenDropped = false;
@@ -1730,6 +1752,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CaveWeakMinerals:
+                        this.whereToFind = "caves";
                         this.category = BoardPiece.Category.Stone;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
@@ -1743,6 +1766,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CoalDeposit:
+                        this.whereToFind = "caves";
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
@@ -1755,6 +1779,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.IronDeposit:
+                        this.whereToFind = "caves";
                         this.category = BoardPiece.Category.Stone;
                         this.placeMaxDistance = 1000;
                         this.blocksMovement = true;
@@ -1784,6 +1809,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
+                        this.whereToFind = "grasslands";
                         this.secretName = this.readableName + " (forest)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
@@ -1869,6 +1895,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CrystalDepositSmall:
+                        this.whereToFind = "deep caves";
                         this.category = BoardPiece.Category.Crystal;
                         this.movesWhenDropped = false;
                         this.blocksMovement = true;
@@ -1882,6 +1909,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CrystalDepositBig:
+                        this.whereToFind = "deep caves";
                         this.category = BoardPiece.Category.Crystal;
                         this.blocksMovement = true;
                         this.placeMaxDistance = 1000;
