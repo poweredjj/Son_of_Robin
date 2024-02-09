@@ -608,7 +608,7 @@ namespace SonOfRobin
 
                         Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
                         {
-                            bgColor = new Color(8, 71, 13) * 0.75f
+                            bgColor = new Color(8, 71, 13) * 0.85f
                         };
 
                         foreach (var kvp in compendium.DestroyedSources.OrderBy(kvp => kvp.Key))
@@ -714,6 +714,9 @@ namespace SonOfRobin
                            
                             new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName}", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                         }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
 
                         return menu;
                     }
