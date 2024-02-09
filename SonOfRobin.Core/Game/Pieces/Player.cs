@@ -940,7 +940,7 @@ namespace SonOfRobin
 
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
-            bool canPing = this.world.CurrentUpdate >= this.pingCooldownUntilFrame && canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit && !activeToolbarPiece.pieceInfo.toolShootsProjectile;
+            bool canPing = this.world.CurrentUpdate >= this.pingCooldownUntilFrame && canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit;
 
             if (canPing)
             {
