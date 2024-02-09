@@ -15,6 +15,7 @@ namespace SonOfRobin
         {
             public readonly PieceTemplate.Name name;
             public readonly string readableName;
+            public readonly string secretName; // "real" name, that is normally hidden from player and replaced with something else, to make it hard to find the item by the name alone
             public readonly string description;
             public readonly AllowedTerrain allowedTerrain;
             public readonly Type type;
@@ -134,6 +135,7 @@ namespace SonOfRobin
                 this.speed = piece.speed;
                 this.initialActiveState = piece.activeState;
                 this.readableName = piece.readableName;
+                this.secretName = piece.readableName; // normally the same as the "regular" one
                 this.description = piece.description;
                 this.buffList = piece.buffList;
                 this.canBeHit = piece.canBeHit;
@@ -320,6 +322,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GrassGlow:
+                        this.secretName = "glow grass";
                         this.category = BoardPiece.Category.SmallPlant;
                         this.fireAffinity = 0.3f;
                         this.maxMassForSize = new int[] { 100, 150 };
@@ -1763,6 +1766,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.BeachDigSite:
+                        this.secretName = this.readableName + " (beach)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -1779,6 +1783,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.ForestDigSite:
+                        this.secretName = this.readableName + " (forest)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -1795,6 +1800,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.DesertDigSite:
+                        this.secretName = this.readableName + " (desert)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -1810,6 +1816,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.GlassDigSite:
+                        this.secretName = this.readableName + " (glass)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -1824,6 +1831,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.SwampDigSite:
+                        this.secretName = this.readableName + " (swamp)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -1842,6 +1850,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.RuinsDigSite:
+                        this.secretName = this.readableName + " (ruins)";
                         this.category = BoardPiece.Category.Dirt;
                         this.placeMaxDistance = 1000;
                         this.delayAfterCreationMinutes = 60;
@@ -3061,6 +3070,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CaveEntranceOutside:
+                        this.secretName = "cave entrance (outside)";
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
@@ -3069,6 +3079,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CaveEntranceInside:
+                        this.secretName = "cave entrance (inside)";
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;
@@ -3083,6 +3094,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CaveExitEmergency:
+                        this.secretName = "cave exit (emergency)";
                         this.category = BoardPiece.Category.Indestructible;
                         this.boardTask = Scheduler.TaskName.UseEntrance;
                         this.interactVirtButtonName = TextureBank.TextureName.VirtButtonEnterExit;

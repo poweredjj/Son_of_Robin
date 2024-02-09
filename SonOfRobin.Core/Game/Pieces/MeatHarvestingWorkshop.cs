@@ -199,6 +199,8 @@ namespace SonOfRobin
                 totalObtainedPieces.AddRange(basePieces);
                 totalObtainedPieces.AddRange(bonusPieces);
 
+                this.world.compendium.AddMaterialsForSource(sourceName: animalPiece.name, materialsList: totalObtainedPieces);
+
                 new Scheduler.Task(taskName: Scheduler.TaskName.PlaySoundByName, delay: 15, executeHelper: SoundData.Name.HitFlesh1);
 
                 if (totalObtainedPieces.Count >= 2)

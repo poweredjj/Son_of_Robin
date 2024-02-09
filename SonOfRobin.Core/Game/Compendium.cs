@@ -7,9 +7,14 @@ namespace SonOfRobin
 {
     public class Compendium
     {
-        public readonly Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> materialsBySources;
-        public readonly Dictionary<PieceTemplate.Name, int> destroyedSources;
-        public readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
+        private readonly Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> materialsBySources;
+        private readonly Dictionary<PieceTemplate.Name, int> destroyedSources;
+        private readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
+
+        // to avoid exposing original dictionaries
+        public Dictionary<PieceTemplate.Name, int> DestroyedSources { get { return this.destroyedSources.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
+        public Dictionary<PieceTemplate.Name, int> AcquiredMaterials { get { return this.acquiredMaterials.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
+        public Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> MaterialsBySources { get { return this.materialsBySources.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
 
         public Compendium()
         {
@@ -92,7 +97,7 @@ namespace SonOfRobin
                 PieceTemplate.Name materialName = kvp.Key;
                 int materialCount = kvp.Value;
 
-                MessageLog.Add(debugMessage: false, text: $"Compendium: adding material: {materialName} x{materialCount}", textColor: Color.Orange); // for testing
+                MessageLog.Add(debugMessage: true, text: $"Compendium - adding material: {materialName} x{materialCount}");
 
                 if (!this.materialsBySources.ContainsKey(sourceName)) this.materialsBySources[sourceName] = [];
                 this.materialsBySources[sourceName].Add(materialName);
@@ -104,7 +109,7 @@ namespace SonOfRobin
 
         public void AddDestroyedSource(PieceTemplate.Name sourceName)
         {
-            MessageLog.Add(debugMessage: false, text: $"Compendium: adding destroyed source: {sourceName}", textColor: Color.Orange); // for testing
+            MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;

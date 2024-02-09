@@ -33,6 +33,18 @@ namespace SonOfRobin
         private readonly List<DroppedPiece> finalDroppedPieces; // after destroying piece
         private readonly bool multipliedByBonus;
 
+        public PieceTemplate.Name[] AllPieceNames
+        { get
+            {
+                HashSet<PieceTemplate.Name> allPieceNames = [];
+
+                foreach (DroppedPiece droppedPiece in this.firstDroppedPieces) allPieceNames.Add(droppedPiece.pieceName);   
+                foreach (DroppedPiece droppedPiece in this.finalDroppedPieces) allPieceNames.Add(droppedPiece.pieceName);
+               
+                return allPieceNames.ToArray();
+            }
+        }
+
         public Yield(List<DroppedPiece> firstDroppedPieces = null, List<DroppedPiece> finalDroppedPieces = null, List<ParticleEngine.Preset> firstDebrisTypeList = null, List<ParticleEngine.Preset> finalDebrisTypeList = null, bool multipliedByBonus = true)
         {
             this.firstDroppedPieces = firstDroppedPieces == null ? new List<DroppedPiece>() : firstDroppedPieces;

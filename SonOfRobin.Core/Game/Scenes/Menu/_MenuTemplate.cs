@@ -609,12 +609,39 @@ namespace SonOfRobin
                             bgColor = new Color(75, 37, 110) * 0.75f
                         };
 
-                        foreach (var kvp in compendium.destroyedSources)
+                        var materialsBySources = compendium.MaterialsBySources;
+
+                        foreach (var kvp in compendium.DestroyedSources.OrderBy(kvp => kvp.Key))
                         {
                             PieceTemplate.Name sourceName = kvp.Key;
                             int sourceCount = kvp.Value;
+                            PieceInfo.Info sourcePieceInfo = PieceInfo.GetInfo(sourceName);
+                            HashSet<PieceTemplate.Name> foundMaterials = materialsBySources.TryGetValue(sourceName, out HashSet<PieceTemplate.Name> value) ? value : [];
 
-                            new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).readableName} ({sourceCount})", imageList: new List<ImageObj> { PieceInfo.GetImageObj(sourceName) }, taskName: Scheduler.TaskName.Empty);
+                            var textLines = new List<string>();
+                            var imageList = new List<ImageObj>();
+
+                            textLines.Add($"| {sourcePieceInfo.secretName}\n");
+                            imageList.Add(sourcePieceInfo.imageObj);
+
+                            foreach (PieceTemplate.Name materialPieceName in sourcePieceInfo.Yield.AllPieceNames)
+                            {
+                                if (foundMaterials.Contains(materialPieceName))
+                                {
+                                    PieceInfo.Info materialPieceInfo = PieceInfo.GetInfo(materialPieceName);
+                                    textLines.Add($"| {materialPieceInfo.secretName}");
+                                    imageList.Add(materialPieceInfo.imageObj);
+                                }
+                                else
+                                {
+                                    textLines.Add("| ????");
+                                    imageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.ParticleCircleSoft));
+                                }
+                            }
+
+                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
+
+                            new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName} ({sourceCount})", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                         }
 
                         return menu;
@@ -1127,7 +1154,7 @@ namespace SonOfRobin
                             var imageList = new List<ImageObj> { PieceInfo.GetImageObj(pieceName) };
                             Dictionary<string, Object> createData = new() { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).readableName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true, resizesAllScenes: true);
+                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).secretName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true, resizesAllScenes: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
