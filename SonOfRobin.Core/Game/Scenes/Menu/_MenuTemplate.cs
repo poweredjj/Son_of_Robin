@@ -603,45 +603,94 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
                         Compendium compendium = world.compendium;
+                        var materialsBySources = compendium.MaterialsBySources;
+                        var ignoredMaterials = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump };
 
                         Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
                         {
-                            bgColor = new Color(75, 37, 110) * 0.75f
+                            bgColor = new Color(8, 71, 13) * 0.75f
                         };
-
-                        var materialsBySources = compendium.MaterialsBySources;
 
                         foreach (var kvp in compendium.DestroyedSources.OrderBy(kvp => kvp.Key))
                         {
+                            var infoTextList = new List<InfoWindow.TextEntry>();
+
                             PieceTemplate.Name sourceName = kvp.Key;
                             int sourceCount = kvp.Value;
                             PieceInfo.Info sourcePieceInfo = PieceInfo.GetInfo(sourceName);
-                            HashSet<PieceTemplate.Name> foundMaterials = materialsBySources.TryGetValue(sourceName, out HashSet<PieceTemplate.Name> value) ? value : [];
 
-                            var textLines = new List<string>();
-                            var imageList = new List<ImageObj>();
+                            // name
+ 
+                            infoTextList.Add(new InfoWindow.TextEntry(text: $"| {sourcePieceInfo.secretName}\n", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                            
+                            // where to find
 
-                            textLines.Add($"| {sourcePieceInfo.secretName}\n");
-                            imageList.Add(sourcePieceInfo.imageObj);
-
-                            foreach (PieceTemplate.Name materialPieceName in sourcePieceInfo.Yield.AllPieceNames)
                             {
-                                if (foundMaterials.Contains(materialPieceName))
+                                AllowedTerrain allowedTerrain = sourcePieceInfo.allowedTerrain;
+
+                                var whereToFindTextLines = new List<string>();
+                                var whereToFindImageList = new List<ImageObj>();
+
+                                var extPropertiesDict = allowedTerrain.GetExtPropertiesDict();
+
+                                foreach (var kvp2 in extPropertiesDict)
                                 {
-                                    PieceInfo.Info materialPieceInfo = PieceInfo.GetInfo(materialPieceName);
-                                    textLines.Add($"| {materialPieceInfo.secretName}");
-                                    imageList.Add(materialPieceInfo.imageObj);
+                                    ExtBoardProps.Name extName = kvp2.Key;
+                                    bool extVal = kvp2.Value;
+
+                                    if (extVal) whereToFindTextLines.Add(extName.ToString().ToLower().Replace("biome", "").Replace("outerbeach", "outer beach"));
                                 }
-                                else
+
+                                bool isInWater = allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Height) < Terrain.waterLevelMax;
+
+                                if (extPropertiesDict.ContainsKey(ExtBoardProps.Name.Sea) && !extPropertiesDict[ExtBoardProps.Name.Sea] && isInWater)
                                 {
-                                    textLines.Add("| ????");
-                                    imageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.ParticleCircleSoft));
+                                    whereToFindTextLines.Add("lake");
                                 }
+
+                                infoTextList.Add(new InfoWindow.TextEntry(text: "where to find:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+
+                                infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", whereToFindTextLines), imageList: whereToFindImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
                             }
 
-                            var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
+                            // materials dropped
 
-                            new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName} ({sourceCount})", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                            {
+                                HashSet<PieceTemplate.Name> allMaterials = materialsBySources.TryGetValue(sourceName, out HashSet<PieceTemplate.Name> value) ? value : [];
+
+                                var materialsTextLines = new List<string>();
+                                var materialsImageList = new List<ImageObj>();
+
+                                var textLinesMissingMaterials = new List<string>();
+                                var imageListMissingMaterials = new List<ImageObj>();
+
+                                var allMaterialNames = sourcePieceInfo.Yield.AllPieceNames;
+
+                                var foundMaterials = allMaterialNames.Where(name => !ignoredMaterials.Contains(name) && allMaterials.Contains(name));
+                                var missingMaterials = allMaterialNames.Where(name => !ignoredMaterials.Contains(name) && !allMaterials.Contains(name));
+
+                                foreach (PieceTemplate.Name materialPieceName in foundMaterials)
+                                {
+                                    PieceInfo.Info materialPieceInfo = PieceInfo.GetInfo(materialPieceName);
+                                    materialsTextLines.Add($"| {materialPieceInfo.secretName}");
+                                    materialsImageList.Add(materialPieceInfo.imageObj);
+                                }
+
+                                foreach (PieceTemplate.Name materialPieceName in missingMaterials)
+                                {
+                                    materialsTextLines.Add("| ????");
+                                    materialsImageList.Add(TextureBank.GetImageObj(TextureBank.TextureName.LightSphereWhite));
+                                }
+
+                                if (materialsTextLines.Count > 0)
+                                {
+                                    infoTextList.Add(new InfoWindow.TextEntry(text: "\ndrops:", color: Color.LightSkyBlue, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+
+                                    infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", materialsTextLines), imageList: materialsImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
+                                }
+                            }
+                           
+                            new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName}", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                         }
 
                         return menu;

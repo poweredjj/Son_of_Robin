@@ -1233,6 +1233,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.CrateStarting:
+                        this.secretName = this.readableName + " (first)";
                         this.category = BoardPiece.Category.Wood;
                         this.fireAffinity = 0.7f;
                         this.blocksMovement = true;
