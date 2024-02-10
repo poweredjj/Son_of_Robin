@@ -199,6 +199,8 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "progress bar info", valueDict: new Dictionary<object, object> { { true, "detailed" }, { false, "simple" } }, targetObj: preferences, propertyName: "progressBarShowDetails");
 
+                        new Selector(menu: menu, name: "compendium order", valueDict: new Dictionary<object, object> { { true, "item order" }, { false, "destroy order" } }, targetObj: preferences, propertyName: "sortCompendium");
+
                         foreach (Entry entry in menu.entryList)
                         {
                             if (entry.GetType() != typeof(Separator)) entry.triSliceBG = TriSliceBG.GetBGForPreset(TriSliceBG.Preset.MenuBrown);
@@ -611,7 +613,9 @@ namespace SonOfRobin
                             bgColor = new Color(8, 71, 13) * 0.85f
                         };
 
-                        foreach (var kvp in compendium.DestroyedSources.OrderBy(kvp => kvp.Key))
+                        var destroyedSources = Preferences.sortCompendium ? compendium.DestroyedSources.OrderBy(kvp => kvp.Key).ToArray() : compendium.DestroyedSources.ToArray();
+
+                        foreach (var kvp in destroyedSources)
                         {
                             var infoTextList = new List<InfoWindow.TextEntry>();
 
