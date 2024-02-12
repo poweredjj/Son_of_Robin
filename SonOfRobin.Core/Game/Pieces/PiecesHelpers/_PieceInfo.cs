@@ -2831,13 +2831,20 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.EmptyBottle:
-                        this.category = BoardPiece.Category.Indestructible;
+                        this.category = BoardPiece.Category.Wood;
                         this.startingMass = 100;
                         this.canBePickedUp = true;
                         this.stackSize = 3;
                         this.placeMaxDistance = 1000;
                         this.getsPushedByWaves = true;
+
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropGlass, cooldown: 15, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.DropGlass, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyCeramic2, maxPitchVariation: 0.3f);
+
+                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisGrass },
+                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
+                            finalDroppedPieces: new List<Yield.DroppedPiece> { new Yield.DroppedPiece(pieceName: PieceTemplate.Name.GlassSand, chanceToDrop: 70, maxNumberToDrop: 1) });
                         break;
 
                     case PieceTemplate.Name.PotionGeneric:
