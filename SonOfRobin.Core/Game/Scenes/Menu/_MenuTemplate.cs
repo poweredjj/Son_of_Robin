@@ -629,7 +629,6 @@ namespace SonOfRobin
                             var infoTextList = new List<InfoWindow.TextEntry>();
 
                             PieceTemplate.Name sourceName = kvp.Key;
-                            int sourceCount = kvp.Value;
                             PieceInfo.Info sourcePieceInfo = PieceInfo.GetInfo(sourceName);
 
                             // name
@@ -909,6 +908,11 @@ namespace SonOfRobin
                         world.craftStats.CreateMenuEntriesForCraftedPiecesSummary(menu);
                         world.craftStats.CreateMenuEntriesForUsedIngredientsSummary(menu);
                         world.craftStats.CreateMenuEntriesForVegetationPlantedSummary(menu);
+
+                        // compendium stats
+
+                        world.compendium.CreateEntriesForDestroyedSources(menu);
+                        world.compendium.CreateEntriesForAcquiredMaterials(menu);
 
                         // cooking stats
                         if (world.cookStats.TotalCookCount > 0)

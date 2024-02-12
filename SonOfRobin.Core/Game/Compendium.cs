@@ -12,9 +12,10 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
 
         // to avoid exposing original dictionaries
-        public Dictionary<PieceTemplate.Name, int> DestroyedSources { get { return this.destroyedSources.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
-        public Dictionary<PieceTemplate.Name, int> AcquiredMaterials { get { return this.acquiredMaterials.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
-        public Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> MaterialsBySources { get { return this.materialsBySources.ToDictionary(entry => entry.Key, entry => entry.Value); } } 
+        public Dictionary<PieceTemplate.Name, int> DestroyedSources { get { return this.destroyedSources.ToDictionary(entry => entry.Key, entry => entry.Value); } }
+
+        public Dictionary<PieceTemplate.Name, int> AcquiredMaterials { get { return this.acquiredMaterials.ToDictionary(entry => entry.Key, entry => entry.Value); } }
+        public Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> MaterialsBySources { get { return this.materialsBySources.ToDictionary(entry => entry.Key, entry => entry.Value); } }
 
         public Compendium()
         {
@@ -113,6 +114,63 @@ namespace SonOfRobin
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;
+        }
+
+        public void CreateEntriesForDestroyedSources(Menu menu)
+        {
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(105, 20, 201), collectionToShow: this.destroyedSources, header: "destroyed items");
+        }
+
+        public void CreateEntriesForAcquiredMaterials(Menu menu)
+        {
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(47, 30, 148), collectionToShow: this.acquiredMaterials, header: "acquired materials");
+        }
+
+        private void CreateMenuEntriesForSummary(Menu menu, Color color, Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
+        {
+            if (collectionToShow.Count == 0) return;
+
+            int entriesPerPage = 15;
+            int pageCounter = 1;
+            int pieceCounter = 0;
+
+            var textLines = new List<string>();
+            var imageList = new List<ImageObj>();
+
+            bool showPageCounter = collectionToShow.Count > entriesPerPage;
+
+            foreach (var kvp in collectionToShow)
+            {
+                PieceTemplate.Name pieceName = kvp.Key;
+                int pieceCount = kvp.Value;
+
+                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
+
+                textLines.Add($"|  x{pieceCount}  {pieceInfo.readableName}");
+                imageList.Add(pieceInfo.imageObj);
+
+                pieceCounter++;
+                if (pieceCounter >= entriesPerPage || pieceName == collectionToShow.Last().Key)
+                {
+                    string fullHeader = showPageCounter ? $"{header} - page {pageCounter}" : $"{header}";
+
+                    var infoTextList = new List<InfoWindow.TextEntry>
+                    {
+                        new InfoWindow.TextEntry(text: fullHeader, color: Color.White, scale: 1f),
+                        new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList.ToList(), color: Color.White, scale: 1f, minMarkerWidthMultiplier: 1.4f, imageAlignX: Helpers.AlignX.Left)
+                    };
+
+                    string nameString = showPageCounter ? $"{header.ToLower()} - page {pageCounter}" : $"{header.ToLower()}";
+                    Invoker invoker = new Invoker(menu: menu, name: nameString, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+
+                    invoker.bgColor = color;
+
+                    pageCounter++;
+                    pieceCounter = 0;
+                    textLines.Clear();
+                    imageList.Clear();
+                }
+            }
         }
     }
 }
