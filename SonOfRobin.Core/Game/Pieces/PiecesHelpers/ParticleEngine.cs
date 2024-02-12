@@ -68,6 +68,8 @@ namespace SonOfRobin
             DistortWaterEdge = 43,
         }
 
+        private static readonly HashSet<Preset> presetsAffectedByWind = new() { Preset.BurnFlame, Preset.HeatFlame, Preset.HeatSmall, Preset.HeatMedium, Preset.HeatBig, Preset.Fireplace, Preset.Cooking, Preset.Brewing, Preset.Smelting, Preset.HeatSmelting, Preset.LavaFlame, Preset.MeatDrying };
+
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new()
         {
                 { Preset.Fireplace, TextureBank.TextureName.ParticleCircleSharp },
@@ -180,6 +182,9 @@ namespace SonOfRobin
                     else particlesToEmit = Math.Min(particlesToEmit, 1);
 
                     this.particleEmitter.Parameters.Quantity = particlesToEmit;
+
+                    // LinearGravityModifier must be declared as a second modifier 
+                    if (presetsAffectedByWind.Contains(this.preset)) ((LinearGravityModifier)this.particleEmitter.Modifiers[1]).Direction = GetGravityModifierWithWind(sprite);
                 }
 
                 if (moveCounters && this.framesLeft > 0)
@@ -187,27 +192,20 @@ namespace SonOfRobin
                     this.framesLeft--;
                     if (this.framesLeft == 0) this.TurnOff();
                 }
+            }
 
-                switch (this.preset)
+            private static Vector2 GetGravityModifierWithWind(Sprite sprite)
+            {
+                Vector2 gravityModifier = -Vector2.UnitY;
+
+                if (sprite.world != null && sprite.world.weather.WindPercentage > 0)
                 {
-                    case Preset.BurnFlame:
-
-                        Vector2 gravityModifier = new(0, -1);
-
-                        if (sprite.world != null)
-                        {
-                            Weather weather = sprite.world.weather;
-                            float windOffset = weather.WindPercentage * (weather.WindOriginX == 1 ? -1f : 1f) * 2f;
-                            gravityModifier = new(windOffset, -1);
-                        }
-
-                        ((LinearGravityModifier)this.particleEmitter.Modifiers[1]).Direction = gravityModifier;
-
-                        break;
-
-                    default:
-                        break;
+                    Weather weather = sprite.world.weather;
+                    float windOffset = weather.WindPercentage * (weather.WindOriginX == 1 ? -1f : 1f) * 2f;
+                    gravityModifier = new(windOffset, -1);
                 }
+
+                return gravityModifier;
             }
 
             public void TurnOff()
@@ -1731,8 +1729,8 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
+                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f },
                                 new DragModifier { Density = 1f, DragCoefficient = 0.13f },
-                                new LinearGravityModifier { Direction = Vector2.UnitY, Strength = 15f }
                             }
                         };
                         break;
@@ -1804,8 +1802,8 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                                 new LinearGravityModifier {Direction = Vector2.UnitY, Strength = 35f},
+                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                             }
                         };
                         break;
@@ -1843,8 +1841,8 @@ namespace SonOfRobin
                                         },
                                     }
                                 },
-                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                                 new LinearGravityModifier { Direction = -Vector2.UnitY, Strength = 7f },
+                                new DragModifier { Density = 2.4f, DragCoefficient = 2.4f },
                             }
                         };
                         break;
