@@ -613,7 +613,16 @@ namespace SonOfRobin
                             bgColor = new Color(8, 71, 13) * 0.85f
                         };
 
-                        var destroyedSources = Preferences.sortCompendium ? compendium.DestroyedSources.OrderBy(kvp => kvp.Key).ToArray() : compendium.DestroyedSources.ToArray();
+                        var destroyedSources = Preferences.sortCompendium ? compendium.DestroyedSources.OrderBy(kvp => kvp.Key).ToDictionary(entry => entry.Key, entry => entry.Value) : compendium.DestroyedSources;
+
+                        if (destroyedSources.Count() == 0)
+                        {
+                            Separator separator = new Separator(menu: menu, name: "no entries")
+                            {
+                                bgColor = Color.DarkBlue,
+                                textColor = Color.White
+                            };
+                        }
 
                         foreach (var kvp in destroyedSources)
                         {
@@ -624,9 +633,9 @@ namespace SonOfRobin
                             PieceInfo.Info sourcePieceInfo = PieceInfo.GetInfo(sourceName);
 
                             // name
- 
+
                             infoTextList.Add(new InfoWindow.TextEntry(text: $"| {sourcePieceInfo.secretName}\n", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
-                            
+
                             // where to find
 
                             {
@@ -665,7 +674,7 @@ namespace SonOfRobin
                                         bool isInMountains = !isInWater && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Height) >= Terrain.rocksLevelMin;
 
                                         if (isInMountains) whereToFindTextLines.Add("mountains");
-                                        if (!isInWater && !isInMountains && allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Humidity) < 110 && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 5) whereToFindTextLines.Add("desert");   
+                                        if (!isInWater && !isInMountains && allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Humidity) < 110 && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 5) whereToFindTextLines.Add("desert");
                                         else if (!isInWater && !isInMountains && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) >= 140) whereToFindTextLines.Add("grasslands");
 
                                     }
@@ -715,7 +724,7 @@ namespace SonOfRobin
                                     infoTextList.Add(new InfoWindow.TextEntry(text: String.Join("\n", materialsTextLines), imageList: materialsImageList, color: Color.White, scale: 0.8f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left));
                                 }
                             }
-                           
+
                             new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName}", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
                         }
 

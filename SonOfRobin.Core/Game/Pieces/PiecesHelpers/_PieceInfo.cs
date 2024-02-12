@@ -987,6 +987,7 @@ namespace SonOfRobin
                         break;
 
                     case PieceTemplate.Name.Rabbit:
+                        this.whereToFind = "grasslands";
                         this.category = BoardPiece.Category.Flesh;
                         this.startingMass = 35;
                         this.fireAffinity = 0.65f;
