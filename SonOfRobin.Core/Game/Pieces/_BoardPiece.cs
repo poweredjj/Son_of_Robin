@@ -830,7 +830,7 @@ namespace SonOfRobin
                 int particleFrameDivider = this.pieceInfo.blocksMovement ? 1 : (int)(6f / this.HeatLevel);
                 if (this.world.CurrentUpdate % particleFrameDivider == 0)
                 {
-                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * 2));
+                    ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.BurnFlame, duration: 1, particlesToEmit: (int)(this.HeatLevel * (this.pieceInfo.blocksMovement ? 3 : 1)));
                     ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatFlame, duration: 1, particlesToEmit: 1);
                 }
 

@@ -118,6 +118,7 @@ namespace SonOfRobin
 
         public class PresetData
         {
+            public readonly Preset preset;
             public readonly ParticleEmitter particleEmitter;
             public readonly int defaultParticlesToEmit;
             public readonly int particleToEmitMaxVariation;
@@ -134,10 +135,11 @@ namespace SonOfRobin
             public bool HasFinished
             { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
 
-            public PresetData(int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0, bool drawAsDistortion = false)
+            public PresetData(Preset preset, int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0, bool drawAsDistortion = false)
             {
                 if (particlesToEmitMaxVariation < 0) throw new ArgumentOutOfRangeException($"particleToEmitMaxVariation cannot be < 0 - {particlesToEmitMaxVariation}");
 
+                this.preset = preset;
                 this.defaultParticlesToEmit = defaultParticlesToEmit;
                 this.particleToEmitMaxVariation = particlesToEmitMaxVariation;
                 this.currentParticlesToEmit = 0;
@@ -149,16 +151,16 @@ namespace SonOfRobin
                 this.IsActive = false;
             }
 
-            public void TurnOn(int particlesToEmit = 0, int duration = 0)
+            public void TurnOn(Sprite sprite, int particlesToEmit = 0, int duration = 0)
             {
                 if (duration > 0) this.framesLeft = duration + 1;
 
                 this.currentParticlesToEmit = particlesToEmit == 0 ? this.defaultParticlesToEmit : particlesToEmit;
                 this.IsActive = true;
-                this.Update(moveCounters: false);
+                this.Update(sprite: sprite, moveCounters: false);
             }
 
-            public void Update(bool moveCounters = true)
+            public void Update(Sprite sprite, bool moveCounters = true)
             {
                 if (moveCounters && this.delayFramesLeft > 0)
                 {
@@ -184,6 +186,27 @@ namespace SonOfRobin
                 {
                     this.framesLeft--;
                     if (this.framesLeft == 0) this.TurnOff();
+                }
+
+                switch (this.preset)
+                {
+                    case Preset.BurnFlame:
+
+                        Vector2 gravityModifier = new(0, -1);
+
+                        if (sprite.world != null)
+                        {
+                            Weather weather = sprite.world.weather;
+                            float windOffset = weather.WindPercentage * (weather.WindOriginX == 1 ? -1f : 1f) * 2f;
+                            gravityModifier = new(windOffset, -1);
+                        }
+
+                        ((LinearGravityModifier)this.particleEmitter.Modifiers[1]).Direction = gravityModifier;
+
+                        break;
+
+                    default:
+                        break;
                 }
             }
 
@@ -237,7 +260,7 @@ namespace SonOfRobin
 
         public void AddPreset(Preset preset)
         {
-            TextureRegion2D textureRegion = new TextureRegion2D(TextureBank.GetTexture(textureNameDict[preset]));
+            TextureRegion2D textureRegion = new(TextureBank.GetTexture(textureNameDict[preset]));
 
             int defaultParticlesToEmit;
             int particlesToEmitMaxVariation = 0;
@@ -411,7 +434,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Color = HslColor.FromRgb(new Color(80, 80, 80)),
+                                Color = HslColor.FromRgb(new Color(60, 60, 60)),
                                 Speed = new Range<float>(10f, 35f),
                                 Quantity = 0,
                             },
@@ -424,7 +447,7 @@ namespace SonOfRobin
                                     {
                                         new ScaleInterpolator
                                         {
-                                            StartValue = new Vector2(0.5f),
+                                            StartValue = new Vector2(0.6f),
                                             EndValue = new Vector2(7.5f)
                                         },
                                         new OpacityInterpolator
@@ -524,7 +547,6 @@ namespace SonOfRobin
                         };
                         break;
                     }
-
 
                 case Preset.Smelting:
                     {
@@ -785,7 +807,6 @@ namespace SonOfRobin
                         };
                         break;
                     }
-
 
                 case Preset.DistortCruiseCine:
                     {
@@ -1858,7 +1879,7 @@ namespace SonOfRobin
             if (drawAsDistortion) this.particleEffectDistortion.Emitters.Add(particleEmitter);
             else this.particleEffectDraw.Emitters.Add(particleEmitter);
 
-            this.dataByPreset[preset] = new PresetData(defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay, drawAsDistortion: drawAsDistortion);
+            this.dataByPreset[preset] = new PresetData(preset: preset, defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay, drawAsDistortion: drawAsDistortion);
         }
 
         public static ParticleEmitter GetEmitterForPreset(Sprite sprite, Preset preset)
@@ -1874,7 +1895,7 @@ namespace SonOfRobin
             if (sprite.particleEngine == null) sprite.particleEngine = new ParticleEngine(sprite);
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
-            sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
+            sprite.particleEngine.dataByPreset[preset].TurnOn(sprite: sprite, particlesToEmit: particlesToEmit, duration: duration);
             if (update) sprite.particleEngine.Update(); // without update some particles won't be displayed (debris when piece is destroyed, off-screen, etc.); will speed up animation if used in every frame
         }
 
@@ -1943,7 +1964,7 @@ namespace SonOfRobin
                 Preset presetName = kvp.Key;
                 PresetData presetData = kvp.Value;
 
-                if (presetData.IsActive) presetData.Update();
+                if (presetData.IsActive) presetData.Update(this.sprite);
                 if (presetData.HasFinished) this.dataByPreset.Remove(presetName);
             }
 
