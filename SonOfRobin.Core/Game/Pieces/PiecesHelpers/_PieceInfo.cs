@@ -798,7 +798,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.6f;
                         this.canBePickedUp = true;
-                        this.stackSize = 6;
+                        this.stackSize = 12;
                         this.toolbarTask = Scheduler.TaskName.Plant;
                         this.placeMaxDistance = 1000;
                         this.getsPushedByWaves = true;
@@ -1748,7 +1748,7 @@ namespace SonOfRobin
                         this.startingMass = 50;
                         this.fireAffinity = 0.1f;
                         this.canBePickedUp = true;
-                        this.stackSize = 6;
+                        this.stackSize = 10;
                         this.getsPushedByWaves = true;
                         break;
 
