@@ -101,7 +101,7 @@ namespace SonOfRobin
                 PieceTemplate.Name materialName = kvp.Key;
                 int materialCount = kvp.Value;
 
-                MessageLog.Add(debugMessage: true, text: $"Compendium - adding material: {materialName} x{materialCount}");
+                // MessageLog.Add(debugMessage: true, text: $"Compendium - adding material: {materialName} x{materialCount}");
 
                 if (!this.materialsBySources.ContainsKey(sourceName)) this.materialsBySources[sourceName] = [];
                 this.materialsBySources[sourceName].Add(materialName);
@@ -113,7 +113,7 @@ namespace SonOfRobin
 
         public void AddDestroyedSource(PieceTemplate.Name sourceName)
         {
-            MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
+            // MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;
