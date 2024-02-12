@@ -138,7 +138,7 @@ namespace SonOfRobin
             this.sprite.AssignNewName(newAnimName: "on");
             this.sprite.lightEngine.Activate();
             ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.HeatSmelting);
-            ParticleEngine.TurnOn(sprite: this.visualAid.sprite, preset: ParticleEngine.Preset.Smelting);
+            ParticleEngine.TurnOn(sprite: this.visualAid.sprite, update: true, preset: ParticleEngine.Preset.Smelting);
 
             if (playSounds)
             {

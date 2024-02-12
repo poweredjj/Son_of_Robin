@@ -1867,7 +1867,7 @@ namespace SonOfRobin
                 sprite.particleEngine.dataByPreset[preset].particleEmitter : null;
         }
 
-        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0)
+        public static void TurnOn(Sprite sprite, Preset preset, int particlesToEmit = 0, int duration = 0, bool update = false)
         {
             if (duration > 0 && !sprite.IsInCameraRect) return;
 
@@ -1875,7 +1875,7 @@ namespace SonOfRobin
             if (!sprite.particleEngine.dataByPreset.ContainsKey(preset)) sprite.particleEngine.AddPreset(preset);
 
             sprite.particleEngine.dataByPreset[preset].TurnOn(particlesToEmit: particlesToEmit, duration: duration);
-            sprite.particleEngine.Update();
+            if (update) sprite.particleEngine.Update(); // without update some particles won't be displayed (debris when piece is destroyed, off-screen, etc.); will speed up animation if used in every frame
         }
 
         public static void TurnOff(Sprite sprite, Preset preset)
@@ -1984,8 +1984,8 @@ namespace SonOfRobin
             this.particleEffectDraw.Position = position;
             this.particleEffectDistortion.Position = position;
 
-            this.particleEffectDraw.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-            this.particleEffectDistortion.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+            this.particleEffectDraw.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds); // will speed up animation if used multiple times in a row
+            this.particleEffectDistortion.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds); // will speed up animation if used multiple times in a row
         }
 
         public void Draw()
