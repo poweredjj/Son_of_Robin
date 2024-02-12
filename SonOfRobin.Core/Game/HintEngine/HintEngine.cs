@@ -810,6 +810,17 @@ namespace SonOfRobin
                                 textList.Add(new TextWithImages(font: fontText, text: $"| Ingredients saved: {this.world.craftStats.SmartCraftingReducedIngredientCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.ChestIron) }, minMarkerWidthMultiplier: 2f));
                             }
 
+                            if (this.world.compendium.AnyDestroyedSources)
+                            {
+                                textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
+
+                                textList.Add(new TextWithImages(font: fontTitle, text: "| Materials", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.AxeStone) }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| objects destroyed: {this.world.compendium.DestroyedSourcesCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.TreeBig) }, minMarkerWidthMultiplier: 2f));
+
+                                textList.Add(new TextWithImages(font: fontText, text: $"| materials acquired: {this.world.compendium.AcquiredMaterialsCount}", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WoodLogHard) }, minMarkerWidthMultiplier: 2f));
+                            }
+
                             if (this.world.cookStats.TotalCookCount > 0)
                             {
                                 textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
