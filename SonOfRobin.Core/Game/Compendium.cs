@@ -20,7 +20,6 @@ namespace SonOfRobin
             { PieceTemplate.Name.Rushes, 100 },
         };
 
-
         // to avoid exposing original dictionaries
         public bool AnyDestroyedSources { get { return this.destroyedSources.Count > 0; } }
 
@@ -128,14 +127,14 @@ namespace SonOfRobin
             }
         }
 
-        public void AddDestroyedSource(PieceTemplate.Name sourceName)
+        public void AddDestroyedSource(PieceTemplate.Name sourceName, bool unlockForScan = true)
         {
             // MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;
 
-            if (!sourcesUnlockedForScan.Contains(sourceName))
+            if (unlockForScan && !sourcesUnlockedForScan.Contains(sourceName))
             {
                 int countNeeded = minCountForScan.ContainsKey(sourceName) ? minCountForScan[sourceName] : 20;
                 if (this.destroyedSources[sourceName] >= countNeeded)
