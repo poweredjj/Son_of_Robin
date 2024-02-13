@@ -975,8 +975,15 @@ namespace SonOfRobin
                             textLines.Add("| Smelting stats\n");
                             imageList.Add(AnimData.GetImageObj(AnimData.PkgName.IronBar));
 
-                            textLines.Add($"| Materials processed: {world.smeltStats.AllIngredientsCount}");
-                            imageList.Add(AnimData.GetImageObj(AnimData.PkgName.IronOre));
+                            foreach (var kvp in world.smeltStats.UsedBases)
+                            {
+                                PieceTemplate.Name name = kvp.Key;
+                                int count = kvp.Value;
+                                PieceInfo.Info pieceInfo = PieceInfo.GetInfo(name);
+
+                                textLines.Add($"| x{count}  {pieceInfo.readableName}");
+                                imageList.Add(PieceInfo.GetImageObj(name));
+                            }
 
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 

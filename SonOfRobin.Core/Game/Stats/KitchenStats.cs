@@ -12,13 +12,19 @@ namespace SonOfRobin
         public int BaseCount { get; private set; }
         public int BoosterCount { get; private set; }
         public int TotalCookCount { get; private set; }
+
+        // to avoid exposing original dictionaries
+        public Dictionary<PieceTemplate.Name, int> UsedBases { get { return this.usedBases.ToDictionary(entry => entry.Key, entry => entry.Value); } }
+
+        public Dictionary<PieceTemplate.Name, int> UsedBoosters { get { return this.usedBoosters.ToDictionary(entry => entry.Key, entry => entry.Value); } }
+
         public int IngredientNamesCount
         { get { return usedBases.Count + usedBoosters.Count; } }
 
         public KitchenStats()
         {
-            this.usedBases = new Dictionary<PieceTemplate.Name, int>();
-            this.usedBoosters = new Dictionary<PieceTemplate.Name, int>();
+            this.usedBases = [];
+            this.usedBoosters = [];
             this.AllIngredientsCount = 0;
             this.TotalCookCount = 0;
         }
