@@ -17,7 +17,10 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, int> minCountForScan = new() {
             { PieceTemplate.Name.TreeSmall, 40 },
             { PieceTemplate.Name.TreeBig, 30 },
-            { PieceTemplate.Name.Rushes, 100 },
+            { PieceTemplate.Name.Rushes, 400 },
+            { PieceTemplate.Name.GrassRegular, 300 },
+            { PieceTemplate.Name.FlowersPlain, 100 },
+            { PieceTemplate.Name.FlowersRed, 100 },
         };
 
         // to avoid exposing original dictionaries
