@@ -127,8 +127,10 @@ namespace SonOfRobin
             }
         }
 
-        public void AddDestroyedSource(PieceTemplate.Name sourceName, bool unlockForScan = true)
+        public void AddDestroyedSource(BoardPiece sourcePiece, bool unlockForScan = true)
         {
+            PieceTemplate.Name sourceName = sourcePiece.name;
+
             // MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
@@ -143,6 +145,8 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(sourceName);
                     MessageLog.Add(text: $"You can now scan for {pieceInfo.secretName}!", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj);
                     Sound.QuickPlay(SoundData.Name.SonarPing);
+
+                    Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Ping, world: sourcePiece.world, ignoreDelay: true);
                 }
             }
         }

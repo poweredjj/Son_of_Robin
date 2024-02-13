@@ -29,7 +29,7 @@ namespace SonOfRobin
             Pause,
             Stats,
             Compendium,
-            SetPingMode,
+            PingMode,
             Load,
             Save,
             Tutorials,
@@ -570,7 +570,7 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "compendium", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Compendium } });
 
-                        new Invoker(menu: menu, name: "set ping mode", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.SetPingMode } });
+                        new Invoker(menu: menu, name: "ping mode", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.PingMode } });
 
                         new Invoker(menu: menu, name: "stats", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Stats } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "statistics, levels, etc.", color: Color.White, scale: 1f) });
@@ -735,11 +735,11 @@ namespace SonOfRobin
                         return menu;
                     }
 
-                case Name.SetPingMode:
+                case Name.PingMode:
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "SET PING MODE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true)
+                        Menu menu = new(templateName: templateName, name: "PING MODE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true)
                         {
                             bgColor = new Color(8, 71, 13) * 0.85f
                         };
@@ -752,7 +752,7 @@ namespace SonOfRobin
                             MessageLog.Add(text: "Ping set to default.", bgColor: new Color(77, 12, 117), imageObj: AnimData.GetImageObj(AnimData.PkgName.AxeStone), avoidDuplicates: true);
                         };
 
-                        Invoker invokerSetCurrentTool = new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, rebuildsMenu: true);
+                        Invoker invokerSetCurrentTool = new Invoker(menu: menu, name: "| current tool targets (default)", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, rebuildsMenu: true);
                         invokerSetCurrentTool.bgColor = world.pingTarget == PieceTemplate.Name.Empty ? new(8, 156, 147) : new(6, 97, 92);
 
                         new Separator(menu: menu, name: "", isEmpty: true);

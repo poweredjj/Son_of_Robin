@@ -43,6 +43,7 @@ namespace SonOfRobin
             Caves = 32,
             ConstructionSites = 33,
             Smelt = 34,
+            Ping = 35,
         }
 
         public static readonly Type[] allTypes = (Type[])Enum.GetValues(typeof(Type));
@@ -276,6 +277,14 @@ namespace SonOfRobin
                     new HintMessage(text:$"2. Place some | | | materials into | the {PieceInfo.GetInfo(PieceTemplate.Name.FurnaceComplete).readableName}.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.GlassSand), PieceInfo.GetImageObj(PieceTemplate.Name.CoffeeRaw), PieceInfo.GetImageObj(PieceTemplate.Name.FurnaceComplete)}, boxType: messageTextType),
                     new HintMessage(text: $"3. You will also need to put one | {PieceInfo.GetInfo(PieceTemplate.Name.Coal).readableName} for every material.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.Coal) }, boxType: messageTextType),
                     new HintMessage(text: "4. Use the | flame to start smelting | | |.", imageList: new List<ImageObj> {AnimData.GetImageObj(AnimData.PkgName.Flame), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), TextureBank.GetImageObj(TextureBank.TextureName.SimpleArrowRight),  PieceInfo.GetImageObj(PieceTemplate.Name.IronBar)}, boxType: messageTextType),
+                    });
+
+                case Type.Ping:
+                    return new Tutorial(type: type, name: "ping", title: "Using 'ping' function.",
+                        messages: new List<HintMessage>  {
+                            new HintMessage(text:"Press | ping button.", imageList: new List<ImageObj> { InputMapper.GetImageObj(InputMapper.Action.WorldPingArea)}, boxType: messageTextType),
+                            new HintMessage(text:"In 'default' mode, ping shows | | nearby targets,\nthat your | currently selected tool is best suited for.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig), PieceInfo.GetImageObj(PieceTemplate.Name.TreeSmall), PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone)}, boxType: messageTextType),
+                            new HintMessage(text:"You can also select a | | | target in 'ping mode' menu.\nWhen a | target is selected, only items of this type will blink.\nAlso, selected targets will be displayed on your | map.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig), PieceInfo.GetImageObj(PieceTemplate.Name.MineralsBig), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetImageObj(PieceTemplate.Name.Map)}, boxType: messageTextType),
                     });
 
                 case Type.ShakeFruit:
