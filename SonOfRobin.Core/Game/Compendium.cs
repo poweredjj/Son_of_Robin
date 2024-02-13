@@ -14,6 +14,13 @@ namespace SonOfRobin
 
         public static readonly HashSet<PieceTemplate.Name> excludedMaterialNames = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.JarBroken, PieceTemplate.Name.CrystalDepositSmall };
 
+        private readonly Dictionary<PieceTemplate.Name, int> minCountForScan = new() {
+            { PieceTemplate.Name.TreeSmall, 40 },
+            { PieceTemplate.Name.TreeBig, 30 },
+            { PieceTemplate.Name.Rushes, 100 },
+        };
+
+
         // to avoid exposing original dictionaries
         public bool AnyDestroyedSources { get { return this.destroyedSources.Count > 0; } }
 
@@ -120,8 +127,6 @@ namespace SonOfRobin
                 this.acquiredMaterials[materialName] += materialCount;
             }
         }
-
-        private readonly Dictionary<PieceTemplate.Name, int> minCountForScan = new() { { PieceTemplate.Name.TreeBig, 10 } };
 
         public void AddDestroyedSource(PieceTemplate.Name sourceName)
         {

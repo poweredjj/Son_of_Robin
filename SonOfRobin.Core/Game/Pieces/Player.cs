@@ -955,16 +955,22 @@ namespace SonOfRobin
 
                     Sound.QuickPlay(name: SoundData.Name.SonarPing);
 
-                    Rectangle pingRect = this.world.camera.viewRect;
-                    pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2); // pingRect should be bigger than viewRect (to continue ping when moving)
-
                     bool toolTargetsMode = this.world.pingTarget == PieceTemplate.Name.Empty;
+                    float sizeMultiplier = toolTargetsMode ? 1f : 2f;
+
+                    Rectangle pingRect = this.world.camera.viewRect;
+                    pingRect.Inflate(pingRect.Width / 2 * sizeMultiplier, pingRect.Height / 2 * sizeMultiplier); // pingRect should be bigger than viewRect (to continue ping when moving); piece scan should be even larger
 
                     var targetsByDelayDict = new Dictionary<int, Queue<Sprite>>();
                     PieceTemplate.Name pingTarget = this.world.pingTarget;
 
-                    float highestToolCategoryPower = activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value > 0).Max(kv => kv.Value);
-                    var categoriesPingedSet = new HashSet<Category>(activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value == highestToolCategoryPower).Select(kv => kv.Key));
+                    HashSet<Category> categoriesPingedSet = [];
+
+                    if (toolTargetsMode)
+                    {
+                        float highestToolCategoryPower = activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value > 0).Max(kv => kv.Value);
+                        categoriesPingedSet = new HashSet<Category>(activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value == highestToolCategoryPower).Select(kv => kv.Key));
+                    }
 
                     foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
                     {
@@ -974,6 +980,7 @@ namespace SonOfRobin
                             int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.005f * (Preferences.worldScale * 2));
                             if (!targetsByDelayDict.ContainsKey(delay)) targetsByDelayDict[delay] = new Queue<Sprite>();
                             targetsByDelayDict[delay].Enqueue(targetSprite);
+                            if (!toolTargetsMode) this.world.map.bgTaskScannedSprites.Add(targetSprite);
                         }
                     }
 

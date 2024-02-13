@@ -747,10 +747,12 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate setScanDlgt1 = () =>
                         {
                             world.pingTarget = PieceTemplate.Name.Empty;
+                            world.map.bgTaskScannedSprites.Clear();
                             MessageLog.Add(text: "ping mode set to default", bgColor: new Color(77, 12, 117), avoidDuplicates: true);
                         };
 
-                        new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, sound: SoundData.Name.SonarPing);
+                        Invoker invokerSetCurrentTool = new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, sound: SoundData.Name.SonarPing, rebuildsMenu: true);
+                        invokerSetCurrentTool.bgColor = world.pingTarget == PieceTemplate.Name.Empty ? new(8, 156, 147) : new(6, 97, 92);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
 
@@ -761,10 +763,13 @@ namespace SonOfRobin
                             Scheduler.ExecutionDelegate setScanDlgt2 = () =>
                             {
                                 world.pingTarget = name;
+                                world.map.bgTaskScannedSprites.Clear();
                                 MessageLog.Add(text: $"ping set to {pieceInfo.secretName}.", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj, avoidDuplicates: true);
                             };
 
-                            new Invoker(menu: menu, name: $"| {pieceInfo.secretName}", imageList: [pieceInfo.imageObj], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt2, sound: SoundData.Name.SonarPing);
+                            Invoker invokerSetPiece = new Invoker(menu: menu, name: $"| {pieceInfo.secretName}", imageList: [pieceInfo.imageObj], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt2, sound: SoundData.Name.SonarPing, rebuildsMenu: true);
+
+                            invokerSetPiece.bgColor = world.pingTarget == name ? new(8, 156, 147) : new(6, 97, 92);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -1074,8 +1079,7 @@ namespace SonOfRobin
                             var infoTextList = new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: String.Join("\n", textLines), imageList: imageList, color: Color.White, scale: 1f, minMarkerWidthMultiplier: 2f, imageAlignX: Helpers.AlignX.Left) };
 
                             Invoker invoker = new(menu: menu, name: "meat harvesting stats", taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
-                            Color color = new(245, 140, 245);
-                            invoker.bgColor = color;
+                            invoker.bgColor = new(245, 140, 245);
                         }
 
                         return menu;
