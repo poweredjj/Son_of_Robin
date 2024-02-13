@@ -2656,8 +2656,8 @@ namespace SonOfRobin
                 closingFrameArray[animLength - i - 1] = new AnimFrame(atlasName: $"{atlasNameBase}{i + 1}", layer: 1, cropRect: cropRect, duration: i > 0 ? frameDuration : 0, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, hasFlatShadow: false);
             }
 
-            animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "opening", frameArray: openingFrameArray));
-            animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "closing", frameArray: closingFrameArray));
+            animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "opening", frameArray: openingFrameArray, switchName: "open"));
+            animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "closing", frameArray: closingFrameArray, switchName: "closed"));
             animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "closed", frameArray: [openingFrameArray[0]]));
             animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, name: "open", frameArray: [closingFrameArray[0]]));
 
