@@ -11,6 +11,8 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, int> destroyedSources;
         private readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
 
+        public static readonly HashSet<PieceTemplate.Name> excludedMaterialNames = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.JarBroken, PieceTemplate.Name.CrystalDepositSmall };
+
         // to avoid exposing original dictionaries
         public bool AnyDestroyedSources { get { return this.destroyedSources.Count > 0; } }
 
@@ -121,12 +123,12 @@ namespace SonOfRobin
 
         public void CreateEntriesForDestroyedSources(Menu menu)
         {
-            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(105, 20, 201), collectionToShow: this.destroyedSources, header: "objects destroyed");
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(105, 20, 201), collectionToShow: this.destroyedSources, header: "Objects destroyed");
         }
 
         public void CreateEntriesForAcquiredMaterials(Menu menu)
         {
-            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(47, 30, 148), collectionToShow: this.acquiredMaterials, header: "materials acquired");
+            this.CreateMenuEntriesForSummary(menu: menu, color: new Color(47, 30, 148), collectionToShow: this.acquiredMaterials.Where(kvp => !excludedMaterialNames.Contains(kvp.Key)).ToDictionary(), header: "Materials acquired");
         }
 
         private void CreateMenuEntriesForSummary(Menu menu, Color color, Dictionary<PieceTemplate.Name, int> collectionToShow, string header)
@@ -149,7 +151,7 @@ namespace SonOfRobin
 
                 PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
-                textLines.Add($"|  x{pieceCount}  {pieceInfo.readableName}");
+                textLines.Add($"|  x{pieceCount}  {pieceInfo.secretName}");
                 imageList.Add(pieceInfo.imageObj);
 
                 pieceCounter++;
