@@ -64,7 +64,7 @@ namespace SonOfRobin
 
         public int DropFinalPieces(BoardPiece piece, float chanceMultiplier = 1f, float countMultiplier = 1f)
         {
-            if (!antiCraftRecipes.ContainsKey(piece.name)) piece.world.compendium.AddDestroyedSource(sourcePiece: piece);
+            if (!antiCraftRecipes.ContainsKey(piece.name)) piece.world.compendium.AddDestroyedSource(sourceName: piece.name);
 
             int droppedPiecesCount = DropPieces(piece: piece, chanceMultiplier: chanceMultiplier, countMultiplier: countMultiplier, droppedPieceList: this.finalDroppedPieces, addBonus: this.multipliedByBonus);
             this.DropDebris(piece: piece, firstDebris: false, finalDebris: true);

@@ -951,6 +951,8 @@ namespace SonOfRobin
             {
                 if (canPing)
                 {
+                    if (this.world.compendium.AnySourcesUnlockedForScan) Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Ping, world: this.world, ignoreDelay: true);
+
                     this.pingCooldownUntilFrame = this.world.CurrentUpdate + (60 * 5);
 
                     Sound.QuickPlay(name: SoundData.Name.SonarPing);

@@ -98,7 +98,7 @@ namespace SonOfRobin
         public readonly KitchenStats brewStats;
         public readonly KitchenStats smeltStats;
         public readonly MeatHarvestStats meatHarvestStats;
-        public Compendium compendium;
+        public readonly Compendium compendium;
 
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
@@ -609,7 +609,7 @@ namespace SonOfRobin
                 this.cookStats.Deserialize((Dictionary<string, Object>)headerData["cookStats"]);
                 this.brewStats.Deserialize((Dictionary<string, Object>)headerData["brewStats"]);
                 if (headerData.ContainsKey("smeltStats")) this.smeltStats.Deserialize((Dictionary<string, Object>)headerData["smeltStats"]); // for compatibility with old saves
-                if (headerData.ContainsKey("compendium")) this.compendium = new Compendium((Dictionary<string, Object>)headerData["compendium"]); // for compatibility with old saves
+                if (headerData.ContainsKey("compendium")) this.compendium.Deserialize((Dictionary<string, Object>)headerData["compendium"]); // for compatibility with old saves
                 this.meatHarvestStats.Deserialize((Dictionary<string, Object>)headerData["meatHarvestStats"]);
                 this.identifiedPieces = (List<PieceTemplate.Name>)headerData["identifiedPieces"];
                 if (headerData.ContainsKey("mapData")) this.map.Deserialize(headerData["mapData"]);

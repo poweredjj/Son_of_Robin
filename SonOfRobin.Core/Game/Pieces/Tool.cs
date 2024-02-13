@@ -245,7 +245,7 @@ namespace SonOfRobin
             {
                 if (target.GetType() == typeof(Animal))
                 {
-                    world.compendium.AddDestroyedSource(sourcePiece: target);
+                    world.compendium.AddDestroyedSource(sourceName: target.name);
 
                     PieceTemplate.CreateAndPlaceOnBoard(world: world, position: target.sprite.position, templateName: PieceTemplate.Name.BloodSplatter);
                     target.pieceInfo.Yield.DropDebris(piece: target, particlesToEmit: 100);

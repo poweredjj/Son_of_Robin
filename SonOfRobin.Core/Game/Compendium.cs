@@ -7,10 +7,10 @@ namespace SonOfRobin
 {
     public class Compendium
     {
-        private readonly Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> materialsBySources;
-        private readonly Dictionary<PieceTemplate.Name, int> destroyedSources;
-        private readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
-        private readonly HashSet<PieceTemplate.Name> sourcesUnlockedForScan;
+        private Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> materialsBySources;
+        private Dictionary<PieceTemplate.Name, int> destroyedSources;
+        private Dictionary<PieceTemplate.Name, int> acquiredMaterials;
+        private HashSet<PieceTemplate.Name> sourcesUnlockedForScan;
 
         public static readonly HashSet<PieceTemplate.Name> excludedMaterialNames = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.JarBroken, PieceTemplate.Name.CrystalDepositSmall };
 
@@ -22,6 +22,7 @@ namespace SonOfRobin
 
         // to avoid exposing original dictionaries
         public bool AnyDestroyedSources { get { return this.destroyedSources.Count > 0; } }
+        public bool AnySourcesUnlockedForScan { get { return this.sourcesUnlockedForScan.Count > 0; } }
 
         public int DestroyedSourcesCount { get { return this.destroyedSources.Select(kvp => (int)kvp.Value).Sum(); } }
         public int AcquiredMaterialsCount { get { return this.acquiredMaterials.Select(kvp => (int)kvp.Value).Sum(); } }
@@ -36,35 +37,6 @@ namespace SonOfRobin
             this.destroyedSources = [];
             this.acquiredMaterials = [];
             this.sourcesUnlockedForScan = [];
-        }
-
-        public Compendium(Dictionary<string, Object> compendiumData)
-        {
-            // deserialization
-
-            this.destroyedSources = ((Dictionary<int, int>)compendiumData["destroyedSources"])
-                .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
-
-            this.acquiredMaterials = ((Dictionary<int, int>)compendiumData["acquiredMaterials"])
-                .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
-
-            // for compatibility with older saves
-            if (compendiumData.ContainsKey("sourcesUnlockedForScan")) this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
-            else this.sourcesUnlockedForScan = [];
-
-            this.materialsBySources = [];
-
-            foreach (var kvp in (Dictionary<int, List<int>>)compendiumData["materialsBySourcesAsInts"])
-            {
-                PieceTemplate.Name sourceName = (PieceTemplate.Name)kvp.Key;
-
-                this.materialsBySources[sourceName] = [];
-
-                foreach (int materialNameInt in kvp.Value)
-                {
-                    this.materialsBySources[sourceName].Add((PieceTemplate.Name)materialNameInt);
-                }
-            }
         }
 
         public Dictionary<string, object> Serialize()
@@ -93,6 +65,33 @@ namespace SonOfRobin
             };
 
             return compendiumData;
+        }
+
+        public void Deserialize(Dictionary<string, Object> compendiumData)
+        {
+            this.destroyedSources = ((Dictionary<int, int>)compendiumData["destroyedSources"])
+                .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+
+            this.acquiredMaterials = ((Dictionary<int, int>)compendiumData["acquiredMaterials"])
+                .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+
+            // for compatibility with older saves
+            if (compendiumData.ContainsKey("sourcesUnlockedForScan")) this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
+            else this.sourcesUnlockedForScan = [];
+
+            this.materialsBySources = [];
+
+            foreach (var kvp in (Dictionary<int, List<int>>)compendiumData["materialsBySourcesAsInts"])
+            {
+                PieceTemplate.Name sourceName = (PieceTemplate.Name)kvp.Key;
+
+                this.materialsBySources[sourceName] = [];
+
+                foreach (int materialNameInt in kvp.Value)
+                {
+                    this.materialsBySources[sourceName].Add((PieceTemplate.Name)materialNameInt);
+                }
+            }
         }
 
         public void AddMaterialsForSource(PieceTemplate.Name sourceName, List<BoardPiece> materialsList)
@@ -127,10 +126,8 @@ namespace SonOfRobin
             }
         }
 
-        public void AddDestroyedSource(BoardPiece sourcePiece, bool unlockForScan = true)
+        public void AddDestroyedSource(PieceTemplate.Name sourceName, bool unlockForScan = true)
         {
-            PieceTemplate.Name sourceName = sourcePiece.name;
-
             // MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
@@ -145,8 +142,6 @@ namespace SonOfRobin
                     PieceInfo.Info pieceInfo = PieceInfo.GetInfo(sourceName);
                     MessageLog.Add(text: $"You can now scan for {pieceInfo.secretName}!", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj);
                     Sound.QuickPlay(SoundData.Name.SonarPing);
-
-                    Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Ping, world: sourcePiece.world, ignoreDelay: true);
                 }
             }
         }
