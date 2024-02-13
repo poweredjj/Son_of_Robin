@@ -748,10 +748,11 @@ namespace SonOfRobin
                         {
                             world.pingTarget = PieceTemplate.Name.Empty;
                             world.map.bgTaskScannedSprites.Clear();
-                            MessageLog.Add(text: "ping mode set to default", bgColor: new Color(77, 12, 117), avoidDuplicates: true);
+                            Sound.QuickPlay(SoundData.Name.SonarPing);
+                            MessageLog.Add(text: "Ping set to default.", bgColor: new Color(77, 12, 117), imageObj: AnimData.GetImageObj(AnimData.PkgName.AxeStone), avoidDuplicates: true);
                         };
 
-                        Invoker invokerSetCurrentTool = new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, sound: SoundData.Name.SonarPing, rebuildsMenu: true);
+                        Invoker invokerSetCurrentTool = new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, rebuildsMenu: true);
                         invokerSetCurrentTool.bgColor = world.pingTarget == PieceTemplate.Name.Empty ? new(8, 156, 147) : new(6, 97, 92);
 
                         new Separator(menu: menu, name: "", isEmpty: true);
@@ -764,10 +765,11 @@ namespace SonOfRobin
                             {
                                 world.pingTarget = name;
                                 world.map.bgTaskScannedSprites.Clear();
-                                MessageLog.Add(text: $"ping set to {pieceInfo.secretName}.", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj, avoidDuplicates: true);
+                                Sound.QuickPlay(SoundData.Name.SonarPing);
+                                MessageLog.Add(text: $"Ping set to {pieceInfo.secretName}.", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj, avoidDuplicates: true);
                             };
 
-                            Invoker invokerSetPiece = new Invoker(menu: menu, name: $"| {pieceInfo.secretName}", imageList: [pieceInfo.imageObj], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt2, sound: SoundData.Name.SonarPing, rebuildsMenu: true);
+                            Invoker invokerSetPiece = new Invoker(menu: menu, name: $"| {pieceInfo.secretName}", imageList: [pieceInfo.imageObj], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt2, rebuildsMenu: true);
 
                             invokerSetPiece.bgColor = world.pingTarget == name ? new(8, 156, 147) : new(6, 97, 92);
                         }

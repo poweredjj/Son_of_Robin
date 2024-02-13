@@ -984,6 +984,13 @@ namespace SonOfRobin
                         }
                     }
 
+                    if (!toolTargetsMode && this.world.map.bgTaskScannedSprites.Count > 500)
+                    {
+                        int originalCount = this.world.map.bgTaskScannedSprites.Count;
+                        this.world.map.bgTaskScannedSprites = new HashSet<Sprite>(this.world.map.bgTaskScannedSprites.Where(sprite => sprite.boardPiece.exists));
+                        MessageLog.Add(debugMessage: true, text: $"Clearing scanned sprites set: {originalCount} -> {this.world.map.bgTaskScannedSprites.Count}");
+                    }
+
                     foreach (var kvp in targetsByDelayDict)
                     {
                         int delay = kvp.Key;

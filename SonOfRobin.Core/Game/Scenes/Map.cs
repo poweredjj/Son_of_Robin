@@ -929,6 +929,8 @@ namespace SonOfRobin
                     continue;
                 }
 
+                var bgTaskScannedSpritesCopy = new HashSet<Sprite>(this.bgTaskScannedSprites); // making a copy, to avoid messing with original set
+
                 foreach (Sprite sprite in cameraSprites)
                 {
                     BoardPiece piece = sprite.boardPiece;
@@ -943,7 +945,7 @@ namespace SonOfRobin
                         (namesShownIfDiscovered.Contains(name) ||
                         typesShownIfDiscovered.Contains(pieceType))) showSprite = true;
 
-                    if (!showSprite && this.bgTaskScannedSprites.Contains(sprite)) showSprite = true;
+                    if (!showSprite && bgTaskScannedSpritesCopy.Contains(sprite)) showSprite = true;
 
                     if (showSprite) spritesToShow.Add(sprite);
                 }
