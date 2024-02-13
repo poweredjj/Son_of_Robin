@@ -407,7 +407,7 @@ namespace SonOfRobin
             }
 
             TimeSpan creationDuration = DateTime.Now - startTime;
-            MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
+            // MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
         public static List<AnimFrame> GetAllFrames()

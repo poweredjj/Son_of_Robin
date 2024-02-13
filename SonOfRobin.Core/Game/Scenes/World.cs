@@ -102,6 +102,7 @@ namespace SonOfRobin
 
         public List<PieceTemplate.Name> identifiedPieces; // pieces that were "looked at" in inventory
         private bool mapEnabled;
+        public PieceTemplate.Name pingTarget;
         public Level ActiveLevel { get; private set; }
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
@@ -182,6 +183,7 @@ namespace SonOfRobin
             this.shadowBlurEffect = null;
             this.tweenerForGlobalEffect = new Tweener();
             this.MapEnabled = false;
+            this.pingTarget = PieceTemplate.Name.Empty;
             this.map = new Map(world: this, touchLayout: TouchLayout.Map);
             this.playerPanel = new PlayerPanel(world: this);
             this.cineCurtains = new CineCurtains();

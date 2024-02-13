@@ -10,6 +10,7 @@ namespace SonOfRobin
         private readonly Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> materialsBySources;
         private readonly Dictionary<PieceTemplate.Name, int> destroyedSources;
         private readonly Dictionary<PieceTemplate.Name, int> acquiredMaterials;
+        private readonly HashSet<PieceTemplate.Name> sourcesUnlockedForScan;
 
         public static readonly HashSet<PieceTemplate.Name> excludedMaterialNames = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.JarBroken, PieceTemplate.Name.CrystalDepositSmall };
 
@@ -21,12 +22,14 @@ namespace SonOfRobin
         public Dictionary<PieceTemplate.Name, int> DestroyedSources { get { return this.destroyedSources.ToDictionary(entry => entry.Key, entry => entry.Value); } }
         public Dictionary<PieceTemplate.Name, int> AcquiredMaterials { get { return this.acquiredMaterials.ToDictionary(entry => entry.Key, entry => entry.Value); } }
         public Dictionary<PieceTemplate.Name, HashSet<PieceTemplate.Name>> MaterialsBySources { get { return this.materialsBySources.ToDictionary(entry => entry.Key, entry => entry.Value); } }
+        public PieceTemplate.Name[] SourcesUnlockedForScan { get { return this.sourcesUnlockedForScan.ToArray(); } }
 
         public Compendium()
         {
             this.materialsBySources = [];
             this.destroyedSources = [];
             this.acquiredMaterials = [];
+            this.sourcesUnlockedForScan = [];
         }
 
         public Compendium(Dictionary<string, Object> compendiumData)
@@ -38,6 +41,10 @@ namespace SonOfRobin
 
             this.acquiredMaterials = ((Dictionary<int, int>)compendiumData["acquiredMaterials"])
                 .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
+
+            // for compatibility with older saves
+            if (compendiumData.ContainsKey("sourcesUnlockedForScan")) this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
+            else this.sourcesUnlockedForScan = [];
 
             this.materialsBySources = [];
 
@@ -76,6 +83,7 @@ namespace SonOfRobin
                 { "materialsBySourcesAsInts", materialsBySourcesAsInts },
                 { "acquiredMaterials", this.acquiredMaterials.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value) },
                 { "destroyedSources", this.destroyedSources.ToDictionary(kvp => (int)kvp.Key, kvp => kvp.Value) },
+                { "sourcesUnlockedForScan", this.sourcesUnlockedForScan },
             };
 
             return compendiumData;
@@ -113,12 +121,26 @@ namespace SonOfRobin
             }
         }
 
+        private readonly Dictionary<PieceTemplate.Name, int> minCountForScan = new() { { PieceTemplate.Name.TreeBig, 10 } };
+
         public void AddDestroyedSource(PieceTemplate.Name sourceName)
         {
             // MessageLog.Add(debugMessage: true, text: $"Compendium - adding destroyed source: {sourceName}");
 
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;
+
+            if (!sourcesUnlockedForScan.Contains(sourceName))
+            {
+                int countNeeded = minCountForScan.ContainsKey(sourceName) ? minCountForScan[sourceName] : 20;
+                if (this.destroyedSources[sourceName] >= countNeeded)
+                {
+                    this.sourcesUnlockedForScan.Add(sourceName);
+                    PieceInfo.Info pieceInfo = PieceInfo.GetInfo(sourceName);
+                    MessageLog.Add(text: $"You can now scan for {pieceInfo.secretName}!", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj);
+                    Sound.QuickPlay(SoundData.Name.SonarPing);
+                }
+            }
         }
 
         public void CreateEntriesForDestroyedSources(Menu menu)

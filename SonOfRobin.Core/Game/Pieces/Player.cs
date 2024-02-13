@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input.Touch;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -940,7 +939,7 @@ namespace SonOfRobin
 
             BoardPiece activeToolbarPiece = this.ActiveToolbarPiece;
 
-            bool canPing = this.world.CurrentUpdate >= this.pingCooldownUntilFrame && canSeeAnything && activeToolbarPiece != null && activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit;
+            bool canPing = this.world.CurrentUpdate >= this.pingCooldownUntilFrame && canSeeAnything && activeToolbarPiece != null && (activeToolbarPiece.pieceInfo.toolbarTask == Scheduler.TaskName.Hit || world.pingTarget != PieceTemplate.Name.Empty);
 
             if (canPing)
             {
@@ -959,14 +958,18 @@ namespace SonOfRobin
                     Rectangle pingRect = this.world.camera.viewRect;
                     pingRect.Inflate(pingRect.Width / 2, pingRect.Height / 2); // pingRect should be bigger than viewRect (to continue ping when moving)
 
+                    bool toolTargetsMode = this.world.pingTarget == PieceTemplate.Name.Empty;
+
+                    var targetsByDelayDict = new Dictionary<int, Queue<Sprite>>();
+                    PieceTemplate.Name pingTarget = this.world.pingTarget;
+
                     float highestToolCategoryPower = activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value > 0).Max(kv => kv.Value);
                     var categoriesPingedSet = new HashSet<Category>(activeToolbarPiece.pieceInfo.toolMultiplierByCategory.Where(kv => kv.Value == highestToolCategoryPower).Select(kv => kv.Key));
 
-                    var targetsByDelayDict = new Dictionary<int, Queue<Sprite>>();
-
                     foreach (Sprite targetSprite in this.level.grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: pingRect, addPadding: false))
                     {
-                        if (categoriesPingedSet.Contains(targetSprite.boardPiece.pieceInfo.category) && targetSprite.boardPiece != this)
+                        if ((toolTargetsMode && categoriesPingedSet.Contains(targetSprite.boardPiece.pieceInfo.category) && targetSprite.boardPiece != this) ||
+                            (!toolTargetsMode && targetSprite.boardPiece.name == pingTarget))
                         {
                             int delay = (int)(Vector2.Distance(this.sprite.position, targetSprite.position) * 0.005f * (Preferences.worldScale * 2));
                             if (!targetsByDelayDict.ContainsKey(delay)) targetsByDelayDict[delay] = new Queue<Sprite>();
@@ -991,13 +994,12 @@ namespace SonOfRobin
                                     targetSprite.effectCol.AddEffect(new ColorizeInstance(color: Color.White, minAlpha: 0.2f, framesLeft: 40, fadeFramesLeft: 40));
                                 }
 
-                                if (targetQueue.Count  == 0) break;
+                                if (targetQueue.Count == 0) break;
                             }
                         };
 
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: delay, executeHelper: colorizeDlgt);
                     }
-
                 }
                 else Sound.QuickPlay(name: SoundData.Name.Error);
             }

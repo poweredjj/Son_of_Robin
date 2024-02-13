@@ -29,6 +29,7 @@ namespace SonOfRobin
             Pause,
             Stats,
             Compendium,
+            SetPingMode,
             Load,
             Save,
             Tutorials,
@@ -569,6 +570,8 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "compendium", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Compendium } });
 
+                        new Invoker(menu: menu, name: "set ping mode", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.SetPingMode } });
+
                         new Invoker(menu: menu, name: "stats", taskName: Scheduler.TaskName.OpenMenuTemplate, new Dictionary<string, Object> { { "templateName", Name.Stats } },
                             infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "statistics, levels, etc.", color: Color.White, scale: 1f) });
 
@@ -675,7 +678,6 @@ namespace SonOfRobin
                                         if (isInMountains) whereToFindTextLines.Add("mountains");
                                         if (!isInWater && !isInMountains && allowedTerrain.GetMaxValForTerrainName(Terrain.Name.Humidity) < 110 && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) < 5) whereToFindTextLines.Add("desert");
                                         else if (!isInWater && !isInMountains && allowedTerrain.GetMinValForTerrainName(Terrain.Name.Humidity) >= 140) whereToFindTextLines.Add("grasslands");
-
                                     }
                                 }
 
@@ -725,6 +727,44 @@ namespace SonOfRobin
                             }
 
                             new Invoker(menu: menu, name: $"| {PieceInfo.GetInfo(sourceName).secretName}", imageList: new List<ImageObj> { sourcePieceInfo.imageObj }, taskName: Scheduler.TaskName.Empty, infoTextList: infoTextList);
+                        }
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+                        new Invoker(menu: menu, name: "return", closesMenu: true, taskName: Scheduler.TaskName.Empty);
+
+                        return menu;
+                    }
+
+                case Name.SetPingMode:
+                    {
+                        World world = World.GetTopWorld();
+
+                        Menu menu = new(templateName: templateName, name: "SET PING MODE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true)
+                        {
+                            bgColor = new Color(8, 71, 13) * 0.85f
+                        };
+
+                        Scheduler.ExecutionDelegate setScanDlgt1 = () =>
+                        {
+                            world.pingTarget = PieceTemplate.Name.Empty;
+                            MessageLog.Add(text: "ping mode set to default", bgColor: new Color(77, 12, 117), avoidDuplicates: true);
+                        };
+
+                        new Invoker(menu: menu, name: "| current tool targets", imageList: [AnimData.GetImageObj(AnimData.PkgName.AxeStone)], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt1, sound: SoundData.Name.SonarPing);
+
+                        new Separator(menu: menu, name: "", isEmpty: true);
+
+                        foreach (PieceTemplate.Name name in world.compendium.SourcesUnlockedForScan)
+                        {
+                            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(name);
+
+                            Scheduler.ExecutionDelegate setScanDlgt2 = () =>
+                            {
+                                world.pingTarget = name;
+                                MessageLog.Add(text: $"ping set to {pieceInfo.secretName}.", bgColor: new Color(77, 12, 117), imageObj: pieceInfo.imageObj, avoidDuplicates: true);
+                            };
+
+                            new Invoker(menu: menu, name: $"| {pieceInfo.secretName}", imageList: [pieceInfo.imageObj], taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: setScanDlgt2, sound: SoundData.Name.SonarPing);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
