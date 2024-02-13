@@ -282,7 +282,7 @@ namespace SonOfRobin
                 case Type.Ping:
                     return new Tutorial(type: type, name: "ping", title: "Using 'ping' function.",
                         messages: new List<HintMessage>  {
-                            new HintMessage(text:"Press | ping button.", imageList: new List<ImageObj> { InputMapper.GetImageObj(InputMapper.Action.WorldPingArea)}, boxType: messageTextType),
+                            new HintMessage(text:"Press | to activate ping.\nYou will have to | wait a few seconds between uses.", imageList: new List<ImageObj> { InputMapper.GetImageObj(InputMapper.Action.WorldPingArea), TextureBank.GetImageObj(TextureBank.TextureName.SimpleHourglass)}, boxType: messageTextType),
                             new HintMessage(text:"In 'default' mode, ping shows | | nearby targets,\nthat your | currently selected tool is best suited for.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig), PieceInfo.GetImageObj(PieceTemplate.Name.TreeSmall), PieceInfo.GetImageObj(PieceTemplate.Name.AxeStone)}, boxType: messageTextType),
                             new HintMessage(text:"You can also select a | | | target in 'ping mode' menu.\nWhen a | target is selected, only items of this type will blink.\nAlso, selected targets will be displayed on your | map.", imageList: new List<ImageObj> { PieceInfo.GetImageObj(PieceTemplate.Name.TreeBig), PieceInfo.GetImageObj(PieceTemplate.Name.MineralsBig), PieceInfo.GetImageObj(PieceTemplate.Name.IronOre), PieceInfo.GetImageObj(PieceTemplate.Name.CrystalDepositBig), PieceInfo.GetImageObj(PieceTemplate.Name.Map)}, boxType: messageTextType),
                     });
