@@ -65,6 +65,8 @@ namespace SonOfRobin
             if (amount < 1) throw new ArgumentException($"Advance value ({amount}) has to be >= 1.");
             if (!this.initComplete) throw new ArgumentException("Island Clock has not been initialized.");
 
+            this.world.forceRenderNextFrame = true; // to ensure that world will be rendered (if invoked outside Update())
+
             if (ignorePause || !this.isPaused)
             {
                 this.ElapsedUpdates += amount;
