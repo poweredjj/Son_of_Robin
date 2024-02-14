@@ -1429,6 +1429,12 @@ namespace SonOfRobin
                             PieceTemplate.Name plantName = seeds.PlantToGrow;
                             bool highlightOnly = (bool)executeData["highlightOnly"];
 
+                            if (!highlightOnly && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.Plant))
+                            {
+                                Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Plant, world: seeds.world, ignoreDelay: true);
+                                return;
+                            }
+
                             if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonPlant));
 
                             if (!player.CanSeeAnything)

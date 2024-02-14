@@ -408,6 +408,12 @@ namespace SonOfRobin
 
                         Seed seeds = (Seed)this.slot.TopPiece;
 
+                        if (!seeds.world.HintEngine.shownTutorials.Contains(Tutorials.Type.Plant))
+                        {
+                            Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Plant, world: seeds.world, ignoreDelay: true);
+                            return;
+                        }
+
                         var executeHelper = new Dictionary<string, Object> { // must be compliant with UseToolbarPiece() dict
                             { "player", seeds.world.Player },
                             { "toolbarPiece", seeds },
