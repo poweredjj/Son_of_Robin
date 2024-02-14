@@ -664,6 +664,8 @@ namespace SonOfRobin
                             bool highlightOnly = (bool)executeData["highlightOnly"];
                             bool buttonHeld = (bool)executeData["buttonHeld"];
 
+                            VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonLighter));
+
                             bool canBurnNow = portableLight.CanBurnNow;
 
                             if (!highlightOnly && !canBurnNow && !buttonHeld)
@@ -672,8 +674,6 @@ namespace SonOfRobin
                                 Sound.QuickPlay(name: SoundData.Name.Error, volume: 1f);
                                 return;
                             }
-
-                            VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonLighter));
 
                             if (!canBurnNow) return;
 
