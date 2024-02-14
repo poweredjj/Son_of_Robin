@@ -552,8 +552,7 @@ namespace SonOfRobin
                             var executeData = (Dictionary<string, Object>)this.ExecuteHelper;
                             Player player = (Player)executeData["player"];
                             BoardPiece food = (BoardPiece)executeData["toolbarPiece"];
-                            bool highlightOnly = false;
-                            if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
+                            bool highlightOnly = executeData.ContainsKey("highlightOnly") ? (bool)executeData["highlightOnly"] : false;
 
                             if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonEat));
 
@@ -620,8 +619,7 @@ namespace SonOfRobin
                             Player player = (Player)executeData["player"];
                             Potion potion = (Potion)executeData["toolbarPiece"];
                             StorageSlot slot = (StorageSlot)executeData["slot"];
-                            bool highlightOnly = false;
-                            if (executeData.ContainsKey("highlightOnly")) highlightOnly = (bool)executeData["highlightOnly"];
+                            bool highlightOnly = executeData.ContainsKey("highlightOnly") ? (bool)executeData["highlightOnly"] : false;
 
                             if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonDrink));
 
@@ -675,17 +673,14 @@ namespace SonOfRobin
                                 return;
                             }
 
+                            VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonLighter));
+
                             if (!canBurnNow) return;
 
-                            if (highlightOnly)
-                            {
-                                VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonLighter));
-                                VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
-                                ControlTips.TipHighlightOnNextFrame(tipName: "use item");
-                                return;
-                            }
+                            VirtButton.ButtonHighlightOnNextFrame(VButName.UseTool);
+                            ControlTips.TipHighlightOnNextFrame(tipName: "use item");
 
-                            if (buttonHeld) return;
+                            if (highlightOnly || buttonHeld) return;
 
                             portableLight.IsOn = !portableLight.IsOn;
 
