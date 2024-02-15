@@ -406,7 +406,7 @@ namespace SonOfRobin
                 PreparePackage(pkgName);
             }
 
-            TimeSpan creationDuration = DateTime.Now - startTime;
+            // TimeSpan creationDuration = DateTime.Now - startTime;
             // MessageLog.Add(debugMessage: true, text: $"Anims creation time: {creationDuration:hh\\:mm\\:ss\\.fff}", textColor: Color.GreenYellow);
         }
 
@@ -1672,6 +1672,8 @@ namespace SonOfRobin
 
                     animPkg = MakePackageForDragonBonesAnims(pkgName: pkgName, colWidth: 20, colHeight: 20, jsonNameArray: jsonNameArray, animSize: 0, scale: 0.5f, baseAnimsFaceRight: false, durationDict: durationDict, switchDict: switchDict, nonLoopedAnims: nonLoopedAnims, globalOffsetCorrection: new Vector2(0, -39));
 
+                    animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "stand-right").frameArray[0];
+
                     break;
 
                 case PkgName.FoxGinger:
@@ -2681,8 +2683,8 @@ namespace SonOfRobin
             var yByDirection = new Dictionary<string, int>(){
                 { "down", 0 },
                 { "up", (height + paddingX2) * 3 },
-                { "right", (height + paddingX2) * 2 },
                 { "left", height + paddingX2 },
+                { "right", (height + paddingX2) * 2 },
                 };
 
             bool defaultSet = false;
@@ -2756,8 +2758,8 @@ namespace SonOfRobin
             var yByDirection = new Dictionary<string, int>(){
                 { "down", 0 },
                 { "up", (height + paddingX2) * 3 },
-                { "right", (height + paddingX2) * 2 },
                 { "left", height + paddingX2 },
+                { "right", (height + paddingX2) * 2 },
                 };
 
             bool defaultSet = false;
