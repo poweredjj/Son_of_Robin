@@ -1020,6 +1020,23 @@ namespace SonOfRobin
             else this.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDropped);
         }
 
+        public int CalculateAnimDelayFromMovement(Vector2 movement)
+        {
+            bool isPlayer = this.GetType() == typeof(Player);
+            bool longAnim = this.sprite.Anim.frameArray.Length > 5;
+
+            float distance = Vector2.Distance(Vector2.Zero, movement);
+
+            return (int)Helpers.ConvertRange(oldMin: 0, oldMax: isPlayer ? 3.5 : 2.5, newMin: 0, newMax: longAnim ? 6 : 20, oldVal: distance, clampToEdges: true, reverseVal: true);
+        }
+
+        public int CalculateSoundDelayFromMovement(Vector2 movement)
+        {
+            bool isPlayer = this.GetType() == typeof(Player);
+            float distance = Vector2.Distance(Vector2.Zero, movement);
+            return (int)Helpers.ConvertRange(oldMin: 0, oldMax: isPlayer ? 3.5 : 2.5, newMin: 0, newMax: 40, oldVal: distance, clampToEdges: true, reverseVal: true);
+        }
+
         public bool GoOneStepTowardsGoal(Vector2 goalPosition, float walkSpeed, bool runFrom = false, bool setOrientation = true, bool slowDownInWater = true, bool slowDownOnRocks = true)
         {
             float targetDistance = Vector2.Distance(this.sprite.position, goalPosition);
@@ -1077,11 +1094,11 @@ namespace SonOfRobin
 
             if (hasBeenMoved)
             {
-                this.sprite.CharacterWalk(movement: movement);
+                this.sprite.CharacterWalk(playSpeedDelay: this.CalculateAnimDelayFromMovement(movement: movement));
 
                 if (this.sprite.IsInCameraRect)
                 {
-                    this.activeSoundPack.Play(action: this.sprite.WalkSoundAction);
+                    this.activeSoundPack.Play(action: this.sprite.WalkSoundAction, coolDownExtension: this.CalculateSoundDelayFromMovement(movement: movement));
                     this.world.swayManager.MakeSmallPlantsReactToStep(this.sprite);
 
                     if (isInWater && !this.sprite.IgnoresCollisions)

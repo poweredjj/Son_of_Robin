@@ -142,17 +142,19 @@ namespace SonOfRobin
             if (managedSoundInstance != null) managedSoundInstance.Volume = this.Volume;
         }
 
-        public void Play(bool ignore3DThisPlay = false, bool ignoreCooldown = false)
+        public void Play(bool ignore3DThisPlay = false, bool ignoreCooldown = false, int coolDownExtension = 0)
         {
             if (!Scene.currentlyProcessedScene.soundActive || !GlobalOn || this.isEmpty) return;
 
             this.ignore3DThisPlay = ignore3DThisPlay || this.boardPiece != null && !this.boardPiece.sprite.IsOnBoard;
 
-            if (this.cooldown > 0 && !ignoreCooldown)
+            int cooldownToUse = this.cooldown + coolDownExtension;
+
+            if (cooldownToUse > 0 && !ignoreCooldown)
             {
                 int currentUpdate = this.Ignore3D ? SonOfRobinGame.CurrentUpdate : this.boardPiece.world.CurrentUpdate;
 
-                if (currentUpdate < this.lastFramePlayed + cooldown) return;
+                if (currentUpdate < this.lastFramePlayed + cooldownToUse) return;
                 this.lastFramePlayed = currentUpdate;
             }
 

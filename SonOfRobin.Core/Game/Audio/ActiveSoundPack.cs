@@ -41,7 +41,7 @@ namespace SonOfRobin
             }
         }
 
-        public void Play(PieceSoundPackTemplate.Action action, bool ignore3D = false, bool ignoreCooldown = false)
+        public void Play(PieceSoundPackTemplate.Action action, bool ignore3D = false, bool ignoreCooldown = false, int coolDownExtension = 0)
         {
             if (!this.activeSoundDict.ContainsKey(action))
             {
@@ -51,7 +51,7 @@ namespace SonOfRobin
                 this.activeSoundDict[action] = templateSound.MakeCopyForPiece(this.boardPiece);
             }
 
-            this.activeSoundDict[action].Play(ignore3DThisPlay: ignore3D, ignoreCooldown: ignoreCooldown);
+            this.activeSoundDict[action].Play(ignore3DThisPlay: ignore3D, ignoreCooldown: ignoreCooldown, coolDownExtension: coolDownExtension);
         }
 
         public void Stop(PieceSoundPackTemplate.Action action)
