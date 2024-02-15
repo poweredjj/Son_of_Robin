@@ -1432,7 +1432,8 @@ namespace SonOfRobin
                             if (!highlightOnly && !world.HintEngine.shownTutorials.Contains(Tutorials.Type.Plant))
                             {
                                 Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Plant, world: seeds.world, ignoreDelay: true);
-                                return;
+                                if (!Preferences.showHints) world.HintEngine.Disable(Tutorials.Type.Plant);
+                                else return;
                             }
 
                             if (highlightOnly) VirtButton.ButtonChangeTextureOnNextFrame(buttonName: VButName.UseTool, texture: TextureBank.GetTexture(TextureBank.TextureName.VirtButtonPlant));

@@ -411,7 +411,8 @@ namespace SonOfRobin
                         if (!seeds.world.HintEngine.shownTutorials.Contains(Tutorials.Type.Plant))
                         {
                             Tutorials.ShowTutorialOnTheField(type: Tutorials.Type.Plant, world: seeds.world, ignoreDelay: true);
-                            return;
+                            if (!Preferences.showHints) seeds.world.HintEngine.Disable(Tutorials.Type.Plant);
+                            else return;
                         }
 
                         var executeHelper = new Dictionary<string, Object> { // must be compliant with UseToolbarPiece() dict
