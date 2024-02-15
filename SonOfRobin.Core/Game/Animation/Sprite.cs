@@ -49,6 +49,8 @@ namespace SonOfRobin
         public ParticleEngine particleEngine;
         public byte AnimSize { get; private set; }
         public string AnimName { get; private set; }
+        private int playSpeedMultiplier;
+        private int playSpeedDelay;
         private byte currentFrameIndex;
         private int currentFrameTimeLeft; // measured in game frames
         public Rectangle GfxRect { get; private set; }
@@ -78,6 +80,8 @@ namespace SonOfRobin
             this.color = Color.White;
             this.currentFrameIndex = 0;
             this.currentFrameTimeLeft = 0;
+            this.playSpeedMultiplier = 1;
+            this.playSpeedDelay = 0;
             this.GfxRect = Rectangle.Empty;
             this.ColRect = Rectangle.Empty;
             this.allowedTerrain = allowedTerrain;
@@ -401,7 +405,7 @@ namespace SonOfRobin
                 this.orientation = newOrientation;
             }
 
-            if (this.AnimName.Contains("walk-")) this.CharacterWalk();
+            if (this.AnimName.Contains("walk-")) this.CharacterWalk(movement: movement);
             if (this.AnimName.Contains("stand-") || this.AnimName.Contains("weak-")) this.CharacterStand();
         }
 
@@ -656,6 +660,8 @@ namespace SonOfRobin
         private void AssignAnim()
         {
             this.Anim = this.AnimPkg.GetAnim(size: this.AnimSize, name: this.AnimName);
+            this.playSpeedMultiplier = 1;
+            this.playSpeedDelay = 0;
         }
 
         private bool AssignFrame(bool forceRewind = false, bool checkForCollision = true, bool forceAssignAnim = false)
@@ -675,7 +681,7 @@ namespace SonOfRobin
                 this.AnimFrame = AnimData.pkgByName[AnimData.PkgName.NoAnim].presentationFrame;
             }
 
-            this.currentFrameTimeLeft = this.AnimFrame.duration;
+            this.currentFrameTimeLeft = (this.AnimFrame.duration * this.playSpeedMultiplier) + (this.AnimFrame.duration > 0 ? this.playSpeedDelay : 0);
 
             if (!this.IsOnBoard) return true;
 
@@ -743,9 +749,17 @@ namespace SonOfRobin
             }
         }
 
-        public void CharacterWalk(bool setEvenIfMissing = false)
+        public void CharacterWalk(Vector2 movement, bool setEvenIfMissing = false)
         {
             this.AssignNewName(newAnimName: $"walk-{this.orientation}", setEvenIfMissing: setEvenIfMissing);
+
+            bool isPlayer = this.boardPiece.GetType() == typeof(Player);
+            bool longAnim = this.Anim.frameArray.Length > 5;
+
+            float distance = Vector2.Distance(Vector2.Zero, movement);
+            this.playSpeedDelay = (int)Helpers.ConvertRange(oldMin: 0, oldMax: isPlayer ? 3.5 : 2.5, newMin: 0, newMax: longAnim ? 6 : 20, oldVal: distance, clampToEdges: true, reverseVal: true);
+
+            // if (this.boardPiece.GetType() == typeof(Player)) MessageLog.Add(debugMessage: true, text: $"{this.boardPiece.name} movement distance: {distance} delay {this.playSpeedDelay}"); // for testing
         }
 
         public void Draw(bool calculateSubmerge = true)

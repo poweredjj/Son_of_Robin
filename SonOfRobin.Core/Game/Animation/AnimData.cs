@@ -1656,7 +1656,7 @@ namespace SonOfRobin
                     {
                         { "stand", 3 },
                         { "weak", 3 },
-                        { "walk", 2 },
+                        { "walk", 1 },
                         { "attack", 1 },
                         { "dead", 2 },
                         { "damage", 2 },
@@ -2716,7 +2716,7 @@ namespace SonOfRobin
 
                 foreach (int x in new int[] { setOffsetX + width + paddingX2, setOffsetX + ((width + paddingX2) * 2) })
                 {
-                    frameList.Add(new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: x + padding, y: setOffsetY + directionOffsetY + padding, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
+                    frameList.Add(new AnimFrame(atlasName: altasName, layer: 1, cropRect: new Rectangle(x: x + padding, y: setOffsetY + directionOffsetY + padding, width: width, height: height), duration: 4, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
                 }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));
@@ -2797,7 +2797,7 @@ namespace SonOfRobin
                 })
 
                 {
-                    frameList.Add(new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x + padding, y: setOffsetY + directionOffsetY + padding, width: width, height: height), duration: 8, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
+                    frameList.Add(new AnimFrame(atlasName: atlasName, layer: 1, cropRect: new Rectangle(x: x + padding, y: setOffsetY + directionOffsetY + padding, width: width, height: height), duration: 4, scale: scale, gfxOffsetCorrection: gfxOffsetCorrection, shadowOriginFactor: shadowOriginFactor, shadowPosOffset: shadowPosOffset, shadowHeightMultiplier: shadowHeightMultiplier, hasFlatShadow: false));
                 }
 
                 animPkg.AddAnim(new(animPkg: animPkg, name: $"walk-{animName}", size: animSize, frameArray: frameList.ToArray()));

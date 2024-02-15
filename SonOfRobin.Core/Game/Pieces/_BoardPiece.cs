@@ -1077,7 +1077,7 @@ namespace SonOfRobin
 
             if (hasBeenMoved)
             {
-                this.sprite.CharacterWalk();
+                this.sprite.CharacterWalk(movement: movement);
 
                 if (this.sprite.IsInCameraRect)
                 {

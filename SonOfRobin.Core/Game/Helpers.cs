@@ -287,11 +287,11 @@ namespace SonOfRobin
             return list;
         }
 
-        public static double ConvertRange(double oldMin, double oldMax, double newMin, double newMax, double oldVal, bool clampToEdges)
+        public static double ConvertRange(double oldMin, double oldMax, double newMin, double newMax, double oldVal, bool clampToEdges, bool reverseVal = false)
         {
             double newVal = ((oldVal - oldMin) * (newMax - newMin) / (oldMax - oldMin)) + newMin;
             if (clampToEdges) newVal = Math.Clamp(value: newVal, min: newMin, max: newMax);
-            return newVal;
+            return reverseVal ? newMax - newVal : newVal;
         }
 
         public static bool IsPowerOfTwo(ulong x)
