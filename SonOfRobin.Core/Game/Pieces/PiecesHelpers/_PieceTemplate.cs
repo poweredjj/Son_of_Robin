@@ -1341,7 +1341,7 @@ namespace SonOfRobin
                                 { Name.Carrot, 6 },
                                 { Name.Apple, 6 },
                                 { Name.Banana, 6 },
-                                { Name.Cherry, 6 },
+                                { Name.Mushroom, 6 },
                                 { Name.CoffeeRoasted, 4 },
                             } },
                         };
