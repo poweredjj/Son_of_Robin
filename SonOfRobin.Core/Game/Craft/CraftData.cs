@@ -60,9 +60,9 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 20 }, { PieceTemplate.Name.WoodLogRegular, 4 }}, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TentMedium }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Stick, 30 }, { PieceTemplate.Name.WoodLogRegular, 6 }, { PieceTemplate.Name.WoodLogHard, 4 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.TentBig }),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentMedium, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Leather, 3 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.WoodLogRegular, 8 }, { PieceTemplate.Name.WoodLogHard, 4 } }, fatigue: fatigueStructureMedium, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.TentBig }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 12 }, { PieceTemplate.Name.Rope, 15 }, { PieceTemplate.Name.Stick, 50 }, { PieceTemplate.Name.IronNail, 100 }, { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }}, fatigue: fatigueStructureBig, durationMultiplier: 0.4f, fatigueMultiplier: 0.6f, maxLevel: 1, isReversible: true, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 12 }, { PieceTemplate.Name.Rope, 15 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.IronNail, 100 }, { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }}, fatigue: fatigueStructureBig, durationMultiplier: 0.4f, fatigueMultiplier: 0.6f, maxLevel: 1, isReversible: true, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 },  { PieceTemplate.Name.WoodLogHard, 2 }}, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestStone }, craftCountToUnlock: 2),
 
@@ -87,9 +87,9 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetEssentialWorkshopRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogRegular, 1 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeStone }, craftCountToUnlock: 3),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 1 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeStone }, craftCountToUnlock: 3),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogRegular, 2 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeStone }, craftCountToUnlock: 3),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 2 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeStone }, craftCountToUnlock: 3),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearWood, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 4 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearStone }, craftCountToUnlock: 3),
 
@@ -97,7 +97,7 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowWood, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }}, fatigue: fatigueItemSmall, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowStone }, craftCountToUnlock: 3),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 1 }, { PieceTemplate.Name.Fat, 1 }}, fatigue: fatigueItemSmall, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig } , craftCountToUnlock: 5),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchSmall, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.Fat, 1 }}, fatigue: fatigueItemSmall, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.TorchBig } , craftCountToUnlock: 5),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.WoodPlank, amountToCreate: 3, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 1 }}, fatigue: 40),
 
@@ -108,17 +108,17 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetBasicWorkshopRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeIron }, craftCountToUnlock: 2),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.AxeIron }, craftCountToUnlock: 2),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeIron }, craftCountToUnlock: 2),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeIron }, craftCountToUnlock: 2),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemMedium, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ScytheIron }, craftCountToUnlock: 2 ),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 32 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemMedium, isReversible: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ScytheIron }, craftCountToUnlock: 2 ),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogRegular, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearIron }),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelIron, PieceTemplate.Name.FertileGroundSmall, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort }, craftCountToUnlock: 2),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.Stone, 4 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: false, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelIron, PieceTemplate.Name.FertileGroundSmall, PieceTemplate.Name.FenceHorizontalShort, PieceTemplate.Name.FenceVerticalShort }, craftCountToUnlock: 2),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemBig, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TorchBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemBig, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowStone, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.Stone, 2 }}, fatigue: fatigueItemSmall, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.ArrowIron }, craftCountToUnlock: 3),
                 };
@@ -127,21 +127,21 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetAdvancedWorkshopRecipes()
         {
             return new List<Craft.Recipe> {
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.AxeCrystal }, craftCountToUnlock: 2),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> { PieceTemplate.Name.AxeCrystal }, craftCountToUnlock: 2),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeCrystal }, craftCountToUnlock: 2),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.PickaxeCrystal }, craftCountToUnlock: 2),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BowAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 3 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.Clay, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BowAdvanced, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.Rope, 1 }, { PieceTemplate.Name.Clay, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ScytheCrystal } , craftCountToUnlock: 2),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ScytheCrystal } , craftCountToUnlock: 2),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearCrystal }, craftCountToUnlock: 2),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 3 }, { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.SpearCrystal }, craftCountToUnlock: 2),
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelIron, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 1 }, { PieceTemplate.Name.IronPlate, 2 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ShovelCrystal }, craftCountToUnlock: 2),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowExploding}, craftCountToUnlock: 3),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowIron, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 }, { PieceTemplate.Name.IronRod, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ArrowCrystal, PieceTemplate.Name.ArrowExploding}, craftCountToUnlock: 3),
 
-                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowExploding, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
+                    new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowExploding, amountToCreate: 10, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogRegular, 6 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.BottleOfOil, 1 }}, fatigue: fatigueItemMedium, isReversible: false, isHidden: true),
 
                     new Craft.Recipe(pieceToCreate: PieceTemplate.Name.LanternEmpty, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronPlate, 2 }, { PieceTemplate.Name.IronNail, 25 }, { PieceTemplate.Name.EmptyBottle, 1 } }, fatigue: fatigueItemMedium, isReversible: false),
 
@@ -152,15 +152,15 @@ namespace SonOfRobin
         public static List<Craft.Recipe> GetMasterWorkshopRecipes()
         {
             return new List<Craft.Recipe> {
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.AxeCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.PickaxeCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 3 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.SpearCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.IronNail, 5 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.Crystal, 1 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ShovelCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
-                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ScytheCrystal, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodLogHard, 2 }, { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.Crystal, 2 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ArrowCrystal, amountToCreate: 5, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.IronRod, 1 }, { PieceTemplate.Name.Crystal, 1 }}, fatigue: fatigueItemBig, isReversible: false, isHidden: true),
                 };

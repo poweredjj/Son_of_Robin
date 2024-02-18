@@ -614,7 +614,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 1),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 20, maxNumberToDrop: 1),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 2)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.TreeBig:
@@ -642,7 +642,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.Oak:
@@ -673,7 +673,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.AppleTree:
@@ -703,7 +703,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.CherryTree:
@@ -733,7 +733,7 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TreeStump, chanceToDrop: 100, maxNumberToDrop: 1), // must go first
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 1)});
                         break;
 
                     case PieceTemplate.Name.PalmTree:
@@ -760,7 +760,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 2)});
 
                         break;
 
@@ -790,7 +790,7 @@ namespace SonOfRobin
                             finalDroppedPieces: new List<Yield.DroppedPiece> {
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogRegular, chanceToDrop: 100, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.WoodLogHard, chanceToDrop: 50, maxNumberToDrop: 2),
-                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 3)});
+                                new Yield.DroppedPiece(pieceName: PieceTemplate.Name.Stick, chanceToDrop: 100, maxNumberToDrop: 2)});
                         break;
 
                     case PieceTemplate.Name.Acorn:
