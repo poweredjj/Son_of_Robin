@@ -118,9 +118,11 @@ namespace SonOfRobin
                 get
                 {
                     return
+                        this.type == typeof(Projectile) ||
+                        (!this.toolShootsProjectile && 
                         this.toolMultiplierByCategory != null &&
                         this.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
-                        this.toolMultiplierByCategory[BoardPiece.Category.Flesh] > 0f;
+                        this.toolMultiplierByCategory[BoardPiece.Category.Flesh] > 0f);
                 }
             }
 

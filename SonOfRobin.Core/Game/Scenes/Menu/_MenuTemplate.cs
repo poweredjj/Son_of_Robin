@@ -1295,12 +1295,14 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name pieceName in pieceCounterDict.Keys)
                         {
-                            if (PieceInfo.GetInfo(pieceName).type == typeof(Player)) continue; // creating these pieces would cause many glitches
+                            PieceInfo.Info pieceInfo = PieceInfo.GetInfo(pieceName);
 
-                            var imageList = new List<ImageObj> { PieceInfo.GetImageObj(pieceName) };
+                            if (pieceInfo.type == typeof(Player)) continue; // creating these pieces would cause many glitches
+
+                            var imageList = new List<ImageObj> { pieceInfo.imageObj };
                             Dictionary<string, Object> createData = new() { { "position", world.Player.sprite.position }, { "templateName", pieceName } };
 
-                            new Invoker(menu: menu, name: $"{PieceInfo.GetInfo(pieceName).secretName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true, resizesAllScenes: true);
+                            new Invoker(menu: menu, name: $"{pieceInfo.secretName} | ({pieceCounterDict[pieceName]})", imageList: imageList, taskName: Scheduler.TaskName.CreateDebugPieces, executeHelper: createData, rebuildsMenu: true, resizesAllScenes: true);
                         }
 
                         new Separator(menu: menu, name: "", isEmpty: true);
