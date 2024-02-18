@@ -65,9 +65,9 @@ namespace SonOfRobin
                 new PieceCreationData(name: PieceTemplate.Name.AppleTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.CherryTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.BananaTree, multiplier: 0.03f, levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.005f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 10), levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.005f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 10), levelType: Level.LevelType.Island),
-                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.002f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 4), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.TomatoPlant, multiplier: 0.1f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 15), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CarrotPlant, multiplier: 0.1f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 15), levelType: Level.LevelType.Island),
+                new PieceCreationData(name: PieceTemplate.Name.CoffeeShrub, multiplier: 0.1f, maxAmount: GetMaxAmountProportionalTo30x30k(areaMultiplier: areaMltp, noFor30k: 15), levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.PalmTree, multiplier: 1.0f, levelType: Level.LevelType.Island),
                 new PieceCreationData(name: PieceTemplate.Name.Cactus, multiplier: 0.2f, levelType: Level.LevelType.Island),
 
