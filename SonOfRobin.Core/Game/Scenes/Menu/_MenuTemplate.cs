@@ -759,6 +759,8 @@ namespace SonOfRobin
 
                         foreach (PieceTemplate.Name name in world.compendium.SourcesUnlockedForScan)
                         {
+                            if (Compendium.piecesNotUsedInPing.Contains(name)) continue;
+
                             PieceInfo.Info pieceInfo = PieceInfo.GetInfo(name);
 
                             Scheduler.ExecutionDelegate setScanDlgt2 = () =>

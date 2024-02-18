@@ -14,6 +14,8 @@ namespace SonOfRobin
 
         public static readonly HashSet<PieceTemplate.Name> excludedMaterialNames = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.MineralsSmall, PieceTemplate.Name.MineralsMossySmall, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarTreasureRich, PieceTemplate.Name.JarTreasurePoor, PieceTemplate.Name.JarBroken, PieceTemplate.Name.CrystalDepositSmall };
 
+        public static readonly HashSet<PieceTemplate.Name> piecesNotUsedInPing = new() { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken };
+
         private readonly Dictionary<PieceTemplate.Name, int> minCountForScan = new() {
             { PieceTemplate.Name.TreeSmall, 40 },
             { PieceTemplate.Name.TreeBig, 30 },
@@ -141,7 +143,7 @@ namespace SonOfRobin
             if (!this.destroyedSources.ContainsKey(sourceName)) this.destroyedSources[sourceName] = 0;
             this.destroyedSources[sourceName]++;
 
-            if (unlockForScan && !sourcesUnlockedForScan.Contains(sourceName))
+            if (unlockForScan && !sourcesUnlockedForScan.Contains(sourceName) && !piecesNotUsedInPing.Contains(sourceName))
             {
                 int countNeeded = minCountForScan.ContainsKey(sourceName) ? minCountForScan[sourceName] : 20;
                 if (this.destroyedSources[sourceName] >= countNeeded)
