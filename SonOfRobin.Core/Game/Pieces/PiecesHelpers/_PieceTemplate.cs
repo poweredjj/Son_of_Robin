@@ -1445,7 +1445,7 @@ namespace SonOfRobin
 
                 case Name.Stick:
                     {
-                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stick, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.", maxHitPoints: 5);
+                        boardPiece = new Collectible(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Stick, allowedTerrain: AllowedTerrain.GetBeachToVolcano(), rotatesWhenDropped: true, readableName: "stick", description: "Crafting material.");
 
                         break;
                     }

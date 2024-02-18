@@ -1675,11 +1675,6 @@ namespace SonOfRobin
                         this.placeMaxDistance = 1000;
                         this.getsPushedByWaves = true;
                         customSoundsForActions[PieceSoundPackTemplate.Action.IsDropped] = new Sound(name: SoundData.Name.DropStick, cooldown: 15, maxPitchVariation: 0.6f);
-
-                        this.Yield = new Yield(firstDebrisTypeList: new List<ParticleEngine.Preset> { ParticleEngine.Preset.DebrisWood },
-                            firstDroppedPieces: new List<Yield.DroppedPiece> { },
-                            finalDroppedPieces: new List<Yield.DroppedPiece> { });
-
                         break;
 
                     case PieceTemplate.Name.WoodLogRegular:
