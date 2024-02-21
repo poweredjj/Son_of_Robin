@@ -218,7 +218,11 @@ namespace SonOfRobin
                                 menu.AddLinkedScenes(scenesToLink);
                             }
 
-                            if (templateName == MenuTemplate.Name.GameOver) Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                            if (templateName == MenuTemplate.Name.GameOver)
+                            {
+                                Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                                RemoveAllTasksOfName(TaskName.ShowTextWindow);
+                            }
 
                             return;
                         }
@@ -297,6 +301,7 @@ namespace SonOfRobin
                         {
                             Scene.RemoveAllScenesOfType(typeof(Menu));
                             Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                            RemoveAllTasksOfName(TaskName.ShowTextWindow);
                             World oldWorld = (World)this.ExecuteHelper;
 
                             new World(width: oldWorld.IslandLevel.width, height: oldWorld.IslandLevel.height, seed: oldWorld.seed, resDivider: oldWorld.resDivider, playerName: Preferences.newWorldPlayerName, cellWidthOverride: oldWorld.Grid.cellWidth, cellHeightOverride: oldWorld.Grid.cellHeight);
@@ -461,6 +466,8 @@ namespace SonOfRobin
                     case TaskName.LoadGameNow:
                         {
                             Scene.RemoveAllScenesOfType(typeof(TextWindow), includeWaiting: true);
+                            RemoveAllTasksOfName(TaskName.ShowTextWindow);
+
                             SonOfRobinGame.SmallProgressBar.TurnOff(); // in case there was a progress bar (sleeping, etc.)
                             Sound.StopAll(); // no point in playing any sounds here - loading process glitches sound for a while
                             new LoaderSaver(saveMode: false, saveSlotName: (string)this.ExecuteHelper);
@@ -1628,6 +1635,7 @@ namespace SonOfRobin
                 }
 
                 Scene.RemoveAllScenesOfType(typeof(TextWindow));
+                RemoveAllTasksOfName(TaskName.ShowTextWindow);
                 Scene.RemoveAllScenesOfType(typeof(Menu));
                 Scene.RemoveAllScenesOfType(typeof(Inventory));
                 Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));
