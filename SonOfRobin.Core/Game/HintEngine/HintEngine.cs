@@ -606,7 +606,7 @@ namespace SonOfRobin
 
                         Player player = this.world.Player;
                         player.sprite.orientation = Sprite.Orientation.right;
-                        player.sprite.CharacterStand();
+                        player.sprite.CharacterStand(force: true);
                         var dialogue = HintMessage.BoxType.Dialogue;
 
                         BoardPiece boatCruising = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
