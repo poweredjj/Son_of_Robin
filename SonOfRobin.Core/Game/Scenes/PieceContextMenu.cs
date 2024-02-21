@@ -9,7 +9,7 @@ namespace SonOfRobin
 {
     public class PieceContextMenu : Scene
     {
-        protected enum ContextAction
+        public enum ContextAction : byte
         {
             Drop,
             DropAll,
@@ -44,12 +44,30 @@ namespace SonOfRobin
         private readonly BoardPiece piece;
         private readonly PieceStorage storage;
         private readonly StorageSlot slot;
-        private readonly List<ContextAction> actionList;
+        private readonly ContextAction[] actionArray;
         private readonly float percentPosX, percentPosY;
         private int activeEntry;
         private bool showCursor;
 
-        private int Margin
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, ContextAction[] actionArray) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        {
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
+            this.piece = piece;
+            this.storage = storage;
+            this.slot = slot;
+            this.actionArray = actionArray;
+            this.percentPosX = percentPosX;
+            this.percentPosY = percentPosY;
+            this.activeEntry = 0;
+            this.showCursor = Input.CurrentControlType != Input.ControlType.Touch;
+
+            this.UpdateViewSizes();
+
+            this.transManager.AddMultipleTransitions(outTrans: false, duration: 8, paramsToChange:
+                new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.ScreenHeight }, { "Opacity", 0f } });
+        }
+
+        private static int Margin
         { get { return Convert.ToInt32(SonOfRobinGame.ScreenHeight * marginPercent); } }
 
         private Vector2 MenuPos
@@ -72,13 +90,13 @@ namespace SonOfRobin
             set
             {
                 this.activeEntry = value;
-                if (this.activeEntry <= -1) this.activeEntry = this.actionList.Count - 1;
-                if (this.activeEntry >= this.actionList.Count) this.activeEntry = 0;
+                if (this.activeEntry <= -1) this.activeEntry = this.actionArray.Length - 1;
+                if (this.activeEntry >= this.actionArray.Length) this.activeEntry = 0;
             }
         }
 
         private ContextAction ActiveAction
-        { get { return this.actionList[this.ActiveEntry]; } }
+        { get { return this.actionArray[this.ActiveEntry]; } }
 
         private float TextScale
         {
@@ -90,7 +108,7 @@ namespace SonOfRobin
                 float textScale;
                 float minScale = 9999f;
 
-                foreach (ContextAction action in this.actionList)
+                foreach (ContextAction action in this.actionArray)
                 {
                     labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textScale = Math.Min(maxTextWidth / labelSize.X, maxTextHeight / labelSize.Y);
@@ -112,7 +130,7 @@ namespace SonOfRobin
                 float textScale = this.TextScale;
                 float textWidth, textHeight;
 
-                foreach (ContextAction action in this.actionList)
+                foreach (ContextAction action in this.actionArray)
                 {
                     Vector2 labelSize = Helpers.MeasureStringCorrectly(font: font, stringToMeasure: this.GetActionLabel(action));
                     textWidth = labelSize.X * textScale;
@@ -130,60 +148,15 @@ namespace SonOfRobin
         {
             get
             {
-                int margin = this.Margin;
+                int margin = Margin;
 
                 Vector2 maxEntrySize = this.MaxEntrySize;
 
                 int width = (int)maxEntrySize.X + (margin * 2);
-                int height = (((int)maxEntrySize.Y + margin) * (this.actionList.Count + 1)) + margin; // piece image is shown as one entry
+                int height = (((int)maxEntrySize.Y + margin) * (this.actionArray.Length + 1)) + margin; // piece image is shown as one entry
 
                 return new Rectangle(0, 0, width, height);
             }
-        }
-
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false, bool addDestroy = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
-        {
-            this.font = SonOfRobinGame.FontTommy.GetFont(60);
-            this.piece = piece;
-            this.storage = storage;
-            this.slot = slot;
-            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addSmelt: addSmelt, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty, addDestroy: addDestroy);
-            this.percentPosX = percentPosX;
-            this.percentPosY = percentPosY;
-            this.activeEntry = 0;
-            this.showCursor = Input.CurrentControlType != Input.ControlType.Touch;
-
-            this.UpdateViewSizes();
-
-            this.transManager.AddMultipleTransitions(outTrans: false, duration: 8, paramsToChange:
-                new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.ScreenHeight }, { "Opacity", 0f } });
-        }
-
-        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false, bool addDestroy = false)
-        {
-            var contextActionList = new List<ContextAction> { };
-
-            if (addEquip) contextActionList.Add(ContextAction.Equip);
-            if (addMove) contextActionList.Add(ContextAction.Move);
-            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) contextActionList.Add(ContextAction.Eat);
-            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) contextActionList.Add(ContextAction.Drink);
-            if (this.piece.GetType() == typeof(Seed)) contextActionList.Add(ContextAction.Plant);
-            if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) contextActionList.Add(ContextAction.Switch);
-            if (addFieldHarvest) contextActionList.Add(ContextAction.FieldHarvest);
-            if (addCook) contextActionList.Add(ContextAction.Cook);
-            if (addSmelt) contextActionList.Add(ContextAction.Smelt);
-            if (addBrew) contextActionList.Add(ContextAction.Brew);
-            if (addIgnite) contextActionList.Add(ContextAction.Ignite);
-            if (addExtinguish) contextActionList.Add(ContextAction.Extinguish);
-            if (addHarvest) contextActionList.Add(ContextAction.Harvest);
-            if (addOffer) contextActionList.Add(ContextAction.Offer);
-            if (addConstruct) contextActionList.Add(ContextAction.Construct);
-            if (addEmpty) contextActionList.Add(ContextAction.Empty);
-            if (addDrop) contextActionList.Add(ContextAction.Drop);
-            if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
-            if (addDestroy) contextActionList.Add(ContextAction.Destroy);
-
-            return contextActionList;
         }
 
         public override void Remove()
@@ -263,7 +236,7 @@ namespace SonOfRobin
                     {
                         Rectangle entryRect;
 
-                        for (int entryNo = 0; entryNo < this.actionList.Count; entryNo++)
+                        for (int entryNo = 0; entryNo < this.actionArray.Length; entryNo++)
                         {
                             entryRect = this.GetEntryRect(entryNo);
                             if (entryRect.Contains(touchPos))
@@ -322,8 +295,8 @@ namespace SonOfRobin
                         };
 
                         string message = pieceCount > 1 ?
-                            $"Do you really want to destroy {topPiece.readableName}?" :
-                            $"Do you really want to destroy {topPiece.readableName} x{pieceCount}?";
+                            $"Do you really want to destroy {topPiece.readableName} x{pieceCount}?" :
+                            $"Do you really want to destroy {topPiece.readableName}?";
 
                         MenuTemplate.CreateConfirmationMenu(question: message, confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", destroyItemsDlgt } });
 
@@ -637,7 +610,7 @@ namespace SonOfRobin
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
             Rectangle bgRect = this.BgRect;
-            float margin = this.Margin;
+            float margin = Margin;
             Vector2 maxEntrySize = this.MaxEntrySize;
 
             SonOfRobinGame.SpriteBatch.Draw(SonOfRobinGame.WhiteRectangle, bgRect, Color.DodgerBlue * 0.9f * this.viewParams.drawOpacity);
@@ -651,7 +624,7 @@ namespace SonOfRobin
             float shadowOffset = Math.Max(maxEntrySize.Y * 0.05f, 1);
             int entryNo = 0;
 
-            foreach (ContextAction action in this.actionList)
+            foreach (ContextAction action in this.actionArray)
             {
                 int displayedPos = entryNo + 1;
                 bool isActive = entryNo == this.ActiveEntry && showCursor;
@@ -676,7 +649,7 @@ namespace SonOfRobin
         private Rectangle GetEntryRect(int entryNo)
         {
             int displayedPos = entryNo + 1;
-            int margin = this.Margin;
+            int margin = Margin;
             Vector2 maxEntrySize = MaxEntrySize;
 
             return new Rectangle(margin, margin + (int)((float)displayedPos * (this.MaxEntrySize.Y + (float)margin)), (int)maxEntrySize.X, (int)maxEntrySize.Y);
