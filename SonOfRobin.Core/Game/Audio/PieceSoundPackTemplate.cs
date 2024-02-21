@@ -159,6 +159,11 @@ namespace SonOfRobin
             return this.staticSoundDict.ContainsKey(action) ? this.staticSoundDict[action] : null;
         }
 
+        public bool HasAction(Action action)
+        {
+            return this.staticSoundDict.ContainsKey(action);
+        }
+
         public bool IsLooped(Action action)
         {
             return this.staticSoundDict.ContainsKey(action) ? this.staticSoundDict[action].isLooped : false;

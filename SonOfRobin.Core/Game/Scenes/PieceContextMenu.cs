@@ -28,6 +28,7 @@ namespace SonOfRobin
             Equip,
             Offer,
             Construct,
+            Destroy,
             Empty,
         }
 
@@ -140,13 +141,13 @@ namespace SonOfRobin
             }
         }
 
-        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
+        public PieceContextMenu(BoardPiece piece, PieceStorage storage, StorageSlot slot, float percentPosX, float percentPosY, bool addEquip = false, bool addMove = false, bool addDrop = true, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false, bool addDestroy = false) : base(inputType: InputTypes.Normal, priority: 0, blocksUpdatesBelow: false, blocksDrawsBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.PieceContext)
         {
             this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.piece = piece;
             this.storage = storage;
             this.slot = slot;
-            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addSmelt: addSmelt, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty);
+            this.actionList = this.GetContextActionList(addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addSmelt: addSmelt, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty, addDestroy: addDestroy);
             this.percentPosX = percentPosX;
             this.percentPosY = percentPosY;
             this.activeEntry = 0;
@@ -158,7 +159,7 @@ namespace SonOfRobin
                 new Dictionary<string, float> { { "PosY", this.viewParams.PosY + SonOfRobinGame.ScreenHeight }, { "Opacity", 0f } });
         }
 
-        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false)
+        private List<ContextAction> GetContextActionList(bool addEquip = false, bool addMove = false, bool addDrop = false, bool addCook = false, bool addSmelt = false, bool addBrew = false, bool addIgnite = false, bool addExtinguish = false, bool addHarvest = false, bool addFieldHarvest = false, bool addOffer = false, bool addConstruct = false, bool addEmpty = false, bool addDestroy = false)
         {
             var contextActionList = new List<ContextAction> { };
 
@@ -180,6 +181,7 @@ namespace SonOfRobin
             if (addEmpty) contextActionList.Add(ContextAction.Empty);
             if (addDrop) contextActionList.Add(ContextAction.Drop);
             if (this.slot.PieceCount > 1) contextActionList.Add(ContextAction.DropAll);
+            if (addDestroy) contextActionList.Add(ContextAction.Destroy);
 
             return contextActionList;
         }
@@ -285,6 +287,7 @@ namespace SonOfRobin
         private void ExecuteAction()
         {
             ContextAction action = this.ActiveAction;
+            this.storage.world.forceRenderNextFrame = true; // to show changes
 
             switch (action)
             {
@@ -299,6 +302,31 @@ namespace SonOfRobin
                     {
                         bool droppedCorrectly = this.storage.DropPiecesFromSlot(slot: this.slot, dropAllPieces: true, addMovement: true);
                         if (!droppedCorrectly) new TextWindow(text: "Cannot drop the items.", textColor: Color.White, bgColor: Color.DarkRed, useTransition: false, animate: false, startingSound: SoundData.Name.Error);
+                        return;
+                    }
+
+                case ContextAction.Destroy:
+                    {
+                        BoardPiece topPiece = this.slot.TopPiece;
+                        int pieceCount = this.slot.PieceCount;
+
+                        Scheduler.ExecutionDelegate destroyItemsDlgt = () =>
+                        {
+                            if (topPiece.pieceInfo.pieceSoundPackTemplate.HasAction(PieceSoundPackTemplate.Action.IsDestroyed))
+                            {
+                                topPiece.activeSoundPack.Play(PieceSoundPackTemplate.Action.IsDestroyed, ignore3D: true);
+                            }
+                            else Sound.QuickPlay(SoundData.Name.DestroyWood);
+
+                            this.slot.GetAllPieces(remove: true);
+                        };
+
+                        string message = pieceCount > 1 ?
+                            $"Do you really want to destroy {topPiece.readableName}?" :
+                            $"Do you really want to destroy {topPiece.readableName} x{pieceCount}?";
+
+                        MenuTemplate.CreateConfirmationMenu(question: message, confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", destroyItemsDlgt } });
+
                         return;
                     }
 

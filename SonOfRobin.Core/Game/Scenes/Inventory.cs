@@ -807,6 +807,7 @@ namespace SonOfRobin
             bool addEquip = this.type != Type.SingleCenter && piece.GetType() == typeof(Equipment) && !slot.locked && this.otherInventory.storage.storageType == PieceStorage.StorageType.Equip;
             bool addMove = !addEquip && this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece);
             bool addDrop = !slot.locked;
+            bool addDestroy = !slot.locked && this.storage.storageType != PieceStorage.StorageType.Equip;
             bool addCook = piece.name == PieceTemplate.Name.CookingTrigger;
             bool addSmelt = piece.name == PieceTemplate.Name.SmeltingTrigger;
             bool addBrew = piece.name == PieceTemplate.Name.BrewTrigger;
@@ -818,7 +819,7 @@ namespace SonOfRobin
             bool addConstruct = piece.name == PieceTemplate.Name.ConstructTrigger;
             bool addEmpty = piece.GetType() == typeof(Potion);
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addSmelt: addSmelt, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty);
+            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, addEquip: addEquip, addMove: addMove, addDrop: addDrop, addCook: addCook, addSmelt: addSmelt, addBrew: addBrew, addIgnite: addIgnite, addExtinguish: addExtinguish, addHarvest: addHarvest, addFieldHarvest: addFieldHarvest, addOffer: addOffer, addConstruct: addConstruct, addEmpty: addEmpty, addDestroy: addDestroy);
             return;
         }
 
