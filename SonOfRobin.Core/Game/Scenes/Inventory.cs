@@ -793,10 +793,10 @@ namespace SonOfRobin
 
             StorageSlot slot = this.ActiveSlot;
             if (slot == null) return;
-            BoardPiece piece = this.storage.GetTopPiece(slot: slot);
-            if (piece == null) return;
+            BoardPiece contextPiece = this.storage.GetTopPiece(slot: slot);
+            if (contextPiece == null) return;
 
-            if (slot.locked && piece.GetType() != typeof(Trigger)) return;
+            if (slot.locked && contextPiece.GetType() != typeof(Trigger)) return;
 
             Vector2 slotPos = this.GetSlotPos(slot: slot, margin: this.Margin, tileSize: this.TileSize);
             slotPos += new Vector2(this.viewParams.PosX, this.viewParams.PosY);
@@ -805,27 +805,27 @@ namespace SonOfRobin
 
             List<PieceContextMenu.ContextAction> actionList = [];
 
-            if (this.type != Type.SingleCenter && piece.GetType() == typeof(Equipment) && !slot.locked && this.otherInventory.storage.storageType == PieceStorage.StorageType.Equip) actionList.Add(PieceContextMenu.ContextAction.Equip);
-            if (!actionList.Contains(PieceContextMenu.ContextAction.Equip) && this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(piece)) actionList.Add(PieceContextMenu.ContextAction.Move);
-            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) actionList.Add(PieceContextMenu.ContextAction.Eat);
-            if (this.piece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) actionList.Add(PieceContextMenu.ContextAction.Drink);
-            if (this.piece.GetType() == typeof(Seed)) actionList.Add(PieceContextMenu.ContextAction.Plant);
-            if (this.piece.GetType() == typeof(PortableLight) && this.piece.IsOnPlayersToolbar) actionList.Add(PieceContextMenu.ContextAction.Switch);
-            if (piece.world.Player.Skill == Player.SkillName.Hunter && (this.storage.storageType == PieceStorage.StorageType.Virtual || this.storage.storageType == PieceStorage.StorageType.Inventory) && piece.GetType() == typeof(Animal) && !piece.alive) actionList.Add(PieceContextMenu.ContextAction.FieldHarvest);
-            if (piece.name == PieceTemplate.Name.CookingTrigger) actionList.Add(PieceContextMenu.ContextAction.Cook);
-            if (piece.name == PieceTemplate.Name.SmeltingTrigger) actionList.Add(PieceContextMenu.ContextAction.Smelt);
-            if (piece.name == PieceTemplate.Name.BrewTrigger) actionList.Add(PieceContextMenu.ContextAction.Brew);
-            if (piece.name == PieceTemplate.Name.FireplaceTriggerOn) actionList.Add(PieceContextMenu.ContextAction.Ignite);
-            if (piece.name == PieceTemplate.Name.FireplaceTriggerOff) actionList.Add(PieceContextMenu.ContextAction.Extinguish);
-            if (piece.name == PieceTemplate.Name.MeatHarvestTrigger) actionList.Add(PieceContextMenu.ContextAction.Harvest);
-            if (piece.name == PieceTemplate.Name.OfferTrigger) actionList.Add(PieceContextMenu.ContextAction.Offer);
-            if (piece.name == PieceTemplate.Name.ConstructTrigger) actionList.Add(PieceContextMenu.ContextAction.Construct);
-            if (piece.GetType() == typeof(Potion)) actionList.Add(PieceContextMenu.ContextAction.Empty);
+            if (this.type != Type.SingleCenter && contextPiece.GetType() == typeof(Equipment) && !slot.locked && this.otherInventory.storage.storageType == PieceStorage.StorageType.Equip) actionList.Add(PieceContextMenu.ContextAction.Equip);
+            if (!actionList.Contains(PieceContextMenu.ContextAction.Equip) && this.type != Type.SingleCenter && !slot.locked && this.otherInventory.storage.CanFitThisPiece(contextPiece)) actionList.Add(PieceContextMenu.ContextAction.Move);
+            if (contextPiece.pieceInfo.toolbarTask == Scheduler.TaskName.GetEaten) actionList.Add(PieceContextMenu.ContextAction.Eat);
+            if (contextPiece.pieceInfo.toolbarTask == Scheduler.TaskName.GetDrinked) actionList.Add(PieceContextMenu.ContextAction.Drink);
+            if (contextPiece.GetType() == typeof(Seed)) actionList.Add(PieceContextMenu.ContextAction.Plant);
+            if (contextPiece.GetType() == typeof(PortableLight) && contextPiece.IsOnPlayersToolbar) actionList.Add(PieceContextMenu.ContextAction.Switch);
+            if (contextPiece.world.Player.Skill == Player.SkillName.Hunter && (this.storage.storageType == PieceStorage.StorageType.Virtual || this.storage.storageType == PieceStorage.StorageType.Inventory) && contextPiece.GetType() == typeof(Animal) && !contextPiece.alive) actionList.Add(PieceContextMenu.ContextAction.FieldHarvest);
+            if (contextPiece.name == PieceTemplate.Name.CookingTrigger) actionList.Add(PieceContextMenu.ContextAction.Cook);
+            if (contextPiece.name == PieceTemplate.Name.SmeltingTrigger) actionList.Add(PieceContextMenu.ContextAction.Smelt);
+            if (contextPiece.name == PieceTemplate.Name.BrewTrigger) actionList.Add(PieceContextMenu.ContextAction.Brew);
+            if (contextPiece.name == PieceTemplate.Name.FireplaceTriggerOn) actionList.Add(PieceContextMenu.ContextAction.Ignite);
+            if (contextPiece.name == PieceTemplate.Name.FireplaceTriggerOff) actionList.Add(PieceContextMenu.ContextAction.Extinguish);
+            if (contextPiece.name == PieceTemplate.Name.MeatHarvestTrigger) actionList.Add(PieceContextMenu.ContextAction.Harvest);
+            if (contextPiece.name == PieceTemplate.Name.OfferTrigger) actionList.Add(PieceContextMenu.ContextAction.Offer);
+            if (contextPiece.name == PieceTemplate.Name.ConstructTrigger) actionList.Add(PieceContextMenu.ContextAction.Construct);
+            if (contextPiece.GetType() == typeof(Potion)) actionList.Add(PieceContextMenu.ContextAction.Empty);
             if (!slot.locked) actionList.Add(PieceContextMenu.ContextAction.Drop);
             if (slot.PieceCount > 1) actionList.Add(PieceContextMenu.ContextAction.DropAll);
             if (!slot.locked && this.storage.storageType != PieceStorage.StorageType.Equip) actionList.Add(PieceContextMenu.ContextAction.Destroy);
 
-            new PieceContextMenu(piece: piece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, actionArray: actionList.ToArray());
+            new PieceContextMenu(piece: contextPiece, storage: this.storage, slot: slot, percentPosX: percentPos.X, percentPosY: percentPos.Y, actionArray: actionList.ToArray());
         }
 
         private void MoveOtherInventoryToTop()
