@@ -63,6 +63,7 @@ namespace SonOfRobin
 
         // render targets are static, to avoid using more when more worlds are in use (demo, new world during loading, etc.)
         private static RenderTarget2D cameraViewRenderTarget;
+
         public static RenderTarget2D DarknessAndHeatMask { get; private set; } // used for darkness and for heat
         public static RenderTarget2D FinalRenderTarget { get; private set; } // used also as temp mask for effects (shadows, distortion map, etc.)
 

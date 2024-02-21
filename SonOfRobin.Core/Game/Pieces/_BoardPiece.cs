@@ -779,9 +779,16 @@ namespace SonOfRobin
             this.UpdateLastFrameSMProcessed(); // updated after SM processing, to allow for proper time delta calculation
         }
 
-        protected void UpdateLastFrameSMProcessed()
+        public void UpdateLastFrameSMProcessed()
         {
             this.lastFrameSMProcessed = this.level.stateMachineTypesManager.GetDeltaCounterForType(this.GetType());
+        }
+
+        public void ResetParamsForNewLevel()
+        {
+            this.level = this.world.ActiveLevel;
+            this.sprite.currentCell = null;
+            this.UpdateLastFrameSMProcessed(); // without it, state machine won't get processed correctly after moving to new level (important for passive movement)
         }
 
         public void ProcessHeat()

@@ -159,18 +159,17 @@ namespace SonOfRobin
         {
             if (this.level == this.world.ActiveLevel) return;
 
-            this.level = this.world.ActiveLevel;
+            this.ResetParamsForNewLevel();
+
             foreach (PieceStorage storage in new List<PieceStorage> { this.PieceStorage, this.ToolStorage, this.EquipStorage })
             {
                 foreach (BoardPiece piece in storage.GetAllPieces())
                 {
-                    piece.level = this.world.ActiveLevel;
-                    piece.sprite.currentCell = null;
+                    piece.ResetParamsForNewLevel();
                 }
             }
 
             this.pointWalkTarget = Vector2.Zero;
-            this.UpdateLastFrameSMProcessed(); // otherwise player would freeze for some time
 
             if (this.level.playerReturnPos != Vector2.Zero) this.sprite.PlaceOnBoard(randomPlacement: false, position: this.level.playerReturnPos, closestFreeSpot: true);
             else
@@ -398,7 +397,7 @@ namespace SonOfRobin
                 {
                     if (sprite.boardPiece.pieceInfo.canBePickedUp &&
                         !sprite.boardPiece.IsBurning && (sprite.boardPiece.GetType() != typeof(Animal) || !sprite.boardPiece.alive)
-                        && (sprite.boardPiece.GetType() != typeof(Projectile) || !sprite.boardPiece.HasPassiveMovement))
+                        && !sprite.boardPiece.HasPassiveMovement)
                     {
                         piecesToPickUp.Add(sprite.boardPiece);
                     }
