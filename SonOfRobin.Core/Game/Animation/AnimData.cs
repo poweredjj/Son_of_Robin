@@ -113,6 +113,7 @@ namespace SonOfRobin
             ChestCrystal = 68,
             ChestTreasureBlue = 69,
             ChestTreasureRed = 70,
+            BasketWooden = 309,
 
             WoodLogRegular = 71,
             WoodLogHard = 72,
@@ -932,6 +933,13 @@ namespace SonOfRobin
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 20, colHeight: 14);
                         animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "jar_broken", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 41, height: 47), scale: 0.6f, gfxOffsetCorrection: new Vector2(0, -10), hasFlatShadow: false)]));
+                        break;
+                    }
+
+                case PkgName.BasketWooden:
+                    {
+                        animPkg = new(pkgName: pkgName, colWidth: 31, colHeight: 19);
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "basket_wooden", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 303, height: 300), scale: 0.11f, gfxOffsetCorrection: new Vector2(0f, -67), shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.7f, hasFlatShadow: false)]));
                         break;
                     }
 
