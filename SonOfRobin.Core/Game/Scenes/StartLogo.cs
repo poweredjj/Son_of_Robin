@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 
 namespace SonOfRobin
@@ -7,6 +8,7 @@ namespace SonOfRobin
     {
         private readonly Tweener tweener;
         public float logoOffsetY;
+        private ShineInstance shineInstance;
 
         public StartLogo() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.StartGame, tipsLayout: ControlTips.TipsLayout.StartGame)
         {
@@ -14,8 +16,10 @@ namespace SonOfRobin
 
             this.logoOffsetY = -LogoHeight * 1.5f;
 
-            this.tweener.TweenTo(target: this, expression: scene => scene.logoOffsetY, toValue: 0f, duration: 3.5f, delay: 1)
+            this.tweener.TweenTo(target: this, expression: scene => scene.logoOffsetY, toValue: 0f, duration: 3.5f, delay: 1) // duration: 3.5f, delay: 1
                 .Easing(EasingFunctions.BounceOut);
+
+            // this.shineInstance = new ShineInstance(framesLeft: 60, fadeFramesLeft: 60, color: Color.White);
         }
 
         private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * 0.33f); } }
@@ -38,7 +42,9 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+
+            // this.shineInstance.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate, drawColor: Color.White);
 
             int logoHeight = LogoHeight;
 

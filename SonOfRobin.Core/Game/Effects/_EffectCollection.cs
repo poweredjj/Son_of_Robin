@@ -74,7 +74,7 @@ namespace SonOfRobin
             {
                 SonOfRobinGame.SpriteBatch.End();
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: scene.TransformMatrix, sortMode: SpriteSortMode.Immediate);
-              
+
                 effInstance.TurnOn(currentUpdate: currentUpdateToUse, drawColor: drawColor);
                 if (effInstance.framesLeft == 0)
                 {
