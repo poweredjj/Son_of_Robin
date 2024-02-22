@@ -29,6 +29,7 @@ namespace SonOfRobin
             Star = 152,
             FogCloud = 153,
             GfxCorrupted = 155,
+            GameLogo = 158,
 
             SimpleArrowUp = 14,
             SimpleArrowRight = 15,
@@ -206,6 +207,7 @@ namespace SonOfRobin
             { TextureName.Star, "star" },
             { TextureName.FogCloud, "weather_fog_1" },
             { TextureName.GfxCorrupted, "gfx_corrupted" },
+            { TextureName.GameLogo, "game_logo" },
 
             { TextureName.BuffPoison, "buffs/buff_poison" },
             { TextureName.BuffRegen, "buffs/buff_regen" },

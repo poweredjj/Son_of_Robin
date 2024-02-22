@@ -1,15 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGame.Extended.Tweening;
 
 namespace SonOfRobin
 {
     public class StartLogo : Scene
     {
+        private readonly Tweener tweener;
+        public float logoOffsetY;
+
         public StartLogo() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.StartGame, tipsLayout: ControlTips.TipsLayout.StartGame)
         {
+            this.tweener = new Tweener();
+
+            this.logoOffsetY = -LogoHeight * 1.5f;
+
+            this.tweener.TweenTo(target: this, expression: scene => scene.logoOffsetY, toValue: 0f, duration: 3.5f, delay: 1)
+                .Easing(EasingFunctions.BounceOut);
         }
+
+        private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * 0.33f); } }
 
         public override void Update()
         {
+            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
+
             if (InputMapper.IsPressed(InputMapper.Action.GlobalConfirm) || TouchInput.IsBeingTouchedInAnyWay)
             {
                 SolidColor colorOverlay = new(color: Color.White, viewOpacity: 0f, clearScreen: false, priority: 1);
@@ -18,7 +32,7 @@ namespace SonOfRobin
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                 Sound.QuickPlay(SoundData.Name.TurnPage);
 
-                this.Remove();
+                this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 30, endRemoveScene: true, startSwapParams: true));
             }
         }
 
@@ -26,7 +40,10 @@ namespace SonOfRobin
         {
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            // TODO add drawing logo
+            int logoHeight = LogoHeight;
+
+            Rectangle imageRect = new(x: 0, y: (int)(logoHeight * 0.1f) + (int)this.logoOffsetY, width: SonOfRobinGame.ScreenWidth, height: logoHeight);
+            Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.GameLogo), rectangle: imageRect, color: Color.White * this.viewParams.drawOpacity);
 
             SonOfRobinGame.SpriteBatch.End();
         }
