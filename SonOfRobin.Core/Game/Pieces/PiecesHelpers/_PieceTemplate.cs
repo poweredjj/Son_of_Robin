@@ -997,11 +997,11 @@ namespace SonOfRobin
 
                         foreach (Name name in allNames)
                         {
-                            if (name.ToString().ToLower().StartsWith("herbs")) allowedPieceNames.Add(name);
+                            if (name.ToString().ToLower().StartsWith("herbs") || Cooker.ingredientNames.Contains(name)) allowedPieceNames.Add(name);
                         }
 
                         boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BasketWooden, allowedTerrain: AllowedTerrain.GetFieldCraft(),
-                              storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, allowedPieceNames: allowedPieceNames, storageType: PieceStorage.StorageType.Basket, readableName: "wooden basket", description: $"Can store herbs and seeds ({storageWidth}x{storageHeight}).");
+                              storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, allowedPieceNames: allowedPieceNames, storageType: PieceStorage.StorageType.Basket, readableName: "wooden basket", description: $"Stores herbs, seeds\nand food ingredients ({storageWidth}x{storageHeight}).");
 
                         break;
                     }
