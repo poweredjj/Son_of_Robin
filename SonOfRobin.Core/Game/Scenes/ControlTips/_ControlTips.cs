@@ -8,6 +8,8 @@ namespace SonOfRobin
 {
     public class ControlTips : Scene
     {
+        private static readonly HashSet<TipsLayout> bigModeLayouts = [TipsLayout.WorldMain, TipsLayout.WorldShoot, TipsLayout.WorldSpectator, TipsLayout.WorldBuild, TipsLayout.Map, TipsLayout.InventorySelect, TipsLayout.InventoryDrag, TipsLayout.QuitLoading, TipsLayout.StartGame];
+
         private Vector2 WholeSize
         {
             get
@@ -30,19 +32,20 @@ namespace SonOfRobin
             Empty,
             Menu,
             MenuWithoutClosing,
-            Map,
-            InventorySelect,
-            InventoryDrag,
-            PieceContext,
+            QuitLoading,
             TextWindowOk,
             TextWindowCancel,
             TextWindowOkCancel,
+            StartGame,
             WorldMain,
             WorldShoot,
             WorldSleep,
             WorldBuild,
             WorldSpectator,
-            QuitLoading,
+            InventorySelect,
+            InventoryDrag,
+            Map,
+            PieceContext,
         }
 
         public const int tipMargin = 12;
@@ -92,15 +95,7 @@ namespace SonOfRobin
         {
             if (this.currentScene == null || Input.CurrentControlType == Input.ControlType.Touch) return;
 
-            bool bigMode =
-                this.currentLayout == TipsLayout.WorldMain ||
-                this.currentLayout == TipsLayout.WorldShoot ||
-                this.currentLayout == TipsLayout.WorldSpectator ||
-                this.currentLayout == TipsLayout.WorldBuild ||
-                this.currentLayout == TipsLayout.Map ||
-                this.currentLayout == TipsLayout.InventorySelect ||
-                this.currentLayout == TipsLayout.InventoryDrag ||
-                this.currentLayout == TipsLayout.QuitLoading;
+            bool bigMode = bigModeLayouts.Contains(this.currentLayout);
 
             // To take original scene transition into account:
             // 1. Scene transformations have to be applied manually (because normally it would be invoked after all scenes Update()).
@@ -255,6 +250,12 @@ namespace SonOfRobin
                 case TipsLayout.QuitLoading:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
+                        break;
+                    }
+
+                case TipsLayout.StartGame:
+                    {
+                        new ButtonTip(tipCollection: this.tipCollection, text: "open main menu", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         break;
                     }
 

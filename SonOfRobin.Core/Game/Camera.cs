@@ -179,7 +179,16 @@ namespace SonOfRobin
                 this.zoomSlowdown = movementSlowdown;
             }
 
+            float screenWidth = this.ScreenWidth;
+            float screenHeight = this.ScreenHeight;
+
             Vector2 currentTargetPos = this.GetTargetCoords();
+
+            if (this.world.demoMode && Scene.GetTopSceneOfType(typeof(StartLogo)) == null) // when there is menu on the right
+            {
+                currentTargetPos.X += screenWidth * 0.33f; // to put the camera center on the left side
+                calculateAheadCorrection = false; // to avoid losing sight of target
+            }
 
             if (calculateAheadCorrection && Preferences.smartCamera &&
                 this.trackingMode == TrackingMode.Sprite &&
@@ -267,12 +276,7 @@ namespace SonOfRobin
 
             viewCenter += cameraCorrection + this.shakeVal;
 
-            float screenWidth = this.ScreenWidth;
-            float screenHeight = this.ScreenHeight;
-
-            float widthDivider = this.world.demoMode ? 5 : 2; // to put the camera center on the left side of the screen during demo (there is menu on the right)
-
-            float xMin = viewCenter.X - (screenWidth / widthDivider);
+            float xMin = viewCenter.X - (screenWidth / 2f);
             float yMin = viewCenter.Y - (screenHeight / 2f);
 
             if (this.keepInWorldBounds)

@@ -611,7 +611,7 @@ namespace SonOfRobin
                         var materialsBySources = compendium.MaterialsBySources;
                         var ignoredMaterials = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Hole, PieceTemplate.Name.TreeStump, PieceTemplate.Name.JarBroken };
 
-                        Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
+                        Menu menu = new(templateName: templateName, name: "COMPENDIUM", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
                         {
                             bgColor = new Color(8, 71, 13) * 0.85f
                         };
@@ -739,7 +739,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "PING MODE", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true)
+                        Menu menu = new(templateName: templateName, name: "PING MODE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true)
                         {
                             bgColor = new Color(8, 71, 13) * 0.85f
                         };
@@ -786,7 +786,7 @@ namespace SonOfRobin
                     {
                         World world = World.GetTopWorld();
 
-                        Menu menu = new(templateName: templateName, name: "STATS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
+                        Menu menu = new(templateName: templateName, name: "STATS", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundClose: SoundData.Name.PaperMove2, alwaysShowSelectedEntry: true, soundNavigate: SoundData.Name.Tick, soundInvoke: SoundData.Name.Tick)
                         {
                             bgColor = new Color(75, 37, 110) * 0.75f
                         };
@@ -1544,7 +1544,7 @@ namespace SonOfRobin
                 case Name.Tutorials:
                     {
                         World world = World.GetTopWorld();
-                        Menu menu = new(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
+                        Menu menu = new(templateName: templateName, name: "TUTORIALS", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         foreach (Tutorials.Tutorial tutorial in Tutorials.TutorialsInMenu)
                         {
@@ -1568,7 +1568,7 @@ namespace SonOfRobin
 
                 case Name.SoundTest:
                     {
-                        Menu menu = new(templateName: templateName, name: "SOUND TEST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundNavigate: SoundData.Name.Empty);
+                        Menu menu = new(templateName: templateName, name: "SOUND TEST", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, soundNavigate: SoundData.Name.Empty);
 
                         foreach (SoundData.Name soundName in (SoundData.Name[])Enum.GetValues(typeof(SoundData.Name)))
                         {
@@ -1582,7 +1582,7 @@ namespace SonOfRobin
 
                 case Name.GfxListTest:
                     {
-                        Menu menu = new(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: true, canBeClosedManually: true, templateExecuteHelper: executeHelper);
+                        Menu menu = new(templateName: templateName, name: "GRAPHICS LIST", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper);
 
                         foreach (AnimPkg animPkg in AnimData.pkgByName.Values)
                         {

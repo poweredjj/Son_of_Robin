@@ -14,6 +14,11 @@ namespace SonOfRobin
         MenuMiddleReturn,
         MenuLeftReturn,
         CaptureInputCancel,
+        QuitLoading,
+        TextWindowOk,
+        TextWindowCancel,
+        TextWindowOkCancel,
+        StartGame,
         WorldMain,
         WorldShoot,
         WorldSleep,
@@ -21,10 +26,6 @@ namespace SonOfRobin
         WorldSpectator,
         Inventory,
         Map,
-        QuitLoading,
-        TextWindowOk,
-        TextWindowCancel,
-        TextWindowOkCancel,
     }
 
     public class TouchInput
@@ -594,6 +595,15 @@ namespace SonOfRobin
                         float xPos = 0.06f;
                         float yPos = 0.15f;
                         new VirtButton(name: VButName.Return, label: "CANCEL", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: xPos, posY0to1: yPos, width0to1: size, height0to1: size);
+
+                        return;
+                    }
+
+                case TouchLayout.StartGame:
+                    {
+                        ShowSticks = false;
+
+                        new VirtButton(name: VButName.Confirm, label: "START", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0f, posY0to1: 0f, width0to1: 1f, height0to1: 1f, hidden: true);
 
                         return;
                     }

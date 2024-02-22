@@ -204,7 +204,6 @@ namespace SonOfRobin
             this.meatHarvestStats = new MeatHarvestStats();
             this.compendium = new Compendium();
             this.identifiedPieces = new List<PieceTemplate.Name> { PieceTemplate.Name.KnifeSimple };
-            if (this.demoMode) this.solidColorManager.Add(new SolidColor(color: Color.White, viewOpacity: 0.4f, clearScreen: false, priority: 1));
             this.soundPaused = false;
         }
 
