@@ -42,6 +42,7 @@ namespace SonOfRobin
             "Old equipment can be ripped apart to recover materials.",
             "You cannot craft when inside cave.",
             "Cave entrance will crumble after going out.",
+            "Running low on ram? Try disabling demo world.",
         };
 
         private static List<string> tipsToDisplay = new();
