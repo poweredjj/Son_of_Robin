@@ -124,6 +124,8 @@ namespace SonOfRobin
             PaperMove2 = 79,
             TurnPage = 80,
             SonarPing = 238,
+            BasketOpen = 239,
+            BasketClose = 240,
 
             GameOver = 81,
 
@@ -552,6 +554,8 @@ namespace SonOfRobin
             { Name.BoatHorn, "441223__devy32__boat-horn" },
             { Name.MusicBoxEnding, "72650__lg__music-box-01" },
             { Name.SonarPing, "543932__mrlindstrom__sonarping" },
+            { Name.BasketOpen, "434569__absolutely_craycray__cloth_1" },
+            { Name.BasketClose, "434569__absolutely_craycray__cloth_2" },
             };
     }
 }

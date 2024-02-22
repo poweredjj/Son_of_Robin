@@ -10120,6 +10120,18 @@
 /processorParam:Quality=Best
 /build:sound/427865__leonelmail__clothing-rustle-nylon_2.ogg
 
+#begin sound/434569__absolutely_craycray__cloth_1.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/434569__absolutely_craycray__cloth_1.ogg
+
+#begin sound/434569__absolutely_craycray__cloth_2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/434569__absolutely_craycray__cloth_2.ogg
+
 #begin sound/434782__stephenbist__luggage-drop-2.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor

@@ -64,6 +64,8 @@ namespace SonOfRobin
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.TentBig, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.HideCloth, 12 }, { PieceTemplate.Name.Rope, 15 }, { PieceTemplate.Name.Stick, 60 }, { PieceTemplate.Name.IronNail, 100 }, { PieceTemplate.Name.WoodPlank, 20 }, { PieceTemplate.Name.WoodLogHard, 4 }}, fatigue: fatigueStructureBig, durationMultiplier: 0.4f, fatigueMultiplier: 0.6f, maxLevel: 1, isReversible: true, isHidden: true),
 
+                new Craft.Recipe(pieceToCreate: PieceTemplate.Name.BasketWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Stick, 30 }}, fatigue: fatigueStructureMedium, craftCountToLevelUp: 3, isReversible: true),
+
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestWooden, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.WoodPlank, 20 },  { PieceTemplate.Name.WoodLogHard, 2 }}, fatigue: fatigueStructureSmall, isReversible: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestStone }, craftCountToUnlock: 2),
 
                 new Craft.Recipe(pieceToCreate: PieceTemplate.Name.ChestStone, ingredients: new Dictionary<PieceTemplate.Name, byte> { { PieceTemplate.Name.Granite, 1 },{ PieceTemplate.Name.WoodPlank, 10 }, { PieceTemplate.Name.Clay, 3 } }, fatigue: fatigueStructureSmall, isReversible: true, isHidden: true, unlocksWhenCrafted: new List<PieceTemplate.Name> {PieceTemplate.Name.ChestIron }, craftCountToUnlock: 2),

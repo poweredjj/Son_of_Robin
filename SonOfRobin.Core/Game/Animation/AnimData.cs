@@ -938,8 +938,15 @@ namespace SonOfRobin
 
                 case PkgName.BasketWooden:
                     {
-                        animPkg = new(pkgName: pkgName, colWidth: 31, colHeight: 19);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "basket_wooden", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 303, height: 300), scale: 0.11f, gfxOffsetCorrection: new Vector2(0f, -67), shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.7f, hasFlatShadow: false)]));
+                        animPkg = new(pkgName: pkgName, colWidth: 26, colHeight: 15);
+
+                        AnimFrame animFrame = new AnimFrame(atlasName: "basket_wooden", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 303, height: 300), scale: 0.10f, gfxOffsetCorrection: new Vector2(0f, -57), shadowOriginFactor: new Vector2(0.5f, 0.9f), shadowHeightMultiplier: 0.7f, hasFlatShadow: false);
+
+                        foreach (string name in new string[] { "default", "open", "closed", "opening", "closing" })
+                        {
+                            animPkg.AddAnim(new(animPkg: animPkg, name: name, size: 0, frameArray: [animFrame]));
+                        }
+
                         break;
                     }
 

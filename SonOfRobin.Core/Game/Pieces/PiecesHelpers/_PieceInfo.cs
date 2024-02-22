@@ -119,7 +119,7 @@ namespace SonOfRobin
                 {
                     return
                         this.type == typeof(Projectile) ||
-                        (!this.toolShootsProjectile && 
+                        (!this.toolShootsProjectile &&
                         this.toolMultiplierByCategory != null &&
                         this.toolMultiplierByCategory.ContainsKey(BoardPiece.Category.Flesh) &&
                         this.toolMultiplierByCategory[BoardPiece.Category.Flesh] > 0f);
@@ -1306,6 +1306,24 @@ namespace SonOfRobin
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 80, maxNumberToDrop: 2),
                                 new Yield.DroppedPiece(pieceName: PieceTemplate.Name.TorchBig, chanceToDrop: 30, maxNumberToDrop: 2),
                                 });
+                        break;
+
+                    case PieceTemplate.Name.BasketWooden:
+                        this.category = BoardPiece.Category.Wood;
+                        this.fireAffinity = 1.0f;
+                        this.movesWhenDropped = false;
+                        this.boardTask = Scheduler.TaskName.OpenContainer;
+                        this.interactVirtButtonName = TextureBank.TextureName.VirtButtonOpenContainer;
+                        this.blocksMovement = true;
+                        this.destroysPlantsWhenBuilt = true;
+                        this.isAffectedByWind = true;
+                        this.getsPushedByWaves = true;
+
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsHit] = new Sound(name: SoundData.Name.HitWood, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.IsDestroyed] = new Sound(name: SoundData.Name.DestroyBox, maxPitchVariation: 0.5f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Open] = new Sound(name: SoundData.Name.BasketOpen, maxPitchVariation: 0.3f);
+                        customSoundsForActions[PieceSoundPackTemplate.Action.Close] = new Sound(name: SoundData.Name.BasketClose, maxPitchVariation: 0.3f);
+
                         break;
 
                     case PieceTemplate.Name.ChestWooden:

@@ -23,6 +23,7 @@ namespace SonOfRobin
             Totem = 11,
             Construction = 12,
             Smelting = 13,
+            Basket = 14,
         }
 
         public readonly World world;

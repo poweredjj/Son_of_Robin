@@ -80,6 +80,7 @@ namespace SonOfRobin
             CrateStarting = 55,
             CrateRegular = 56,
 
+            BasketWooden = 238,
             ChestWooden = 57,
             ChestStone = 58,
             ChestIron = 59,
@@ -983,6 +984,24 @@ namespace SonOfRobin
 
                         boardPiece = new Decoration(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Crate, allowedTerrain: allowedTerrain,
                               maxHitPoints: 40, readableName: "supply crate", description: "Contains valuable items.");
+
+                        break;
+                    }
+
+                case Name.BasketWooden:
+                    {
+                        byte storageWidth = 3;
+                        byte storageHeight = 2;
+
+                        var allowedPieceNames = new HashSet<Name> { Name.CoffeeRaw, Name.CoffeeRoasted, Name.SeedsGeneric };
+
+                        foreach (Name name in allNames)
+                        {
+                            if (name.ToString().ToLower().StartsWith("herbs")) allowedPieceNames.Add(name);
+                        }
+
+                        boardPiece = new Container(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.BasketWooden, allowedTerrain: AllowedTerrain.GetFieldCraft(),
+                              storageWidth: storageWidth, storageHeight: storageHeight, maxHitPoints: 40, allowedPieceNames: allowedPieceNames, storageType: PieceStorage.StorageType.Basket, readableName: "wooden basket", description: $"Can store herbs and seeds ({storageWidth}x{storageHeight}).");
 
                         break;
                     }

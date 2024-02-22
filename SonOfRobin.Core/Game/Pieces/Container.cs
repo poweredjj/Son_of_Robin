@@ -7,11 +7,11 @@ namespace SonOfRobin
     public class Container : BoardPiece
     {
         public Container(World world, int id, AnimData.PkgName animPackage, PieceTemplate.Name name, AllowedTerrain allowedTerrain, byte storageWidth, byte storageHeight, string readableName, string description,
-            byte animSize = 0, string animName = "open", int maxHitPoints = 1) :
+            byte animSize = 0, string animName = "open", int maxHitPoints = 1, HashSet<PieceTemplate.Name> allowedPieceNames = null, PieceStorage.StorageType storageType = PieceStorage.StorageType.Chest) :
 
             base(world: world, id: id, animPackage: animPackage, animSize: animSize, animName: animName, name: name, allowedTerrain: allowedTerrain, maxHitPoints: maxHitPoints, readableName: readableName, description: description, activeState: State.Empty)
         {
-            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: PieceStorage.StorageType.Chest);
+            this.PieceStorage = new PieceStorage(width: storageWidth, height: storageHeight, storagePiece: this, storageType: storageType, allowedPieceNames: allowedPieceNames);
         }
 
         public override PieceStorage PieceStorage // makes accessing GlobalChestStorage possible
@@ -64,7 +64,7 @@ namespace SonOfRobin
         public void Open()
         {
             if (this.sprite.AnimName == "open") return; // "opening" animation is not used, because it won't complete before opening inventory
-            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Open);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Open, ignore3D: true);
             this.sprite.AssignNewName(newAnimName: "open");
             if (this.PieceStorage.storageType == PieceStorage.StorageType.Chest) new RumbleEvent(force: 0.22f, bigMotor: false, smallMotor: true, fadeInSeconds: 0.45f, durationSeconds: 0, fadeOutSeconds: 0);
         }
@@ -72,7 +72,7 @@ namespace SonOfRobin
         public void Close()
         {
             if (this.PieceStorage.OccupiedSlots.Count == 0 || this.sprite.AnimName == "closing") return;
-            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Close);
+            this.activeSoundPack.Play(PieceSoundPackTemplate.Action.Close, ignore3D: true);
             this.sprite.AssignNewName(newAnimName: "closing");
             if (this.PieceStorage.storageType == PieceStorage.StorageType.Chest) new RumbleEvent(force: 1f, bigMotor: true, fadeInSeconds: 0, durationSeconds: 0, fadeOutSeconds: 0.15f);
         }
