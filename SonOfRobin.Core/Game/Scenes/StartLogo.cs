@@ -34,7 +34,7 @@ namespace SonOfRobin
                 colorOverlay.transManager.AddTransition(new Transition(transManager: colorOverlay.transManager, outTrans: true, startDelay: 0, duration: 60, playCount: 1, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.4f));
 
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-                Sound.QuickPlay(SoundData.Name.TurnPage);
+                // Sound.QuickPlay(SoundData.Name.TurnPage); // TODO add preloading of this sound (InitialLoader?)
 
                 this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 30, endRemoveScene: true, startSwapParams: true));
             }
@@ -49,7 +49,7 @@ namespace SonOfRobin
             int logoHeight = LogoHeight;
 
             Rectangle imageRect = new(x: 0, y: (int)(logoHeight * 0.1f) + (int)this.logoOffsetY, width: SonOfRobinGame.ScreenWidth, height: logoHeight);
-            Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.GameLogo), rectangle: imageRect, color: Color.White * this.viewParams.drawOpacity);
+            // Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.GameLogo), rectangle: imageRect, color: Color.White * this.viewParams.drawOpacity);
 
             SonOfRobinGame.SpriteBatch.End();
         }

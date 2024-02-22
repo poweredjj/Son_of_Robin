@@ -402,7 +402,7 @@ namespace SonOfRobin
 
             if (firstRun)
             {
-                this.SetZoom(zoom: 2f, setInstantly: firstRun);
+                this.SetZoom(zoom: 1.25f, setInstantly: firstRun);
                 this.SetMovementSpeed(0.25f);
             }
 
