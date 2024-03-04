@@ -184,7 +184,7 @@ namespace SonOfRobin
 
             Vector2 currentTargetPos = this.GetTargetCoords();
 
-            if (this.world.demoMode && Scene.GetTopSceneOfType(typeof(StartLogo)) == null) // when there is menu on the right
+            if (this.world.demoMode && Scene.GetTopSceneOfType(typeof(StartLogo))?.inputActive == false) // when there is menu on the right
             {
                 currentTargetPos.X += screenWidth * 0.33f; // to put the camera center on the left side
                 calculateAheadCorrection = false; // to avoid losing sight of target
