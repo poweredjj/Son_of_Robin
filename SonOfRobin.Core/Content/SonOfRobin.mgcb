@@ -49,6 +49,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/HeatMaskDistortion.fx
 
+#begin effects/MainLogo.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MainLogo.fx
+
 #begin effects/Mosaic.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -72,12 +78,6 @@
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
 /build:effects/ShadowMerge.fx
-
-#begin effects/Shine.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:effects/Shine.fx
 
 #begin effects/Sketch.fx
 /importer:EffectImporter
@@ -6483,6 +6483,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/loading_wheel.png
+
+#begin gfx/logo_wave_distortion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/logo_wave_distortion.png
 
 #begin gfx/map_big.png
 /importer:TextureImporter

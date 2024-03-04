@@ -51,7 +51,7 @@ namespace SonOfRobin
         public static Effect EffectColorize { get; private set; }
         public static Effect EffectBurn { get; private set; }
         public static Effect EffectBorder { get; private set; }
-        public static Effect EffectShine { get; private set; }
+        public static Effect EffectMainLogo { get; private set; }
         public static Effect EffectSketch { get; private set; }
         public static Effect EffectBlur { get; private set; }
         public static Effect EffectMosaic { get; private set; }
@@ -251,7 +251,7 @@ namespace SonOfRobin
             EffectColorize = ContentMgr.Load<Effect>("effects/Colorize");
             EffectBurn = ContentMgr.Load<Effect>("effects/Burn");
             EffectBorder = ContentMgr.Load<Effect>("effects/Border");
-            EffectShine = ContentMgr.Load<Effect>("effects/Shine");
+            EffectMainLogo = ContentMgr.Load<Effect>("effects/MainLogo");
             EffectSketch = ContentMgr.Load<Effect>("effects/Sketch");
             EffectBlur = ContentMgr.Load<Effect>("effects/Blur");
             EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
@@ -265,6 +265,14 @@ namespace SonOfRobin
         public static void LoadInitialTextures()
         {
             lightSphere = TextureBank.GetTexture(TextureBank.TextureName.LightSphereWhite);
+        }
+
+        public static void LoadInitialSounds()
+        {
+            foreach (SoundData.Name soundName in new SoundData.Name[] { SoundData.Name.TurnPage })
+            {
+                SoundData.GetSound(soundName); // to preload sound
+            }
         }
 
         public static void CreateHintAndProgressWindows()

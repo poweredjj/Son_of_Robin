@@ -101,7 +101,7 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
                         bool demoWorldActive = world != null && world.demoMode;
 
-                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: demoWorldActive, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
+                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: demoWorldActive, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver, soundClose: SoundData.Name.PaperMove2);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });

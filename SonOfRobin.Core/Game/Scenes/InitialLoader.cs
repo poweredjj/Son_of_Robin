@@ -125,6 +125,7 @@ namespace SonOfRobin
             {
                 case Step.Initial:
                     SonOfRobinGame.LoadInitialTextures();
+                    SonOfRobinGame.LoadInitialSounds();
                     SonOfRobinGame.CreateControlTips();
                     break;
 
