@@ -12,17 +12,18 @@ namespace SonOfRobin
         private readonly Tweener tweener;
         private readonly MainLogoInstance logoEffectInstance;
 
-        //public float logoEffectIntensity;
         public float logoEffectOffsetY;
 
         private readonly Random random;
         private float waveDirectionMultiplier;
+        private float waveSpeedMultiplier;
 
         public StartLogo() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.StartGame, tipsLayout: ControlTips.TipsLayout.StartGame)
         {
             this.random = new Random();
 
             this.waveDirectionMultiplier = 1f;
+            this.waveSpeedMultiplier = 1f;
 
             this.logoTexture = TextureBank.GetTexture(TextureBank.TextureName.GameLogo);
             this.distortionTexture = TextureBank.GetTexture(TextureBank.TextureName.LogoWaveDistortion);
@@ -44,7 +45,8 @@ namespace SonOfRobin
             this.waveDirectionMultiplier *= -1f;
             if (delaySeconds == 0 && this.waveDirectionMultiplier == -1f) delaySeconds = this.random.Next(0, 6);
             float duration = (this.random.NextSingle() * 2f) + 0.5f;
-            float intensity = (this.random.NextSingle() * 1.2f) + 0.3f;
+            float intensity = (this.random.NextSingle() * 0.6f) + 1.0f;
+            this.waveSpeedMultiplier = (this.random.NextSingle() * 0.8f) + 0.2f;
 
             MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} setting tweener - delaySeconds: {delaySeconds}, duration: {duration}, intensity: {intensity}");
 
@@ -60,9 +62,8 @@ namespace SonOfRobin
         {
             this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
 
-            if (this.logoEffectInstance.intensityForTweener == 0) this.logoEffectOffsetY = 0;
-
-            this.logoEffectOffsetY += 0.01f * this.waveDirectionMultiplier;
+            if (this.logoEffectInstance.intensityForTweener == 0) this.logoEffectOffsetY = this.waveDirectionMultiplier == 1 ? 1 : -1;
+            else this.logoEffectOffsetY += 0.01f * this.waveSpeedMultiplier * this.waveDirectionMultiplier;
 
             if (InputMapper.IsPressed(InputMapper.Action.GlobalConfirm) || TouchInput.IsBeingTouchedInAnyWay)
             {

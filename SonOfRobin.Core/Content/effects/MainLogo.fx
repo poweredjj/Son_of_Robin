@@ -39,11 +39,16 @@ struct VertexShaderOutput
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
 	// shaders use color value range 0.0f - 1.0f   
-            
-    float2 basePixelSize = 1.0 / baseTextureSize;
-    float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + distortionTextureOffset);
-    float2 distortionOffset = float2(distortColor.r, distortColor.r) * basePixelSize * distortPower * 30;
     
+    float2 distortionOffset = float2(0, 0);
+    
+    if (distortionOffset.x >= 0 && distortionOffset.x <= 1 && distortionOffset.y >= 0 && distortionOffset.y <= 1)
+    {
+        float2 basePixelSize = 1.0 / baseTextureSize;
+        float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + distortionTextureOffset);
+        distortionOffset = float2(distortColor.r, distortColor.r) * basePixelSize * distortPower * 30;
+    }
+   
     return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * input.Color * drawColor;
 }
 
