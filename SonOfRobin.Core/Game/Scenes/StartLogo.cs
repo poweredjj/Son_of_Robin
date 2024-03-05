@@ -44,7 +44,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            if (InputMapper.IsPressed(InputMapper.Action.GlobalConfirm) || TouchInput.IsBeingTouchedInAnyWay)
+            if (InputMapper.HasBeenReleased(InputMapper.Action.GlobalConfirm))
             {
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                 Sound.QuickPlay(SoundData.Name.TurnPage);

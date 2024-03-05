@@ -603,7 +603,7 @@ namespace SonOfRobin
                     {
                         ShowSticks = false;
 
-                        new VirtButton(name: VButName.Confirm, label: "START", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0f, posY0to1: 0f, width0to1: 1f, height0to1: 1f, hidden: true);
+                        new VirtButton(name: VButName.Confirm, label: "START", bgColorPressed: Color.LightGreen, bgColorReleased: Color.White, textColor: Color.White, posX0to1: 0.5f, posY0to1: 0.5f, width0to1: 1f, height0to1: 1f, hidden: true);
 
                         return;
                     }
