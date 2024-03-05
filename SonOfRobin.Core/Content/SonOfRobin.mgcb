@@ -49,12 +49,6 @@
 /processorParam:DebugMode=Auto
 /build:effects/HeatMaskDistortion.fx
 
-#begin effects/MainLogo.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:effects/MainLogo.fx
-
 #begin effects/Mosaic.fx
 /importer:EffectImporter
 /processor:EffectProcessor
