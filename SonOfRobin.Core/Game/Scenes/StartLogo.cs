@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FontStashSharp;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,16 @@ namespace SonOfRobin
         private readonly RenderTarget2D logoDistortionRenderTarget;
         private readonly Random random;
         private readonly HashSet<Wave> waveSet;
+        private readonly SpriteFontBase font;
 
+        private Texture2D confirmTexture;
+        private TextWithImages pressStartText;
         private int nextWaveSpawnFrame;
 
-        public StartLogo() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.StartGame, tipsLayout: ControlTips.TipsLayout.StartGame)
+        public StartLogo() : base(inputType: InputTypes.Normal, priority: 1, blocksUpdatesBelow: false, alwaysUpdates: false, alwaysDraws: false, touchLayout: TouchLayout.StartGame, tipsLayout: ControlTips.TipsLayout.Empty)
         {
             this.random = new Random();
+            this.font = SonOfRobinGame.FontTommy.GetFont(60);
             this.waveSet = [];
             this.nextWaveSpawnFrame = 0;
 
@@ -59,7 +64,7 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.CurrentUpdate > this.nextWaveSpawnFrame && this.waveSet.Count < 2)
             {
-                this.nextWaveSpawnFrame = SonOfRobinGame.CurrentUpdate + this.random.Next(60 * 3, 60 * 20);
+                this.nextWaveSpawnFrame = SonOfRobinGame.CurrentUpdate + this.random.Next(60 * 5, 60 * 20);
                 this.waveSet.Add(new Wave(random: this.random, logoTexture: this.logoTexture, waveTexture: this.distortionTexture));
             }
 
@@ -74,6 +79,14 @@ namespace SonOfRobin
             foreach (Wave wave in wavesToDisposeList)
             {
                 this.waveSet.Remove(wave);
+            }
+
+            Texture2D currentConfirmTexture = InputMapper.GetTexture(InputMapper.Action.GlobalConfirm);
+
+            if (this.pressStartText == null || this.confirmTexture != currentConfirmTexture)
+            {
+                this.pressStartText = new TextWithImages(font: this.font, text: "Press | to start", imageList: new List<ImageObj> { new TextureObj(currentConfirmTexture) });
+                this.confirmTexture = currentConfirmTexture;
             }
         }
 
@@ -94,13 +107,34 @@ namespace SonOfRobin
 
         public override void Draw()
         {
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+            if (this.viewParams.drawOpacity == 0) return;
 
+            // drawing logo
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
             this.heatMaskDistortInstance.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate, drawColor: Color.White);
 
             int logoHeight = LogoHeight;
             Rectangle imageRect = new(x: 0, y: (int)(logoHeight * 0.1f), width: SonOfRobinGame.ScreenWidth, height: logoHeight);
             Helpers.DrawTextureInsideRect(texture: this.logoTexture, rectangle: imageRect, color: Color.White * this.viewParams.drawOpacity);
+
+            SonOfRobinGame.SpriteBatch.End();
+
+            // drawing "press key to start" text
+
+            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
+
+            float targetTextHeight = SonOfRobinGame.ScreenHeight * 0.04f;
+            float textScale = targetTextHeight / this.pressStartText.textHeight;
+
+            Vector2 realTextSize = new Vector2(this.pressStartText.textWidth, this.pressStartText.textHeight) * textScale;
+            Vector2 textPos = new Vector2(SonOfRobinGame.ScreenWidth / 2, SonOfRobinGame.ScreenHeight - (targetTextHeight * 2)) - (realTextSize / 2);
+
+            float pulseOpacity = (float)(SonOfRobinGame.CurrentUpdate % 300) / 300;
+            pulseOpacity = (float)Math.Cos(pulseOpacity * Math.PI - Math.PI / 2) * this.viewParams.drawOpacity;
+            pulseOpacity = Math.Max(pulseOpacity, 0.01f); // to prevent flickering
+
+            this.pressStartText.Draw(position: textPos, color: Color.White * pulseOpacity, imageOpacity: pulseOpacity, shadowColor: Color.Black * 0.7f * pulseOpacity, shadowOffset: new Vector2(1), textScale: textScale, drawShadow: true);
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -126,7 +160,7 @@ namespace SonOfRobin
                 this.random = random;
 
                 this.opacity = (this.random.NextSingle() * 1.4f) + 0.5f;
-                this.frameDistance = (this.random.NextSingle() * 3.5f) + 4f;
+                this.frameDistance = (this.random.NextSingle() * 4.2f) + 5.0f;
                 this.spriteEffects = spriteEffectsArray[this.random.Next(spriteEffectsArray.Length)];
 
                 this.waveTexture = waveTexture;

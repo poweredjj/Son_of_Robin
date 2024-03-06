@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class ControlTips : Scene
     {
-        private static readonly HashSet<TipsLayout> bigModeLayouts = [TipsLayout.WorldMain, TipsLayout.WorldShoot, TipsLayout.WorldSpectator, TipsLayout.WorldBuild, TipsLayout.Map, TipsLayout.InventorySelect, TipsLayout.InventoryDrag, TipsLayout.QuitLoading, TipsLayout.StartGame];
+        private static readonly HashSet<TipsLayout> bigModeLayouts = [TipsLayout.WorldMain, TipsLayout.WorldShoot, TipsLayout.WorldSpectator, TipsLayout.WorldBuild, TipsLayout.Map, TipsLayout.InventorySelect, TipsLayout.InventoryDrag, TipsLayout.QuitLoading];
 
         private Vector2 WholeSize
         {
@@ -36,7 +36,6 @@ namespace SonOfRobin
             TextWindowOk,
             TextWindowCancel,
             TextWindowOkCancel,
-            StartGame,
             WorldMain,
             WorldShoot,
             WorldSleep,
@@ -250,12 +249,6 @@ namespace SonOfRobin
                 case TipsLayout.QuitLoading:
                     {
                         new ButtonTip(tipCollection: this.tipCollection, text: "cancel", textures: InputMapper.GetTextures(InputMapper.Action.GlobalCancelReturnSkip));
-                        break;
-                    }
-
-                case TipsLayout.StartGame:
-                    {
-                        new ButtonTip(tipCollection: this.tipCollection, text: "open main menu", textures: InputMapper.GetTextures(InputMapper.Action.GlobalConfirm));
                         break;
                     }
 
