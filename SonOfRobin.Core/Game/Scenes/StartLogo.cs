@@ -81,11 +81,14 @@ namespace SonOfRobin
                 this.waveSet.Remove(wave);
             }
 
-            Texture2D currentConfirmTexture = InputMapper.GetTexture(InputMapper.Action.GlobalConfirm);
+            Texture2D currentConfirmTexture = Input.CurrentControlType == Input.ControlType.Touch ? null : InputMapper.GetTexture(InputMapper.Action.GlobalConfirm);
 
             if (this.pressStartText == null || this.confirmTexture != currentConfirmTexture)
             {
-                this.pressStartText = new TextWithImages(font: this.font, text: "Press | to start", imageList: new List<ImageObj> { new TextureObj(currentConfirmTexture) });
+                this.pressStartText = currentConfirmTexture == null ?
+                    new TextWithImages(font: this.font, text: "Touch to start", imageList: []) :
+                    new TextWithImages(font: this.font, text: "Press | to start", imageList: [new TextureObj(currentConfirmTexture)]);
+
                 this.confirmTexture = currentConfirmTexture;
             }
         }
@@ -124,13 +127,13 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix);
 
-            float targetTextHeight = SonOfRobinGame.ScreenHeight * 0.04f;
+            float targetTextHeight = SonOfRobinGame.ScreenHeight * 0.05f;
             float textScale = targetTextHeight / this.pressStartText.textHeight;
 
             Vector2 realTextSize = new Vector2(this.pressStartText.textWidth, this.pressStartText.textHeight) * textScale;
             Vector2 textPos = new Vector2(SonOfRobinGame.ScreenWidth / 2, SonOfRobinGame.ScreenHeight - (targetTextHeight * 2)) - (realTextSize / 2);
 
-            float pulseOpacity = (float)(SonOfRobinGame.CurrentUpdate % 300) / 300;
+            float pulseOpacity = (float)(SonOfRobinGame.CurrentDraw % 360) / 360;
             pulseOpacity = (float)Math.Cos(pulseOpacity * Math.PI - Math.PI / 2) * this.viewParams.drawOpacity;
             pulseOpacity = Math.Max(pulseOpacity, 0.01f); // to prevent flickering
 
