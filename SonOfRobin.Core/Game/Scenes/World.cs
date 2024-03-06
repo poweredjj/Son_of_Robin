@@ -421,9 +421,9 @@ namespace SonOfRobin
 
         public TimeSpan GetTimeSpanForValidationHash(TimeSpan timePlayedFrozen)
         {
-            // two values are merged, to make make tinkering with saved values harder
+            // different (non-obvious) values are merged, to make make tinkering with saved values harder
             // time played needs to be frozen first (otherwise it would change slightly between uses)
-            return timePlayedFrozen + this.islandClock.IslandTimeElapsed;
+            return timePlayedFrozen + this.islandClock.IslandTimeElapsed + TimeSpan.FromSeconds(this.IslandLevel.playerLastSteps.Count);
         }
 
         public static TimeSpan WorldElapsedUpdateTime
