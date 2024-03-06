@@ -1624,15 +1624,15 @@ namespace SonOfRobin
                         {
                             World world = (World)this.ExecuteHelper;
 
-                            SolidColor blackOverlay = new(color: Color.Black * 0.8f, viewOpacity: 0f);
+                            SolidColor blackOverlay = new(color: Color.Black * 1f, viewOpacity: 0f);
 
-                            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: true, startDelay: 0, duration: 60 * 3, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.75f));
+                            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: true, duration: 60 * 12, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 1f));
 
                             world.solidColorManager.Add(blackOverlay);
 
                             ExecutionDelegate returnToMainMenuDlgt = () => { CloseGame(quitGame: false); };
 
-                            new TextWindow(text: "Congratulations, Survivor!\nYour adventure in the 'Son of Robin' game demo has reached its time limit.\n\nIf you've enjoyed your journey so far, consider unlocking the full version to continue your epic quest and carry over your progress from saved games.\n\nGot ideas or feedback? Share them with us on our Discord server!\n\nThanks for being a part of the adventure. We hope you've had an unforgettable experience!", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true, closingTask: TaskName.ExecuteDelegate, closingTaskHelper: returnToMainMenuDlgt);
+                            new TextWindow(text: "Congratulations, | Survivor!\nYour adventure in the | 'Son of Robin' game demo has reached its | time limit.\n\nIf you've enjoyed your journey so far, consider buying the full version to continue your epic quest and carry over your progress from saved games.\n\nGot ideas or feedback? Share them with us on our Discord server!\n\nThanks for being a part of the adventure |.\nWe hope you've had an unforgettable experience!", imageList: [new AnimFrameObj(world.Player.sprite.AnimPkg.presentationFrame), new TextureObj(TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx)), new TextureObj(TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass)), new TextureObj(TextureBank.GetTexture(TextureBank.TextureName.BuffMaxHPPlus))], textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true, maxWidth: 65, blockInputDuration: 60 * 4, closingTask: TaskName.ExecuteDelegate, closingTaskHelper: returnToMainMenuDlgt);
 
                             return;
                         }
@@ -1659,7 +1659,10 @@ namespace SonOfRobin
                 Scene.RemoveAllScenesOfType(typeof(PieceContextMenu));
 
                 if (quitGame) SonOfRobinGame.quitGame = true;
-                else new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: 0);
+                else
+                {
+                    if (!Preferences.showDemoWorld) new Task(taskName: TaskName.OpenMainMenu, turnOffInputUntilExecution: true, delay: 0);
+                }
             }
         }
     }
