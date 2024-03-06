@@ -166,20 +166,21 @@ namespace SonOfRobin
 
             // drawing stored items counter
             {
-                int counterSize = CounterSize;
                 Rectangle counterRect = CounterRect;
+                int counterSize = CounterSize;
 
                 Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.BackpackMediumOutline), rectangle: counterRect, color: Color.White * this.viewParams.drawOpacity * 0.85f);
 
                 int occupiedSlotCount = player.PieceStorage.OccupiedSlots.Count + (player.ToolStorage.OccupiedSlots.Count - 1); // -1 to count out hand "tool"
                 int totalSlotCount = player.PieceStorage.AllSlots.Count + (player.ToolStorage.AllSlots.Count - 1); // -1 to count out hand "tool"
 
+                int shadowOffset = (int)Math.Max(counterSize * 0.05f, 1);
+
                 Rectangle occupiedRect = new(x: counterRect.X, y: counterRect.Y, width: counterSize / 2, height: counterSize / 2);
                 Rectangle totalRect = new(x: counterRect.X + (counterSize / 2), y: counterRect.Y + (counterSize / 2), width: counterSize / 2, height: counterSize / 2);
                 Rectangle slashRect = counterRect;
                 slashRect.X += (int)(slashRect.Width * 0.2f);
 
-                int shadowOffset = (int)Math.Max(counterSize * 0.05f, 1);
                 Color textColor = Color.White * this.viewParams.drawOpacity;
                 Color shadowColor = Color.Black * 0.8f * this.viewParams.drawOpacity;
                 var alignX = Helpers.AlignX.Center;
@@ -197,16 +198,23 @@ namespace SonOfRobin
                 TimeSpan timeLeft = this.world.TrialEnded ? TimeSpan.Zero : World.trialDuration - this.world.TimePlayed;
                 timeLeft = TimeSpan.FromTicks(Math.Max(timeLeft.Ticks, 0));
 
-                Color textColor = Color.White;
-
+                Color textColor;
                 if (timeLeft < TimeSpan.FromMinutes(5)) textColor = SonOfRobinGame.CurrentUpdate / 60 % 2 == 0 ? Color.Red : Color.Yellow;
                 else if (timeLeft < TimeSpan.FromMinutes(10)) textColor = Color.Red;
-                else if (timeLeft < TimeSpan.FromMinutes(15)) textColor = Color.Yellow;
+                else if (timeLeft < TimeSpan.FromMinutes(20)) textColor = Color.Yellow;
+                else textColor = Color.White;
 
-                Rectangle counterRect = CounterRect;
-                Rectangle timeLeftRect = new(x: counterRect.X + (int)(counterRect.Width * 1.5f), y: counterRect.Y, width: counterRect.Width * 2, height: counterRect.Height);
+                TextWithImages timeLeftText = new(font: this.itemCounterFont, text: $"| demo time left {timeLeft:mm\\:ss}", imageList: [new TextureObj(TextureBank.GetTexture(TextureBank.TextureName.SimpleHourglass))]);
 
-                Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: $"demo\ntime left\n{timeLeft:mm\\:ss}", rectangle: timeLeftRect, color: textColor * this.viewParams.drawOpacity, shadowColor: Color.Black * 0.8f * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top, shadowOffset: 2);
+                float targetTextHeight = BarHeight * 2.5f;
+                float textScale = targetTextHeight / timeLeftText.textHeight;
+
+                int normalizedTextWidth = (int)(timeLeftText.textWidth * textScale);
+                Vector2 textPos = new(BarWidth / 2 - (normalizedTextWidth / 2), currentPosY);
+
+                timeLeftText.Draw(position: textPos, color: textColor * this.viewParams.drawOpacity, imageOpacity: this.viewParams.drawOpacity, shadowColor: Color.Black * 0.7f * this.viewParams.drawOpacity, shadowOffset: new Vector2(Math.Max(CounterSize * 0.05f, 1)) / 2, textScale: textScale, drawShadow: true);
+
+                currentPosY += (int)targetTextHeight + 5;
             }
 
             // drawing location name
