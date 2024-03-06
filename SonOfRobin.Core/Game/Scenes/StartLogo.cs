@@ -45,7 +45,7 @@ namespace SonOfRobin
             this.logoDistortionRenderTarget.Dispose();
         }
 
-        private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * 0.33f); } }
+        private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * 0.27f); } }
 
         public override void Update()
         {
@@ -64,7 +64,7 @@ namespace SonOfRobin
 
             if (SonOfRobinGame.CurrentUpdate > this.nextWaveSpawnFrame && this.waveSet.Count < 2)
             {
-                this.nextWaveSpawnFrame = SonOfRobinGame.CurrentUpdate + this.random.Next(60 * 5, 60 * 20);
+                this.nextWaveSpawnFrame = SonOfRobinGame.CurrentUpdate + this.random.Next(60 * 7, 60 * 25);
                 this.waveSet.Add(new Wave(random: this.random, logoTexture: this.logoTexture, waveTexture: this.distortionTexture));
             }
 
@@ -120,7 +120,7 @@ namespace SonOfRobin
             this.heatMaskDistortInstance.TurnOn(currentUpdate: SonOfRobinGame.CurrentUpdate, drawColor: Color.White);
 
             int logoHeight = LogoHeight;
-            Rectangle imageRect = new(x: 0, y: (int)(logoHeight * 0.1f), width: SonOfRobinGame.ScreenWidth, height: logoHeight);
+            Rectangle imageRect = new(x: 0, y: (int)(logoHeight * 0.05f), width: SonOfRobinGame.ScreenWidth, height: logoHeight);
             Helpers.DrawTextureInsideRect(texture: this.logoTexture, rectangle: imageRect, color: Color.White * this.viewParams.drawOpacity);
 
             SonOfRobinGame.SpriteBatch.End();
