@@ -22,7 +22,7 @@ namespace SonOfRobin
         private static int CounterSize
         { get { return (int)(SonOfRobinGame.ScreenWidth * 0.05f); } }
 
-        public Rectangle CounterRect
+        public static Rectangle CounterRect
         {
             get
             {
@@ -39,7 +39,7 @@ namespace SonOfRobin
                 var pressTouches = TouchInput.TouchPanelState.Where(touch => touch.State == TouchLocationState.Pressed);
                 if (pressTouches.Count() == 0) return false;
 
-                Rectangle counterRect = this.CounterRect;
+                Rectangle counterRect = CounterRect;
                 counterRect.X += (int)this.viewParams.drawPosX;
                 counterRect.Y += (int)this.viewParams.drawPosY;
 
@@ -167,7 +167,7 @@ namespace SonOfRobin
             // drawing stored items counter
             {
                 int counterSize = CounterSize;
-                Rectangle counterRect = this.CounterRect;
+                Rectangle counterRect = CounterRect;
 
                 Helpers.DrawTextureInsideRect(texture: TextureBank.GetTexture(TextureBank.TextureName.BackpackMediumOutline), rectangle: counterRect, color: Color.White * this.viewParams.drawOpacity * 0.85f);
 
@@ -188,6 +188,25 @@ namespace SonOfRobin
                 Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: "/", rectangle: counterRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
                 Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: Convert.ToString(occupiedSlotCount), rectangle: occupiedRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
                 Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: Convert.ToString(totalSlotCount), rectangle: totalRect, color: textColor, shadowColor: shadowColor, alignX: alignX, alignY: alignY, shadowOffset: shadowOffset);
+            }
+
+            // drawing trial time left
+
+            if (SonOfRobinGame.trialVersion)
+            {
+                TimeSpan timeLeft = this.world.TrialEnded ? TimeSpan.Zero : World.trialDuration - this.world.TimePlayed;
+                timeLeft = TimeSpan.FromTicks(Math.Max(timeLeft.Ticks, 0));
+
+                Color textColor = Color.White;
+
+                if (timeLeft < TimeSpan.FromMinutes(5)) textColor = SonOfRobinGame.CurrentUpdate / 60 % 2 == 0 ? Color.Red : Color.Yellow;
+                else if (timeLeft < TimeSpan.FromMinutes(10)) textColor = Color.Red;
+                else if (timeLeft < TimeSpan.FromMinutes(15)) textColor = Color.Yellow;
+
+                Rectangle counterRect = CounterRect;
+                Rectangle timeLeftRect = new(x: counterRect.X + (int)(counterRect.Width * 1.5f), y: counterRect.Y, width: counterRect.Width * 2, height: counterRect.Height);
+
+                Helpers.DrawTextInsideRectWithShadow(font: this.itemCounterFont, text: $"demo\ntime left\n{timeLeft:mm\\:ss}", rectangle: timeLeftRect, color: textColor * this.viewParams.drawOpacity, shadowColor: Color.Black * 0.8f * this.viewParams.drawOpacity, alignX: Helpers.AlignX.Left, alignY: Helpers.AlignY.Top, shadowOffset: 2);
             }
 
             // drawing location name

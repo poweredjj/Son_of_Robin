@@ -33,7 +33,8 @@ namespace SonOfRobin
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
         public static Game Game { get; private set; }
 
-        public static bool fakeMobileMode = false;
+        public static readonly bool trialVersion = true;
+        public static readonly bool fakeMobileMode = false;
         public static Platform platform;
         public static OS os;
 

@@ -71,6 +71,7 @@ namespace SonOfRobin
             UseEntrance,
             AddWeatherEvent,
             ExecuteDelegate,
+            ShowTrialEndedScreen,
         }
 
         public delegate void ExecutionDelegate();
@@ -1616,6 +1617,23 @@ namespace SonOfRobin
                     case TaskName.ExecuteDelegate:
                         {
                             ((Delegate)this.ExecuteHelper).DynamicInvoke();
+                            return;
+                        }
+
+                    case TaskName.ShowTrialEndedScreen:
+                        {
+                            World world = (World)this.ExecuteHelper;
+
+                            SolidColor blackOverlay = new(color: Color.Black * 0.8f, viewOpacity: 0f);
+
+                            blackOverlay.transManager.AddTransition(new Transition(transManager: blackOverlay.transManager, outTrans: true, startDelay: 0, duration: 60 * 3, stageTransform: Transition.Transform.Linear, baseParamName: "Opacity", targetVal: 0.75f));
+
+                            world.solidColorManager.Add(blackOverlay);
+
+                            ExecutionDelegate returnToMainMenuDlgt = () => { CloseGame(quitGame: false); };
+
+                            new TextWindow(text: "Congratulations, Survivor!\nYour adventure in the 'Son of Robin' game demo has reached its time limit.\n\nIf you've enjoyed your journey so far, consider unlocking the full version to continue your epic quest and carry over your progress from saved games.\n\nGot ideas or feedback? Share them with us on our Discord server!\n\nThanks for being a part of the adventure. We hope you've had an unforgettable experience!", textColor: Color.White, bgColor: Color.Green, useTransition: true, animate: true, blocksUpdatesBelow: true, closingTask: TaskName.ExecuteDelegate, closingTaskHelper: returnToMainMenuDlgt);
+
                             return;
                         }
 

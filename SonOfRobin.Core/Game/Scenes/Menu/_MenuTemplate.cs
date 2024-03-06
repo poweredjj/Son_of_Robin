@@ -101,7 +101,10 @@ namespace SonOfRobin
                         World world = World.GetTopWorld();
                         bool demoWorldActive = world != null && world.demoMode;
 
-                        Menu menu = new(templateName: templateName, name: "Son of Robin", blocksUpdatesBelow: false, canBeClosedManually: demoWorldActive, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver, soundClose: SoundData.Name.PaperMove2);
+                        string gameNameString = "Son of Robin";
+                        if (SonOfRobinGame.trialVersion) gameNameString += " (demo)";
+
+                        Menu menu = new(templateName: templateName, name: gameNameString, blocksUpdatesBelow: false, canBeClosedManually: demoWorldActive, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver, soundClose: SoundData.Name.PaperMove2);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
@@ -154,7 +157,8 @@ namespace SonOfRobin
 
                         new Invoker(menu: menu, name: "other", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.OtherOptions } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "misc. settings", color: Color.White, scale: 1f) });
 
-                        new Invoker(menu: menu, name: "debug", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Debug } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "only for the brave ones ;)", color: Color.White, scale: 1f) });
+                        // trial version should not give player tools to cheat
+                        if (!SonOfRobinGame.trialVersion) new Invoker(menu: menu, name: "debug", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Debug } }, infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "only for the brave ones ;)", color: Color.White, scale: 1f) });
 
                         foreach (Entry entry in menu.entryList)
                         {

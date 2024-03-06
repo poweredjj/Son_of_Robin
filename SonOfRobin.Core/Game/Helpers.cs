@@ -10,6 +10,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SonOfRobin
@@ -577,6 +579,25 @@ namespace SonOfRobin
             stringSize.Y = font.LineHeight * stringToMeasure.Split("\n").Length;
 
             return stringSize;
+        }
+
+        public static string EncodeTimeSpanAsHash(TimeSpan timeSpan)
+        {
+            return ComputeSHA256Hash($"{timeSpan}_this_text_is_for_making_the_string_more_unique");
+        }
+
+        public static string ComputeSHA256Hash(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
         }
 
         public static string KeepTextLineBelowGivenLength(string text, int maxLength)

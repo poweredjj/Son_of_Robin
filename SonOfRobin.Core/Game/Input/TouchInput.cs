@@ -315,7 +315,7 @@ namespace SonOfRobin
             {
                 foreach (PlayerPanel playerPanel in Scene.GetAllScenesOfType(typeof(PlayerPanel)))
                 {
-                    Rectangle counterRect = playerPanel.CounterRect;
+                    Rectangle counterRect = PlayerPanel.CounterRect;
                     counterRect.X += (int)playerPanel.viewParams.drawPosX;
                     counterRect.Y += (int)playerPanel.viewParams.drawPosY;
 

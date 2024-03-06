@@ -85,9 +85,11 @@ namespace SonOfRobin
 
             if (this.pressStartText == null || this.confirmTexture != currentConfirmTexture)
             {
+                string demoVersionString = SonOfRobinGame.trialVersion ? "DEMO VERSION         " : "";
+
                 this.pressStartText = currentConfirmTexture == null ?
-                    new TextWithImages(font: this.font, text: "Touch to start", imageList: []) :
-                    new TextWithImages(font: this.font, text: "Press | to start", imageList: [new TextureObj(currentConfirmTexture)]);
+                    new TextWithImages(font: this.font, text: $"{demoVersionString}Touch to start", imageList: []) :
+                    new TextWithImages(font: this.font, text: $"{demoVersionString}Press | to start", imageList: [new TextureObj(currentConfirmTexture)]);
 
                 this.confirmTexture = currentConfirmTexture;
             }

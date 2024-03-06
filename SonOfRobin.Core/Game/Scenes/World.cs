@@ -57,6 +57,7 @@ namespace SonOfRobin
         private bool RenderThisFrame
         { get { return !this.ActiveLevel.creationInProgress && !SonOfRobinGame.IgnoreThisDraw && (UpdateStack.Contains(this) || this.forceRenderNextFrame); } }
 
+        public static TimeSpan trialDuration = TimeSpan.FromHours(1);
         public const int buildDuration = (int)(60 * 2.5);
         private const int populatingFramesTotal = 8;
         public static int DestroyedNotReleasedWorldCount { get; private set; } = 0;
@@ -116,6 +117,9 @@ namespace SonOfRobin
         public int CurrentFrame { get; private set; }
         public int CurrentUpdate { get; set; }
 
+        private bool trialEnded;
+        public bool TrialEnded { get { return SonOfRobinGame.trialVersion && !this.demoMode && (this.trialEnded || this.TimePlayed > trialDuration); } }
+
         public int updateMultiplier;
         public readonly IslandClock islandClock;
         public readonly Weather weather;
@@ -169,6 +173,7 @@ namespace SonOfRobin
             this.createdTime = DateTime.Now;
             this.TimePlayed = TimeSpan.Zero;
             this.updateMultiplier = 1;
+            this.trialEnded = false;
             this.islandClock = this.saveGameData == null ? new IslandClock(elapsedUpdates: 0, world: this) : new IslandClock(world: this);
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
@@ -410,8 +415,15 @@ namespace SonOfRobin
         public TimeSpan TimePlayed
         {
             get
-            { return timePlayed + (DateTime.Now - this.createdTime); }
-            set { timePlayed = value; }
+            { return this.timePlayed + (DateTime.Now - this.createdTime); }
+            set { this.timePlayed = value; }
+        }
+
+        public TimeSpan GetTimeSpanForValidationHash(TimeSpan timePlayedFrozen)
+        {
+            // two values are merged, to make make tinkering with saved values harder
+            // time played needs to be frozen first (otherwise it would change slightly between uses)
+            return timePlayedFrozen + this.islandClock.IslandTimeElapsed;
         }
 
         public static TimeSpan WorldElapsedUpdateTime
@@ -617,6 +629,19 @@ namespace SonOfRobin
                 {
                     List<Point> lastStepsPointList = (List<Point>)headerData["playerLastSteps"];
                     this.IslandLevel.playerLastSteps.AddRange(lastStepsPointList.Select(p => new Vector2(p.X, p.Y)).ToList());
+                }
+
+                TimeSpan timeSpanFrozen = this.timePlayed;
+
+                if (SonOfRobinGame.trialVersion)
+                {
+                    if (!headerData.ContainsKey("TimePlayedValidationHash") ||
+                        Helpers.EncodeTimeSpanAsHash(this.GetTimeSpanForValidationHash(timeSpanFrozen)) != (string)headerData["TimePlayedValidationHash"])
+                    {
+                        this.trialEnded = true;
+                    }
+
+                    MessageLog.Add(debugMessage: true, text: $"trial ended (hash missing or incorrect): {this.trialEnded}");
                 }
             }
 
@@ -975,6 +1000,7 @@ namespace SonOfRobin
                 return;
             }
 
+            if (SonOfRobinGame.CurrentUpdate % 60 == 0 && this.TrialEnded) new Scheduler.Task(taskName: Scheduler.TaskName.ShowTrialEndedScreen, executeHelper: this, delay: 0);
             this.ProcessInput();
             this.UpdateViewParams();
             MeshDefinition.UpdateAllDefs();

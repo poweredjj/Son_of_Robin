@@ -286,6 +286,8 @@ namespace SonOfRobin
                 this.processedSteps++;
                 this.currentStepName = "header";
 
+                TimeSpan timePlayedFrozen = this.world.TimePlayed; // needs to be frozen for values to match, because it uses Datetime.Now
+
                 var headerData = new Dictionary<string, Object>
                 {
                     { "seed", this.world.seed },
@@ -296,7 +298,8 @@ namespace SonOfRobin
                     { "currentFrame", this.world.CurrentFrame },
                     { "currentUpdate", this.world.CurrentUpdate },
                     { "clockTimeElapsed", this.world.islandClock.ElapsedUpdates },
-                    { "TimePlayed", this.world.TimePlayed },
+                    { "TimePlayed", timePlayedFrozen },
+                    { "TimePlayedValidationHash", Helpers.EncodeTimeSpanAsHash(this.world.GetTimeSpanForValidationHash(timePlayedFrozen)) },
                     { "MapEnabled", this.world.MapEnabled },
                     { "realDateTime", DateTime.Now },
                     { "doNotCreatePiecesList", this.world.IslandLevel.doNotCreatePiecesList },
