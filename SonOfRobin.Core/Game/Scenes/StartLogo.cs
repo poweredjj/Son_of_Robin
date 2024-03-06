@@ -45,7 +45,7 @@ namespace SonOfRobin
             this.logoDistortionRenderTarget.Dispose();
         }
 
-        private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * 0.27f); } }
+        private static int LogoHeight { get { return (int)(SonOfRobinGame.ScreenHeight * (SonOfRobinGame.platform == Platform.Mobile ? 0.35f : 0.27f)); } }
 
         public override void Update()
         {
