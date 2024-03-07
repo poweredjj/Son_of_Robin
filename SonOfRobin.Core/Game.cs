@@ -324,6 +324,7 @@ namespace SonOfRobin
 
             ManagedSoundInstance.Update();
             Sound.UpdateAll();
+            SongPlayer.Update();
             Scene.AllScenesInStackDraw();
 
             base.Draw(gameTime);

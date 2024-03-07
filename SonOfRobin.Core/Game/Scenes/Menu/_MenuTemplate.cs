@@ -592,7 +592,7 @@ namespace SonOfRobin
 
                             CreateConfirmationMenu(question: "Do you really want to exit? You will lose unsaved progress.", confirmationData: new Dictionary<string, Object> { { "taskName", Scheduler.TaskName.ExecuteDelegate }, { "executeHelper", returnToMenuDlgt } });
                         };
-                        new Invoker(menu: menu, name: "return to main menu", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showExitConfMenuDlgt);
+                        new Invoker(menu: menu, name: "return to title", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: showExitConfMenuDlgt);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {
@@ -1104,7 +1104,7 @@ namespace SonOfRobin
                         new Invoker(menu: menu, name: "restart this island", closesMenu: true, taskName: Scheduler.TaskName.RestartIsland, executeHelper: World.GetTopWorld());
 
                         Scheduler.ExecutionDelegate returnToMenuDlgt = () => { Scheduler.Task.CloseGame(quitGame: false); };
-                        new Invoker(menu: menu, name: "return to main menu", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: returnToMenuDlgt);
+                        new Invoker(menu: menu, name: "return to title", closesMenu: true, taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: returnToMenuDlgt);
 
                         if (SonOfRobinGame.platform != Platform.Mobile)
                         {

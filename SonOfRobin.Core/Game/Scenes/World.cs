@@ -109,9 +109,7 @@ namespace SonOfRobin
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
         public HintEngine HintEngine { get; private set; }
-
-        public Grid Grid
-        { get { return this.ActiveLevel.grid; } }
+        public Grid Grid { get { return this.ActiveLevel.grid; } }
 
         public bool forceRenderNextFrame;
         public int CurrentFrame { get; private set; }
@@ -575,6 +573,7 @@ namespace SonOfRobin
             }
 
             this.CreateTemporaryDecorations(ignoreDuration: true);
+            SongPlayer.StopAndClearQueue(fadeVal: 0.03f);
 
             if (!this.demoMode)
             {

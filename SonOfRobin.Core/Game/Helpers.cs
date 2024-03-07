@@ -660,6 +660,13 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Free graphics assets: RPGMaker forums, opengameart.org, other sites", imageList: new List<ImageObj>()));
 
             textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Flowers by FSCM Productions https://fscmproductions.bandcamp.com", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Music promoted by https://www.free-stock-music.com", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Creative Commons / Attribution 4.0 International (CC BY 4.0)", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "https://creativecommons.org/licenses/by/4.0/", imageList: new List<ImageObj>()));
+
+            textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));
+
 
             textList.Add(new TextWithImages(font: fontTitle, text: "|  Testers  |", imageList: new List<ImageObj> { new TextureObj(ButtonScheme.dpad), new TextureObj(ButtonScheme.dpad) }));
 

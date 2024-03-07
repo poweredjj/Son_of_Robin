@@ -1,0 +1,110 @@
+﻿using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
+
+namespace SonOfRobin
+{
+    public class SongPlayer
+    {
+        // adds new functionality to MediaPlayer, should be used instead of MediaPlayer
+
+        private const float defaultFadeValPerFrame = 0.01f;
+
+        private static float targetVolume;
+        private static float fadeValPerFrame;
+
+        private static readonly Queue<QueueEntry> queue = new();
+        public static SongData.Name CurrentSongName { get; private set; } = SongData.Name.Empty;
+
+        public static void AddToQueue(SongData.Name songName, float fadeVal = 1, bool repeat = false)
+        {
+            queue.Enqueue(new QueueEntry(songName: songName, fadeVal: fadeVal, repeat: repeat));
+            MediaPlayer.IsRepeating = false; // to ensure that the current song will end playing
+        }
+
+        public static void FadeCurrentAndPlay(SongData.Name songName, bool repeat = false, float fadeVal = 0f)
+        {
+            queue.Clear();
+
+            if (MediaPlayer.State == MediaState.Playing && CurrentSongName == songName) return;
+            FadeOut(fadeVal: fadeVal);
+
+            queue.Enqueue(new QueueEntry(songName: songName, repeat: repeat, fadeVal: fadeVal));
+        }
+
+        public static void Play(SongData.Name songName, bool repeat = false, bool clearQueue = false)
+        {
+            if (clearQueue) queue.Clear();
+
+            if (MediaPlayer.State == MediaState.Playing && CurrentSongName == songName) return;
+
+            MediaPlayer.IsRepeating = repeat;
+
+            MediaPlayer.Volume = 1f;
+            MediaPlayer.Play(song: SongData.GetSong(songName));
+            CurrentSongName = songName;
+        }
+
+        public static void StopAndClearQueue(float fadeVal = 1f)
+        {
+            queue.Clear();
+
+            if (fadeVal == 1)
+            {
+                MediaPlayer.Stop();
+                CurrentSongName = SongData.Name.Empty;
+            }
+            else FadeOut(fadeVal);
+        }
+
+        public static void FadeOut(float fadeVal = 0f)
+        {
+            Fade(volume: 0, fadeVal: fadeVal);
+        }
+
+        public static void Fade(float volume, float fadeVal = 0f)
+        {
+            if (MediaPlayer.State != MediaState.Playing) return;
+
+            fadeValPerFrame = fadeVal != 0f ? fadeVal : defaultFadeValPerFrame;
+            targetVolume = volume;
+        }
+
+        public static void Update()
+        {
+            if (MediaPlayer.State == MediaState.Playing && MediaPlayer.Volume != targetVolume)
+            {
+                MediaPlayer.Volume += MediaPlayer.Volume < targetVolume ? fadeValPerFrame : -fadeValPerFrame;
+
+                if (Math.Abs(MediaPlayer.Volume - targetVolume) < fadeValPerFrame)
+                {
+                    MediaPlayer.Volume = targetVolume;
+                    if (MediaPlayer.Volume == 0)
+                    {
+                        MediaPlayer.Stop();
+                        CurrentSongName = SongData.Name.Empty;
+                    }
+                }
+            }
+
+            if (MediaPlayer.State == MediaState.Stopped && queue.Count > 0)
+            {
+                QueueEntry queueEntry = queue.Dequeue();
+                if (queueEntry.fadeVal != 1)
+                {
+                    MediaPlayer.Volume = 0;
+                    Play(queueEntry.songName, repeat: queueEntry.repeat);
+                    Fade(volume: 1f, fadeVal: queueEntry.fadeVal);
+                }
+                else Play(queueEntry.songName, repeat: queueEntry.repeat);
+            }
+        }
+
+        public readonly struct QueueEntry(SongData.Name songName, float fadeVal = 1f, bool repeat = false)
+        {
+            public readonly SongData.Name songName = songName;
+            public readonly float fadeVal = fadeVal;
+            public readonly bool repeat = repeat;
+        }
+    }
+}

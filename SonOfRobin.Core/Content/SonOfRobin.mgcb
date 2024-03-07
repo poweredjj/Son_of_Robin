@@ -9562,6 +9562,12 @@
 /processorParam:TextureFormat=Color
 /build:gfx/zzz.png
 
+#begin music/fscm-productions-flowers.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/fscm-productions-flowers.mp3
+
 #begin sound/114201__edgardedition__glassthud9.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
