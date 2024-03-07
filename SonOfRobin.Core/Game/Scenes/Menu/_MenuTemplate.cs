@@ -252,7 +252,7 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "plants / animals processing time", valueDict: new Dictionary<object, object> { { 0.2f, "20%" }, { 0.3f, "30%" }, { 0.4f, "40%" }, { 0.5f, "50%" }, { 0.6f, "60%" }, { 0.7f, "70%" }, { 0.8f, "80%" }, { 0.9f, "90%" }, { 0.95f, "95%" } }, targetObj: preferences, propertyName: "StateMachinesDurationFramePercent", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "max time used to process\nanimals and plants for each frame", color: Color.White, scale: 1f) });
 
-                        new Selector(menu: menu, name: "show demo world", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
+                        new Selector(menu: menu, name: "show world presentation", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "showDemoWorld");
 
                         Scheduler.ExecutionDelegate delIncompSavesDlgt = () => { SaveHeaderManager.DeleteIncompatibleSaves(); };
                         new Invoker(menu: menu, name: "delete incompatible saves", taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: delIncompSavesDlgt);

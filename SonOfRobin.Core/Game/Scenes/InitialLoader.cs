@@ -56,7 +56,7 @@ namespace SonOfRobin
             { Step.CreateScenes, "creating helper scenes" },
             { Step.MakeItemsInfo, "creating items info" },
             { Step.MakeCraftRecipes, "preparing craft recipes" },
-            { Step.MakeDemoWorld, "making demo world" },
+            { Step.MakeDemoWorld, "making world presentation" },
             { Step.SetControlTips, "setting control tips" },
             { Step.OpenMainMenu, "opening main menu" },
         };
