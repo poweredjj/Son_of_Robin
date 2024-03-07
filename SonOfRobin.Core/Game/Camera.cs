@@ -396,7 +396,7 @@ namespace SonOfRobin
             }
         }
 
-        public void TrackDemoModeTarget(bool firstRun, bool forceSwitch = false, bool switchDirectionLeft = false)
+        public void TrackDemoModeTarget(bool firstRun, bool forceSwitch = false, Sprite.Orientation searchDirection = Sprite.Orientation.right)
         {
             if (this.TrackedSpriteExists && this.CurrentSpriteTrackingDuration < 60 * 30 && !forceSwitch) return;
 
@@ -418,7 +418,34 @@ namespace SonOfRobin
 
                 if (forceSwitch)
                 {
-                    cameraTargets = cameraTargets.Where(sprite => switchDirectionLeft ? sprite.position.X < this.trackedSprite.position.X : sprite.position.X > this.trackedSprite.position.X).ToList();
+                    float minX = 0f;
+                    float maxX = this.world.Grid.width - 1f;
+                    float minY = 0f;
+                    float maxY = this.world.Grid.height - 1f;
+
+                    switch (searchDirection)
+                    {
+                        case Sprite.Orientation.left:
+                            maxX = this.trackedSprite.position.X;
+                            break;
+
+                        case Sprite.Orientation.right:
+                            minX = this.trackedSprite.position.X;
+                            break;
+
+                        case Sprite.Orientation.up:
+                            maxY = this.trackedSprite.position.Y;
+                            break;
+
+                        case Sprite.Orientation.down:
+                            minY = this.trackedSprite.position.Y;
+                            break;
+
+                        default:
+                            throw new ArgumentException($"Unsupported orientation - {searchDirection}.");
+                    }
+
+                    cameraTargets = cameraTargets.Where(sprite => sprite.position.X > minX && sprite.position.X < maxX && sprite.position.Y > minY && sprite.position.Y < maxY).ToList();
                 }
 
                 if (cameraTargets.Count == 0)

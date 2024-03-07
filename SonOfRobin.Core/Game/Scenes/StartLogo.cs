@@ -65,10 +65,28 @@ namespace SonOfRobin
 
             if (world != null && world.demoMode)
             {
-                bool switchToTargetAtLeft = InputMapper.HasBeenReleased(InputMapper.Action.GlobalLeft);
-                bool switchToTargetAtRight = InputMapper.HasBeenReleased(InputMapper.Action.GlobalRight);
-                if (switchToTargetAtLeft) world.camera.TrackDemoModeTarget(firstRun: false, forceSwitch: true, switchDirectionLeft: true);
-                if (switchToTargetAtRight) world.camera.TrackDemoModeTarget(firstRun: false, forceSwitch: true, switchDirectionLeft: false);
+                var directionByActionDict = new Dictionary<InputMapper.Action, Sprite.Orientation>
+                {
+                    { InputMapper.Action.GlobalLeft, Sprite.Orientation.left },
+                    { InputMapper.Action.GlobalRight, Sprite.Orientation.right },
+                    { InputMapper.Action.GlobalUp, Sprite.Orientation.up },
+                    { InputMapper.Action.GlobalDown, Sprite.Orientation.down },
+                };
+
+                bool switchDemoTarget = false;
+                Sprite.Orientation searchDirection = Sprite.Orientation.right;
+
+                foreach (var kvp in directionByActionDict)
+                {
+                    if (InputMapper.HasBeenReleased(kvp.Key))
+                    {
+                        searchDirection = kvp.Value;
+                        switchDemoTarget = true;
+                        break;
+                    }
+                }
+
+                if (switchDemoTarget) world.camera.TrackDemoModeTarget(firstRun: false, forceSwitch: true, searchDirection: searchDirection);
             }
 
             if (this.viewParams.Opacity == 0 && this.inputActive)
