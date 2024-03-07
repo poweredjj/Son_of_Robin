@@ -62,11 +62,11 @@ namespace SonOfRobin
             queue.Enqueue(new QueueEntry(songName: songName, repeat: repeat, fadeVal: fadeVal));
         }
 
-        public static void ClearQueueAndPlay(SongData.Name songName, bool repeat = false)
+        private static void Play(SongData.Name songName, bool repeat = false, bool clearQueue = false)
         {
             if (!Sound.GlobalOn || !GlobalOn) return;
 
-            queue.Clear();
+            if (clearQueue) queue.Clear();
 
             if (MediaPlayer.State == MediaState.Playing && CurrentSongName == songName) return;
 
@@ -124,16 +124,20 @@ namespace SonOfRobin
                 }
             }
 
-            if (MediaPlayer.State == MediaState.Stopped && queue.Count > 0)
+            if (MediaPlayer.State == MediaState.Stopped)
             {
-                QueueEntry queueEntry = queue.Dequeue();
-                if (queueEntry.fadeVal != 1)
+                if (queue.Count > 0)
                 {
-                    MediaPlayer.Volume = 0;
-                    ClearQueueAndPlay(queueEntry.songName, repeat: queueEntry.repeat);
-                    Fade(volume: GlobalVolume, fadeVal: queueEntry.fadeVal);
+                    QueueEntry queueEntry = queue.Dequeue();
+                    if (queueEntry.fadeVal != 1)
+                    {
+                        MediaPlayer.Volume = 0;
+                        Play(queueEntry.songName, repeat: queueEntry.repeat);
+                        Fade(volume: GlobalVolume, fadeVal: queueEntry.fadeVal);
+                    }
+                    else Play(queueEntry.songName, repeat: queueEntry.repeat);
                 }
-                else ClearQueueAndPlay(queueEntry.songName, repeat: queueEntry.repeat);
+                else CurrentSongName = SongData.Name.Empty;
             }
         }
 
