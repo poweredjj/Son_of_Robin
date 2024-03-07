@@ -61,6 +61,16 @@ namespace SonOfRobin
                 this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 0f, duration: 30, startSwapParams: true));
             }
 
+            World world = World.GetTopWorld();
+
+            if (world != null && world.demoMode)
+            {
+                bool switchToTargetAtLeft = InputMapper.HasBeenReleased(InputMapper.Action.GlobalLeft);
+                bool switchToTargetAtRight = InputMapper.HasBeenReleased(InputMapper.Action.GlobalRight);
+                if (switchToTargetAtLeft) world.camera.TrackDemoModeTarget(firstRun: false, forceSwitch: true, switchDirectionLeft: true);
+                if (switchToTargetAtRight) world.camera.TrackDemoModeTarget(firstRun: false, forceSwitch: true, switchDirectionLeft: false);
+            }
+
             if (this.viewParams.Opacity == 0 && this.inputActive)
             {
                 this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 1f, duration: 30, startSwapParams: true));

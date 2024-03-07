@@ -396,9 +396,9 @@ namespace SonOfRobin
             }
         }
 
-        public void TrackDemoModeTarget(bool firstRun)
+        public void TrackDemoModeTarget(bool firstRun, bool forceSwitch = false, bool switchDirectionLeft = false)
         {
-            if (this.TrackedSpriteExists && this.CurrentSpriteTrackingDuration < 60 * 30) return;
+            if (this.TrackedSpriteExists && this.CurrentSpriteTrackingDuration < 60 * 30 && !forceSwitch) return;
 
             if (firstRun)
             {
@@ -415,6 +415,12 @@ namespace SonOfRobin
                 var namesToSearch = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox };
 
                 var cameraTargets = spritesForRect.Where(sprite => sprite.boardPiece.alive && namesToSearch.Contains(sprite.boardPiece.name)).ToList();
+
+                if (forceSwitch)
+                {
+                    cameraTargets = cameraTargets.Where(sprite => switchDirectionLeft ? sprite.position.X < this.trackedSprite.position.X : sprite.position.X > this.trackedSprite.position.X).ToList();
+                }
+
                 if (cameraTargets.Count == 0)
                 {
                     searchRect.Inflate(searchRect.Width / 2, searchRect.Height / 2);
@@ -422,8 +428,18 @@ namespace SonOfRobin
                 }
                 else
                 {
-                    var index = this.world.random.Next(cameraTargets.Count);
-                    this.TrackPiece(trackedPiece: cameraTargets[index].boardPiece, moveInstantly: firstRun);
+                    if (forceSwitch)
+                    {
+                        Sprite newTarget = cameraTargets.OrderBy(s => Vector2.Distance(this.trackedSprite.position, s.position)).First();
+                        newTarget.effectCol.RemoveEffectsOfType(effect: SonOfRobinGame.EffectColorize);
+                        newTarget.effectCol.AddEffect(new ColorizeInstance(color: Color.White, minAlpha: 0.2f, framesLeft: 120, fadeFramesLeft: 120));
+                        this.TrackPiece(trackedPiece: newTarget.boardPiece, moveInstantly: firstRun);
+                    }
+                    else
+                    {
+                        var index = this.world.random.Next(cameraTargets.Count);
+                        this.TrackPiece(trackedPiece: cameraTargets[index].boardPiece, moveInstantly: firstRun);
+                    }
 
                     return;
                 }
