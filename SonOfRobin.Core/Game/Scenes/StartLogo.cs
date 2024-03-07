@@ -49,7 +49,7 @@ namespace SonOfRobin
 
         public override void Update()
         {
-            if (SongPlayer.CurrentSongName != SongData.Name.Title) SongPlayer.FadeCurrentAndPlay(songName: SongData.Name.Title, repeat: true);
+            if (SongPlayer.CurrentSongName != SongData.Name.Title) SongPlayer.ClearQueueFadeCurrentAndPlay(songName: SongData.Name.Title, repeat: true);
 
             if (InputMapper.HasBeenReleased(InputMapper.Action.GlobalConfirm))
             {

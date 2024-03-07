@@ -102,7 +102,11 @@ namespace SonOfRobin
                 if (value == globalOn) return;
 
                 globalOn = value;
-                if (!globalOn) StopAll();
+                if (!globalOn)
+                {
+                    StopAll();
+                    SongPlayer.ClearQueueAndStop();
+                }
             }
         }
 

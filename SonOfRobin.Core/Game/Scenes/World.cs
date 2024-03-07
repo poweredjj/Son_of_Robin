@@ -573,7 +573,7 @@ namespace SonOfRobin
             }
 
             this.CreateTemporaryDecorations(ignoreDuration: true);
-            SongPlayer.StopAndClearQueue(fadeVal: 0.03f);
+            SongPlayer.ClearQueueAndStop(fadeVal: 0.03f);
 
             if (!this.demoMode)
             {
