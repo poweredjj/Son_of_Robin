@@ -6,7 +6,7 @@ namespace SonOfRobin
 {
     public class ScrollingSurfaceManager
     {
-        private static readonly Color waterColor = new Color(12, 122, 156);
+        public static readonly Color waterColor = new(12, 122, 156);
         private readonly ScrollingSurface oceanFloor;
         private readonly ScrollingSurface waterCaustics;
         public readonly ScrollingSurface hotAir;

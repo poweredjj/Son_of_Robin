@@ -36,6 +36,8 @@ namespace SonOfRobin
             this.viewParams.Opacity = 0f;
 
             this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 1f, duration: 90, startSwapParams: true));
+
+            this.Update(); // needed make sure pressStartText is not null (sometimes Draw() is invoked before Update())
         }
 
         public override void Remove()

@@ -148,8 +148,6 @@ namespace SonOfRobin
             SplashScreenTexture = TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx);
             ErrorLog = new ErrorLog();
 
-            JustWater justWater = new JustWater();
-            justWater.MoveToBottom();
             MessageLog = new MessageLog();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);

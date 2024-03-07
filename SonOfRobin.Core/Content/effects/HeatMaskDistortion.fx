@@ -13,6 +13,7 @@ float heatPower;
 float4 drawColor;
 float2 baseTextureSize;
 float2 drawScale;
+float2 baseTextureOffset;
 float currentUpdate;
 
 sampler s0: register(s0);
@@ -40,13 +41,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	// shaders use color value range 0.0f - 1.0f
     
     // both textures should have the same size
-            
+                
     float2 basePixelSize = 1.0 / baseTextureSize;
+    float2 baseOffset = basePixelSize * baseTextureOffset; 
     float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates); 
     float2 distortionOffset = float2(distortColor.r, distortColor.r) * basePixelSize * heatPower * 30;
     
-    //return (tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * 0.3) + (distortColor * 2); // for testing
-    return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset) * input.Color * drawColor;
+    //return (tex2D(BaseTextureSampler, input.TextureCoordinates + baseOffset + distortionOffset) * 0.3) + (distortColor * 2); // for testing
+    return tex2D(BaseTextureSampler, input.TextureCoordinates + baseOffset + distortionOffset) * input.Color * drawColor;
 }
 
 technique SpriteDrawing

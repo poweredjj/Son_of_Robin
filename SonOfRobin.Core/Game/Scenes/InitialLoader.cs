@@ -99,7 +99,7 @@ namespace SonOfRobin
         private string NextStepName
         { get { return (int)this.currentStep == allStepsCount ? "opening main menu" : namesForSteps[this.currentStep]; } }
 
-        public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true)
+        public InitialLoader() : base(inputType: InputTypes.None, priority: 0, touchLayout: TouchLayout.Empty, tipsLayout: ControlTips.TipsLayout.Empty, alwaysUpdates: true, blocksDrawsBelow: true, blocksUpdatesBelow: true)
         {
             this.startTime = DateTime.Now;
             this.lastFunnyActionNameCreated = DateTime.MinValue;
@@ -186,6 +186,9 @@ namespace SonOfRobin
                     break;
 
                 case Step.CreateScenes:
+                    JustWater justWater = new();
+                    justWater.MoveToBottom();
+
                     Preferences.DebugMode = Preferences.DebugMode; // to create debugMode scenes
                     SonOfRobinGame.CreateHintAndProgressWindows();
                     break;
