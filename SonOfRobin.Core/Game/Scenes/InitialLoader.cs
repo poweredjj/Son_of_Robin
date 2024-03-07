@@ -215,11 +215,8 @@ namespace SonOfRobin
                 case Step.OpenMainMenu:
                     Preferences.FrameSkip = Preferences.FrameSkip; // to apply valid FrameSkip value
 
-                    if (SonOfRobinGame.LicenceValid)
-                    {
-                        if (Preferences.showDemoWorld) new StartLogo();
-                        else MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
-                    }
+                    if (SonOfRobinGame.LicenceValid) new StartLogo();
+
                     else
                     {
                         new TextWindow(text: "This version of 'Son of Robin' has expired.", textColor: Color.White, bgColor: Color.DarkBlue, useTransition: false, animate: true, blockInputDuration: 60, closingTask: Scheduler.TaskName.OpenMainMenuIfSpecialKeysArePressed);

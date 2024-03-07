@@ -98,13 +98,10 @@ namespace SonOfRobin
             {
                 case Name.Main:
                     {
-                        World world = World.GetTopWorld();
-                        bool demoWorldActive = world != null && world.demoMode;
-
                         string gameNameString = "Son of Robin";
                         if (SonOfRobinGame.trialVersion) gameNameString += " (demo)";
 
-                        Menu menu = new(templateName: templateName, name: gameNameString, blocksUpdatesBelow: false, canBeClosedManually: demoWorldActive, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver, soundClose: SoundData.Name.PaperMove2);
+                        Menu menu = new(templateName: templateName, name: gameNameString, blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver, soundClose: SoundData.Name.PaperMove2);
                         new Separator(menu: menu, name: "", isEmpty: true);
 
                         if (SaveHeaderManager.AnySavesExist) new Invoker(menu: menu, name: "load game", taskName: Scheduler.TaskName.OpenMenuTemplate, executeHelper: new Dictionary<string, Object> { { "templateName", Name.Load } });
@@ -325,12 +322,19 @@ namespace SonOfRobin
 
                             var valueDict = new Dictionary<object, object>();
 
-                            for (int i = 0; i < 105; i += 5)
+                            for (int i = 5; i < 105; i += 5)
                             {
                                 valueDict[(float)i / 100] = $"{i}%";
                             }
 
-                            new Selector(menu: menu, name: "volume", valueDict: valueDict, targetObj: sound, propertyName: "globalVolume");
+                            new Selector(menu: menu, name: "sounds volume", valueDict: valueDict, targetObj: sound, propertyName: "globalVolume");
+
+                            SongPlayer SongPlayer = new SongPlayer();
+
+                            new Selector(menu: menu, name: "music", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: SongPlayer, propertyName: "GlobalOn");
+
+                            new Selector(menu: menu, name: "music volume", valueDict: valueDict, targetObj: SongPlayer, propertyName: "GlobalVolume");
+
                         }
 
                         foreach (Entry entry in menu.entryList)
