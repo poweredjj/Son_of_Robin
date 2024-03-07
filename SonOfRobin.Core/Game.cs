@@ -147,8 +147,9 @@ namespace SonOfRobin
 
             SplashScreenTexture = TextureBank.GetTexture(TextureBank.TextureName.LoadingGfx);
             ErrorLog = new ErrorLog();
-            SolidColor solidColor = new(color: Color.RoyalBlue, viewOpacity: 1f, clearScreen: true);
-            solidColor.MoveToBottom();
+
+            JustWater justWater = new JustWater();
+            justWater.MoveToBottom();
             MessageLog = new MessageLog();
 
             if (!Directory.Exists(gameDataPath)) Directory.CreateDirectory(gameDataPath);
