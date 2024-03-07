@@ -45,26 +45,32 @@ namespace SonOfRobin
 
             this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.causticsOffset1, toValue: new Vector2(waterCausticsTexture.Width * 1, waterCausticsTexture.Height * 2), duration: 16)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.SineInOut);
 
             this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.causticsOffset2, toValue: new Vector2(waterCausticsTexture.Width * -2, waterCausticsTexture.Height * -1), duration: 12)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.QuadraticInOut);
 
             this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.causticsOpacity1, toValue: 0f, duration: 16)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.SineInOut);
 
             this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.causticsOpacity2, toValue: 0.4f, duration: 20)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.SineInOut);
 
             this.tweener.TweenTo(target: this.viewParams, expression: viewParams => viewParams.drawScaleX, toValue: 0.6f, duration: 20)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.SineInOut);
 
             this.tweener.TweenTo(target: this.viewParams, expression: viewParams => viewParams.drawScaleY, toValue: 0.6f, duration: 20)
                 .AutoReverse()
+                .RepeatForever()
                 .Easing(EasingFunctions.SineInOut);
         }
 
