@@ -413,6 +413,7 @@ namespace SonOfRobin
                 var spritesForRect = this.world.Grid.GetSpritesForRect(groupName: Cell.Group.Visible, rectangle: searchRect, addPadding: false);
 
                 var namesToSearch = new HashSet<PieceTemplate.Name> { PieceTemplate.Name.Rabbit, PieceTemplate.Name.Fox };
+                if (forceSwitch) namesToSearch.Add(PieceTemplate.Name.Frog);
 
                 var cameraTargets = spritesForRect.Where(sprite => sprite.boardPiece.alive && namesToSearch.Contains(sprite.boardPiece.name)).ToList();
 
