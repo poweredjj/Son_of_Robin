@@ -23,7 +23,7 @@ namespace SonOfRobin
             }
         }
 
-        private static float globalVolume = 1f;
+        private static float globalVolume = 0.5f;
 
         public static float GlobalVolume
         {

@@ -108,6 +108,7 @@ namespace SonOfRobin
         public Level ActiveLevel { get; private set; }
         public Level IslandLevel { get; private set; }
         public Player Player { get; private set; }
+        public SongEngine SongEngine { get; private set; }
         public HintEngine HintEngine { get; private set; }
         public Grid Grid { get { return this.ActiveLevel.grid; } }
 
@@ -176,6 +177,7 @@ namespace SonOfRobin
             this.scrollingSurfaceManager = new ScrollingSurfaceManager(world: this);
             this.swayManager = new SwayManager(this);
             this.HintEngine = new HintEngine(world: this);
+            this.SongEngine = new SongEngine(world: this);
             this.ProcessedNonPlantsCount = 0;
             this.ProcessedPlantsCount = 0;
             this.discoveredRecipesForPieces = new List<PieceTemplate.Name> { };
@@ -1008,6 +1010,7 @@ namespace SonOfRobin
             this.tweenerForGlobalEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.weather.Update();
             this.swayManager.Update();
+            if (SonOfRobinGame.CurrentUpdate % 30 == 0) this.SongEngine.Update();
 
             if (this.soundPaused && this.inputActive)
             {

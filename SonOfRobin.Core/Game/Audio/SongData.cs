@@ -21,11 +21,15 @@ namespace SonOfRobin
         {
             Empty,
             Title,
+            Rain1,
+            Rain2,
         }
 
         public static readonly Dictionary<Name, string> songFilenamesDict = new()
         {
             { Name.Title, "fscm-productions-flowers" },
+            { Name.Rain1, "alex-productions-rain-on-the-window" },
+            { Name.Rain2, "purrple-cat-lost-and-found" },
         };
     }
 }
