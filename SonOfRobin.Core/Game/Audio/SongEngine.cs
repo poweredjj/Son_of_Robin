@@ -50,7 +50,7 @@ namespace SonOfRobin
                 (rainSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
                 (desertSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
 
-            if (turnOffSong) SongPlayer.FadeOut();
+            if (turnOffSong) SongPlayer.FadeOut(fadeVal: 0.002f);
         }
 
         public bool Play(SongData.Name songName, int nextPlayDelaySeconds = 0, bool ignoreDelay = false)
