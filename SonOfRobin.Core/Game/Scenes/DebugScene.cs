@@ -1,6 +1,7 @@
 ﻿using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace SonOfRobin
                 if (world.ActiveLevel.trackingManager.TrackingCount > 5000) debugLines.Add("WARNING, CHECK IF CORRECT!");
             }
 
-            debugLines.Add($"snd inst. total: {ManagedSoundInstance.CreatedInstancesCount} act: {ManagedSoundInstance.ActiveInstancesCount} inact: {ManagedSoundInstance.InactiveInstancesCount}");
+            debugLines.Add($"snd inst. total: {ManagedSoundInstance.CreatedInstancesCount} act: {ManagedSoundInstance.ActiveInstancesCount} inact: {ManagedSoundInstance.InactiveInstancesCount} s-vol: {Math.Round(Sound.globalVolume * 100)}% m-vol: {Math.Round(MediaPlayer.Volume * 100)}% m-tvol {Math.Round(SongPlayer.TargetVolume * 100)} ");
 
             debugLines.Add($"GC {GC.CollectionCount(0)} {GC.CollectionCount(1)} {GC.CollectionCount(2)} worlds left {World.DestroyedNotReleasedWorldCount} last draw {LastDrawDuration.Milliseconds} last update {LastUpdateDuration.Milliseconds}");
 

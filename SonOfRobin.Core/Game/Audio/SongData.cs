@@ -21,6 +21,7 @@ namespace SonOfRobin
         {
             Empty,
             Title,
+            Beginning,
             Rain1,
             Rain2,
             Desert1,
@@ -30,6 +31,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Name, string> songFilenamesDict = new()
         {
             { Name.Title, "fscm-productions-flowers" },
+            { Name.Beginning, "alexander-nakarada-tam-lin" },
             { Name.Rain1, "alex-productions-rain-on-the-window" },
             { Name.Rain2, "purrple-cat-lost-and-found" },
             { Name.Desert1, "alex-productions-desert" },
@@ -39,6 +41,7 @@ namespace SonOfRobin
         public static readonly Dictionary<Name, string> songDescriptionsDict = new()
         {
             { Name.Title, "Flowers - FSCM Productions" },
+            { Name.Beginning, "Tam Lin - Alexander Nakarada (CreatorChords)" },
             { Name.Rain1, "Rain On The Window - Alex-Productions" },
             { Name.Rain2, "Lost And Found - Purrple Cat" },
             { Name.Desert1, "Desert - Alex-Productions" },

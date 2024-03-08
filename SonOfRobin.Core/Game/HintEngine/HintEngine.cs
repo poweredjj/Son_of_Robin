@@ -446,6 +446,12 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SetCineMode, delay: 0, executeHelper: false, storeForLaterUse: true));
 
+                        Scheduler.ExecutionDelegate turnOnSongDlgt = () =>
+                        {
+                            if (!world.HasBeenRemoved) SongPlayer.AddToQueue(SongData.Name.Beginning);
+                        };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: turnOnSongDlgt, storeForLaterUse: true));
+
                         new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteTaskChain, turnOffInputUntilExecution: true, executeHelper: taskChain);
 
                         break;

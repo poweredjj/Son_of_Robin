@@ -38,7 +38,7 @@ namespace SonOfRobin
         }
 
         public static bool IsPlaying { get { return CurrentSongName != SongData.Name.Empty; } }
-
+        public static float TargetVolume { get { return targetVolume; } }
         private static float targetVolume;
         private static float fadeValPerFrame;
 
@@ -75,6 +75,7 @@ namespace SonOfRobin
 
             MediaPlayer.IsRepeating = repeat;
             MediaPlayer.Volume = GlobalVolume;
+            targetVolume = GlobalVolume;
             MediaPlayer.Play(song: SongData.GetSong(songName));
             CurrentSongName = songName;
 
