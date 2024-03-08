@@ -20,6 +20,7 @@ namespace SonOfRobin
         public static readonly TimeSpan startTimeOffset = TimeSpan.FromHours(7); // 7 - to start the game in the morning, not at midnight
         public static readonly DateTime startingDate = new DateTime(year: 2020, month: 1, day: 1, hour: 0, minute: 0, second: 0) + startTimeOffset;
         public int ElapsedUpdates { get; private set; }
+        public bool IsPaused { get { return this.isPaused; } }
         private bool isPaused;
         private bool initComplete;
         private readonly World world;

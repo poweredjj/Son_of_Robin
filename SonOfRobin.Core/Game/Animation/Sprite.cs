@@ -398,7 +398,7 @@ namespace SonOfRobin
             if (this.orientation != newOrientation)
             {
                 // to avoid flickering
-                if (this.world.CurrentUpdate < this.lastOrientationChangeFrame + 12) return;
+                if (!this.world.islandClock.IsPaused && this.world.CurrentUpdate < this.lastOrientationChangeFrame + 12) return;
                 this.lastOrientationChangeFrame = this.world.CurrentUpdate;
                 this.orientation = newOrientation;
             }
