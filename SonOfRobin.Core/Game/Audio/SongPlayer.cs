@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Media;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 
@@ -23,7 +24,7 @@ namespace SonOfRobin
             }
         }
 
-        private static float globalVolume = 0.5f;
+        private static float globalVolume = 0.6f;
 
         public static float GlobalVolume
         {
@@ -35,6 +36,8 @@ namespace SonOfRobin
                 if (MediaPlayer.State == MediaState.Playing) MediaPlayer.Volume = globalVolume;
             }
         }
+
+        public static bool IsPlaying { get { return CurrentSongName != SongData.Name.Empty; } }
 
         private static float targetVolume;
         private static float fadeValPerFrame;
@@ -74,6 +77,11 @@ namespace SonOfRobin
             MediaPlayer.Volume = GlobalVolume;
             MediaPlayer.Play(song: SongData.GetSong(songName));
             CurrentSongName = songName;
+
+            if (SongData.songDescriptionsDict.TryGetValue(songName, out string value))
+            {
+                MessageLog.Add(text: $"{value}", imageObj: PieceInfo.GetImageObj(PieceTemplate.Name.MusicNote), bgColor: new Color(0, 58, 92));
+            }
         }
 
         public static void ClearQueueAndStop(float fadeVal = 1f)

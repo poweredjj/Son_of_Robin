@@ -1010,7 +1010,7 @@ namespace SonOfRobin
             this.tweenerForGlobalEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
             this.weather.Update();
             this.swayManager.Update();
-            if (SonOfRobinGame.CurrentUpdate % 30 == 0) this.SongEngine.Update();
+            if (SonOfRobinGame.CurrentUpdate % 31 == 0) this.SongEngine.Update();
 
             if (this.soundPaused && this.inputActive)
             {

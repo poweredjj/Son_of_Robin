@@ -9562,6 +9562,12 @@
 /processorParam:TextureFormat=Color
 /build:gfx/zzz.png
 
+#begin music/alex-productions-desert.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/alex-productions-desert.mp3
+
 #begin music/alex-productions-rain-on-the-window.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -9573,6 +9579,12 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:music/fscm-productions-flowers.mp3
+
+#begin music/hayden-folker-the-red-desert.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/hayden-folker-the-red-desert.mp3
 
 #begin music/purrple-cat-lost-and-found.mp3
 /importer:Mp3Importer
