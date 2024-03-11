@@ -16,6 +16,9 @@ namespace SonOfRobin
         private static readonly SongData.Name[] rainSongs = [SongData.Name.Rain1, SongData.Name.Rain2];
         private static readonly SongData.Name[] desertSongs = [SongData.Name.Desert1, SongData.Name.Desert2];
 
+        // all used song lists must be added here
+        private static readonly HashSet<SongData.Name> allSongs = Helpers.ConcatArrays(rainSongs, desertSongs).ToHashSet();
+
         public void Update()
         {
             if (!Sound.GlobalOn || !SongPlayer.GlobalOn || this.world.demoMode) return;
@@ -27,7 +30,10 @@ namespace SonOfRobin
 
         private void TryToTurnOnASong()
         {
-            // more important songs should be placed first
+            // "foreign" songs should be allowed to play freely
+            if (SongPlayer.CurrentSongName != SongData.Name.Empty && !allSongs.Contains(SongPlayer.CurrentSongName)) return;
+
+            // more important songs should be checked first
 
             if (this.world.Player.sleepMode == Player.SleepMode.Awake)
             {
@@ -46,6 +52,8 @@ namespace SonOfRobin
 
         private void TryToTurnOffASong()
         {
+            if (SongPlayer.CurrentSongName == SongData.Name.Empty) return;
+
             bool turnOffSong =
                 (rainSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
                 (desertSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
@@ -62,7 +70,7 @@ namespace SonOfRobin
                 if (SongPlayer.CurrentSongName == SongData.Name.Empty) SongPlayer.AddToQueue(songName);
                 else SongPlayer.ClearQueueFadeCurrentAndPlay(songName: songName, fadeDurationFrames: 100);
 
-                this.whenCanBePlayedAgainDict[songName] = this.world.TimePlayed + TimeSpan.FromSeconds(nextPlayDelaySeconds + SongData.GetSong(songName).Duration.TotalSeconds * 60);
+                this.whenCanBePlayedAgainDict[songName] = this.world.TimePlayed + TimeSpan.FromSeconds((nextPlayDelaySeconds + SongData.GetSong(songName).Duration.TotalSeconds) * 60);
             }
 
             this.earliestUpdateNextCheckPossible = this.world.CurrentUpdate + delayAfterPlay; // if a song starts playing, it should be allowed to play for a while
