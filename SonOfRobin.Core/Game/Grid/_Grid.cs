@@ -1284,7 +1284,7 @@ namespace SonOfRobin
 
             Vector2 normalizedSunPos = new(sunLightData.sunPos.X + cameraRect.Center.X, sunLightData.sunPos.Y + cameraRect.Center.Y);
             float sunAngle = Helpers.GetAngleBetweenTwoPoints(start: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), end: normalizedSunPos);
-            int sunDistance = 10000;
+            int sunDistance = 100000;
             Vector2 sunOffset = new(sunDistance * (float)Math.Cos(sunAngle), sunDistance * (float)Math.Sin(sunAngle));
             normalizedSunPos = new Vector2(cameraRect.Center.X, cameraRect.Center.Y) + sunOffset;
 
