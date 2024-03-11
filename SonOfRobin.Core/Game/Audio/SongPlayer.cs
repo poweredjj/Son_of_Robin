@@ -35,6 +35,8 @@ namespace SonOfRobin
             }
         }
 
+        public static bool IsFadingOut { get { return targetVolume < MediaPlayer.Volume; } }
+
         public static bool IsPlaying { get { return CurrentSongName != SongData.Name.Empty; } }
         public static float TargetVolume { get { return targetVolume; } }
         private static float targetVolume;
@@ -100,7 +102,7 @@ namespace SonOfRobin
 
         public static void FadeOut(int fadeDurationFrames = 0)
         {
-            if (!Sound.GlobalOn || !GlobalOn || MediaPlayer.Volume == 0) return;
+            if (!Sound.GlobalOn || !GlobalOn || MediaPlayer.Volume == 0 || IsFadingOut) return;
 
             Fade(volume: 0, fadeDurationFrames: fadeDurationFrames);
         }
@@ -124,14 +126,12 @@ namespace SonOfRobin
                 if (Math.Abs(targetVolume - MediaPlayer.Volume) <= fadeValPerFrame) MediaPlayer.Volume = targetVolume;
             }
 
-            if (MediaPlayer.Volume == 0)
-            {
-                MediaPlayer.Stop();
-                CurrentSongName = SongData.Name.Empty;
-            }
+            if (MediaPlayer.Volume == 0 && MediaPlayer.State != MediaState.Stopped) MediaPlayer.Stop();
 
             if (MediaPlayer.State == MediaState.Stopped)
             {
+                CurrentSongName = SongData.Name.Empty;
+
                 if (queue.Count > 0)
                 {
                     QueueEntry queueEntry = queue.Dequeue();
@@ -142,7 +142,6 @@ namespace SonOfRobin
                     }
                     else Play(queueEntry.songName, repeat: queueEntry.repeat);
                 }
-                else CurrentSongName = SongData.Name.Empty;
             }
         }
 
