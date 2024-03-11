@@ -24,12 +24,16 @@ namespace SonOfRobin
                 {
                     File.WriteAllBytes($"{path}.gzip", compressedBytes);
                 }
-                catch (IOException)
-                { return; }
+                catch (IOException) { return; }
             }
             else
             {
-                File.WriteAllText(path, json);
+                try
+                {
+                    File.WriteAllText(path, json);
+                }
+                catch (DirectoryNotFoundException)
+                { }
             }
         }
 

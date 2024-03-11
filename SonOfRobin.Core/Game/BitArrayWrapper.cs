@@ -69,17 +69,21 @@ namespace SonOfRobin
                     if (!workingArray[i]) image[i % this.width, i / this.width] = new L8(255);
                 }
 
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                try
                 {
-                    image.Save(fileStream, new PngEncoder()
+                    using (var fileStream = new FileStream(path, FileMode.Create))
                     {
-                        CompressionLevel = PngCompressionLevel.BestCompression,
-                        // ColorType = PngColorType.Palette, // DO NOT USE THIS OPTION - will freeze at bigger sizes
-                        // BitDepth = PngBitDepth.Bit1 // DO NOT USE THIS OPTION - will freeze at bigger sizes
+                        image.Save(fileStream, new PngEncoder()
+                        {
+                            CompressionLevel = PngCompressionLevel.BestCompression,
+                            // ColorType = PngColorType.Palette, // DO NOT USE THIS OPTION - will freeze at bigger sizes
+                            // BitDepth = PngBitDepth.Bit1 // DO NOT USE THIS OPTION - will freeze at bigger sizes
+                        }
+                        );
+                        return true;
                     }
-                    );
-                    return true;
                 }
+                catch (DirectoryNotFoundException) { return false; }
             }
         }
 
@@ -113,6 +117,7 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException) { return null; }
             catch (UnknownImageFormatException) { return null; } // file corrupted
+            catch (DirectoryNotFoundException) { return null; }
         }
 
         public List<BitArrayWrapperChunk> SplitIntoChunks(int chunkWidth, int chunkHeight)

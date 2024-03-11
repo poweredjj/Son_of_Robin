@@ -31,10 +31,15 @@ namespace SonOfRobin
 
             using (var image = Image.LoadPixelData<L8>(array1D, width, height))
             {
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                try
                 {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                    }
                 }
+                catch (DirectoryNotFoundException)
+                { }
             }
         }
 
@@ -86,10 +91,15 @@ namespace SonOfRobin
 
             using (var image = Image.LoadPixelData<L8>(array1D, width, height))
             {
-                using (var fileStream = new FileStream(path, FileMode.Create))
+                try
                 {
-                    image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        image.Save(fileStream, new PngEncoder() { CompressionLevel = PngCompressionLevel.Level6 });
+                    }
                 }
+                catch (DirectoryNotFoundException)
+                { }
             }
         }
 
@@ -122,6 +132,7 @@ namespace SonOfRobin
             }
             catch (FileNotFoundException) { return null; }
             catch (UnknownImageFormatException) { return null; } // file corrupted
+            catch (DirectoryNotFoundException) { return null; }
         }
 
         public static byte[] LoadPNGAs1DByteArray(string path)
