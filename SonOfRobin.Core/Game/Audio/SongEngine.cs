@@ -60,7 +60,7 @@ namespace SonOfRobin
             if (SongPlayer.CurrentSongName != songName)
             {
                 if (SongPlayer.CurrentSongName == SongData.Name.Empty) SongPlayer.AddToQueue(songName);
-                else SongPlayer.ClearQueueFadeCurrentAndPlay(songName);
+                else SongPlayer.ClearQueueFadeCurrentAndPlay(songName: songName, fadeVal: SongPlayer.defaultFadeValPerFrame);
 
                 this.whenCanBePlayedAgainDict[songName] = this.world.TimePlayed + TimeSpan.FromSeconds(nextPlayDelaySeconds + SongData.GetSong(songName).Duration.TotalSeconds * 60);
             }

@@ -9,7 +9,7 @@ namespace SonOfRobin
     {
         // adds new functionality to MediaPlayer, should be used instead of MediaPlayer
 
-        private const float defaultFadeValPerFrame = 0.01f;
+        public const float defaultFadeValPerFrame = 0.01f;
 
         private static bool globalOn = true;
 
@@ -53,14 +53,17 @@ namespace SonOfRobin
             MediaPlayer.IsRepeating = false; // to ensure that the current song will end playing
         }
 
-        public static void ClearQueueFadeCurrentAndPlay(SongData.Name songName, bool repeat = false, float fadeVal = 0f)
+        public static void ClearQueueFadeCurrentAndPlay(SongData.Name songName, bool repeat = false, float fadeVal = 1f)
         {
             if (!Sound.GlobalOn || !GlobalOn) return;
 
             queue.Clear();
 
-            if (MediaPlayer.State == MediaState.Playing && CurrentSongName == songName) return;
-            FadeOut(fadeVal: fadeVal);
+            if (MediaPlayer.State == MediaState.Playing)
+            {
+                if (CurrentSongName == songName) return;
+                else FadeOut(fadeVal: fadeVal);
+            }
 
             queue.Enqueue(new QueueEntry(songName: songName, repeat: repeat, fadeVal: fadeVal));
         }
@@ -142,7 +145,7 @@ namespace SonOfRobin
                     {
                         MediaPlayer.Volume = 0;
                         Play(queueEntry.songName, repeat: queueEntry.repeat);
-                        Fade(volume: GlobalVolume, fadeVal: queueEntry.fadeVal);
+                        Fade(volume: 1f, fadeVal: queueEntry.fadeVal);
                     }
                     else Play(queueEntry.songName, repeat: queueEntry.repeat);
                 }
