@@ -26,6 +26,7 @@ namespace SonOfRobin
             Rain2,
             Heat1,
             Heat2,
+            Night,
         }
 
         public static readonly Dictionary<Name, string> songFilenamesDict = new()
@@ -36,6 +37,7 @@ namespace SonOfRobin
             { Name.Rain2, "purrple-cat-lost-and-found" },
             { Name.Heat1, "alex-productions-desert" },
             { Name.Heat2, "hayden-folker-the-red-desert" },
+            { Name.Night, "alexander-nakarada-night-of-mystery" },
         };
 
         public static readonly Dictionary<Name, string> songDescriptionsDict = new()
@@ -46,6 +48,7 @@ namespace SonOfRobin
             { Name.Rain2, "Lost And Found - Purrple Cat" },
             { Name.Heat1, "Desert - Alex-Productions" },
             { Name.Heat2, "The Red Desert - Hayden Folker" },
+            { Name.Night, "Night Of Mystery - Alexander Nakarada" },
         };
     }
 }

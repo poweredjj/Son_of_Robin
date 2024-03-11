@@ -6,7 +6,15 @@ namespace SonOfRobin
 {
     public class SongEngine(World world)
     {
-        public enum SongCategory { Heat, Rain };
+        public enum SongCategory { Heat, Rain, Night };
+
+        private static readonly Dictionary<SongCategory, SongData.Name[]> songsByCategory = new()
+        {
+            // every category has to be defined here
+            { SongCategory.Rain, [ SongData.Name.Rain1, SongData.Name.Rain2 ] },
+            { SongCategory.Heat, [ SongData.Name.Heat1, SongData.Name.Heat2 ] },
+            { SongCategory.Night, [ SongData.Name.Night ] },
+        };
 
         private const int delayAfterPlay = 60 * 60;
 
@@ -14,12 +22,6 @@ namespace SonOfRobin
         private readonly World world = world;
         private readonly Dictionary<SongData.Name, TimeSpan> whenCanBePlayedAgainDict = [];
         private int earliestUpdateNextCheckPossible = 0;
-
-        private static readonly Dictionary<SongCategory, SongData.Name[]> songsByCategory = new Dictionary<SongCategory, SongData.Name[]>
-        {
-            { SongCategory.Rain, [ SongData.Name.Rain1, SongData.Name.Rain2 ] },
-            { SongCategory.Heat, [ SongData.Name.Heat1, SongData.Name.Heat2 ] },
-        };
 
         private static readonly HashSet<SongData.Name> allSongs = songsByCategory.Values.SelectMany(s => s).ToHashSet();
 
@@ -43,15 +45,22 @@ namespace SonOfRobin
             {
                 if (this.world.weather.RainPercentage >= 0.3f && !songsByCategory[SongCategory.Rain].Contains(SongPlayer.CurrentSongName))
                 {
-                    SongData.Name songName = songsByCategory[SongCategory.Rain][this.random.Next(songsByCategory[SongCategory.Rain].Length)];
-                    this.Play(songName: songName, nextPlayDelaySeconds: 60 * 15);
+                    this.Play(songName: this.GetRandomSong(SongCategory.Rain), nextPlayDelaySeconds: 60 * 15);
                 }
                 else if (this.world.weather.HeatPercentage == 1 && this.world.islandClock.CurrentDayNo % 2 == 0)
                 {
-                    SongData.Name songName = songsByCategory[SongCategory.Heat][this.random.Next(songsByCategory[SongCategory.Heat].Length)];
-                    this.Play(songName: songName, nextPlayDelaySeconds: 60 * 15);
+                    this.Play(songName: this.GetRandomSong(SongCategory.Heat), nextPlayDelaySeconds: 60 * 15);
+                }
+                else if (this.world.islandClock.CurrentPartOfDay == IslandClock.PartOfDay.Night && this.world.islandClock.CurrentDayNo % 3 == 0)
+                {
+                    this.Play(songName: this.GetRandomSong(SongCategory.Night), nextPlayDelaySeconds: 60 * 15);
                 }
             }
+        }
+
+        private SongData.Name GetRandomSong(SongCategory songCategory)
+        {
+            return songsByCategory[songCategory][this.random.Next(songsByCategory[songCategory].Length)];
         }
 
         private void TryToTurnOffASong()
@@ -60,7 +69,8 @@ namespace SonOfRobin
 
             bool turnOffSong =
                 (songsByCategory[SongCategory.Rain].Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
-                (songsByCategory[SongCategory.Heat].Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
+                (songsByCategory[SongCategory.Heat].Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1) ||
+                (songsByCategory[SongCategory.Night].Contains(SongPlayer.CurrentSongName) && this.world.islandClock.CurrentPartOfDay != IslandClock.PartOfDay.Night);
 
             if (turnOffSong) SongPlayer.FadeOut(fadeDurationFrames: 60 * 2);
         }

@@ -678,6 +678,7 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Rain On The Window by Alex-Productions https://onsound.eu/", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "The Red Desert by Hayden Folker https://soundcloud.com/hayden-folker", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "Desert by Alex-Productions https://onsound.eu/", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Night Of Mystery by Alexander Nakarada (CreatorChords) https://creatorchords.com", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "Tam Lin by Alexander Nakarada (CreatorChords) https://creatorchords.com", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "Music promoted by https://www.free-stock-music.com", imageList: new List<ImageObj>()));
 

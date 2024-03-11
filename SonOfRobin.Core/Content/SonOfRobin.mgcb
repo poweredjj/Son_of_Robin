@@ -9562,6 +9562,12 @@
 /processorParam:TextureFormat=Color
 /build:gfx/zzz.png
 
+#begin music/alexander-nakarada-night-of-mystery.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/alexander-nakarada-night-of-mystery.mp3
+
 #begin music/alexander-nakarada-tam-lin.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
