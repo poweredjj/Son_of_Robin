@@ -9,8 +9,6 @@ namespace SonOfRobin
     {
         // adds new functionality to MediaPlayer, should be used instead of MediaPlayer
 
-        public const float defaultFadeValPerFrame = 0.01f;
-
         private static bool globalOn = true;
 
         public static bool GlobalOn
@@ -45,15 +43,15 @@ namespace SonOfRobin
         private static readonly Queue<QueueEntry> queue = new();
         public static SongData.Name CurrentSongName { get; private set; } = SongData.Name.Empty;
 
-        public static void AddToQueue(SongData.Name songName, float fadeVal = 1, bool repeat = false)
+        public static void AddToQueue(SongData.Name songName, int fadeDurationFrames = 0, bool repeat = false)
         {
             if (!Sound.GlobalOn || !GlobalOn) return;
 
-            queue.Enqueue(new QueueEntry(songName: songName, fadeVal: fadeVal, repeat: repeat));
+            queue.Enqueue(new QueueEntry(songName: songName, fadeDurationFrames: fadeDurationFrames, repeat: repeat));
             MediaPlayer.IsRepeating = false; // to ensure that the current song will end playing
         }
 
-        public static void ClearQueueFadeCurrentAndPlay(SongData.Name songName, bool repeat = false, float fadeVal = 1f)
+        public static void ClearQueueFadeCurrentAndPlay(SongData.Name songName, bool repeat = false, int fadeDurationFrames = 0)
         {
             if (!Sound.GlobalOn || !GlobalOn) return;
 
@@ -62,13 +60,13 @@ namespace SonOfRobin
             if (MediaPlayer.State == MediaState.Playing)
             {
                 if (CurrentSongName == songName) return;
-                else FadeOut(fadeVal: fadeVal);
+                else FadeOut(fadeDurationFrames: fadeDurationFrames);
             }
 
-            queue.Enqueue(new QueueEntry(songName: songName, repeat: repeat, fadeVal: fadeVal));
+            queue.Enqueue(new QueueEntry(songName: songName, repeat: repeat, fadeDurationFrames: fadeDurationFrames));
         }
 
-        private static void Play(SongData.Name songName, bool repeat = false, bool clearQueue = false)
+        private static void Play(SongData.Name songName, bool repeat = false, bool clearQueue = false, bool startSilent = false)
         {
             if (!Sound.GlobalOn || !GlobalOn) return;
 
@@ -77,7 +75,7 @@ namespace SonOfRobin
             if (MediaPlayer.State == MediaState.Playing && CurrentSongName == songName) return;
 
             MediaPlayer.IsRepeating = repeat;
-            MediaPlayer.Volume = GlobalVolume;
+            MediaPlayer.Volume = startSilent ? 0f : GlobalVolume;
             targetVolume = GlobalVolume;
             MediaPlayer.Play(song: SongData.GetSong(songName));
             CurrentSongName = songName;
@@ -88,33 +86,31 @@ namespace SonOfRobin
             }
         }
 
-        public static void ClearQueueAndStop(float fadeVal = 1f)
+        public static void ClearQueueAndStop(int fadeDurationFrames = 0)
         {
             queue.Clear();
 
-            if (fadeVal == 1)
+            if (fadeDurationFrames == 0)
             {
                 MediaPlayer.Stop();
                 CurrentSongName = SongData.Name.Empty;
             }
-            else FadeOut(fadeVal);
+            else FadeOut(fadeDurationFrames);
         }
 
-        public static void FadeOut(float fadeVal = 0f)
+        public static void FadeOut(int fadeDurationFrames = 0)
         {
-            if (!Sound.GlobalOn || !GlobalOn) return;
+            if (!Sound.GlobalOn || !GlobalOn || MediaPlayer.Volume == 0) return;
 
-            Fade(volume: 0, fadeVal: fadeVal);
+            Fade(volume: 0, fadeDurationFrames: fadeDurationFrames);
         }
 
-        public static void Fade(float volume, float fadeVal = 0f)
+        public static void Fade(float volume, int fadeDurationFrames = 100)
         {
-            if (!Sound.GlobalOn || !GlobalOn) return;
+            if (!Sound.GlobalOn || !GlobalOn || MediaPlayer.State != MediaState.Playing) return;
 
-            if (MediaPlayer.State != MediaState.Playing) return;
-
-            fadeValPerFrame = fadeVal != 0f ? fadeVal : defaultFadeValPerFrame;
             targetVolume = volume * GlobalVolume;
+            fadeValPerFrame = (targetVolume - MediaPlayer.Volume) / (float)fadeDurationFrames;
         }
 
         public static void Update()
@@ -123,17 +119,15 @@ namespace SonOfRobin
 
             if (MediaPlayer.State == MediaState.Playing && MediaPlayer.Volume != targetVolume)
             {
-                MediaPlayer.Volume += (MediaPlayer.Volume < targetVolume ? fadeValPerFrame : -fadeValPerFrame) * globalVolume;
+                MediaPlayer.Volume += fadeValPerFrame;
 
-                if (Math.Abs(MediaPlayer.Volume - targetVolume) < (fadeValPerFrame * globalVolume))
-                {
-                    MediaPlayer.Volume = targetVolume;
-                    if (MediaPlayer.Volume == 0)
-                    {
-                        MediaPlayer.Stop();
-                        CurrentSongName = SongData.Name.Empty;
-                    }
-                }
+                if (Math.Abs(targetVolume - MediaPlayer.Volume) <= fadeValPerFrame) MediaPlayer.Volume = targetVolume;
+            }
+
+            if (MediaPlayer.Volume == 0)
+            {
+                MediaPlayer.Stop();
+                CurrentSongName = SongData.Name.Empty;
             }
 
             if (MediaPlayer.State == MediaState.Stopped)
@@ -141,11 +135,10 @@ namespace SonOfRobin
                 if (queue.Count > 0)
                 {
                     QueueEntry queueEntry = queue.Dequeue();
-                    if (queueEntry.fadeVal != 1)
+                    if (queueEntry.fadeDurationFrames > 0)
                     {
-                        MediaPlayer.Volume = 0;
-                        Play(queueEntry.songName, repeat: queueEntry.repeat);
-                        Fade(volume: 1f, fadeVal: queueEntry.fadeVal);
+                        Play(queueEntry.songName, repeat: queueEntry.repeat, startSilent: true);
+                        Fade(volume: 1f, fadeDurationFrames: queueEntry.fadeDurationFrames);
                     }
                     else Play(queueEntry.songName, repeat: queueEntry.repeat);
                 }
@@ -153,10 +146,10 @@ namespace SonOfRobin
             }
         }
 
-        public readonly struct QueueEntry(SongData.Name songName, float fadeVal = 1f, bool repeat = false, float targetVolume = 1f)
+        public readonly struct QueueEntry(SongData.Name songName, int fadeDurationFrames = 0, bool repeat = false, float targetVolume = 1f)
         {
             public readonly SongData.Name songName = songName;
-            public readonly float fadeVal = fadeVal;
+            public readonly int fadeDurationFrames = fadeDurationFrames;
             public readonly bool repeat = repeat;
             public readonly float targetVolume = targetVolume * globalVolume;
         }

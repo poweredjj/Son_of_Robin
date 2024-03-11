@@ -50,7 +50,7 @@ namespace SonOfRobin
                 (rainSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
                 (desertSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
 
-            if (turnOffSong) SongPlayer.FadeOut(fadeVal: 0.002f);
+            if (turnOffSong) SongPlayer.FadeOut(fadeDurationFrames: 60 * 2);
         }
 
         public bool Play(SongData.Name songName, int nextPlayDelaySeconds = 0, bool ignoreDelay = false)
@@ -60,7 +60,7 @@ namespace SonOfRobin
             if (SongPlayer.CurrentSongName != songName)
             {
                 if (SongPlayer.CurrentSongName == SongData.Name.Empty) SongPlayer.AddToQueue(songName);
-                else SongPlayer.ClearQueueFadeCurrentAndPlay(songName: songName, fadeVal: SongPlayer.defaultFadeValPerFrame);
+                else SongPlayer.ClearQueueFadeCurrentAndPlay(songName: songName, fadeDurationFrames: 100);
 
                 this.whenCanBePlayedAgainDict[songName] = this.world.TimePlayed + TimeSpan.FromSeconds(nextPlayDelaySeconds + SongData.GetSong(songName).Duration.TotalSeconds * 60);
             }
