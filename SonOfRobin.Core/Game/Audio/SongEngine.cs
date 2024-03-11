@@ -6,6 +6,8 @@ namespace SonOfRobin
 {
     public class SongEngine(World world)
     {
+        public enum SongCategory { Heat, Rain };
+
         private const int delayAfterPlay = 60 * 60;
 
         private readonly Random random = new();
@@ -13,11 +15,13 @@ namespace SonOfRobin
         private readonly Dictionary<SongData.Name, TimeSpan> whenCanBePlayedAgainDict = [];
         private int earliestUpdateNextCheckPossible = 0;
 
-        private static readonly SongData.Name[] rainSongs = [SongData.Name.Rain1, SongData.Name.Rain2];
-        private static readonly SongData.Name[] desertSongs = [SongData.Name.Desert1, SongData.Name.Desert2];
+        private static readonly Dictionary<SongCategory, SongData.Name[]> songsByCategory = new Dictionary<SongCategory, SongData.Name[]>
+        {
+            { SongCategory.Rain, [ SongData.Name.Rain1, SongData.Name.Rain2 ] },
+            { SongCategory.Heat, [ SongData.Name.Heat1, SongData.Name.Heat2 ] },
+        };
 
-        // all used song lists must be added here
-        private static readonly HashSet<SongData.Name> allSongs = Helpers.ConcatArrays(rainSongs, desertSongs).ToHashSet();
+        private static readonly HashSet<SongData.Name> allSongs = songsByCategory.Values.SelectMany(s => s).ToHashSet();
 
         public void Update()
         {
@@ -37,14 +41,14 @@ namespace SonOfRobin
 
             if (this.world.Player.sleepMode == Player.SleepMode.Awake)
             {
-                if (this.world.weather.RainPercentage >= 0.3f && !rainSongs.Contains(SongPlayer.CurrentSongName))
+                if (this.world.weather.RainPercentage >= 0.3f && !songsByCategory[SongCategory.Rain].Contains(SongPlayer.CurrentSongName))
                 {
-                    SongData.Name songName = rainSongs[this.random.Next(rainSongs.Length)];
+                    SongData.Name songName = songsByCategory[SongCategory.Rain][this.random.Next(songsByCategory[SongCategory.Rain].Length)];
                     this.Play(songName: songName, nextPlayDelaySeconds: 60 * 15);
                 }
                 else if (this.world.weather.HeatPercentage == 1 && this.world.islandClock.CurrentDayNo % 2 == 0)
                 {
-                    SongData.Name songName = desertSongs[this.random.Next(desertSongs.Length)];
+                    SongData.Name songName = songsByCategory[SongCategory.Heat][this.random.Next(songsByCategory[SongCategory.Heat].Length)];
                     this.Play(songName: songName, nextPlayDelaySeconds: 60 * 15);
                 }
             }
@@ -55,8 +59,8 @@ namespace SonOfRobin
             if (SongPlayer.CurrentSongName == SongData.Name.Empty) return;
 
             bool turnOffSong =
-                (rainSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
-                (desertSongs.Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
+                (songsByCategory[SongCategory.Rain].Contains(SongPlayer.CurrentSongName) && this.world.weather.RainPercentage == 0) ||
+                (songsByCategory[SongCategory.Heat].Contains(SongPlayer.CurrentSongName) && this.world.weather.HeatPercentage < 1);
 
             if (turnOffSong) SongPlayer.FadeOut(fadeDurationFrames: 60 * 2);
         }

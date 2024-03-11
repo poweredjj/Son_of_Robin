@@ -24,8 +24,8 @@ namespace SonOfRobin
             Beginning,
             Rain1,
             Rain2,
-            Desert1,
-            Desert2,
+            Heat1,
+            Heat2,
         }
 
         public static readonly Dictionary<Name, string> songFilenamesDict = new()
@@ -34,8 +34,8 @@ namespace SonOfRobin
             { Name.Beginning, "alexander-nakarada-tam-lin" },
             { Name.Rain1, "alex-productions-rain-on-the-window" },
             { Name.Rain2, "purrple-cat-lost-and-found" },
-            { Name.Desert1, "alex-productions-desert" },
-            { Name.Desert2, "hayden-folker-the-red-desert" },
+            { Name.Heat1, "alex-productions-desert" },
+            { Name.Heat2, "hayden-folker-the-red-desert" },
         };
 
         public static readonly Dictionary<Name, string> songDescriptionsDict = new()
@@ -44,8 +44,8 @@ namespace SonOfRobin
             { Name.Beginning, "Tam Lin - Alexander Nakarada (CreatorChords)" },
             { Name.Rain1, "Rain On The Window - Alex-Productions" },
             { Name.Rain2, "Lost And Found - Purrple Cat" },
-            { Name.Desert1, "Desert - Alex-Productions" },
-            { Name.Desert2, "The Red Desert - Hayden Folker" },
+            { Name.Heat1, "Desert - Alex-Productions" },
+            { Name.Heat2, "The Red Desert - Hayden Folker" },
         };
     }
 }
