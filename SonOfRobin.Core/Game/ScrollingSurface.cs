@@ -57,7 +57,7 @@ namespace SonOfRobin
             if (updateHotAir) this.hotAir.Update();
         }
 
-        public void DrawAllWater(float sunShadowsOpacity)
+        public void DrawAllWater(float starsOpacity)
         {
 
             bool waterFound = false;
@@ -83,7 +83,6 @@ namespace SonOfRobin
             this.oceanFloor.Draw();
             this.waterCaustics.Draw();
 
-            float starsOpacity = 1f - (sunShadowsOpacity * 1.67f);
             if (starsOpacity > 0)
             {
                 this.waterStarsReflection.opacity = starsOpacity;
