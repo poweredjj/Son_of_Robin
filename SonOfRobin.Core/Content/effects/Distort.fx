@@ -51,7 +51,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     float4 distortColor = tex2D(DistortTextureSampler, input.TextureCoordinates + ((movementDistortionOffset + timeDistortionOffset) * distortionSizeMultiplier));
     float2 distortionOffset = float2(distortColor.r, distortColor.g) * globalDistortionPower * 0.2f;
        
-    return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset + baseOffset) * drawColor;
+    return tex2D(BaseTextureSampler, input.TextureCoordinates + distortionOffset + baseOffset) * input.Color * drawColor;
 }
 
 technique SpriteDrawing
