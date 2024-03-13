@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
+using System;
 
 namespace SonOfRobin
 {
@@ -10,6 +11,7 @@ namespace SonOfRobin
         private readonly ScrollingSurface oceanFloor;
         private readonly ScrollingSurface waterCaustics;
         private readonly ScrollingSurface waterStarsReflection;
+        private readonly ScrollingSurface cloudReflection;
         public readonly ScrollingSurface hotAir;
         public readonly ScrollingSurface fog;
         public readonly World world;
@@ -42,6 +44,9 @@ namespace SonOfRobin
             this.waterStarsReflection = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingStars), blendState: waterBlend);
             this.waterStarsReflection.effInstance = new DistortInstance(scrollingSurface: this.waterStarsReflection, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
 
+            this.cloudReflection = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 1.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWhiteClouds), blendState: waterBlend);
+            this.cloudReflection.effInstance = new DistortInstance(scrollingSurface: this.cloudReflection, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
+
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
 
@@ -53,13 +58,15 @@ namespace SonOfRobin
         {
             this.oceanFloor.Update();
             this.waterCaustics.Update();
+            this.waterStarsReflection.Update();
+            this.cloudReflection.Update();
+            this.cloudReflection.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
             if (updateFog) this.fog.Update();
             if (updateHotAir) this.hotAir.Update();
         }
 
-        public void DrawAllWater(float starsOpacity)
+        public void DrawAllWater(float starsOpacity, float cloudReflectionOpacity)
         {
-
             bool waterFound = false;
             foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
             {
@@ -83,10 +90,12 @@ namespace SonOfRobin
             this.oceanFloor.Draw();
             this.waterCaustics.Draw();
 
-            if (starsOpacity > 0)
+            if (starsOpacity > 0) this.waterStarsReflection.Draw(opacityOverride: starsOpacity);
+            if (cloudReflectionOpacity > 0)
             {
-                this.waterStarsReflection.opacity = starsOpacity;
-                this.waterStarsReflection.Draw();
+                byte cloudsColorVal = (byte)(255 - ((float)cloudReflectionOpacity * 200f));
+                Color cloudsColor = new Color(cloudsColorVal, cloudsColorVal, cloudsColorVal, (byte)255);
+                this.cloudReflection.Draw(opacityOverride: Math.Min((cloudReflectionOpacity + 0.2f) * 1.5f, 1f), drawColorOverride: cloudsColor);
             }
 
             SonOfRobinGame.SpriteBatch.End();
@@ -104,16 +113,18 @@ namespace SonOfRobin
         public EffInstance effInstance;
         private readonly BlendState blendState;
         private readonly Vector2 linearScrollPerFrame;
+        private readonly float scale;
 
         public Vector2 offset;
         public float opacity;
 
         private readonly Tweener tweener;
 
-        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, int maxScrollingOffsetX = 150, int maxScrollingOffsetY = 150, BlendState blendState = null, Vector2 linearScrollPerFrame = default)
+        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, float scale = 1f, int maxScrollingOffsetX = 150, int maxScrollingOffsetY = 150, BlendState blendState = null, Vector2 linearScrollPerFrame = default)
         {
             this.world = world;
             this.texture = texture;
+            this.scale = scale;
             this.effInstance = null;
             this.blendState = blendState == null ? BlendState.AlphaBlend : blendState;
             this.useTweenForOpacity = useTweenForOpacity;
@@ -166,13 +177,13 @@ namespace SonOfRobin
             this.offset += this.linearScrollPerFrame;
         }
 
-        public void Draw(float opacityOverride = -1f, bool endSpriteBatch = true)
+        public void Draw(float opacityOverride = -1f, Color drawColorOverride = default, bool endSpriteBatch = true)
         {
             if (endSpriteBatch) SonOfRobinGame.SpriteBatch.End();
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.world.TransformMatrix, blendState: this.blendState, effect: this.effInstance == null ? null : this.effInstance.effect, samplerState: SamplerState.LinearWrap, sortMode: SpriteSortMode.Immediate);
 
             float drawOpacity = opacityOverride == -1f ? this.opacity : opacityOverride;
-            Color drawColor = Color.White * drawOpacity;
+            Color drawColor = (drawColorOverride == default ? Color.White : drawColorOverride) * drawOpacity;
 
             this.effInstance?.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: drawColor);
 
@@ -180,19 +191,25 @@ namespace SonOfRobin
 
             Rectangle viewRect = this.world.camera.viewRect;
 
-            int startColumn = viewRect.X / this.texture.Width;
-            int startRow = viewRect.Y / this.texture.Height;
+            int realTexWidth = (int)((float)this.texture.Width * this.scale);
+            int realTexHeight = (int)((float)this.texture.Height * this.scale);
 
-            if (viewRect.X < (startColumn * this.texture.Width)) startColumn--;
-            if (viewRect.Y < (startRow * this.texture.Height)) startRow--;
+            int startColumn = viewRect.X / realTexWidth;
+            int startRow = viewRect.Y / realTexHeight;
 
-            int drawRectX = startColumn * this.texture.Width;
-            int drawRectY = startRow * this.texture.Height;
+            if (viewRect.X < (startColumn * realTexWidth)) startColumn--;
+            if (viewRect.Y < (startRow * realTexHeight)) startRow--;
+
+            int drawRectX = startColumn * realTexWidth;
+            int drawRectY = startRow * realTexHeight;
             int drawRectWidth = viewRect.Width + (viewRect.X - drawRectX) + 4;
             int drawRectHeight = viewRect.Height + (viewRect.Y - drawRectY) + 3;
 
             Rectangle destRect = new(x: drawRectX, y: drawRectY, width: drawRectWidth, height: drawRectHeight);
             Rectangle sourceRect = destRect;
+            sourceRect.Width = (int)((float)sourceRect.Width / this.scale);
+            sourceRect.Height = (int)((float)sourceRect.Height / this.scale);
+
             sourceRect.Location = Point.Zero;
 
             // DO NOT use worldspace rect for drawing, because precision errors will pixelate water on mobile

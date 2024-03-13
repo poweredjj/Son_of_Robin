@@ -35,7 +35,7 @@ namespace SonOfRobin
         public override void TurnOn(int currentUpdate, Color drawColor)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
-            this.effect.Parameters["baseTextureOffset"].SetValue(this.scrollingSurface.offset + (this.world.camera.CurrentPos * this.cameraPosOffsetPower));
+            this.effect.Parameters["baseTextureOffset"].SetValue(this.scrollingSurface.offset + (new Vector2(this.world.camera.viewRect.Left, this.world.camera.viewRect.Top) * this.cameraPosOffsetPower));
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
 
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);

@@ -1482,7 +1482,8 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             // drawing water surface
-            if (this.ActiveLevel.hasWater) this.scrollingSurfaceManager.DrawAllWater(starsOpacity: 1f - (sunLightData.sunShadowsOpacity * 1.67f));
+            // starsOpacity is calculated from "base" sunShadowsOpacity, to avoid taking clouds / lightning into account
+            if (this.ActiveLevel.hasWater) this.scrollingSurfaceManager.DrawAllWater(starsOpacity: 1f - (sunLightData.sunShadowsOpacity * 1.67f), cloudReflectionOpacity: sunShadowsOpacity);
 
             // drawing background (ground, leaving "holes" for water)
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
