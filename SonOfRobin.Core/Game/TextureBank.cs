@@ -69,6 +69,7 @@ namespace SonOfRobin
             RepeatingOceanFloor = 45,
             RepeatingWaterCaustics = 46,
             RepeatingFog = 47,
+            RepeatingStars = 160,
 
             VirtualJoypadBackground = 48,
             VirtualJoypadStick = 49,
@@ -298,6 +299,7 @@ namespace SonOfRobin
             { TextureName.RepeatingOceanFloor, "repeating_textures/ocean_floor" },
             { TextureName.RepeatingWaterCaustics, "repeating_textures/water_caustics" },
             { TextureName.RepeatingFog, "repeating_textures/fog" },
+            { TextureName.RepeatingStars, "repeating_textures/stars" },
             { TextureName.RepeatingPerlinNoiseColor, "repeating_textures/perlin_noise_color" },
             { TextureName.RepeatingWaterDrops, "repeating_textures/water_drops" },
             { TextureName.RepeatingGrassGood, "repeating_textures/grass_good" },

@@ -9,13 +9,14 @@ namespace SonOfRobin
         public static readonly Color waterColor = new(12, 122, 156);
         private readonly ScrollingSurface oceanFloor;
         private readonly ScrollingSurface waterCaustics;
+        private readonly ScrollingSurface waterStarsReflection;
         public readonly ScrollingSurface hotAir;
         public readonly ScrollingSurface fog;
         public readonly World world;
 
         public ScrollingSurfaceManager(World world)
         {
-            BlendState waterBlend = new BlendState
+            BlendState waterBlend = new()
             {
                 AlphaBlendFunction = BlendFunction.ReverseSubtract,
                 AlphaSourceBlend = Blend.One,
@@ -38,6 +39,9 @@ namespace SonOfRobin
             this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: waterBlend);
             this.waterCaustics.effInstance = new DistortInstance(scrollingSurface: this.waterCaustics, world: this.world, distortTexture: textureDistort, globalDistortionPower: 1f, distortionFromOffsetPower: 1f, distortionSizeMultiplier: 2.6f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120);
 
+            this.waterStarsReflection = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingStars), blendState: waterBlend);
+            this.waterStarsReflection.effInstance = new DistortInstance(scrollingSurface: this.waterStarsReflection, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
+
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new DistortInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
 
@@ -53,8 +57,9 @@ namespace SonOfRobin
             if (updateHotAir) this.hotAir.Update();
         }
 
-        public void DrawAllWater()
+        public void DrawAllWater(float sunShadowsOpacity)
         {
+
             bool waterFound = false;
             foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
             {
@@ -77,6 +82,13 @@ namespace SonOfRobin
 
             this.oceanFloor.Draw();
             this.waterCaustics.Draw();
+
+            float starsOpacity = 1f - (sunShadowsOpacity * 1.67f);
+            if (starsOpacity > 0)
+            {
+                this.waterStarsReflection.opacity = starsOpacity;
+                this.waterStarsReflection.Draw();
+            }
 
             SonOfRobinGame.SpriteBatch.End();
         }
