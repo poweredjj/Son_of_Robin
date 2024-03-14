@@ -953,7 +953,7 @@ namespace SonOfRobin
             return cell.GetSpritesFromSurroundingCells(groupName);
         }
 
-        public List<Cell> GetCellsInsideRect(Rectangle rectangle, bool addPadding)
+        public Cell[] GetCellsInsideRect(Rectangle rectangle, bool addPadding)
         {
             int padding = addPadding ? 1 : 0;
 
@@ -962,15 +962,18 @@ namespace SonOfRobin
             int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Top, cellLength: this.cellHeight) - padding, 0);
             int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
 
-            List<Cell> cellsInsideRect = new();
+            Cell[] cellsArray = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
 
+            int index = 0;
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
-                { cellsInsideRect.Add(this.cellGrid[x, y]); }
+                {
+                    cellsArray[index++] = this.cellGrid[x, y];
+                }
             }
 
-            return cellsInsideRect;
+            return cellsArray;
         }
 
         public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
@@ -1141,7 +1144,7 @@ namespace SonOfRobin
         public List<Sprite> GetSpritesForRect(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToList();
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToArray();
 
             var allSprites = new List<Sprite>();
             foreach (Cell cell in cells)
@@ -1158,7 +1161,7 @@ namespace SonOfRobin
         public ConcurrentBag<Sprite> GetSpritesForRectParallel(Cell.Group groupName, Rectangle rectangle, bool visitedByPlayerOnly = false, bool addPadding = true)
         {
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
-            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToList();
+            if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToArray();
 
             var allSprites = new ConcurrentBag<Sprite> { };
             Parallel.ForEach(cells, SonOfRobinGame.defaultParallelOptions, cell =>
