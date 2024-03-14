@@ -850,9 +850,9 @@ namespace SonOfRobin
             return rawPointsInsideRange;
         }
 
-        public List<Cell> GetCellsForPieceName(PieceTemplate.Name pieceName)
+        public Cell[] GetCellsForPieceName(PieceTemplate.Name pieceName)
         {
-            return this.cellArraysForPieceNamesMasterDict[pieceName].ToList(); // ToList() - to avoid modifying original list
+            return this.cellArraysForPieceNamesMasterDict[pieceName].ToArray(); // ToArray() - to avoid modifying original list
         }
 
         public Cell GetRandomCellForPieceName(PieceTemplate.Name pieceName, bool returnDummyCellIfInsideCamera) // to avoid calling GetCellsForPieceName() for getting one random cell only
@@ -1066,11 +1066,13 @@ namespace SonOfRobin
 
             Rectangle rect = new(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
 
-            var cellsInsideRect = this.GetCellsInsideRect(rectangle: rect, addPadding: true);
+            Span<Cell> cellsInsideRectAsSpan = this.GetCellsInsideRect(rectangle: rect, addPadding: true).AsSpan();
 
             var spritesInsideTriangle = new List<Sprite>();
-            foreach (Cell cell in cellsInsideRect)
+            for (int i = 0; i < cellsInsideRectAsSpan.Length; i++)
             {
+                Cell cell = cellsInsideRectAsSpan[i];
+
                 spritesInsideTriangle.AddRange(cell.spriteGroups[groupName].Where(
                       currentSprite => rect.Contains(currentSprite.position) && Helpers.IsPointInsideTriangle(point: new Point((int)currentSprite.position.X, (int)currentSprite.position.Y), triangleA: point1, triangleB: point2, triangleC: point3)));
             }
@@ -1082,13 +1084,16 @@ namespace SonOfRobin
         public List<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
             Camera camera = this.world.camera;
-            var visibleCells = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true);
+            Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true).AsSpan();
+
             var piecesInCameraView = new List<BoardPiece>();
 
             if (compareWithCameraRect)
             {
-                foreach (Cell cell in visibleCells) // making sure that every piece is actually inside camera rect
+                for (int i = 0; i < visibleCellsAsSpan.Length; i++) // making sure that every piece is actually inside camera rect
                 {
+                    Cell cell = visibleCellsAsSpan[i];
+
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
                         if (camera.viewRect.Intersects(sprite.GfxRect)) piecesInCameraView.Add(sprite.boardPiece);
@@ -1097,8 +1102,10 @@ namespace SonOfRobin
             }
             else
             {
-                foreach (Cell cell in visibleCells) // visibleCells area is larger than camera view
+                for (int i = 0; i < visibleCellsAsSpan.Length; i++)  // visibleCells area is larger than camera view
                 {
+                    Cell cell = visibleCellsAsSpan[i];
+
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
                         piecesInCameraView.Add(sprite.boardPiece);
@@ -1124,14 +1131,11 @@ namespace SonOfRobin
             return allCells;
         }
 
-        public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName, bool visitedByPlayerOnly = false)
+        public ConcurrentBag<Sprite> GetSpritesFromAllCells(Cell.Group groupName)
         {
-            var cells = (IEnumerable<Cell>)this.allCells;
-            if (visitedByPlayerOnly) cells = this.allCells.Where(cell => cell.visitedByPlayer);
-
             var allSprites = new ConcurrentBag<Sprite> { };
 
-            Parallel.ForEach(cells, SonOfRobinGame.defaultParallelOptions, cell =>
+            Parallel.ForEach(this.allCells, SonOfRobinGame.defaultParallelOptions, cell =>
             {
                 foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {
@@ -1147,9 +1151,13 @@ namespace SonOfRobin
             var cells = this.GetCellsInsideRect(rectangle: rectangle, addPadding: addPadding);
             if (visitedByPlayerOnly) cells = cells.Where(cell => cell.visitedByPlayer).ToArray();
 
+            Span<Cell> cellsAsSpan = cells.AsSpan();
+
             var allSprites = new List<Sprite>();
-            foreach (Cell cell in cells)
+            for (int i = 0; i < cellsAsSpan.Length; i++)
             {
+                Cell cell = cellsAsSpan[i];
+
                 foreach (Sprite sprite in cell.spriteGroups[groupName])
                 {
                     if (sprite.GfxRect.Intersects(rectangle)) allSprites.Add(sprite);
@@ -1232,8 +1240,12 @@ namespace SonOfRobin
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
 
-            foreach (Cell cell in this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false))
+            Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false).AsSpan();
+
+            for (int i = 0; i < visibleCellsAsSpan.Length; i++)
             {
+                Cell cell = visibleCellsAsSpan[i];
+
                 if (this.world.MapEnabled && !cell.visitedByPlayer && cameraRect.Intersects(cell.rect) && camera.IsTrackingPlayer && this.world.Player.CanSeeAnything)
                 {
                     cell.SetAsVisited();
@@ -1351,11 +1363,11 @@ namespace SonOfRobin
         {
             if (!drawCellData && !drawPieceData) return;
 
-            var visibleCells = this.GetCellsInsideRect(rectangle: this.world.camera.viewRect, addPadding: false);
+            Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: this.world.camera.viewRect, addPadding: false).AsSpan();
 
-            foreach (Cell cell in visibleCells)
+            for (int i = 0; i < visibleCellsAsSpan.Length; i++)
             {
-                cell.DrawDebugData(groupName: Cell.Group.ColMovement, drawCellData: drawCellData, drawPieceData: drawPieceData);
+                visibleCellsAsSpan[i].DrawDebugData(groupName: Cell.Group.ColMovement, drawCellData: drawCellData, drawPieceData: drawPieceData);
             }
         }
 

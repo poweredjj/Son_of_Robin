@@ -585,14 +585,15 @@ namespace SonOfRobin
                     (int)((float)(extendedMapRect.Height - worldRect.Height) * rectMultiplierY / 2f)
                     );
 
-                Rectangle sourceRect = new Rectangle(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
+                Rectangle sourceRect = new(x: 0, y: 0, width: (int)(this.world.Grid.cellWidth * rectMultiplierX), height: (int)(this.world.Grid.cellHeight * rectMultiplierY));
 
-                var visibleCells = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false);
+                Span<Cell> visibleCellsAsSpan = this.world.Grid.GetCellsInsideRect(rectangle: viewRect, addPadding: false).AsSpan();
 
                 if (!Preferences.DebugShowWholeMap)
                 {
-                    foreach (Cell cell in visibleCells)
+                    for (int i = 0; i < visibleCellsAsSpan.Length; i++)
                     {
+                        Cell cell = visibleCellsAsSpan[i];
                         if (!cell.visitedByPlayer)
                         {
                             sourceRect.X = (int)(cell.rect.X * rectMultiplierX) + extendedMapRectOffset.X;
