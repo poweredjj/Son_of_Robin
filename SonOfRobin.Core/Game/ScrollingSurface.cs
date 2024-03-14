@@ -50,21 +50,22 @@ namespace SonOfRobin
             this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
             this.cloudReflectionWhite.updateDlgt = () =>
             {
-                this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
+                this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 0.8f;
             };
 
             this.cloudReflectionDark = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 3.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsDark));
             this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.7f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
             this.cloudReflectionDark.updateDlgt = () =>
             {
-                this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
+                this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 1.0f;
             };
 
-            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.8f, opacityTweenVal: 1f, scale: 4.5f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
+            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.8f, opacityTweenVal: 1f, scale: 4.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
             this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.0f, distortionFromOffsetPower: 0.0f, distortionOverTimePower: 0.0f);
             this.cloudShadows.updateDlgt = () =>
             {
-                this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * ((this.world.weather.WindPercentage * 3f) + 1f) * 6.0f;
+                // TODO check why offset is not visible
+                this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 250f;
             };
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
@@ -131,7 +132,7 @@ namespace SonOfRobin
         private readonly Vector2 maxScrollingOffset;
         public EffInstance effInstance;
         private readonly BlendState blendState;
-        private readonly float scale;
+        public readonly float scale;
         public Scheduler.ExecutionDelegate updateDlgt;
 
         public Vector2 offset;
