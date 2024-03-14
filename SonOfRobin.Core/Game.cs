@@ -26,8 +26,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 0.6061f;
-        public static readonly DateTime lastChanged = new(2024, 03, 13);
+        public const float version = 0.6062f;
+        public static readonly DateTime lastChanged = new(2024, 03, 14);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -56,7 +56,7 @@ namespace SonOfRobin
         public static Effect EffectBlur { get; private set; }
         public static Effect EffectMosaic { get; private set; }
         public static Effect EffectPixelate { get; private set; }
-        public static Effect EffectDistort { get; private set; }
+        public static Effect EffectScrollingSurfaceDraw { get; private set; }
         public static Effect EffectRain { get; private set; }
         public static Effect EffectHeatMaskDistortion { get; private set; }
         public static Effect EffectShadowMerge { get; private set; }
@@ -254,7 +254,7 @@ namespace SonOfRobin
             EffectBlur = ContentMgr.Load<Effect>("effects/Blur");
             EffectMosaic = ContentMgr.Load<Effect>("effects/Mosaic");
             EffectPixelate = ContentMgr.Load<Effect>("effects/Pixelate");
-            EffectDistort = ContentMgr.Load<Effect>("effects/Distort");
+            EffectScrollingSurfaceDraw = ContentMgr.Load<Effect>("effects/ScrollingSurfaceDraw");
             EffectRain = ContentMgr.Load<Effect>("effects/Rain");
             EffectHeatMaskDistortion = ContentMgr.Load<Effect>("effects/HeatMaskDistortion");
             EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");

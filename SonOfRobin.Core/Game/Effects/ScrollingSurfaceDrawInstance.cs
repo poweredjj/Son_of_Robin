@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SonOfRobin
 {
-    public class DistortInstance : EffInstance
+    public class ScrollingSurfaceDrawInstance : EffInstance
     {
         private readonly ScrollingSurface scrollingSurface;
         private readonly Texture2D baseTexture;
@@ -17,7 +17,7 @@ namespace SonOfRobin
         private readonly World world;
         private readonly float cameraPosOffsetPower;
 
-        public DistortInstance(ScrollingSurface scrollingSurface, World world, Texture2D distortTexture, float globalDistortionPower, float distortionFromOffsetPower, float distortionSizeMultiplier = 1f, float distortionOverTimePower = 0f, float cameraPosOffsetPower = 0f, int distortionOverTimeDuration = 60, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectDistort, framesLeft: framesLeft, priority: priority)
+        public ScrollingSurfaceDrawInstance(ScrollingSurface scrollingSurface, World world, Texture2D distortTexture, float globalDistortionPower, float distortionFromOffsetPower, float distortionSizeMultiplier = 1f, float distortionOverTimePower = 0f, float cameraPosOffsetPower = 0f, int distortionOverTimeDuration = 60, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectScrollingSurfaceDraw, framesLeft: framesLeft, priority: priority)
         {
             this.globalDistortionPower = globalDistortionPower;
             this.distortionFromOffsetPower = distortionFromOffsetPower;
