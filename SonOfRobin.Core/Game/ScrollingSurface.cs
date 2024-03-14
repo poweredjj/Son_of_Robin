@@ -46,10 +46,10 @@ namespace SonOfRobin
             this.waterStarsReflection.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.waterStarsReflection, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
 
             this.cloudReflectionWhite = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 2.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsWhite), blendState: additiveBlend);
-            this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
+            this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
 
-            this.cloudReflectionDark = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 1.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsDark));
-            this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
+            this.cloudReflectionDark = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 3.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsDark));
+            this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.7f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
@@ -100,8 +100,7 @@ namespace SonOfRobin
             if (starsOpacity > 0) this.waterStarsReflection.Draw(opacityOverride: starsOpacity);
             if (sunShadowsOpacity > 0) this.cloudReflectionWhite.Draw(opacityOverride: sunShadowsOpacity);
 
-            float darkCloudsOpacity = this.world.weather.CloudsPercentage;
-            if (darkCloudsOpacity > 0) this.cloudReflectionDark.Draw(opacityOverride: darkCloudsOpacity * 0.75f);
+            if (this.world.weather.CloudsPercentage > 0) this.cloudReflectionDark.Draw(opacityOverride: Math.Min(this.world.weather.CloudsPercentage * 1.2f, 0.8f));
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -216,7 +215,7 @@ namespace SonOfRobin
             sourceRect.Width = (int)((float)sourceRect.Width / this.scale);
             sourceRect.Height = (int)((float)sourceRect.Height / this.scale);
 
-            sourceRect.Location = Point.Zero;
+            // sourceRect.Location = Point.Zero;
 
             // DO NOT use worldspace rect for drawing, because precision errors will pixelate water on mobile
 
