@@ -106,10 +106,7 @@ namespace SonOfRobin
         public float RainPercentage { get; private set; }
         public float LightningPercentage { get; private set; }
         public float HeatPercentage { get; private set; }
-
-        public bool IsRaining
-        { get { return this.RainPercentage > 0.2f; } }
-
+        public bool IsRaining { get { return this.RainPercentage > 0.2f; } }
         public float WindOriginX { get; private set; }
         public float WindOriginY { get; private set; }
         public DateTime NextGlobalWindBlow { get; private set; }
