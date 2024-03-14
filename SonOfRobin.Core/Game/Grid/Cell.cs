@@ -224,7 +224,7 @@ namespace SonOfRobin
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
                 {
-                    if (!(x == this.cellNoX && y == this.cellNoY)) this.surroundingCells[index++] = this.grid.cellGrid[x, y];
+                    if (x != this.cellNoX || y != this.cellNoY) this.surroundingCells[index++] = this.grid.cellGrid[x, y];
                 }
             }
         }
