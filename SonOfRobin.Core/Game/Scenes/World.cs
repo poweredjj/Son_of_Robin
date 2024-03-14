@@ -1474,6 +1474,9 @@ namespace SonOfRobin
                 SonOfRobinGame.GfxDev.Clear(Color.Transparent);
                 SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix);
                 this.Grid.DrawSunShadows(spritesCastingShadows: spritesCastingShadows, sunLightData: sunLightData);
+
+                this.scrollingSurfaceManager.cloudShadows.Draw(opacityOverride: 1f - this.weather.CloudsPercentage, endSpriteBatch: true);
+
                 SonOfRobinGame.SpriteBatch.End();
             }
 

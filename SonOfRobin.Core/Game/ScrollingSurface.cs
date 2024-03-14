@@ -13,6 +13,7 @@ namespace SonOfRobin
         private readonly ScrollingSurface waterStarsReflection;
         private readonly ScrollingSurface cloudReflectionWhite;
         private readonly ScrollingSurface cloudReflectionDark;
+        public readonly ScrollingSurface cloudShadows;
         public readonly ScrollingSurface hotAir;
         public readonly ScrollingSurface fog;
         public readonly World world;
@@ -47,9 +48,24 @@ namespace SonOfRobin
 
             this.cloudReflectionWhite = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 2.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsWhite), blendState: additiveBlend);
             this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
+            this.cloudReflectionWhite.updateDlgt = () =>
+            {
+                this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
+            };
 
             this.cloudReflectionDark = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 3.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsDark));
             this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.7f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
+            this.cloudReflectionDark.updateDlgt = () =>
+            {
+                this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
+            };
+
+            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 4.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
+            this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.6f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120);
+            this.cloudShadows.updateDlgt = () =>
+            {
+                this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
+            };
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
@@ -65,7 +81,6 @@ namespace SonOfRobin
             this.waterCaustics.Update();
             this.waterStarsReflection.Update();
             this.cloudReflectionWhite.Update();
-            this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
             if (updateFog) this.fog.Update();
             if (updateHotAir) this.hotAir.Update();
         }
@@ -215,7 +230,7 @@ namespace SonOfRobin
             sourceRect.Width = (int)((float)sourceRect.Width / this.scale);
             sourceRect.Height = (int)((float)sourceRect.Height / this.scale);
 
-            // sourceRect.Location = Point.Zero;
+            sourceRect.Location = Point.Zero;
 
             // DO NOT use worldspace rect for drawing, because precision errors will pixelate water on mobile
 
