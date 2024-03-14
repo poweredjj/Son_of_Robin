@@ -1121,7 +1121,7 @@ namespace SonOfRobin
 
         private Cell[] GetAllCells()
         {
-            var allCells = new Cell[this.noOfCellsX * this.noOfCellsY];
+            Cell[] allCells = new Cell[this.noOfCellsX * this.noOfCellsY];
 
             for (int x = 0; x < this.noOfCellsX; x++)
             {
