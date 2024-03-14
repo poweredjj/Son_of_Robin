@@ -50,6 +50,7 @@ namespace SonOfRobin
             this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
             this.cloudReflectionWhite.updateDlgt = () =>
             {
+                // all should use the same calculations for base wind offset
                 this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 0.8f;
             };
 
@@ -57,15 +58,16 @@ namespace SonOfRobin
             this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.7f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
             this.cloudReflectionDark.updateDlgt = () =>
             {
-                this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 1.0f;
+                // all should use the same calculations for base wind offset
+                this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 0.8f;
             };
 
-            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.8f, opacityTweenVal: 1f, scale: 4.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
+            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 1f, scale: 4.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows), opacityTweenDurationMultiplier: 15f);
             this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.0f, distortionFromOffsetPower: 0.0f, distortionOverTimePower: 0.0f);
             this.cloudShadows.updateDlgt = () =>
             {
-                // TODO check why offset is not visible
-                this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 250f;
+                // all should use the same calculations for base wind offset
+                this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 2f;
             };
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
@@ -82,6 +84,8 @@ namespace SonOfRobin
             this.waterCaustics.Update();
             this.waterStarsReflection.Update();
             this.cloudReflectionWhite.Update();
+            this.cloudReflectionDark.Update();
+            this.cloudShadows.Update();
             if (updateFog) this.fog.Update();
             if (updateHotAir) this.hotAir.Update();
         }
@@ -114,9 +118,8 @@ namespace SonOfRobin
             this.waterCaustics.Draw();
 
             if (starsOpacity > 0) this.waterStarsReflection.Draw(opacityOverride: starsOpacity);
-            if (sunShadowsOpacity > 0) this.cloudReflectionWhite.Draw(opacityOverride: sunShadowsOpacity);
-
-            if (this.world.weather.CloudsPercentage > 0) this.cloudReflectionDark.Draw(opacityOverride: Math.Min(this.world.weather.CloudsPercentage * 1.2f, 0.8f));
+            if (sunShadowsOpacity > 0) this.cloudReflectionWhite.Draw(opacityOverride: sunShadowsOpacity * 0.7f);
+            if (this.world.weather.CloudsPercentage > 0) this.cloudReflectionDark.Draw(opacityOverride: Math.Min(this.world.weather.CloudsPercentage * 1.2f, 0.65f));
 
             SonOfRobinGame.SpriteBatch.End();
         }
@@ -129,6 +132,7 @@ namespace SonOfRobin
         private readonly bool useTweenForOpacity;
         private readonly bool useTweenForOffset;
         private readonly float opacityTweenVal;
+        private readonly float opacityTweenDurationMultiplier;
         private readonly Vector2 maxScrollingOffset;
         public EffInstance effInstance;
         private readonly BlendState blendState;
@@ -140,7 +144,7 @@ namespace SonOfRobin
 
         private readonly Tweener tweener;
 
-        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, float scale = 1f, int maxScrollingOffsetX = 150, int maxScrollingOffsetY = 150, BlendState blendState = null)
+        public ScrollingSurface(World world, Texture2D texture, bool useTweenForOpacity, bool useTweenForOffset, float opacityBaseVal, float opacityTweenVal, float scale = 1f, int maxScrollingOffsetX = 150, int maxScrollingOffsetY = 150, float opacityTweenDurationMultiplier = 1f, BlendState blendState = null)
         {
             this.world = world;
             this.texture = texture;
@@ -152,6 +156,7 @@ namespace SonOfRobin
             this.updateDlgt = null; // to be updated manually, after executing constructor
 
             this.opacityTweenVal = opacityTweenVal;
+            this.opacityTweenDurationMultiplier = opacityTweenDurationMultiplier;
             this.maxScrollingOffset = new Vector2(maxScrollingOffsetX, maxScrollingOffsetY);
 
             this.offset = Vector2.Zero;
@@ -184,7 +189,7 @@ namespace SonOfRobin
 
             if (this.useTweenForOpacity && (tweenOpacity == null || !tweenOpacity.IsAlive))
             {
-                this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.opacity, toValue: this.opacityTweenVal, duration: this.world.random.Next(3, 12), delay: this.world.random.Next(5, 8))
+                this.tweener.TweenTo(target: this, expression: scrollingSurface => scrollingSurface.opacity, toValue: this.opacityTweenVal, duration: this.world.random.Next(3, 12) * this.opacityTweenDurationMultiplier, delay: this.world.random.Next(5, 8))
                     .AutoReverse()
                     .Easing(EasingFunctions.SineInOut)
                     .OnEnd(t => this.SetTweener());
