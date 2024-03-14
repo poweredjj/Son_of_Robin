@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
+using System;
 
 namespace SonOfRobin
 {
@@ -72,9 +73,11 @@ namespace SonOfRobin
         public void DrawAllWater(float starsOpacity, float sunShadowsOpacity)
         {
             bool waterFound = false;
-            foreach (Cell cell in this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false))
+
+            Span<Cell> visibleCellsAsSpan = this.world.Grid.GetCellsInsideRect(this.world.camera.viewRect, addPadding: false).AsSpan();
+            for (int i = 0; i < visibleCellsAsSpan.Length; i++)
             {
-                if (cell.HasWater)
+                if (visibleCellsAsSpan[i].HasWater)
                 {
                     waterFound = true;
                     break;
@@ -99,7 +102,6 @@ namespace SonOfRobin
 
             float darkCloudsOpacity = this.world.weather.CloudsPercentage;
             if (darkCloudsOpacity > 0) this.cloudReflectionDark.Draw(opacityOverride: darkCloudsOpacity * 0.75f);
-
 
             SonOfRobinGame.SpriteBatch.End();
         }

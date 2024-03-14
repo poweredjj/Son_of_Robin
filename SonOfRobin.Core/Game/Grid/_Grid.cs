@@ -1006,11 +1006,12 @@ namespace SonOfRobin
 
         public List<Sprite> GetSpritesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName)
         {
-            var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
+            Span<Cell> cellsWithinDistanceAsSpan = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance).AsSpan();
             var spritesWithinDistance = new List<Sprite>();
 
-            foreach (Cell cell in cellsWithinDistance)
+            for (int i = 0; i < cellsWithinDistanceAsSpan.Length; i++)
             {
+                Cell cell = cellsWithinDistanceAsSpan[i];
                 foreach (Sprite currentSprite in cell.spriteGroups[groupName])
                 {
                     if (Vector2.Distance(currentSprite.position, mainSprite.position) <= distance && currentSprite != mainSprite) spritesWithinDistance.Add(currentSprite);
@@ -1022,15 +1023,16 @@ namespace SonOfRobin
 
         public List<BoardPiece> GetPiecesWithinDistance(Sprite mainSprite, int distance, Cell.Group groupName, int offsetX = 0, int offsetY = 0, bool compareWithBottom = false)
         {
-            var cellsWithinDistance = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance);
+            Span<Cell> cellsWithinDistanceAsSpan = this.GetCellsWithinDistance(position: mainSprite.position, distance: distance).AsSpan();
             var piecesWithinDistance = new List<BoardPiece>();
 
             Vector2 centerPos = mainSprite.position + new Vector2(offsetX, offsetY);
 
             if (compareWithBottom)
             {
-                foreach (Cell cell in cellsWithinDistance)
+                for (int i = 0; i < cellsWithinDistanceAsSpan.Length; i++)
                 {
+                    Cell cell = cellsWithinDistanceAsSpan[i];
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
                         if (Vector2.Distance(new Vector2(sprite.GfxRect.Center.X, sprite.GfxRect.Bottom), centerPos) <= distance && sprite != mainSprite)
@@ -1042,8 +1044,9 @@ namespace SonOfRobin
             }
             else
             {
-                foreach (Cell cell in cellsWithinDistance)
+                for (int i = 0; i < cellsWithinDistanceAsSpan.Length; i++)
                 {
+                    Cell cell = cellsWithinDistanceAsSpan[i];
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
                         if (Vector2.Distance(sprite.position, centerPos) <= distance && sprite != mainSprite)
