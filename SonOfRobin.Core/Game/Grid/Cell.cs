@@ -27,7 +27,7 @@ namespace SonOfRobin
         public readonly int width;
         public readonly int height;
 
-        private Cell[] surroundingCells;
+        private Cell[] surroundingCells; // contains surrounding cells and itself
         public bool visitedByPlayer;
         public bool temporaryDecorationsCreated;
 
@@ -217,25 +217,27 @@ namespace SonOfRobin
             int yMinCellNo = Math.Max(this.cellNoY - 1, 0);
             int yMaxCellNo = Math.Min(this.cellNoY + 1, this.grid.noOfCellsY - 1);
 
-            this.surroundingCells = new Cell[((xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)) - 1];
+            this.surroundingCells = new Cell[((xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1))];
 
             int index = 0;
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
                 {
-                    if (x != this.cellNoX || y != this.cellNoY) this.surroundingCells[index++] = this.grid.cellGrid[x, y];
+                    this.surroundingCells[index++] = this.grid.cellGrid[x, y];
                 }
             }
         }
 
         public List<Sprite> GetSpritesFromSurroundingCells(Group groupName)
         {
-            List<Sprite> surroundingSprites = new();
+            List<Sprite> surroundingSprites = [];
 
-            foreach (Cell cell in this.surroundingCells)
+            Span<Cell> surroundingCellsAsSpan = this.surroundingCells.AsSpan();
+
+            for (int i = 0; i < surroundingCellsAsSpan.Length; i++)
             {
-                surroundingSprites.AddRange(cell.spriteGroups[groupName]);
+                surroundingSprites.AddRange(surroundingCellsAsSpan[i].spriteGroups[groupName]);
             }
 
             return surroundingSprites;
