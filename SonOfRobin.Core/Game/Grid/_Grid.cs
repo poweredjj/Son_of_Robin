@@ -550,12 +550,15 @@ namespace SonOfRobin
             {
                 var cellList = new List<Cell>();
 
-                foreach (Cell cell in this.allCells)
+                Span<Cell> allCellsAsSpan = this.allCells.AsSpan();
+
+                for (int i = 0; i < allCellsAsSpan.Length; i++)
                 {
+                    Cell cell = allCellsAsSpan[i];
                     if (cell.allowedNames.Contains(pieceName)) cellList.Add(cell);
                 }
 
-                Random random = new Random(this.level.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
+                Random random = new(this.level.seed + (int)pieceName); // to keep "random" hashset order the same for every seed
                 concurrentCellSetsForPieceNames[pieceName] = cellList.OrderBy(cell => random.Next()).ToArray();
             });
 
