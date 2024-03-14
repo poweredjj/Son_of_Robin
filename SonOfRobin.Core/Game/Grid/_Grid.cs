@@ -962,21 +962,21 @@ namespace SonOfRobin
             int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Top, cellLength: this.cellHeight) - padding, 0);
             int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
 
-            Cell[] cellsArray = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
+            Cell[] cellsInsideRect = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
 
             int index = 0;
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
                 {
-                    cellsArray[index++] = this.cellGrid[x, y];
+                    cellsInsideRect[index++] = this.cellGrid[x, y];
                 }
             }
 
-            return cellsArray;
+            return cellsInsideRect;
         }
 
-        public List<Cell> GetCellsWithinDistance(Vector2 position, int distance)
+        public Cell[] GetCellsWithinDistance(Vector2 position, int distance)
         {
             int xMinCellNo = FindMatchingCellInSingleAxis(
                 position: Math.Clamp(value: (int)(position.X - distance), min: 0, max: this.level.width - 1), cellLength: this.cellWidth);
@@ -990,13 +990,14 @@ namespace SonOfRobin
             int yMaxCellNo = FindMatchingCellInSingleAxis(
                 position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
-            List<Cell> cellsWithinDistance = new();
+            Cell[] cellsWithinDistance = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
 
+            int index = 0;
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
                 {
-                    cellsWithinDistance.Add(this.cellGrid[x, y]);
+                    cellsWithinDistance[index++] = this.cellGrid[x, y];
                 }
             }
 
