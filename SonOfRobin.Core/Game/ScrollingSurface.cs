@@ -60,8 +60,8 @@ namespace SonOfRobin
                 this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
             };
 
-            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 4.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
-            this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.6f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120);
+            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 4.0f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows));
+            this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.0f, distortionFromOffsetPower: 0.0f, distortionSizeMultiplier: 1f, distortionOverTimePower: 0.0f);
             this.cloudShadows.updateDlgt = () =>
             {
                 this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.2f) * 0.5f;
