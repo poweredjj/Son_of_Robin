@@ -27,7 +27,7 @@ namespace SonOfRobin
         public readonly int width;
         public readonly int height;
 
-        public List<Cell> surroundingCells;
+        private Cell[] surroundingCells;
         public bool visitedByPlayer;
         public bool temporaryDecorationsCreated;
 
@@ -74,7 +74,7 @@ namespace SonOfRobin
             this.yCenter = this.yMin + (this.height / 2);
             this.center = new Vector2(this.xCenter, this.yCenter);
 
-            this.surroundingCells = new List<Cell>();
+            this.surroundingCells = null; // updated later, after creating whole grid
             this.visitedByPlayer = false;
             this.temporaryDecorationsCreated = false;
 
@@ -206,6 +206,27 @@ namespace SonOfRobin
             // SonOfRobinGame.messageLog.AddMessage(debugMessage: true, text: $"{this.world.currentUpdate} '{sprite.boardPiece.readableName}' - removing from group {groupName}.");
 
             this.spriteGroups[groupName].Remove(sprite);
+        }
+
+        public void UpdateSurroundingCells()
+        {
+            // should be invoked once, after creating all cells
+
+            int xMinCellNo = Math.Max(this.cellNoX - 1, 0);
+            int xMaxCellNo = Math.Min(this.cellNoX + 1, this.grid.noOfCellsX - 1);
+            int yMinCellNo = Math.Max(this.cellNoY - 1, 0);
+            int yMaxCellNo = Math.Min(this.cellNoY + 1, this.grid.noOfCellsY - 1);
+
+            this.surroundingCells = new Cell[((xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)) - 1];
+
+            int index = 0;
+            for (int x = xMinCellNo; x <= xMaxCellNo; x++)
+            {
+                for (int y = yMinCellNo; y <= yMaxCellNo; y++)
+                {
+                    if (!(x == this.cellNoX && y == this.cellNoY)) this.surroundingCells[index++] = this.grid.cellGrid[x, y];
+                }
+            }
         }
 
         public List<Sprite> GetSpritesFromSurroundingCells(Group groupName)

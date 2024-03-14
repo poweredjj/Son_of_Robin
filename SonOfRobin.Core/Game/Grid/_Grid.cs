@@ -991,13 +991,14 @@ namespace SonOfRobin
                 position: Math.Clamp(value: (int)(position.Y + distance), min: 0, max: this.level.height - 1), cellLength: this.cellHeight);
 
             Cell[] cellsWithinDistance = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
+            Span<Cell> cellsWithinDistanceAsSpan = cellsWithinDistance.AsSpan();
 
             int index = 0;
             for (int x = xMinCellNo; x <= xMaxCellNo; x++)
             {
                 for (int y = yMinCellNo; y <= yMaxCellNo; y++)
                 {
-                    cellsWithinDistance[index++] = this.cellGrid[x, y];
+                    cellsWithinDistanceAsSpan[index++] = this.cellGrid[x, y];
                 }
             }
 
@@ -1405,30 +1406,10 @@ namespace SonOfRobin
 
         private void CalculateSurroundingCells() // surrouding cells are calculated only once, because they do not change
         {
-            foreach (Cell cell in this.allCells)
-            { cell.surroundingCells = this.GetCellsWithinDistance(cell: cell, distance: 1); }
-        }
-
-        public List<Cell> GetCellsWithinDistance(Cell cell, int distance)
-        {
-            if (cell.grid != this) throw new ArgumentException("This cell is from another grid.");
-
-            List<Cell> cellsWithinDistance = new();
-
-            for (int offsetX = -distance; offsetX < distance + 1; offsetX++)
+            Parallel.ForEach(this.allCells, SonOfRobinGame.defaultParallelOptions, cell =>
             {
-                for (int offsetY = -1; offsetY < distance + 1; offsetY++)
-                {
-                    int currentCellX = cell.cellNoX + offsetX;
-                    int currentCellY = cell.cellNoY + offsetY;
-                    if (currentCellX >= 0 && currentCellX < this.noOfCellsX && currentCellY >= 0 && currentCellY < this.noOfCellsY)
-                    {
-                        cellsWithinDistance.Add(this.cellGrid[currentCellX, currentCellY]);
-                    }
-                }
-            }
-
-            return cellsWithinDistance;
+                cell.UpdateSurroundingCells();
+            });
         }
     }
 }
