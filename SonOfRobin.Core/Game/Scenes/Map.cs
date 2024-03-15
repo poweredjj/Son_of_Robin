@@ -28,11 +28,11 @@ namespace SonOfRobin
         private Rectangle bgTaskSpritesLastCameraRect;
         private Sprite[] bgTaskSpritesToShow;
         private Mesh[] bgTaskMeshesToShow;
+        public HashSet<Sprite> bgTaskScannedSprites;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
         public bool forceRenderNextFrame;
-        public HashSet<Sprite> bgTaskScannedSprites;
 
         public bool FullScreen
         { get { return this.Mode == MapMode.Full; } }
@@ -70,7 +70,7 @@ namespace SonOfRobin
             this.bgTaskSpritesLastCameraRect = new Rectangle();
             this.bgTaskMeshesToShow = [];
             this.bgTaskSpritesToShow = [];
-            this.bgTaskScannedSprites = new HashSet<Sprite>();
+            this.bgTaskScannedSprites = [];
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
             this.forceRenderNextFrame = false;
         }
