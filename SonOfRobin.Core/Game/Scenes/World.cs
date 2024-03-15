@@ -1018,7 +1018,7 @@ namespace SonOfRobin
                 this.soundPaused = false;
             }
 
-            this.scrollingSurfaceManager.Update(updateFog: this.weather.FogPercentage > 0, updateHotAir: this.weather.HeatPercentage > 0);
+            this.scrollingSurfaceManager.Update();
             this.ActiveLevel.recentParticlesManager.Update();
 
             if (this.demoMode) this.camera.TrackDemoModeTarget(firstRun: false);

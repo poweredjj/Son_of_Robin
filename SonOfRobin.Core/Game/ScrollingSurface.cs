@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 using System;
+using System.Collections.Generic;
 
 namespace SonOfRobin
 {
@@ -16,6 +17,8 @@ namespace SonOfRobin
         public readonly ScrollingSurface cloudShadows;
         public readonly ScrollingSurface hotAir;
         public readonly ScrollingSurface fog;
+        private readonly ScrollingSurface[] scrollingSurfaces; // all surfaces should be added here
+
         public readonly World world;
 
         public ScrollingSurfaceManager(World world)
@@ -32,6 +35,7 @@ namespace SonOfRobin
             };
 
             this.world = world;
+            var scrollingSurfacesList = new List<ScrollingSurface>();
 
             // to properly scroll, every ScrollingSurface needs to have effInstance = ScrollingSurfaceDrawInstance set
 
@@ -39,12 +43,15 @@ namespace SonOfRobin
 
             this.oceanFloor = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.55f, opacityTweenVal: 0.25f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingOceanFloor));
             this.oceanFloor.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.oceanFloor, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.12f, distortionFromOffsetPower: 0f, distortionOverTimePower: 1f, distortionOverTimeDuration: 60);
+            scrollingSurfacesList.Add(this.oceanFloor);
 
             this.waterCaustics = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 0.25f, useTweenForOffset: true, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics), blendState: additiveBlend);
             this.waterCaustics.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.waterCaustics, world: this.world, distortTexture: textureDistort, globalDistortionPower: 1f, distortionFromOffsetPower: 1f, distortionSizeMultiplier: 2.6f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120);
+            scrollingSurfacesList.Add(this.waterCaustics);
 
             this.waterStarsReflection = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingStars), blendState: additiveBlend);
             this.waterStarsReflection.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.waterStarsReflection, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.25f);
+            scrollingSurfacesList.Add(this.waterStarsReflection);
 
             this.cloudReflectionWhite = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 2.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsWhite), blendState: additiveBlend);
             this.cloudReflectionWhite.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionWhite, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.3f, distortionSizeMultiplier: 2.5f, distortionOverTimePower: 0.2f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
@@ -53,6 +60,7 @@ namespace SonOfRobin
                 // all should use the same calculations for base wind offset
                 this.cloudReflectionWhite.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 0.8f;
             };
+            scrollingSurfacesList.Add(this.cloudReflectionWhite);
 
             this.cloudReflectionDark = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, scale: 3.0f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsDark));
             this.cloudReflectionDark.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudReflectionDark, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.3f, distortionFromOffsetPower: 0.7f, distortionSizeMultiplier: 1.5f, distortionOverTimePower: 0.3f, distortionOverTimeDuration: 120, cameraPosOffsetPower: -0.2f);
@@ -61,14 +69,16 @@ namespace SonOfRobin
                 // all should use the same calculations for base wind offset
                 this.cloudReflectionDark.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 0.8f;
             };
+            scrollingSurfacesList.Add(this.cloudReflectionDark);
 
-            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 1f, scale: 4.5f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows), opacityTweenDurationMultiplier: 15f);
+            this.cloudShadows = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 0.25f, opacityTweenVal: 1f, scale: 6f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingCloudsShadows), opacityTweenDurationMultiplier: 15f);
             this.cloudShadows.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.cloudShadows, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0.0f, distortionFromOffsetPower: 0.0f, distortionOverTimePower: 0.0f);
             this.cloudShadows.updateDlgt = () =>
             {
                 // all should use the same calculations for base wind offset
                 this.cloudShadows.offset += new Vector2(this.world.weather.WindOriginX, this.world.weather.WindOriginY) * (this.world.weather.WindPercentage + 0.3f) * 2f;
             };
+            scrollingSurfacesList.Add(this.cloudShadows);
 
             this.fog = new ScrollingSurface(useTweenForOpacity: false, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: true, maxScrollingOffsetX: 60, maxScrollingOffsetY: 60, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingFog));
             this.fog.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.fog, world: this.world, distortTexture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor), globalDistortionPower: 0.9f, distortionFromOffsetPower: 0f, distortionSizeMultiplier: 0.35f, distortionOverTimePower: 3.5f, distortionOverTimeDuration: 100);
@@ -76,18 +86,17 @@ namespace SonOfRobin
             this.hotAir = new ScrollingSurface(useTweenForOpacity: true, opacityBaseVal: 1f, opacityTweenVal: 1f, useTweenForOffset: false, world: this.world, texture: TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor));
             this.hotAir.effInstance = new ScrollingSurfaceDrawInstance(scrollingSurface: this.hotAir, world: this.world, distortTexture: textureDistort, globalDistortionPower: 0f, distortionFromOffsetPower: 0f);
             this.hotAir.updateDlgt = () => { this.hotAir.offset += new Vector2(-1, 1); };
+            scrollingSurfacesList.Add(this.hotAir);
+
+            this.scrollingSurfaces = scrollingSurfacesList.ToArray();
         }
 
-        public void Update(bool updateFog, bool updateHotAir)
+        public void Update()
         {
-            this.oceanFloor.Update();
-            this.waterCaustics.Update();
-            this.waterStarsReflection.Update();
-            this.cloudReflectionWhite.Update();
-            this.cloudReflectionDark.Update();
-            this.cloudShadows.Update();
-            if (updateFog) this.fog.Update();
-            if (updateHotAir) this.hotAir.Update();
+            foreach (ScrollingSurface scrollingSurface in this.scrollingSurfaces)
+            {
+                scrollingSurface.Update();
+            }
         }
 
         public void DrawAllWater(float starsOpacity, float sunShadowsOpacity)
