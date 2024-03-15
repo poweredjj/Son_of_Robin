@@ -43,9 +43,13 @@ namespace SonOfRobin.Android
             SonOfRobinGame.os = OS.Android;
             SonOfRobinGame.fakeMobileMode = false;
 
-            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.WriteExternalStorage }, 1);
-            ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, 1);
-            SonOfRobinGame.downloadsPath = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads).AbsolutePath;
+            SonOfRobinGame.accessImportExportPathDlgt = () =>
+            {
+                // to show only when trying to import / export saves
+                ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.WriteExternalStorage }, 1);
+                ActivityCompat.RequestPermissions(this, new string[] { Manifest.Permission.ReadExternalStorage }, 1);
+                SonOfRobinGame.downloadsPath = Environment.GetExternalStoragePublicDirectory(Environment.DirectoryDownloads).AbsolutePath;
+            };
 
             _view = _game.Services.GetService(typeof(View)) as View;
 

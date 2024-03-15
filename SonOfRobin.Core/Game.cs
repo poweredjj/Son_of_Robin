@@ -38,6 +38,8 @@ namespace SonOfRobin
         public static Platform platform;
         public static OS os;
 
+        public static Scheduler.ExecutionDelegate accessImportExportPathDlgt;
+
         private static void MoveWindowOnWorkMachine(Game game)
         {
             if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
