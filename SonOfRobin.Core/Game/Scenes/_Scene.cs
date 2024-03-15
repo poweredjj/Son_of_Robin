@@ -532,6 +532,14 @@ namespace SonOfRobin
             basicEffect.World = transformMatrix;
             // basicEffect.View *= transformMatrix; // alternative to setting basicEffect.World
 
+
+
+            SonOfRobinGame.EffectMeshDrawingTest.Parameters["Projection"].SetValue(basicEffect.Projection);
+            SonOfRobinGame.EffectMeshDrawingTest.Parameters["World"].SetValue(transformMatrix);
+            SonOfRobinGame.EffectMeshDrawingTest.Parameters["View"].SetValue(Matrix.Identity);
+            SonOfRobinGame.EffectMeshDrawingTest.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+
+
             if (allowRepeat) SonOfRobinGame.GfxDev.SamplerStates[0] = SamplerState.LinearWrap;
         }
 

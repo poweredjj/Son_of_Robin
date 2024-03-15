@@ -8,11 +8,18 @@
 #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-// Properties you can use from C# code
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
-float4 Color;
+float4 drawColor;
+
+Texture2D BaseTexture;
+sampler s0 : register(s0);
+
+sampler BaseTextureSampler : register(s0)
+{
+    Texture = <BaseTexture>;
+};
 
 // Required attributes of the input vertices
 struct VertexShaderInput
@@ -26,6 +33,8 @@ struct VertexShaderOutput
 {
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
+    float2 TextureCoordinates : TEXCOORD0;
+    float4 Color : COLOR0;
 };
 
 // Actual shaders
@@ -42,7 +51,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    return Color;
+    float4 originalColor = tex2D(BaseTextureSampler, input.TextureCoordinates); 
+    return originalColor;
 }
 
 // Technique and passes within the technique

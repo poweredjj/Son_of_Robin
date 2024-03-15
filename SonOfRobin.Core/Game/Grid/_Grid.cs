@@ -1273,7 +1273,9 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                basicEffect.Texture = mesh.meshDef.texture;
+                //basicEffect.Texture = mesh.meshDef.texture;
+                SonOfRobinGame.EffectMeshDrawingTest.Parameters["BaseTexture"].SetValue(mesh.meshDef.texture);
+
                 SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
 
                 foreach (EffectPass effectPass in SonOfRobinGame.EffectMeshDrawingTest.CurrentTechnique.Passes)
