@@ -24,12 +24,12 @@ namespace SonOfRobin
             return this.lastFrameFired == currentUpdate;
         }
 
-        public virtual void TurnOn(int currentUpdate, Color drawColor)
+        public virtual void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
         {
             this.effect.Parameters["drawColor"].SetValue(drawColor.ToVector4());
             this.lastFrameFired = currentUpdate;
             if (this.framesLeft > -1) this.framesLeft -= 1;
-            this.effect.CurrentTechnique.Passes[0].Apply();
+            if (applyPassZero) this.effect.CurrentTechnique.Passes[0].Apply();
         }
     }
 }

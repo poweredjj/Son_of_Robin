@@ -18,7 +18,7 @@ namespace SonOfRobin
             this.distortTextureSize = new Vector2(this.distortTexture.Width, this.distortTexture.Height);
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);

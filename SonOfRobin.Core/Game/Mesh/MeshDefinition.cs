@@ -20,6 +20,7 @@ namespace SonOfRobin
         public readonly Level.LevelType[] levelTypes;
         public readonly int drawPriority;
         public readonly BlendState blendState;
+        public EffInstance effect;
 
         public readonly Tweener tweener;
         public float textureOffsetX;
@@ -29,7 +30,7 @@ namespace SonOfRobin
         public bool TweenerActive { get; private set; }
         public Vector2 TextureOffset { get; private set; }
 
-        public MeshDefinition(Level.LevelType[] levelTypes, TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, BlendState blendState, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0)
+        public MeshDefinition(Level.LevelType[] levelTypes, TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0, BlendState blendState = default)
         {
             this.levelTypes = levelTypes;
 
@@ -38,7 +39,7 @@ namespace SonOfRobin
             this.texture = TextureBank.GetTexture(textureName);
             this.mapTexture = TextureBank.GetTexture(mapTextureName);
 
-            this.blendState = blendState;
+            this.blendState = blendState == default ? BlendState.AlphaBlend : blendState;
             this.search = search;
             this.drawPriority = drawPriority;
 
@@ -85,7 +86,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBase,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBase,
-                blendState: BlendState.AlphaBlend,
                 drawPriority: -1,
                 search: new(
                 searchPriority: 0,
@@ -98,7 +98,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingWaterDeep,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterDeep,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 1,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -113,7 +112,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingWaterMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapWaterMedium,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 7,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -152,7 +150,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingBeachBright,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachBright,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 5,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -167,7 +164,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingBeachDark,
                 mapTextureName: TextureBank.TextureName.RepeatingMapBeachDark,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 6,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -182,7 +178,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingSand,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSand,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 15,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -198,7 +193,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundBad,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 4,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -214,7 +208,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGroundGood,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 13,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -230,7 +223,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGrassBad,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassBad,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 2,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -246,7 +238,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGrassGood,
                 mapTextureName: TextureBank.TextureName.RepeatingMapGrassGood,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 9,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -257,12 +248,12 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
+            grassGood.effect = new MeshBasicInstance(meshDef: grassGood);
 
             MeshDefinition mountainLow = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainLow,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainLow,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 3,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -277,7 +268,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainMedium,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainMedium,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 10,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -292,7 +282,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainHigh,
                 mapTextureName: TextureBank.TextureName.RepeatingMapMountainHigh,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 14,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -307,7 +296,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingVolcanoEdge,
                 mapTextureName: TextureBank.TextureName.RepeatingMapVolcanoEdge,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 16,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -322,7 +310,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island, Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingLava,
                 mapTextureName: TextureBank.TextureName.RepeatingMapLava,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 17,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -357,7 +344,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingSwamp,
                 mapTextureName: TextureBank.TextureName.RepeatingMapSwamp,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 8,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
@@ -378,7 +364,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingRuins,
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 11,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
@@ -389,7 +374,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingCaveWall,
                 mapTextureName: TextureBank.TextureName.RepeatingMapCaveWall,
-                blendState: BlendState.AlphaBlend,
                 search: new(
                 searchPriority: 1,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
@@ -401,7 +385,6 @@ namespace SonOfRobin
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingCaveFloor,
                 mapTextureName: TextureBank.TextureName.RepeatingMapCaveFloor,
-                blendState: BlendState.AlphaBlend,
                 drawPriority: -1,
                 search: new(
                 searchPriority: 0,

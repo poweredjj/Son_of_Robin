@@ -37,7 +37,7 @@ namespace SonOfRobin
             }
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
         {
             this.effect.Parameters["outlineColor"].SetValue(this.outlineColor);
             this.effect.Parameters["outlineThickness"].SetValue((int)(this.outlineThickness * this.intensityForTweener));

@@ -516,6 +516,8 @@ namespace SonOfRobin
 
         public static void SetupPolygonDrawing(bool allowRepeat, Matrix transformMatrix)
         {
+            // all other mesh effects will copy BasicEffect's settings
+
             BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
             Viewport viewport = SonOfRobinGame.GfxDev.Viewport;
