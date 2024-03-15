@@ -45,6 +45,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);
 
     output.Position = mul(viewPosition, Projection);
+    output.TexCoord = input.TexCoord;
 
     return output;
 }
@@ -52,7 +53,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float4 originalColor = tex2D(BaseTextureSampler, input.TextureCoordinates); 
-    return originalColor;
+    return originalColor * drawColor;
 }
 
 // Technique and passes within the technique
