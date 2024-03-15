@@ -43,6 +43,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/HeatMaskDistortion.fx
 
+#begin effects/MeshDrawingTest.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshDrawingTest.fx
+
 #begin effects/Mosaic.fx
 /importer:EffectImporter
 /processor:EffectProcessor

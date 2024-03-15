@@ -1276,7 +1276,8 @@ namespace SonOfRobin
                 basicEffect.Texture = mesh.meshDef.texture;
                 SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
 
-                foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                foreach (EffectPass effectPass in SonOfRobinGame.EffectMeshDrawingTest.CurrentTechnique.Passes)
+                //foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
                     mesh.Draw(processTweeners: true);
