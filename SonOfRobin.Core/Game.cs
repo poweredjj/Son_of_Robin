@@ -42,7 +42,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
@@ -62,7 +62,7 @@ namespace SonOfRobin
         public static Effect EffectRain { get; private set; }
         public static Effect EffectHeatMaskDistortion { get; private set; }
         public static Effect EffectShadowMerge { get; private set; }
-        public static Effect EffectMeshDrawingTest { get; private set; }
+        public static Effect EffectMeshBasic { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -261,7 +261,7 @@ namespace SonOfRobin
             EffectRain = ContentMgr.Load<Effect>("effects/Rain");
             EffectHeatMaskDistortion = ContentMgr.Load<Effect>("effects/HeatMaskDistortion");
             EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");
-            EffectMeshDrawingTest = ContentMgr.Load<Effect>("effects/MeshDrawingTest");
+            EffectMeshBasic = ContentMgr.Load<Effect>("effects/MeshBasic");
         }
 
         public static void LoadInitialTextures()

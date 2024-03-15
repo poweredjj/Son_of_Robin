@@ -1272,14 +1272,14 @@ namespace SonOfRobin
                 .OrderBy(mesh => mesh.meshDef.drawPriority);
 
             foreach (Mesh mesh in meshesToDraw)
-            {
-                //basicEffect.Texture = mesh.meshDef.texture;
-                SonOfRobinGame.EffectMeshDrawingTest.Parameters["BaseTexture"].SetValue(mesh.meshDef.texture);
-
+            {               
                 SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
 
-                foreach (EffectPass effectPass in SonOfRobinGame.EffectMeshDrawingTest.CurrentTechnique.Passes)
-                //foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
+                Effect effect = mesh.meshDef.effect == null ? SonOfRobinGame.BasicEffect : mesh.meshDef.effect.effect;
+                if (mesh.meshDef.effect == null) basicEffect.Texture = mesh.meshDef.texture;          
+                else mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White, applyPassZero: false); // all passes will be applied below
+
+                foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
                     mesh.Draw(processTweeners: true);

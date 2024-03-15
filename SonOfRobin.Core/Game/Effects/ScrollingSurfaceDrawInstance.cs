@@ -32,7 +32,7 @@ namespace SonOfRobin
             this.baseTextureSize = new Vector2(this.baseTexture.Width, this.baseTexture.Height);
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["baseTextureOffset"].SetValue((this.scrollingSurface.offset / this.scrollingSurface.scale) + (this.world.camera.CurrentPos * this.cameraPosOffsetPower));

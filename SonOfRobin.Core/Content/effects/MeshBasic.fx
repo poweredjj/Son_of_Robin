@@ -33,7 +33,6 @@ struct VertexShaderOutput
 {
     float4 Position : POSITION0;
     float2 TexCoord : TEXCOORD0;
-    float2 TextureCoordinates : TEXCOORD0;
     float4 Color : COLOR0;
 };
 
@@ -52,8 +51,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float4 originalColor = tex2D(BaseTextureSampler, input.TextureCoordinates); 
-    return originalColor * drawColor;
+    float4 originalColor = tex2D(BaseTextureSampler, input.TexCoord);
+    float4 newColor = originalColor * drawColor;
+    return newColor;
 }
 
 // Technique and passes within the technique
