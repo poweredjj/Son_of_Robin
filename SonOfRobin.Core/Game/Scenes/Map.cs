@@ -619,7 +619,7 @@ namespace SonOfRobin
             // drawing last steps
 
             {
-                float stepScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f);
+                float stepScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f) * 0.5f;
 
                 int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
                 int stepNo = 0;
@@ -653,9 +653,9 @@ namespace SonOfRobin
             // drawing pieces
 
             {
-                float spriteScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f) * 2f; // to keep sprite size constant, regardless of zoom
+                float spriteScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f) * 3f; // to keep sprite size constant, regardless of zoom
 
-                int maxSize = (int)(50f * (1f / this.camera.CurrentZoom) * (this.Mode == MapMode.Mini ? 2f : 1f)); // to avoid making sprites too large
+                int maxSize = (int)(70f * (1f / this.camera.CurrentZoom) * (this.Mode == MapMode.Mini ? 2f : 1f)); // to avoid making sprites too large
 
                 Span<Sprite> bgTaskSpritesToShowAsSpan = this.bgTaskSpritesToShow.AsSpan();
                 for (int i = 0; i < bgTaskSpritesToShowAsSpan.Length; i++)
