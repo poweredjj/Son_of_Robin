@@ -1229,13 +1229,14 @@ namespace SonOfRobin
 
                 case Name.ExportSave:
                     {
+                        Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
+
                         if (SonOfRobinGame.accessImportExportPathDlgt != null)
                         {
                             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: SonOfRobinGame.accessImportExportPathDlgt);
                             SonOfRobinGame.accessImportExportPathDlgt = null; // should only be invoked once
+                            menu.Remove();
                         }
-
-                        Menu menu = new(templateName: templateName, name: "EXPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         foreach (SaveHeaderInfo saveInfo in SaveHeaderManager.CorrectSaves)
                         {
@@ -1261,13 +1262,14 @@ namespace SonOfRobin
 
                 case Name.ImportSave:
                     {
+                        Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
+
                         if (SonOfRobinGame.accessImportExportPathDlgt != null)
                         {
                             new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, executeHelper: SonOfRobinGame.accessImportExportPathDlgt);
                             SonOfRobinGame.accessImportExportPathDlgt = null; // should only be invoked once
+                            menu.Remove();
                         }
-
-                        Menu menu = new(templateName: templateName, name: "IMPORT SAVE", blocksUpdatesBelow: false, canBeClosedManually: true, templateExecuteHelper: executeHelper, nameEntryBgPreset: TriSliceBG.Preset.MenuSilver);
 
                         string importPath = SonOfRobinGame.downloadsPath;
                         if (!Directory.Exists(importPath)) importPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
