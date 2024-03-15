@@ -47,8 +47,8 @@ namespace SonOfRobin
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
         public static GraphicsDevice GfxDev { get; private set; }
-        public static RasterizerState RasterizeStateNoCulling { get; private set; }
-        public static RasterizerState RasterizeStateNoCullingWireframe { get; private set; }
+        public static RasterizerState RasterizeStateCCW { get; private set; }
+        public static RasterizerState RasterizeStateCCWWireframe { get; private set; }
         public static BasicEffect BasicEffect { get; private set; }
         public static SpriteBatch SpriteBatch { get; private set; }
         public static Effect EffectColorize { get; private set; }
@@ -173,10 +173,10 @@ namespace SonOfRobin
 
             GfxDev = base.GraphicsDevice;
             BasicEffect = new(GfxDev);
-            RasterizeStateNoCulling = new RasterizerState { CullMode = CullMode.None };
-            RasterizeStateNoCullingWireframe = new RasterizerState
+            RasterizeStateCCW = new RasterizerState { CullMode = CullMode.CullCounterClockwiseFace };
+            RasterizeStateCCWWireframe = new RasterizerState
             {
-                CullMode = CullMode.None,
+                CullMode = CullMode.CullCounterClockwiseFace,
                 FillMode = FillMode.WireFrame
             };
 

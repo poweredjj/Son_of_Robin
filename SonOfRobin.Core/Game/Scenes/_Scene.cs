@@ -523,7 +523,7 @@ namespace SonOfRobin
             basicEffect.TextureEnabled = true;
 
             // SpriteBatch resets this
-            SonOfRobinGame.GfxDev.RasterizerState = Preferences.debugShowWireframe ? SonOfRobinGame.RasterizeStateNoCullingWireframe : SonOfRobinGame.RasterizeStateNoCulling;
+            SonOfRobinGame.GfxDev.RasterizerState = Preferences.debugShowWireframe ? SonOfRobinGame.RasterizeStateCCWWireframe : SonOfRobinGame.RasterizeStateCCW;
             SonOfRobinGame.GfxDev.BlendState = BlendState.AlphaBlend;
 
             // will not show anything unless CullMode.None is set
