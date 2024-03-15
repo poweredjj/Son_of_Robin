@@ -26,8 +26,8 @@ namespace SonOfRobin
         private Task bgTaskForSprites;
         private Rectangle bgTaskMeshesLastCameraRect;
         private Rectangle bgTaskSpritesLastCameraRect;
-        private List<Sprite> bgTaskSpritesToShow;
-        private List<Mesh> bgTaskMeshesToShow;
+        private Sprite[] bgTaskSpritesToShow;
+        private Mesh[] bgTaskMeshesToShow;
         private readonly MapOverlay mapOverlay;
         private readonly Sound soundMarkerPlace = new(name: SoundData.Name.Ding4, pitchChange: 0f);
         public readonly Sound soundMarkerRemove = new(name: SoundData.Name.Ding4, pitchChange: -0.3f);
@@ -68,8 +68,8 @@ namespace SonOfRobin
             this.backgroundNeedsUpdating = true;
             this.bgTaskMeshesLastCameraRect = new Rectangle();
             this.bgTaskSpritesLastCameraRect = new Rectangle();
-            this.bgTaskMeshesToShow = new List<Mesh>();
-            this.bgTaskSpritesToShow = new List<Sprite>();
+            this.bgTaskMeshesToShow = [];
+            this.bgTaskSpritesToShow = [];
             this.bgTaskScannedSprites = new HashSet<Sprite>();
             this.locationFont = SonOfRobinGame.FontTommy.GetFont(20);
             this.forceRenderNextFrame = false;
@@ -564,8 +564,12 @@ namespace SonOfRobin
                 SetupPolygonDrawing(allowRepeat: true, transformMatrix: this.TransformMatrix);
                 BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
 
-                foreach (Mesh mesh in this.bgTaskMeshesToShow.ToArray())
+                Span<Mesh> bgTaskMeshesToShowAsSpan = this.bgTaskMeshesToShow.AsSpan();
+
+                for (int i = 0; i < bgTaskMeshesToShowAsSpan.Length; i++)
                 {
+                    Mesh mesh = bgTaskMeshesToShowAsSpan[i];
+
                     basicEffect.Texture = mesh.meshDef.mapTexture;
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
@@ -614,7 +618,7 @@ namespace SonOfRobin
 
             // drawing last steps
 
-            float spriteSize = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
+            float spriteScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
 
             int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
             int stepNo = 0;
@@ -637,7 +641,7 @@ namespace SonOfRobin
 
                     int rectSize = 8;
                     Rectangle blackRect = new(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
-                    blackRect.Inflate(blackRect.Width * spriteSize, blackRect.Height * spriteSize);
+                    blackRect.Inflate(blackRect.Width * spriteScale, blackRect.Height * spriteScale);
 
                     SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
                 }
@@ -646,33 +650,41 @@ namespace SonOfRobin
 
             // drawing pieces
 
-            foreach (Sprite sprite in this.bgTaskSpritesToShow.ToArray())
+            int maxSize = (int)(150f * (1f / this.camera.CurrentZoom)); // to avoid sprites being too large (big tent, for example)
+
+            Span<Sprite> bgTaskSpritesToShowAsSpan = this.bgTaskSpritesToShow.AsSpan();
+            for (int i = 0; i < bgTaskSpritesToShowAsSpan.Length; i++)
             {
+                Sprite sprite = bgTaskSpritesToShowAsSpan[i];
+
                 float opacity = 1f;
-                Rectangle destRect = sprite.GfxRect;
 
-                destRect.Inflate(destRect.Width * spriteSize, destRect.Height * spriteSize);
+                AnimFrame frame = sprite.Anim.frameArray[0];
 
-                int maxSize = 300; // to avoid sprites being too large (big tent, for example)
+                int spriteWidth = (int)(frame.gfxWidth * spriteScale);
+                int spriteHeight = (int)(frame.gfxHeight * spriteScale);
 
-                if (destRect.Width > destRect.Height)
+                if (spriteWidth > maxSize || spriteHeight > maxSize)
                 {
-                    if (destRect.Width > maxSize)
+                    if (spriteWidth > spriteHeight)
                     {
-                        float aspect = (float)destRect.Height / (float)destRect.Width;
-                        int widthReduction = destRect.Width - maxSize;
-                        destRect.Inflate(-widthReduction / 2, -widthReduction * aspect / 2);
+                        float aspect = (float)spriteWidth / (float)spriteHeight;
+                        spriteWidth = maxSize;
+                        spriteHeight = (int)(maxSize * aspect);
+                    }
+                    else
+                    {
+                        float aspect = (float)spriteHeight / (float)spriteWidth;
+                        spriteHeight = maxSize;
+                        spriteWidth = (int)(maxSize * aspect);
                     }
                 }
-                else
-                {
-                    if (destRect.Height > maxSize)
-                    {
-                        float aspect = (float)destRect.Width / (float)destRect.Height;
-                        int heightReduction = destRect.Height - maxSize;
-                        destRect.Inflate(-heightReduction * aspect / 2, -heightReduction / 2);
-                    }
-                }
+
+                Rectangle destRect = new(
+                    x: (int)(sprite.position.X - (spriteWidth / 2)),
+                    y: (int)(sprite.position.Y - (spriteHeight / 2)),
+                    width: spriteWidth,
+                    height: spriteHeight);
 
                 if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
                 {
@@ -683,7 +695,6 @@ namespace SonOfRobin
                     opacity = 0.6f;
                 }
 
-                AnimFrame frame = sprite.Anim.frameArray[0];
                 frame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
@@ -879,7 +890,7 @@ namespace SonOfRobin
                 {
                     if (ProcessingMode != ProcessingModes.RenderToTarget)
                     {
-                        this.bgTaskMeshesToShow = new List<Mesh>(meshesToShow); // making list copy, to safely use Clear() on the local list
+                        this.bgTaskMeshesToShow = meshesToShow.ToArray(); // making list copy, to safely use Clear() on the local list
                         break;
                     }
                     else Thread.Sleep(1); // will freeze without this
@@ -957,7 +968,7 @@ namespace SonOfRobin
                 {
                     if (ProcessingMode != ProcessingModes.RenderToTarget)
                     {
-                        this.bgTaskSpritesToShow = new List<Sprite>(spritesToShow); // making list copy, to safely use Clear() on the local list
+                        this.bgTaskSpritesToShow = spritesToShow.ToArray(); // making list copy, to safely use Clear() on the local list
                         break;
                     }
                     else Thread.Sleep(1); // will freeze without this
