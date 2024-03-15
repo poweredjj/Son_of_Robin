@@ -960,10 +960,10 @@ namespace SonOfRobin
         {
             int padding = addPadding ? 1 : 0;
 
-            int xMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Left, cellLength: this.cellWidth) - padding, 0);
-            int xMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Right, cellLength: this.cellWidth) + padding, this.noOfCellsX - 1);
-            int yMinCellNo = Math.Max(FindMatchingCellInSingleAxis(position: rectangle.Top, cellLength: this.cellHeight) - padding, 0);
-            int yMaxCellNo = Math.Min(FindMatchingCellInSingleAxis(position: rectangle.Bottom, cellLength: this.cellHeight) + padding, this.noOfCellsY - 1);
+            int xMinCellNo = Math.Clamp(value: FindMatchingCellInSingleAxis(position: rectangle.Left, cellLength: this.cellWidth) - padding, min: 0, max: this.noOfCellsX - 2);
+            int xMaxCellNo = Math.Clamp(value: FindMatchingCellInSingleAxis(position: rectangle.Right, cellLength: this.cellWidth) + padding, min: 0, max: this.noOfCellsX - 1);
+            int yMinCellNo = Math.Clamp(value: FindMatchingCellInSingleAxis(position: rectangle.Top, cellLength: this.cellHeight) - padding, min: 0, max: this.noOfCellsY - 2);
+            int yMaxCellNo = Math.Clamp(value: FindMatchingCellInSingleAxis(position: rectangle.Bottom, cellLength: this.cellHeight) + padding, min: 0, max: this.noOfCellsY - 1);
 
             Cell[] cellsInsideRect = new Cell[(xMaxCellNo - xMinCellNo + 1) * (yMaxCellNo - yMinCellNo + 1)];
 
