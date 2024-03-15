@@ -618,84 +618,90 @@ namespace SonOfRobin
 
             // drawing last steps
 
-            float spriteScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f); // to keep sprite size constant, regardless of zoom
-
-            int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
-            int stepNo = 0;
-
-            Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
-            Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
-
-            foreach (Vector2 stepPos in this.world.ActiveLevel.playerLastSteps)
             {
-                if (viewRect.Contains(stepPos))
+                float stepScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f);
+
+                int totalSteps = this.world.ActiveLevel.playerLastSteps.Count;
+                int stepNo = 0;
+
+                Texture2D stepTexture = TextureBank.GetTexture(TextureBank.TextureName.WhiteCircleSmall);
+                Rectangle stepTextureRect = new(x: 0, y: 0, width: stepTexture.Width, stepTexture.Height);
+
+                foreach (Vector2 stepPos in this.world.ActiveLevel.playerLastSteps)
                 {
-                    int maxSteps = Player.maxLastStepsCount;
-
-                    float opacity = 1f;
-                    if (totalSteps >= maxSteps / 2 && stepNo < maxSteps / 2)
+                    if (viewRect.Contains(stepPos))
                     {
-                        float opacityFactor = 1f - (float)Math.Abs(stepNo - (maxSteps / 2)) / (maxSteps / 2);
-                        opacity *= opacityFactor;
+                        int maxSteps = Player.maxLastStepsCount;
+
+                        float opacity = 1f;
+                        if (totalSteps >= maxSteps / 2 && stepNo < maxSteps / 2)
+                        {
+                            float opacityFactor = 1f - (float)Math.Abs(stepNo - (maxSteps / 2)) / (maxSteps / 2);
+                            opacity *= opacityFactor;
+                        }
+
+                        int rectSize = 8;
+                        Rectangle blackRect = new(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
+                        blackRect.Inflate(blackRect.Width * stepScale, blackRect.Height * stepScale);
+
+                        SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
                     }
-
-                    int rectSize = 8;
-                    Rectangle blackRect = new(x: (int)(stepPos.X - (rectSize / 2)), y: (int)(stepPos.Y - (rectSize / 2)), width: rectSize, height: rectSize);
-                    blackRect.Inflate(blackRect.Width * spriteScale, blackRect.Height * spriteScale);
-
-                    SonOfRobinGame.SpriteBatch.Draw(stepTexture, blackRect, stepTextureRect, stepDotColor * opacity);
+                    stepNo++;
                 }
-                stepNo++;
             }
 
             // drawing pieces
 
-            int maxSize = (int)(150f * (1f / this.camera.CurrentZoom)); // to avoid sprites being too large (big tent, for example)
-
-            Span<Sprite> bgTaskSpritesToShowAsSpan = this.bgTaskSpritesToShow.AsSpan();
-            for (int i = 0; i < bgTaskSpritesToShowAsSpan.Length; i++)
             {
-                Sprite sprite = bgTaskSpritesToShowAsSpan[i];
+                float spriteScale = 1f / this.camera.CurrentZoom * (this.Mode == MapMode.Mini ? 1f : 0.25f) * 2f; // to keep sprite size constant, regardless of zoom
 
-                float opacity = 1f;
+                int maxSize = (int)(50f * (1f / this.camera.CurrentZoom) * (this.Mode == MapMode.Mini ? 2f : 1f)); // to avoid making sprites too large
 
-                AnimFrame frame = sprite.Anim.frameArray[0];
-
-                int spriteWidth = (int)(frame.gfxWidth * spriteScale);
-                int spriteHeight = (int)(frame.gfxHeight * spriteScale);
-
-                if (spriteWidth > maxSize || spriteHeight > maxSize)
+                Span<Sprite> bgTaskSpritesToShowAsSpan = this.bgTaskSpritesToShow.AsSpan();
+                for (int i = 0; i < bgTaskSpritesToShowAsSpan.Length; i++)
                 {
-                    if (spriteWidth > spriteHeight)
+                    Sprite sprite = bgTaskSpritesToShowAsSpan[i];
+
+                    float opacity = 1f;
+
+                    AnimFrame frame = sprite.Anim.frameArray[0];
+
+                    int spriteWidth = (int)(frame.gfxWidth * spriteScale);
+                    int spriteHeight = (int)(frame.gfxHeight * spriteScale);
+
+                    if (spriteWidth > maxSize || spriteHeight > maxSize)
                     {
-                        float aspect = (float)spriteWidth / (float)spriteHeight;
-                        spriteWidth = maxSize;
-                        spriteHeight = (int)(maxSize * aspect);
+                        if (spriteWidth > spriteHeight)
+                        {
+                            float aspect = (float)spriteWidth / (float)spriteHeight;
+                            spriteWidth = maxSize;
+                            spriteHeight = (int)(maxSize * aspect);
+                        }
+                        else
+                        {
+                            float aspect = (float)spriteHeight / (float)spriteWidth;
+                            spriteHeight = maxSize;
+                            spriteWidth = (int)(maxSize * aspect);
+                        }
                     }
-                    else
+
+                    Rectangle destRect = new(
+                        x: (int)(sprite.position.X - (spriteWidth / 2)),
+                        y: (int)(sprite.position.Y - (spriteHeight / 2)),
+                        width: spriteWidth,
+                        height: spriteHeight);
+
+                    if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
                     {
-                        float aspect = (float)spriteHeight / (float)spriteWidth;
-                        spriteHeight = maxSize;
-                        spriteWidth = (int)(maxSize * aspect);
+                        destRect.X = Math.Max(viewRect.Left, destRect.X);
+                        destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
+                        destRect.Y = Math.Max(viewRect.Top, destRect.Y);
+                        destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
+                        opacity = 0.6f;
                     }
+
+                    frame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
                 }
-
-                Rectangle destRect = new(
-                    x: (int)(sprite.position.X - (spriteWidth / 2)),
-                    y: (int)(sprite.position.Y - (spriteHeight / 2)),
-                    width: spriteWidth,
-                    height: spriteHeight);
-
-                if (this.Mode == MapMode.Mini && !viewRect.Contains(destRect))
-                {
-                    destRect.X = Math.Max(viewRect.Left, destRect.X);
-                    destRect.X = Math.Min(viewRect.Right - destRect.Width, destRect.X);
-                    destRect.Y = Math.Max(viewRect.Top, destRect.Y);
-                    destRect.Y = Math.Min(viewRect.Bottom - destRect.Height, destRect.Y);
-                    opacity = 0.6f;
-                }
-
-                frame.DrawInsideRect(rect: destRect, color: Color.White * opacity);
             }
 
             // drawing named locations
