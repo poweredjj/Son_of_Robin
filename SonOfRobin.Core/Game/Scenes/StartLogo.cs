@@ -53,7 +53,7 @@ namespace SonOfRobin
         {
             if (SongPlayer.CurrentSongName != SongData.Name.Title) SongPlayer.ClearQueueFadeCurrentAndPlay(songName: SongData.Name.Title, repeat: true);
 
-            if (InputMapper.HasBeenReleased(InputMapper.Action.GlobalConfirm))
+            if (InputMapper.HasBeenReleased(InputMapper.Action.GlobalConfirm) || (Input.CurrentControlType != Input.ControlType.Touch && Mouse.LeftHasBeenPressed))
             {
                 MenuTemplate.CreateMenuFromTemplate(templateName: MenuTemplate.Name.Main);
                 Sound.QuickPlay(SoundData.Name.TurnPage);
