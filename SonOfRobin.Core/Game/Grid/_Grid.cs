@@ -1262,29 +1262,27 @@ namespace SonOfRobin
 
             if (updateFog) this.world.map.backgroundNeedsUpdating = true;
 
-            BasicEffect basicEffect = SonOfRobinGame.BasicEffect;
-
             int trianglesDrawn = 0;
 
             var meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
                 .Distinct()
-                .OrderBy(mesh => mesh.meshDef.drawPriority);
+                .OrderBy(mesh => mesh.meshDef.drawPriority)
+                .ThenBy(mesh => mesh.meshDef.textureName);
+
+            MeshDefinition currentMeshDef = null;
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
-
-                Effect effect = mesh.meshDef.effect == null ? SonOfRobinGame.BasicEffect : mesh.meshDef.effect.effect;
-                if (mesh.meshDef.effect == null) basicEffect.Texture = mesh.meshDef.texture;
-                else mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White, applyPassZero: false); // all passes will be applied below
-
-                foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
+                if (mesh.meshDef != currentMeshDef)
                 {
-                    effectPass.Apply();
-                    mesh.Draw();
-                    trianglesDrawn += mesh.triangleCount;
+                    SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
+                    mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    currentMeshDef = mesh.meshDef;
                 }
+
+                mesh.Draw();
+                trianglesDrawn += mesh.triangleCount;
             }
 
             if (Preferences.debugShowMeshBounds)

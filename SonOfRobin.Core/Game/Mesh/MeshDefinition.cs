@@ -22,7 +22,7 @@ namespace SonOfRobin
         public readonly BlendState blendState;
         public EffInstance effect;
 
-        public static readonly Tweener tweener = new Tweener();
+        public static readonly Tweener tweener = new();
         public float tweenEffectPower;
         public Vector2 tweenBaseTextureOffset;
 
@@ -46,14 +46,6 @@ namespace SonOfRobin
         }
 
         public static void UpdateAllDefs()
-        {
-            foreach (MeshDefinition meshDef in meshDefBySearchPriority)
-            {
-                meshDef.Update();
-            }
-        }
-
-        private void Update()
         {
             tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
@@ -357,6 +349,12 @@ namespace SonOfRobin
                     new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 1, maxVal: 255), // should cover whole floor, to avoid small holes
                     })
                 );
+
+            foreach (MeshDefinition meshDef in meshDefByTextureName.Values)
+            {
+                // every meshDef should have its effect defined
+                if (meshDef.effect == null) meshDef.effect = new MeshBasicInstance(meshDef: meshDef);
+            }
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
         }
