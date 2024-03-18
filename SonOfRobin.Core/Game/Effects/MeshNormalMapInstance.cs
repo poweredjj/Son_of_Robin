@@ -26,6 +26,13 @@ namespace SonOfRobin
             this.effect.Parameters["NormalTexture"].SetValue(this.normalMapTexture);
             this.effect.Parameters["currentDraw"].SetValue(SonOfRobinGame.CurrentDraw);
 
+            World world = World.GetTopWorld();
+            if (world != null && !world.demoMode)
+            {
+                this.effect.Parameters["LightPos"].SetValue(world.Player.sprite.position);
+                //this.effect.Parameters["CameraPos"].SetValue(world.camera.CurrentPos);
+            }
+
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
