@@ -1232,7 +1232,7 @@ namespace SonOfRobin
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
-                    mesh.Draw(processTweeners: false);
+                    mesh.Draw();
                 }
             }
 
@@ -1272,17 +1272,17 @@ namespace SonOfRobin
                 .OrderBy(mesh => mesh.meshDef.drawPriority);
 
             foreach (Mesh mesh in meshesToDraw)
-            {               
+            {
                 SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
 
                 Effect effect = mesh.meshDef.effect == null ? SonOfRobinGame.BasicEffect : mesh.meshDef.effect.effect;
-                if (mesh.meshDef.effect == null) basicEffect.Texture = mesh.meshDef.texture;          
+                if (mesh.meshDef.effect == null) basicEffect.Texture = mesh.meshDef.texture;
                 else mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White, applyPassZero: false); // all passes will be applied below
 
                 foreach (EffectPass effectPass in effect.CurrentTechnique.Passes)
                 {
                     effectPass.Apply();
-                    mesh.Draw(processTweeners: true);
+                    mesh.Draw();
                     trianglesDrawn += mesh.triangleCount;
                 }
             }

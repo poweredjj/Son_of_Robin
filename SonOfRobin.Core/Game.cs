@@ -26,8 +26,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 0.6063f;
-        public static readonly DateTime lastChanged = new(2024, 03, 15);
+        public const float version = 0.6064f;
+        public static readonly DateTime lastChanged = new(2024, 03, 18);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -42,7 +42,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
@@ -63,6 +63,7 @@ namespace SonOfRobin
         public static Effect EffectHeatMaskDistortion { get; private set; }
         public static Effect EffectShadowMerge { get; private set; }
         public static Effect EffectMeshBasic { get; private set; }
+        public static Effect EffectMeshSwamp { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -262,6 +263,7 @@ namespace SonOfRobin
             EffectHeatMaskDistortion = ContentMgr.Load<Effect>("effects/HeatMaskDistortion");
             EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");
             EffectMeshBasic = ContentMgr.Load<Effect>("effects/MeshBasic");
+            EffectMeshSwamp = ContentMgr.Load<Effect>("effects/MeshSwamp");
         }
 
         public static void LoadInitialTextures()

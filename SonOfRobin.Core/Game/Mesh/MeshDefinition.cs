@@ -1,15 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace SonOfRobin
 {
     public class MeshDefinition
     {
-        public static readonly Dictionary<TextureBank.TextureName, MeshDefinition> meshDefByTextureName = new Dictionary<TextureBank.TextureName, MeshDefinition>();
-        private static readonly List<MeshDefinition> meshDefBySearchPriority = new List<MeshDefinition>();
+        public static readonly Dictionary<TextureBank.TextureName, MeshDefinition> meshDefByTextureName = new();
+        private static readonly List<MeshDefinition> meshDefBySearchPriority = new();
 
         public readonly TextureBank.TextureName textureName;
         public readonly TextureBank.TextureName mapTextureName;
@@ -22,13 +22,9 @@ namespace SonOfRobin
         public readonly BlendState blendState;
         public EffInstance effect;
 
-        public readonly Tweener tweener;
-        public float textureOffsetX;
-        public float textureOffsetY;
-        public float textureDeformationOffsetX;
-        public float textureDeformationOffsetY;
-        public bool TweenerActive { get; private set; }
-        public Vector2 TextureOffset { get; private set; }
+        public static readonly Tweener tweener = new Tweener();
+        public float tweenEffectIntensity;
+        public Vector2 tweenBaseTextureOffset;
 
         public MeshDefinition(Level.LevelType[] levelTypes, TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0, BlendState blendState = default)
         {
@@ -43,14 +39,8 @@ namespace SonOfRobin
             this.search = search;
             this.drawPriority = drawPriority;
 
-            this.tweener = new Tweener();
-            this.textureOffsetX = 0f;
-            this.textureOffsetY = 0f;
-            this.textureDeformationOffsetX = 0f;
-            this.textureDeformationOffsetY = 0f;
-
-            this.TweenerActive = false;
-            this.TextureOffset = Vector2.Zero;
+            this.tweenEffectIntensity = 0f;
+            this.tweenBaseTextureOffset = Vector2.Zero;
 
             meshDefByTextureName[textureName] = this;
         }
@@ -65,13 +55,7 @@ namespace SonOfRobin
 
         private void Update()
         {
-            this.tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
-
-            this.TextureOffset = new Vector2(this.textureOffsetX, this.textureOffsetY);
-
-            this.TweenerActive = this.TextureOffset != Vector2.Zero ||
-                this.textureDeformationOffsetX != 0 ||
-                this.textureDeformationOffsetY != 0;
+            tweener.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public static MeshDefinition[] GetMeshDefBySearchPriority(Level.LevelType levelType)
@@ -248,7 +232,6 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
-            grassGood.effect = new MeshBasicInstance(meshDef: grassGood);
 
             MeshDefinition mountainLow = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -320,23 +303,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetX, toValue: 0.1f, duration: 20, delay: 5)
+            tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectIntensity, toValue: 1f, duration: 30, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticInOut);
-
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureOffsetY, toValue: 0.1f, duration: 20, delay: 0)
-                .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.QuadraticInOut);
-
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureDeformationOffsetX, toValue: 0.2f, duration: 20, delay: 0)
-                .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.SineInOut);
-
-            lava.tweener.TweenTo(target: lava, expression: meshDef => meshDef.textureDeformationOffsetY, toValue: 0.07f, duration: 5.0f, delay: 0)
-                .RepeatForever(repeatDelay: 2.3f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
 
@@ -349,13 +317,10 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
+            swamp.tweenEffectIntensity = 0.5f;
+            swamp.effect = new MeshSwampInstance(meshDef: swamp);
 
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureDeformationOffsetX, toValue: 0.11f, duration: 12, delay: 2)
-                .RepeatForever(repeatDelay: 0f)
-                .AutoReverse()
-                .Easing(EasingFunctions.SineInOut);
-
-            swamp.tweener.TweenTo(target: swamp, expression: meshDef => meshDef.textureDeformationOffsetY, toValue: 0.11f, duration: 20, delay: 0)
+            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectIntensity, toValue: 1f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.SineInOut);

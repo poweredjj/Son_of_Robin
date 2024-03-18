@@ -13,7 +13,6 @@ namespace SonOfRobin
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;
         private readonly VertexPositionTexture[] vertices;
-        private readonly VertexPositionTexture[] verticesTransformedCopy;
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
@@ -23,8 +22,6 @@ namespace SonOfRobin
         {
             this.textureName = textureName;
             this.vertices = vertArray;
-            this.verticesTransformedCopy = new VertexPositionTexture[vertArray.Length];
-            Array.Copy(sourceArray: vertArray, destinationArray: this.verticesTransformedCopy, length: vertArray.Length);
             this.indices = indicesArray;
             this.triangleCount = this.indices.Length / 3;
             this.boundsRect = GetBoundsRect(vertices);
@@ -67,9 +64,6 @@ namespace SonOfRobin
                     TextureCoordinate = new Vector2(vertTexCoordXAsSpan[i], vertTexCoordYAsSpan[i])
                 };
             }
-
-            this.verticesTransformedCopy = new VertexPositionTexture[this.vertices.Length];
-            Array.Copy(sourceArray: this.vertices, destinationArray: this.verticesTransformedCopy, length: this.vertices.Length);
 
             this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
@@ -135,31 +129,10 @@ namespace SonOfRobin
             return new Rectangle(x: xMin, y: yMin, width: xMax - xMin, height: yMax - yMin);
         }
 
-        public void Draw(bool processTweeners)
+        public void Draw()
         {
-            if (processTweeners)
-            {
-                if (this.meshDef.TweenerActive)
-                {
-                    Vector2 deformationOffset = Vector2.Zero;
-
-                    Span<VertexPositionTexture> verticesAsSpan = this.vertices.AsSpan();
-                    Span<VertexPositionTexture> verticesTransformedCopyAsSpan = this.verticesTransformedCopy.AsSpan();
-
-                    for (int i = 0; i < verticesAsSpan.Length; i++)
-                    {
-                        VertexPositionTexture inputVertex = verticesAsSpan[i];
-
-                        if (meshDef.textureDeformationOffsetX != 0) deformationOffset.X = (float)Math.Sin(inputVertex.TextureCoordinate.X * 3) * meshDef.textureDeformationOffsetX;
-                        if (meshDef.textureDeformationOffsetY != 0) deformationOffset.Y = (float)Math.Cos(inputVertex.TextureCoordinate.Y * 3) * meshDef.textureDeformationOffsetY;
-
-                        verticesTransformedCopyAsSpan[i].TextureCoordinate = inputVertex.TextureCoordinate + this.meshDef.TextureOffset + deformationOffset;
-                    }
-                }
-            }
-
             SonOfRobinGame.GfxDev.DrawUserIndexedPrimitives<VertexPositionTexture>(
-                PrimitiveType.TriangleList, this.meshDef.TweenerActive ? this.verticesTransformedCopy : this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
+                PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
         }
     }
 
@@ -216,7 +189,7 @@ namespace SonOfRobin
 
         public List<Mesh> GetMeshesForRect(Rectangle rect)
         {
-            List<Mesh> meshesInRect = new();
+            List<Mesh> meshesInRect = [];
 
             // Calculate the block range that overlaps with the given rectangle.
             int startBlockX = Math.Max(0, rect.Left / blockWidth);

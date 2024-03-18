@@ -575,7 +575,7 @@ namespace SonOfRobin
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {
                         effectPass.Apply();
-                        mesh.Draw(processTweeners: false);
+                        mesh.Draw();
                     }
                 }
 
