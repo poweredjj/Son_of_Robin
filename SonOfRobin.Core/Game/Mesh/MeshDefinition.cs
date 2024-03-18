@@ -23,7 +23,7 @@ namespace SonOfRobin
         public EffInstance effect;
 
         public static readonly Tweener tweener = new Tweener();
-        public float tweenEffectIntensity;
+        public float tweenEffectPower;
         public Vector2 tweenBaseTextureOffset;
 
         public MeshDefinition(Level.LevelType[] levelTypes, TextureBank.TextureName textureName, TextureBank.TextureName mapTextureName, MeshGenerator.RawMapDataSearchForTexture search, int drawPriority = 0, BlendState blendState = default)
@@ -39,7 +39,7 @@ namespace SonOfRobin
             this.search = search;
             this.drawPriority = drawPriority;
 
-            this.tweenEffectIntensity = 0f;
+            this.tweenEffectPower = 0f;
             this.tweenBaseTextureOffset = Vector2.Zero;
 
             meshDefByTextureName[textureName] = this;
@@ -303,7 +303,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectIntensity, toValue: 1f, duration: 30, delay: 0)
+            tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 30, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.QuadraticInOut);
@@ -317,10 +317,10 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
-            swamp.tweenEffectIntensity = 0.5f;
+            swamp.tweenEffectPower = 0.5f;
             swamp.effect = new MeshSwampInstance(meshDef: swamp);
 
-            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectIntensity, toValue: 1f, duration: 60 * 4, delay: 0)
+            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.SineInOut);

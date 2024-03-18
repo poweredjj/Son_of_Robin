@@ -35,7 +35,13 @@ namespace SonOfRobin
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
-            this.effect.Parameters["baseTextureOffset"].SetValue((this.scrollingSurface.offset / this.scrollingSurface.scale) + (this.world.camera.CurrentPos * this.cameraPosOffsetPower));
+
+            Vector2 baseTextureOffset = (this.scrollingSurface.offset / this.scrollingSurface.scale) + (this.world.camera.CurrentPos * this.cameraPosOffsetPower);
+            baseTextureOffset = new Vector2(baseTextureOffset.X % this.baseTextureSize.X, baseTextureOffset.Y % this.baseTextureSize.Y);
+            // base texture offset should not exceed texture size, because too high values would cause precision loss (pixelation) on Android
+
+            this.effect.Parameters["baseTextureOffset"].SetValue(baseTextureOffset);
+            this.effect.Parameters["scrollingSurfaceOffset"].SetValue(this.scrollingSurface.offset / this.scrollingSurface.scale); // camera not taken into account
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
 
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
