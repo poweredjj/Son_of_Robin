@@ -64,6 +64,7 @@ namespace SonOfRobin
         public static Effect EffectShadowMerge { get; private set; }
         public static Effect EffectMeshBasic { get; private set; }
         public static Effect EffectMeshSwamp { get; private set; }
+        public static Effect EffectMeshLava { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -264,6 +265,7 @@ namespace SonOfRobin
             EffectShadowMerge = ContentMgr.Load<Effect>("effects/ShadowMerge");
             EffectMeshBasic = ContentMgr.Load<Effect>("effects/MeshBasic");
             EffectMeshSwamp = ContentMgr.Load<Effect>("effects/MeshSwamp");
+            EffectMeshLava = ContentMgr.Load<Effect>("effects/MeshLava");
         }
 
         public static void LoadInitialTextures()

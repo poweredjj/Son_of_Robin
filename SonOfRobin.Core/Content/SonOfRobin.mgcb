@@ -49,6 +49,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/MeshBasic.fx
 
+#begin effects/MeshLava.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshLava.fx
+
 #begin effects/MeshSwamp.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -7953,6 +7959,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/lava.png
+
+#begin gfx/repeating_textures/lava_distortion.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/lava_distortion.png
 
 #begin gfx/repeating_textures/map_beach_bright.png
 /importer:TextureImporter
