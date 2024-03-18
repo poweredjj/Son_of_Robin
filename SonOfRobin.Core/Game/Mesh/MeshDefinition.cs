@@ -322,13 +322,15 @@ namespace SonOfRobin
 
             MeshDefinition ruins = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
-                textureName: TextureBank.TextureName.RepeatingRuins,
+                textureName: TextureBank.TextureName.RepeatingPebblesColor, // RepeatingRuins
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,
                 search: new(
                 searchPriority: 11,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
+
+            ruins.effect = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal));
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },

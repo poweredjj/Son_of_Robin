@@ -74,6 +74,8 @@ namespace SonOfRobin
             RepeatingCloudsDark = 162,
             RepeatingCloudsShadows = 163,
             RepeatingLavaDistortion = 164,
+            RepeatingPebblesColor = 165,
+            RepeatingPebblesNormal = 166,
 
             VirtualJoypadBackground = 48,
             VirtualJoypadStick = 49,
@@ -308,6 +310,8 @@ namespace SonOfRobin
             { TextureName.RepeatingCloudsDark, "repeating_textures/clouds_dark" },
             { TextureName.RepeatingCloudsShadows, "repeating_textures/clouds_shadows" },
             { TextureName.RepeatingLavaDistortion, "repeating_textures/lava_distortion" },
+            { TextureName.RepeatingPebblesColor, "repeating_textures/pebbles" },
+            { TextureName.RepeatingPebblesNormal, "repeating_textures/pebbles_normal" },
             { TextureName.RepeatingPerlinNoiseColor, "repeating_textures/perlin_noise_color" },
             { TextureName.RepeatingWaterDrops, "repeating_textures/water_drops" },
             { TextureName.RepeatingGrassGood, "repeating_textures/grass_good" },

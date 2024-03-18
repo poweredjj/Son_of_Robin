@@ -55,6 +55,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/MeshLava.fx
 
+#begin effects/MeshNormalMap.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshNormalMap.fx
+
 #begin effects/MeshSwamp.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -8259,6 +8265,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ocean_floor.png
+
+#begin gfx/repeating_textures/pebbles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/pebbles.png
+
+#begin gfx/repeating_textures/pebbles_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/pebbles_normal.png
 
 #begin gfx/repeating_textures/perlin_noise_color.png
 /importer:TextureImporter
