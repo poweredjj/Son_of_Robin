@@ -25,12 +25,13 @@ namespace SonOfRobin
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["NormalTexture"].SetValue(this.normalMapTexture);
 
+            Vector3 scale; Quaternion rot; Vector3 pos;
+            SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
+
+            this.effect.Parameters["worldScale"].SetValue(scale.X);
+
             World world = World.GetTopWorld();
-            if (world != null && !world.demoMode)
-            {
-                Vector2 lightOffset = world.camera.CurrentPos - new Vector2((float)world.camera.viewRect.Width / 2f, (float)world.camera.viewRect.Height / 2f);
-                this.effect.Parameters["LightPos"].SetValue(new Vector3(world.Player.sprite.position.X, world.Player.sprite.position.Y, 0));
-            }
+            if (world != null && !world.demoMode) this.effect.Parameters["LightPos"].SetValue(world.Player.sprite.position);
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
