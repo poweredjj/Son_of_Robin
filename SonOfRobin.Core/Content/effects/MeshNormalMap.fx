@@ -59,12 +59,13 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
-    output.PosWorld = mul(viewPosition, Projection);
+    output.PosWorld = mul(input.Position, World); // handing over WorldSpace Coordinates to PS
     
     float4 lightWorldPosition = mul(float4(LightPos, 1), World);
     float4 lightViewPosition = mul(lightWorldPosition, View);
     float4 lightScreenPosition = mul(lightViewPosition, Projection);
-    output.PosLight = lightScreenPosition;
+   
+    output.PosLight = float4(LightPos, 1);
 
     output.TexCoord = input.TexCoord;
     
@@ -82,7 +83,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     tex.rgb *= AmbientColor + (lightAmount * LightColor);
     
-    float minDistance = 0.5;
+    float minDistance = 50;
     
     float lightDistance = min((distance(input.PosWorld, input.PosLight)), minDistance) / minDistance;
     if (lightDistance <= minDistance) tex.rgb += 1 - lightDistance;
