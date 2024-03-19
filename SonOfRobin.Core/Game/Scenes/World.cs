@@ -1453,6 +1453,15 @@ namespace SonOfRobin
 
             Matrix worldMatrix = this.TransformMatrix;
 
+            // searching for light sources
+
+            Sprite[] lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
+                .Where(p => p.sprite.IsOnBoard)
+                .OrderBy(p => p.sprite.AnimFrame.layer)
+                .ThenBy(p => p.sprite.GfxRect.Bottom)
+                .Select(p => p.sprite)
+                .ToArray();
+
             // getting blocking light sprites
 
             IEnumerable<Sprite> spritesCastingShadows = Array.Empty<Sprite>();
@@ -1490,7 +1499,7 @@ namespace SonOfRobin
 
             // drawing background (ground, leaving "holes" for water)
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
-            int trianglesDrawn = this.Grid.DrawBackground();
+            int trianglesDrawn = this.Grid.DrawBackground(lightSprites: lightSprites);
 
             // drawing sprites
 
@@ -1526,7 +1535,7 @@ namespace SonOfRobin
 
             // drawing darkness
 
-            Sprite[] lightSprites = this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows);
+            this.UpdateDarknessMask(spritesCastingShadows: spritesCastingShadows, lightSprites: lightSprites);
             this.DrawLightAndDarkness(lightSprites);
 
             // drawing highlighted pieces
@@ -1602,17 +1611,8 @@ namespace SonOfRobin
             this.CurrentFrame += Preferences.halfFramerate ? 2 : 1;
         }
 
-        private Sprite[] UpdateDarknessMask(IEnumerable<Sprite> spritesCastingShadows)
+        private Sprite[] UpdateDarknessMask(IEnumerable<Sprite> spritesCastingShadows, Sprite[] lightSprites)
         {
-            // searching for light sources
-
-            Sprite[] lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
-                .Where(p => p.sprite.IsOnBoard)
-                .OrderBy(p => p.sprite.AnimFrame.layer)
-                .ThenBy(p => p.sprite.GfxRect.Bottom)
-                .Select(p => p.sprite)
-                .ToArray();
-
             AmbientLight.AmbientLightData ambientLightData = AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel);
 
             // preparing darkness mask
@@ -1726,7 +1726,7 @@ namespace SonOfRobin
 
             SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.TransformMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Deferred, blendState: colorLightBlend);
 
-            foreach (var lightSprite in lightSprites)
+            foreach (Sprite lightSprite in lightSprites)
             {
                 if (lightSprite.lightEngine.ColorActive && cameraRect.Intersects(lightSprite.lightEngine.Rect))
                 {

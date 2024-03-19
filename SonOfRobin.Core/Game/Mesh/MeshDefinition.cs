@@ -20,7 +20,7 @@ namespace SonOfRobin
         public readonly Level.LevelType[] levelTypes;
         public readonly int drawPriority;
         public readonly BlendState blendState;
-        public EffInstance effect;
+        public EffInstance effInstance;
 
         public static readonly Tweener tweener = new();
         public float tweenEffectPower;
@@ -296,7 +296,7 @@ namespace SonOfRobin
                 );
 
             lava.tweenEffectPower = 0f;
-            lava.effect = new MeshLavaInstance(meshDef: lava);
+            lava.effInstance = new MeshLavaInstance(meshDef: lava);
 
             tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 15, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
@@ -313,7 +313,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
             swamp.tweenEffectPower = 0.5f;
-            swamp.effect = new MeshSwampInstance(meshDef: swamp);
+            swamp.effInstance = new MeshSwampInstance(meshDef: swamp);
 
             tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
@@ -330,7 +330,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
 
-            ruins.effect = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal), flippedNormalYAxis: true, lightPowerMultiplier: 7f);
+            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal), flippedNormalYAxis: true, lightPowerMultiplier: 1f);
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
@@ -358,7 +358,7 @@ namespace SonOfRobin
             foreach (MeshDefinition meshDef in meshDefByTextureName.Values)
             {
                 // every meshDef should have its effect defined
-                if (meshDef.effect == null) meshDef.effect = new MeshBasicInstance(meshDef: meshDef);
+                if (meshDef.effInstance == null) meshDef.effInstance = new MeshBasicInstance(meshDef: meshDef);
             }
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace SonOfRobin
 {
@@ -11,6 +12,7 @@ namespace SonOfRobin
         private readonly Vector3 ambientColor;
         private readonly float normalYAxisMultiplier;
         private readonly float lightPowerMultiplier;
+        public Sprite[] lightSprites;
 
         public MeshNormalMapInstance(MeshDefinition meshDef, Texture2D normalMapTexture, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshNormalMap, framesLeft: framesLeft, priority: priority)
@@ -21,6 +23,7 @@ namespace SonOfRobin
             this.ambientColor = new Color(ambientColorVal, ambientColorVal, ambientColorVal).ToVector3();
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
+            this.lightSprites = [];
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
@@ -39,8 +42,35 @@ namespace SonOfRobin
 
             this.effect.Parameters["worldScale"].SetValue(scale.X);
 
-            World world = World.GetTopWorld();
-            if (world != null && !world.demoMode) this.effect.Parameters["LightPos"].SetValue(world.Player.sprite.position);
+            int arraySize = 6;
+
+            var lightPosArray = new Vector3[arraySize];
+            var lightColorArray = new Vector3[arraySize];
+            var lightRadiusArray = new float[arraySize];
+
+            for (int i = 0; i < arraySize; i++)
+            {
+                Vector3 lightPos = Vector3.Zero;
+                Color lightColor = Color.Transparent;
+                float lightRadius = 0f;
+
+                if (i <= this.lightSprites.Length - 1)
+                {
+                    Sprite lightSprite = this.lightSprites[i];
+
+                    lightPos = new Vector3(lightSprite.position.X, lightSprite.position.Y, 0);
+                    lightColor = lightSprite.lightEngine.Color;
+                    lightRadius = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height) / 2;
+                }
+
+                lightPosArray[i] = lightPos;
+                lightColorArray[i] = new Vector3(lightColor.R, lightColor.G, lightColor.B);
+                lightRadiusArray[i] = lightRadius;
+            }
+
+            this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
+            this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
+            this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }

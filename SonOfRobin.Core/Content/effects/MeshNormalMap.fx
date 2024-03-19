@@ -4,16 +4,18 @@
 #define VS_SHADERMODEL vs_3_0
 #define PS_SHADERMODEL ps_3_0
 #else
-#define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_4_0_level_9_1
+#define VS_SHADERMODEL vs_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
+#define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
-float3 LightPos;
-float3 LightColor = 1;
 float3 ambientColor;
 float worldScale;
 float normalYAxisMultiplier;
 float lightPowerMultiplier;
+
+float3 lightPosArray[6];
+float3 lightColorArray[6];
+float lightRadiusArray[6];
 
 float4x4 World;
 float4x4 View;
@@ -50,7 +52,6 @@ struct VertexShaderOutput
 {
     float4 Position : POSITION0;
     float4 PosWorld : POSITION1;
-    float4 PosLight : POSITION2;
     float2 TexCoord : TEXCOORD0;
     float4 Color : COLOR0;
 };
@@ -63,28 +64,32 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
     output.PosWorld = mul(input.Position, World); // handing over WorldSpace Coordinates to PS
-    output.PosLight = mul(float4(LightPos, 1), worldScale);
-  
     output.TexCoord = input.TexCoord;
     
     return output;    
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{    
-    // input.PosWorld how has the Position of this Pixel in World Space
-    float3 lightdir = normalize((input.PosWorld - input.PosLight)); // this is now the direction of light for this pixel
+{       
+    float4 tex = tex2D(BaseTextureSampler, input.TexCoord);
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);
     
-    float4 tex = tex2D(BaseTextureSampler, input.TexCoord);    
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);     
-    normal.y *= normalYAxisMultiplier;
-    float lightAmount = saturate(max(0, dot(normal, -lightdir)));
+    for (int i = 0; i < 6; i++)
+    {
+        float4 lightPos = mul(float4(lightPosArray[i], 1), worldScale);
+        float3 lightColor = lightColorArray[i];
+        float lightRadius = lightRadiusArray[i];
+                
+        float3 lightdir = normalize((input.PosWorld - lightPos)); // this is now the direction of light for this pixel
     
-    float minDistance = 250;
-    float lightDistance = min((distance(input.PosWorld, input.PosLight) / worldScale), minDistance) / minDistance;
-    float lightPowerFromDistance = 1 - lightDistance;
-  
-    tex.rgb *= ambientColor + (lightAmount * lightPowerFromDistance * LightColor * lightPowerMultiplier);
+        normal.y *= normalYAxisMultiplier;
+        float lightAmount = saturate(max(0, dot(normal, -lightdir)));
+        
+        float lightDistance = min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius;
+        
+        float combinedLightPower = ambientColor * lightAmount * (1 - lightDistance) * lightPowerMultiplier;
+        if (combinedLightPower > 0) tex.rgb *= combinedLightPower * lightColor;
+    }
   
     return tex * drawColor;   
 }

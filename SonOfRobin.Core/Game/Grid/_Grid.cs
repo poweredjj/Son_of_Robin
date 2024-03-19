@@ -1241,7 +1241,7 @@ namespace SonOfRobin
             // GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
 
-        public int DrawBackground()
+        public int DrawBackground(Sprite[] lightSprites)
         {
             bool updateFog = false;
             Camera camera = this.world.camera;
@@ -1277,7 +1277,9 @@ namespace SonOfRobin
                 if (mesh.meshDef != currentMeshDef)
                 {
                     SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
-                    mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    EffInstance effInstance = mesh.meshDef.effInstance;
+                    if (effInstance.GetType() == typeof(MeshNormalMapInstance)) ((MeshNormalMapInstance)effInstance).lightSprites = lightSprites;
+                    effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
                     currentMeshDef = mesh.meshDef;
                 }
 
