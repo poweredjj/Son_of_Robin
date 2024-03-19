@@ -13,9 +13,8 @@ float4x4 View;
 float4x4 Projection;
 
 float4 drawColor;
-float2 baseTextureSize;
 float effectPower;
-float currentDraw;
+float2 distortTextureOffset;
 
 Texture2D BaseTexture : register(t0);
 Texture2D DistortTexture : register(t1);
@@ -63,16 +62,15 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float2 basePixelSize = 1.0 / baseTextureSize;
-               
-    float distortVal1 = tex2D(DistortTextureSampler, (input.TexCoord + float2(0, frac(currentDraw / 1200))) * 4).r;
-    float distortVal2 = (tex2D(DistortTextureSampler, input.TexCoord + float2(0, frac(currentDraw / 800))) * 5).g * effectPower;
-        
-    float2 baseSampleOffset1 = float2(distortVal1, distortVal1) * basePixelSize * 8;
-    float2 baseSampleOffset2 = float2(distortVal2, distortVal2) * basePixelSize * 6;
+    float distortVal1 = tex2D(DistortTextureSampler, frac(input.TexCoord * 6) + distortTextureOffset).r; // small bubbles
+    float distortVal2 = tex2D(DistortTextureSampler, frac(input.TexCoord * 2) + distortTextureOffset).g * (effectPower * 3); // big circles
     
-    float4 newColor = tex2D(BaseTextureSampler, input.TexCoord + baseSampleOffset1 + baseSampleOffset2); 
-    return newColor * drawColor;
+    float2 baseSampleOffset = frac(float2(distortVal1, distortVal1 + distortVal2) * 0.03);   
+    
+    float4 newColor = tex2D(BaseTextureSampler, input.TexCoord + baseSampleOffset);
+    
+    float opacity = 0.93 + (distortVal2 * 0.07);
+    return newColor * opacity * drawColor;
 }
 
 // Technique and passes within the technique

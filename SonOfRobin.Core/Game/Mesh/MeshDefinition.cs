@@ -295,7 +295,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            lava.tweenEffectPower = 0f;
+            lava.tweenEffectPower = 0.5f;
             lava.effect = new MeshLavaInstance(meshDef: lava);
 
             tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 15, delay: 0)
