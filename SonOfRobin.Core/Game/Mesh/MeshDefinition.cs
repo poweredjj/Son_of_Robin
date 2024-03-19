@@ -312,10 +312,10 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
-            swamp.tweenEffectPower = 0.5f;
+            swamp.tweenEffectPower = 1f;
             swamp.effect = new MeshSwampInstance(meshDef: swamp);
 
-            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 60 * 4, delay: 0)
+            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1.5f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.SineInOut);

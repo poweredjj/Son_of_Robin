@@ -24,6 +24,7 @@ namespace SonOfRobin
             this.effect.Parameters["Projection"].SetValue(SonOfRobinGame.BasicEffect.Projection);
             this.effect.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);
             this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
+
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);

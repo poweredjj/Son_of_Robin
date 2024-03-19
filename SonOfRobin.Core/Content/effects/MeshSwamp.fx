@@ -13,9 +13,8 @@ float4x4 View;
 float4x4 Projection;
 
 float4 drawColor;
-float2 baseTextureSize;
 float effectPower;
-float currentDraw;
+float2 distortTextureOffset;
 
 Texture2D BaseTexture : register(t0);
 Texture2D DistortTexture : register(t1);
@@ -62,11 +61,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{
-    float2 basePixelSize = 1.0 / baseTextureSize;
-        
-    float4 distortColor = tex2D(DistortTextureSampler, (input.TexCoord + frac(currentDraw / 2800)) * 3);
-    float2 baseSampleOffset = float2(distortColor.r, distortColor.g) * basePixelSize * effectPower * 20;
+{             
+    float4 distortColor = tex2D(DistortTextureSampler, frac(input.TexCoord * 2) + distortTextureOffset);
+    float2 baseSampleOffset = float2(distortColor.r, distortColor.g) * effectPower * 0.01;
     
     return tex2D(BaseTextureSampler, input.TexCoord + baseSampleOffset) * drawColor;
 }
