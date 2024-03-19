@@ -72,6 +72,7 @@ namespace SonOfRobin
                 if (this.sprite.opacityFade != null &&
                     this.sprite.opacityFade.mode != OpacityFade.Mode.CameraTargetObstruct &&
                     this.sprite.opacityFade.mode != OpacityFade.Mode.CameraTargetObstructRevert) return this.opacity * this.sprite.opacity;
+            
                 return this.opacity;
             }
         }

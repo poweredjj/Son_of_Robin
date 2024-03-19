@@ -8,7 +8,7 @@
 #define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
-float3 ambientColor;
+float4 ambientColor;
 float worldScale;
 float normalYAxisMultiplier;
 float lightPowerMultiplier;
@@ -71,27 +71,25 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {       
-    float4 tex = tex2D(BaseTextureSampler, input.TexCoord);
+    float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);
+    normal.y *= normalYAxisMultiplier;
+    
+    float4 sumOfLights = float4(0,0,0,0);
     
     for (int i = 0; i < 6; i++)
     {
         float4 lightPos = mul(float4(lightPosArray[i], 1), worldScale);
         float3 lightColor = lightColorArray[i];
         float lightRadius = lightRadiusArray[i];
-                
-        float3 lightdir = normalize((input.PosWorld - lightPos)); // this is now the direction of light for this pixel
-    
-        normal.y *= normalYAxisMultiplier;
-        float lightAmount = saturate(max(0, dot(normal, -lightdir)));
-        
+                    
+        float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));   
         float lightDistance = min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius;
-        
-        float combinedLightPower = ambientColor * lightAmount * (1 - lightDistance) * lightPowerMultiplier;
-        if (combinedLightPower > 0) tex.rgb *= combinedLightPower * lightColor;
+                        
+        sumOfLights.rgb += max(baseColor * lightAmount * (1 - lightDistance), 0) * lightColor;
     }
   
-    return tex * drawColor;   
+    return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;
 }
 
 // Technique and passes within the technique

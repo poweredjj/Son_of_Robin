@@ -1456,7 +1456,7 @@ namespace SonOfRobin
             // searching for light sources
 
             Sprite[] lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
-                .Where(p => p.sprite.IsOnBoard)
+                .Where(p => p.sprite.IsOnBoard && p.sprite.lightEngine.Opacity > 0)
                 .OrderBy(p => p.sprite.AnimFrame.layer)
                 .ThenBy(p => p.sprite.GfxRect.Bottom)
                 .Select(p => p.sprite)

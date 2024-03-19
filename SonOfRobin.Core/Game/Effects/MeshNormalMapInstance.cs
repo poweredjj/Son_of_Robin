@@ -9,7 +9,7 @@ namespace SonOfRobin
         private readonly MeshDefinition meshDef;
         private readonly Texture2D baseTexture;
         private readonly Texture2D normalMapTexture;
-        private readonly Vector3 ambientColor;
+        private readonly Vector4 ambientColor;
         private readonly float normalYAxisMultiplier;
         private readonly float lightPowerMultiplier;
         public Sprite[] lightSprites;
@@ -20,7 +20,7 @@ namespace SonOfRobin
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
             this.normalMapTexture = normalMapTexture;
-            this.ambientColor = new Color(ambientColorVal, ambientColorVal, ambientColorVal).ToVector3();
+            this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
             this.lightSprites = [];
@@ -59,7 +59,7 @@ namespace SonOfRobin
                     Sprite lightSprite = this.lightSprites[i];
 
                     lightPos = new Vector3(lightSprite.position.X, lightSprite.position.Y, 0);
-                    lightColor = lightSprite.lightEngine.Color;
+                    lightColor = lightSprite.lightEngine.Color * lightSprite.lightEngine.Opacity;
                     lightRadius = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height) / 2;
                 }
 
