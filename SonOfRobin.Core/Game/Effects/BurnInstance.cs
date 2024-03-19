@@ -15,7 +15,7 @@ namespace SonOfRobin
             this.phaseModifier = boardPiece != null && boardPiece.GetType() == typeof(Plant) ? boardPiece.sprite.position.X : 1;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["intensity"].SetValue(this.intensity * this.intensityForTweener);
             this.effect.Parameters["time"].SetValue(SonOfRobinGame.CurrentUpdate / 35f);

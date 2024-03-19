@@ -14,7 +14,7 @@ namespace SonOfRobin
             this.lightTexture = lightTexture;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["LightTexture"].SetValue(this.lightTexture);
             this.effect.Parameters["ShadowTexture"].SetValue(this.shadowTexture);

@@ -19,7 +19,7 @@ namespace SonOfRobin
             this.minAlpha = minAlpha;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             float opacity = 1f;
 
