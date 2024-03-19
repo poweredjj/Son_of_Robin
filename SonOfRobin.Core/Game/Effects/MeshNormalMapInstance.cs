@@ -24,13 +24,12 @@ namespace SonOfRobin
             this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["NormalTexture"].SetValue(this.normalMapTexture);
-            this.effect.Parameters["currentDraw"].SetValue(SonOfRobinGame.CurrentDraw);
 
             World world = World.GetTopWorld();
             if (world != null && !world.demoMode)
             {
                 Vector2 lightOffset = world.camera.CurrentPos - new Vector2((float)world.camera.viewRect.Width / 2f, (float)world.camera.viewRect.Height / 2f);
-                this.effect.Parameters["LightPos"].SetValue(world.Player.sprite.position);
+                this.effect.Parameters["LightPos"].SetValue(new Vector3(world.Player.sprite.position.X, world.Player.sprite.position.Y, 0));
             }
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);

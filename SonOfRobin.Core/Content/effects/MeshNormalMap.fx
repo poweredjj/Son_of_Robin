@@ -9,7 +9,6 @@
 #endif
 
 float3 LightPos;
-float3 CameraPos;
 float3 LightColor = 1.0;
 float3 AmbientColor = 0.5;
 
@@ -19,7 +18,6 @@ float4x4 Projection;
 
 float4 drawColor;
 float effectPower;
-float currentDraw;
 
 Texture2D BaseTexture : register(t0);
 Texture2D NormalTexture : register(t1);
@@ -86,7 +84,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float minDistance = 0.5;
     
-    float lightDistance = min((abs(input.PosWorld.xy - input.PosLight.xy)), minDistance) / minDistance;
+    float lightDistance = min((distance(input.PosWorld, input.PosLight)), minDistance) / minDistance;
     if (lightDistance <= minDistance) tex.rgb += 1 - lightDistance;
     
     return tex * drawColor;   
