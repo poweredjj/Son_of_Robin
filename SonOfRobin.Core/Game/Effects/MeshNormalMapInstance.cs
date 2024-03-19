@@ -29,8 +29,8 @@ namespace SonOfRobin
             World world = World.GetTopWorld();
             if (world != null && !world.demoMode)
             {
+                Vector2 lightOffset = world.camera.CurrentPos - new Vector2((float)world.camera.viewRect.Width / 2f, (float)world.camera.viewRect.Height / 2f);
                 this.effect.Parameters["LightPos"].SetValue(world.Player.sprite.position);
-                //this.effect.Parameters["CameraPos"].SetValue(world.camera.CurrentPos);
             }
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);

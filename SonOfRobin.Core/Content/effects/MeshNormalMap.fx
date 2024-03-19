@@ -84,6 +84,11 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     tex.rgb *= AmbientColor + (lightAmount * LightColor);
     
+    float minDistance = 0.5;
+    
+    float lightDistance = min((abs(input.PosWorld.xy - input.PosLight.xy)), minDistance) / minDistance;
+    if (lightDistance <= minDistance) tex.rgb += 1 - lightDistance;
+    
     return tex * drawColor;   
 }
 
