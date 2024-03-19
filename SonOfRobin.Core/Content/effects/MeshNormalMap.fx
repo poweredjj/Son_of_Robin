@@ -9,8 +9,8 @@
 #endif
 
 float3 LightPos;
-float3 LightColor = 1.0;
-float3 AmbientColor = 0.5;
+float3 LightColor = 2;
+float3 ambientColor;
 float worldScale;
 
 float4x4 World;
@@ -61,7 +61,6 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
     output.PosWorld = mul(input.Position, World); // handing over WorldSpace Coordinates to PS
-    
     output.PosLight = mul(float4(LightPos, 1), worldScale);
   
     output.TexCoord = input.TexCoord;
@@ -72,19 +71,18 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {    
     // input.PosWorld how has the Position of this Pixel in World Space
-    float3 lightdir = normalize(input.PosWorld - input.PosLight); // this is now the direction of light for this pixel
+    float3 lightdir = normalize((input.PosWorld - input.PosLight)); // this is now the direction of light for this pixel
     
     float4 tex = tex2D(BaseTextureSampler, input.TexCoord);    
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);    
-    float lightAmount = saturate(max(0, dot(normal, -lightdir)));
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1); 
+    float lightAmount = saturate(dot(normal.xyz, -lightdir));
     
-    tex.rgb *= AmbientColor + (lightAmount * LightColor);
-    
-    float minDistance = 80;
-    
+    float minDistance = 250;
     float lightDistance = min((distance(input.PosWorld, input.PosLight) / worldScale), minDistance) / minDistance;
-    if (lightDistance <= minDistance) tex.rgb += 1 - lightDistance;
-    
+    float lightPowerFromDistance = 1 - lightDistance;
+  
+    tex.rgb *= ambientColor + (lightAmount * lightPowerFromDistance * LightColor);
+  
     return tex * drawColor;   
 }
 
