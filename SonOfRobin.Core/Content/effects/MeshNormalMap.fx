@@ -9,9 +9,11 @@
 #endif
 
 float3 LightPos;
-float3 LightColor = 2;
+float3 LightColor = 1;
 float3 ambientColor;
 float worldScale;
+float normalYAxisMultiplier;
+float lightPowerMultiplier;
 
 float4x4 World;
 float4x4 View;
@@ -74,14 +76,15 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 lightdir = normalize((input.PosWorld - input.PosLight)); // this is now the direction of light for this pixel
     
     float4 tex = tex2D(BaseTextureSampler, input.TexCoord);    
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1); 
-    float lightAmount = saturate(dot(normal.xyz, -lightdir));
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);     
+    normal.y *= normalYAxisMultiplier;
+    float lightAmount = saturate(max(0, dot(normal, -lightdir)));
     
     float minDistance = 250;
     float lightDistance = min((distance(input.PosWorld, input.PosLight) / worldScale), minDistance) / minDistance;
     float lightPowerFromDistance = 1 - lightDistance;
   
-    tex.rgb *= ambientColor + (lightAmount * lightPowerFromDistance * LightColor);
+    tex.rgb *= ambientColor + (lightAmount * lightPowerFromDistance * LightColor * lightPowerMultiplier);
   
     return tex * drawColor;   
 }

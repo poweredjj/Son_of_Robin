@@ -330,7 +330,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
 
-            ruins.effect = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal));
+            ruins.effect = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal), flippedNormalYAxis: true, lightPowerMultiplier: 7f);
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
