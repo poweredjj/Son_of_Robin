@@ -298,8 +298,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            lava.tweenEffectPower = 0f;
-            lava.effInstance = new MeshLavaInstance(meshDef: lava);
+            lava.tweenEffectPower = 0.5f;
+            lava.effect = new MeshLavaInstance(meshDef: lava);
 
             tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 15, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
@@ -315,10 +315,11 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
+          
             swamp.tweenEffectPower = 0.5f;
             swamp.effInstance = new MeshSwampInstance(meshDef: swamp);
 
-            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 60 * 4, delay: 0)
+            tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1.5f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
                 .AutoReverse()
                 .Easing(EasingFunctions.SineInOut);

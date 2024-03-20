@@ -6,7 +6,6 @@ namespace SonOfRobin
     public class MeshSwampInstance : EffInstance
     {
         private readonly MeshDefinition meshDef;
-        private readonly Vector2 baseTextureSize;
         private readonly Texture2D baseTexture;
         private readonly Texture2D distortTexture;
 
@@ -15,7 +14,6 @@ namespace SonOfRobin
         {
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
-            this.baseTextureSize = new Vector2(this.baseTexture.Width, this.baseTexture.Height);
             this.distortTexture = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
         }
 
@@ -25,10 +23,11 @@ namespace SonOfRobin
             this.effect.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);
             this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
-            this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);
             this.effect.Parameters["DistortTexture"].SetValue(this.distortTexture);
             this.effect.Parameters["effectPower"].SetValue(this.meshDef.tweenEffectPower);
-            this.effect.Parameters["currentDraw"].SetValue((float)SonOfRobinGame.CurrentDraw);
+
+            float distortPower = (float)(SonOfRobinGame.CurrentDraw % 500) / 500;
+            this.effect.Parameters["distortTextureOffset"].SetValue(new Vector2(distortPower)); // values from 0 to 1
 
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
