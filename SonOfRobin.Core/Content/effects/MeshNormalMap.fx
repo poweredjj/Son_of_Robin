@@ -21,9 +21,9 @@ float3 sunPos;
 float sunPower;
 float sunYAxisCenterFactor;
 
-float3 lightPosArray[6];
-float4 lightColorArray[6];
-float lightRadiusArray[6];
+float3 lightPosArray[7];
+float4 lightColorArray[7];
+float lightRadiusArray[7];
 int noOfLights;
 
 float4 drawColor;
@@ -85,7 +85,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
     {
         if (i == noOfLights) break;
                             

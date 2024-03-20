@@ -14,6 +14,10 @@ namespace SonOfRobin
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
+        public Vector3 normalizedSunPos; // need to be set before invoking TurnOn()
+        public AmbientLight.SunLightData sunLightData; // need to be set before invoking TurnOn()
+        public LightData[] lightDataArray; // need to be set before invoking TurnOn()
+
         public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, float sunPowerMultiplier = 70f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshNormalMap, framesLeft: framesLeft, priority: priority)
         {
@@ -41,16 +45,11 @@ namespace SonOfRobin
             SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
             this.effect.Parameters["worldScale"].SetValue(scale.X);
 
-            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
-        }
-
-        public void SetLights(LightData[] lightDataArray, Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData)
-        {
-            int maxLightCount = 6;
+            int maxLightCount = 7;
 
             int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
 
-            if (lightDataArray.Length > maxLightCount) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
+            //if (lightDataArray.Length > maxLightCount) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
 
             var lightPosArray = new Vector3[arraySize];
             var lightColorArray = new Vector4[arraySize];
@@ -70,6 +69,8 @@ namespace SonOfRobin
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
             this.effect.Parameters["noOfLights"].SetValue(arraySize);
+
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
     }
 

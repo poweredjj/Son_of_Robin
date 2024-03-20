@@ -1255,6 +1255,9 @@ namespace SonOfRobin
                 Vector2 normalizedSunPos = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
                 normalizedSunPosVector3 = new Vector3(normalizedSunPos.X, normalizedSunPos.Y, 0);
 
+                // putting player first, to always show when there are more lights than can be drawn
+                lightSprites = lightSprites.OrderByDescending(sprite => sprite.boardPiece.GetType() == typeof(Player)).ToArray();
+
                 for (int i = 0; i < lightSprites.Length; i++)
                 {
                     lightDataArray[i] = new LightData(lightSprites[i]);
@@ -1288,21 +1291,23 @@ namespace SonOfRobin
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                if (mesh.MeshDef != currentMeshDef)
+                if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
+                {
+                    MeshNormalMapInstance meshNormalMapInstance = (MeshNormalMapInstance)mesh.MeshDef.effInstance;
+                    // every mesh should only have assigned lights, that are affecting it
+                    meshNormalMapInstance.lightDataArray = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
+                    meshNormalMapInstance.normalizedSunPos = normalizedSunPosVector3;
+                    meshNormalMapInstance.sunLightData = sunLightData;
+
+                    mesh.MeshDef.effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    currentMeshDef = mesh.MeshDef;
+                }
+                else if (mesh.MeshDef != currentMeshDef)
                 {
                     SonOfRobinGame.GfxDev.BlendState = mesh.MeshDef.blendState;
                     EffInstance effInstance = mesh.MeshDef.effInstance;
                     effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
                     currentMeshDef = mesh.MeshDef;
-                }
-
-                if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
-                {
-                    // every mesh should only have assigned lights, that are affecting it
-                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLights(
-                        lightDataArray: lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray(),
-                        normalizedSunPos: normalizedSunPosVector3,
-                        sunLightData: sunLightData);
                 }
 
                 mesh.Draw();
