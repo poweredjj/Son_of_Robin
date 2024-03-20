@@ -4,7 +4,7 @@
 #define VS_SHADERMODEL vs_3_0
 #define PS_SHADERMODEL ps_3_0
 #else
-#define VS_SHADERMODEL vs_4_0_level_9_1 // slightly higher version, allowing for 512 max instructions
+#define VS_SHADERMODEL vs_4_0_level_9_1
 #define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
@@ -21,12 +21,10 @@ float3 sunPos;
 float sunPower;
 float sunYAxisCenterFactor;
 
-float3 lightPosArray[7];
-float4 lightColorArray[7];
-float lightRadiusArray[7];
+float3 lightPosArray[4];
+float4 lightColorArray[4];
+float lightRadiusArray[4];
 int noOfLights;
-
-float4 drawColor;
 
 Texture2D BaseTexture : register(t0);
 Texture2D NormalTexture : register(t1);
@@ -70,11 +68,11 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.PosWorld = mul(input.Position, World) / worldScale; // handing over WorldSpace Coordinates to PS
     output.TexCoord = input.TexCoord;
         
-    return output;    
+    return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
-{       
+{
     float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
@@ -85,16 +83,16 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 4; i++)
     {
         if (i == noOfLights) break;
                             
         float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPosArray[i])), lightRadiusArray[i]) / lightRadiusArray[i]), 0);
         float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPosArray[i])))));
-        sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower; 
+        sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;
     }
   
-    return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;
+    return (baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier);
 }
 
 // Technique and passes within the technique

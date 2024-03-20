@@ -19,7 +19,7 @@ namespace SonOfRobin
         public LightData[] lightDataArray; // need to be set before invoking TurnOn()
 
         public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, float sunPowerMultiplier = 70f, int framesLeft = 1, int priority = 1) :
-            base(effect: SonOfRobinGame.EffectMeshNormalMap, framesLeft: framesLeft, priority: priority)
+            base(effect: null, framesLeft: framesLeft, priority: priority)
         {
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
@@ -32,19 +32,6 @@ namespace SonOfRobin
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
-            this.effect.Parameters["Projection"].SetValue(SonOfRobinGame.BasicEffect.Projection);
-            this.effect.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);
-            this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
-            this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
-            this.effect.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
-            this.effect.Parameters["ambientColor"].SetValue(this.ambientColor);
-            this.effect.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
-            this.effect.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
-
-            Vector3 scale; Quaternion rot; Vector3 pos;
-            SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
-            this.effect.Parameters["worldScale"].SetValue(scale.X);
-
             int maxLightCount = 7;
 
             int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
@@ -62,15 +49,39 @@ namespace SonOfRobin
                 lightRadiusArray[i] = lightDataArray[i].radius;
             }
 
-            this.effect.Parameters["sunPos"].SetValue(normalizedSunPos);
-            this.effect.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * this.sunPowerMultiplier);
-            this.effect.Parameters["sunYAxisCenterFactor"].SetValue(1f - ((sunLightData.sunShadowsLength - 1f) / 2f));
-            this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
-            this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
-            this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
-            this.effect.Parameters["noOfLights"].SetValue(arraySize);
+            Effect effInstance;
 
-            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
+            if (arraySize == 0) effInstance = SonOfRobinGame.EffectMeshNormalMap0;
+            else if (arraySize <= 4) effInstance = SonOfRobinGame.EffectMeshNormalMap4;
+            else effInstance = SonOfRobinGame.EffectMeshNormalMap7;
+
+            if (arraySize > 0)
+            {
+                effInstance.Parameters["lightPosArray"].SetValue(lightPosArray);
+                effInstance.Parameters["lightColorArray"].SetValue(lightColorArray);
+                effInstance.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
+                effInstance.Parameters["noOfLights"].SetValue(arraySize);
+            }
+
+            effInstance.Parameters["sunPos"].SetValue(normalizedSunPos);
+            effInstance.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * this.sunPowerMultiplier);
+            effInstance.Parameters["sunYAxisCenterFactor"].SetValue(1f - ((sunLightData.sunShadowsLength - 1f) / 2f));
+
+            effInstance.Parameters["Projection"].SetValue(SonOfRobinGame.BasicEffect.Projection);
+            effInstance.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);
+            effInstance.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
+            effInstance.Parameters["BaseTexture"].SetValue(this.baseTexture);
+            effInstance.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
+            effInstance.Parameters["ambientColor"].SetValue(this.ambientColor);
+            effInstance.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
+            effInstance.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
+
+            Vector3 scale; Quaternion rot; Vector3 pos;
+            SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
+            effInstance.Parameters["worldScale"].SetValue(scale.X);
+
+            // base.TurnOn is not used here, to allow using various effects
+            effInstance.CurrentTechnique.Passes[0].Apply();
         }
     }
 

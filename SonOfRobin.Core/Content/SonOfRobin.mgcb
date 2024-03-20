@@ -55,11 +55,23 @@
 /processorParam:DebugMode=Auto
 /build:effects/MeshLava.fx
 
-#begin effects/MeshNormalMap.fx
+#begin effects/MeshNormalMap0.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:effects/MeshNormalMap.fx
+/build:effects/MeshNormalMap0.fx
+
+#begin effects/MeshNormalMap4.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshNormalMap4.fx
+
+#begin effects/MeshNormalMap7.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshNormalMap7.fx
 
 #begin effects/MeshSwamp.fx
 /importer:EffectImporter
@@ -526,18 +538,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/backpack_luxurious.png
 
-#begin gfx/backpack_medium.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/backpack_medium.png
-
 #begin gfx/backpack_medium_outline.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -549,6 +549,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/backpack_medium_outline.png
+
+#begin gfx/backpack_medium.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/backpack_medium.png
 
 #begin gfx/backpack_small.png
 /importer:TextureImporter
@@ -1030,18 +1042,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_mountain_walking.png
 
-#begin gfx/buffs/buff_poison.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/buffs/buff_poison.png
-
 #begin gfx/buffs/buff_poison_remove.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1053,6 +1053,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/buffs/buff_poison_remove.png
+
+#begin gfx/buffs/buff_poison.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/buffs/buff_poison.png
 
 #begin gfx/buffs/buff_regen.png
 /importer:TextureImporter
@@ -1282,18 +1294,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/candle.png
 
-#begin gfx/carrot.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/carrot.png
-
 #begin gfx/carrot_plant_empty.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1317,6 +1317,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/carrot_plant_has_carrot.png
+
+#begin gfx/carrot.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/carrot.png
 
 #begin gfx/cave_entrance_blocked.png
 /importer:TextureImporter
@@ -1918,18 +1930,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/clay.png
 
-#begin gfx/coal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/coal.png
-
 #begin gfx/coal_deposit.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -1941,6 +1941,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/coal_deposit.png
+
+#begin gfx/coal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/coal.png
 
 #begin gfx/coffee_raw.png
 /importer:TextureImporter
@@ -2050,18 +2062,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/crosshair.png
 
-#begin gfx/crystal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/crystal.png
-
 #begin gfx/crystal_deposit_big.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2086,6 +2086,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/crystal_deposit_small.png
 
+#begin gfx/crystal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/crystal.png
+
 #begin gfx/cursor.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2097,30 +2109,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/cursor.png
-
-#begin gfx/dig_site.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/dig_site.png
-
-#begin gfx/dig_site_glass.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/dig_site_glass.png
 
 #begin gfx/dig_site_glass_shine_1.png
 /importer:TextureImporter
@@ -2158,6 +2146,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/dig_site_glass_shine_3.png
 
+#begin gfx/dig_site_glass.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/dig_site_glass.png
+
 #begin gfx/dig_site_ruins.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -2181,6 +2181,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/dig_site_swamp.png
+
+#begin gfx/dig_site.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/dig_site.png
 
 #begin gfx/dungarees.png
 /importer:TextureImporter
@@ -4126,18 +4138,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_Cross.png
 
-#begin gfx/input/PS4/PS4_Dpad.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS4/PS4_Dpad.png
-
 #begin gfx/input/PS4/PS4_Dpad_Down.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4186,6 +4186,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_Dpad_Up.png
 
+#begin gfx/input/PS4/PS4_Dpad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS4/PS4_Dpad.png
+
 #begin gfx/input/PS4/PS4_L1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4210,18 +4222,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_L2.png
 
-#begin gfx/input/PS4/PS4_Left_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS4/PS4_Left_Stick.png
-
 #begin gfx/input/PS4/PS4_Left_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4233,6 +4233,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_Left_Stick_Click.png
+
+#begin gfx/input/PS4/PS4_Left_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS4/PS4_Left_Stick.png
 
 #begin gfx/input/PS4/PS4_Options.png
 /importer:TextureImporter
@@ -4270,18 +4282,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_R2.png
 
-#begin gfx/input/PS4/PS4_Right_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS4/PS4_Right_Stick.png
-
 #begin gfx/input/PS4/PS4_Right_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4293,6 +4293,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS4/PS4_Right_Stick_Click.png
+
+#begin gfx/input/PS4/PS4_Right_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS4/PS4_Right_Stick.png
 
 #begin gfx/input/PS4/PS4_Share.png
 /importer:TextureImporter
@@ -4366,18 +4378,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Cross.png
 
-#begin gfx/input/PS5/PS5_Dpad.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS5/PS5_Dpad.png
-
 #begin gfx/input/PS5/PS5_Dpad_Down.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4426,6 +4426,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Dpad_Up.png
 
+#begin gfx/input/PS5/PS5_Dpad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS5/PS5_Dpad.png
+
 #begin gfx/input/PS5/PS5_L1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4450,18 +4462,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_L2.png
 
-#begin gfx/input/PS5/PS5_Left_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS5/PS5_Left_Stick.png
-
 #begin gfx/input/PS5/PS5_Left_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4473,6 +4473,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Left_Stick_Click.png
+
+#begin gfx/input/PS5/PS5_Left_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS5/PS5_Left_Stick.png
 
 #begin gfx/input/PS5/PS5_Microphone.png
 /importer:TextureImporter
@@ -4486,18 +4498,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Microphone.png
 
-#begin gfx/input/PS5/PS5_Options.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS5/PS5_Options.png
-
 #begin gfx/input/PS5/PS5_Options_Alt.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4509,6 +4509,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Options_Alt.png
+
+#begin gfx/input/PS5/PS5_Options.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS5/PS5_Options.png
 
 #begin gfx/input/PS5/PS5_R1.png
 /importer:TextureImporter
@@ -4534,18 +4546,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_R2.png
 
-#begin gfx/input/PS5/PS5_Right_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/PS5/PS5_Right_Stick.png
-
 #begin gfx/input/PS5/PS5_Right_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4558,7 +4558,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Right_Stick_Click.png
 
-#begin gfx/input/PS5/PS5_Share.png
+#begin gfx/input/PS5/PS5_Right_Stick.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -4568,7 +4568,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/input/PS5/PS5_Share.png
+/build:gfx/input/PS5/PS5_Right_Stick.png
 
 #begin gfx/input/PS5/PS5_Share_Alt.png
 /importer:TextureImporter
@@ -4581,6 +4581,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/PS5/PS5_Share_Alt.png
+
+#begin gfx/input/PS5/PS5_Share.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/PS5/PS5_Share.png
 
 #begin gfx/input/PS5/PS5_Square.png
 /importer:TextureImporter
@@ -4654,18 +4666,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_Down.png
 
-#begin gfx/input/Switch/Switch_Dpad.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Switch/Switch_Dpad.png
-
 #begin gfx/input/Switch/Switch_Dpad_Down.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4714,6 +4714,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_Dpad_Up.png
 
+#begin gfx/input/Switch/Switch_Dpad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Switch/Switch_Dpad.png
+
 #begin gfx/input/Switch/Switch_Home.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4738,18 +4750,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_LB.png
 
-#begin gfx/input/Switch/Switch_Left.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Switch/Switch_Left.png
-
 #begin gfx/input/Switch/Switch_Left_Stick.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4761,6 +4761,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_Left_Stick.png
+
+#begin gfx/input/Switch/Switch_Left.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Switch/Switch_Left.png
 
 #begin gfx/input/Switch/Switch_LT.png
 /importer:TextureImporter
@@ -4810,18 +4822,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_RB.png
 
-#begin gfx/input/Switch/Switch_Right.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Switch/Switch_Right.png
-
 #begin gfx/input/Switch/Switch_Right_Stick.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -4833,6 +4833,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Switch/Switch_Right_Stick.png
+
+#begin gfx/input/Switch/Switch_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Switch/Switch_Right.png
 
 #begin gfx/input/Switch/Switch_RT.png
 /importer:TextureImporter
@@ -5398,18 +5410,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_B.png
 
-#begin gfx/input/Xbox 360/360_Back.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox 360/360_Back.png
-
 #begin gfx/input/Xbox 360/360_Back_Alt.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5422,7 +5422,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_Back_Alt.png
 
-#begin gfx/input/Xbox 360/360_Dpad.png
+#begin gfx/input/Xbox 360/360_Back.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -5432,7 +5432,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/input/Xbox 360/360_Dpad.png
+/build:gfx/input/Xbox 360/360_Back.png
 
 #begin gfx/input/Xbox 360/360_Dpad_Down.png
 /importer:TextureImporter
@@ -5482,6 +5482,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_Dpad_Up.png
 
+#begin gfx/input/Xbox 360/360_Dpad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox 360/360_Dpad.png
+
 #begin gfx/input/Xbox 360/360_LB.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5494,18 +5506,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_LB.png
 
-#begin gfx/input/Xbox 360/360_Left_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox 360/360_Left_Stick.png
-
 #begin gfx/input/Xbox 360/360_Left_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5517,6 +5517,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_Left_Stick_Click.png
+
+#begin gfx/input/Xbox 360/360_Left_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox 360/360_Left_Stick.png
 
 #begin gfx/input/Xbox 360/360_LT.png
 /importer:TextureImporter
@@ -5542,18 +5554,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_RB.png
 
-#begin gfx/input/Xbox 360/360_Right_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox 360/360_Right_Stick.png
-
 #begin gfx/input/Xbox 360/360_Right_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5565,6 +5565,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_Right_Stick_Click.png
+
+#begin gfx/input/Xbox 360/360_Right_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox 360/360_Right_Stick.png
 
 #begin gfx/input/Xbox 360/360_RT.png
 /importer:TextureImporter
@@ -5578,18 +5590,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_RT.png
 
-#begin gfx/input/Xbox 360/360_Start.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox 360/360_Start.png
-
 #begin gfx/input/Xbox 360/360_Start_Alt.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5601,6 +5601,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox 360/360_Start_Alt.png
+
+#begin gfx/input/Xbox 360/360_Start.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox 360/360_Start.png
 
 #begin gfx/input/Xbox 360/360_X.png
 /importer:TextureImporter
@@ -5650,18 +5662,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_B.png
 
-#begin gfx/input/Xbox Series/XboxSeriesX_Dpad.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox Series/XboxSeriesX_Dpad.png
-
 #begin gfx/input/Xbox Series/XboxSeriesX_Dpad_Down.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5710,6 +5710,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_Dpad_Up.png
 
+#begin gfx/input/Xbox Series/XboxSeriesX_Dpad.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox Series/XboxSeriesX_Dpad.png
+
 #begin gfx/input/Xbox Series/XboxSeriesX_LB.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5722,18 +5734,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_LB.png
 
-#begin gfx/input/Xbox Series/XboxSeriesX_Left_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox Series/XboxSeriesX_Left_Stick.png
-
 #begin gfx/input/Xbox Series/XboxSeriesX_Left_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5745,6 +5745,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_Left_Stick_Click.png
+
+#begin gfx/input/Xbox Series/XboxSeriesX_Left_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox Series/XboxSeriesX_Left_Stick.png
 
 #begin gfx/input/Xbox Series/XboxSeriesX_LT.png
 /importer:TextureImporter
@@ -5782,18 +5794,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_RB.png
 
-#begin gfx/input/Xbox Series/XboxSeriesX_Right_Stick.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/input/Xbox Series/XboxSeriesX_Right_Stick.png
-
 #begin gfx/input/Xbox Series/XboxSeriesX_Right_Stick_Click.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -5805,6 +5805,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/input/Xbox Series/XboxSeriesX_Right_Stick_Click.png
+
+#begin gfx/input/Xbox Series/XboxSeriesX_Right_Stick.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/input/Xbox Series/XboxSeriesX_Right_Stick.png
 
 #begin gfx/input/Xbox Series/XboxSeriesX_RT.png
 /importer:TextureImporter
@@ -6021,6 +6033,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/line_horizontal_white.png
+
+#begin gfx/loading_gfx.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/loading_gfx.png
+
+#begin gfx/loading_wheel.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/loading_wheel.png
 
 #begin gfx/Loading/loading_1.png
 /importer:TextureImporter
@@ -6478,30 +6514,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/Loading/loading_9.png
 
-#begin gfx/loading_gfx.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/loading_gfx.png
-
-#begin gfx/loading_wheel.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/loading_wheel.png
-
 #begin gfx/logo_wave_distortion.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -6514,18 +6526,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/logo_wave_distortion.png
 
-#begin gfx/map_big.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/map_big.png
-
 #begin gfx/map_big_edges.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -6537,6 +6537,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/map_big_edges.png
+
+#begin gfx/map_big.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/map_big.png
 
 #begin gfx/map_item.png
 /importer:TextureImporter
@@ -7270,18 +7282,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/mossy_minerals_small_4.png
 
-#begin gfx/mushroom.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/mushroom.png
-
 #begin gfx/mushroom_plant.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7293,6 +7293,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/mushroom_plant.png
+
+#begin gfx/mushroom.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/mushroom.png
 
 #begin gfx/music_note.png
 /importer:TextureImporter
@@ -7954,18 +7966,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ground_good.png
 
-#begin gfx/repeating_textures/lava.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/lava.png
-
 #begin gfx/repeating_textures/lava_distortion.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -7977,6 +7977,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/lava_distortion.png
+
+#begin gfx/repeating_textures/lava.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/lava.png
 
 #begin gfx/repeating_textures/map_beach_bright.png
 /importer:TextureImporter
@@ -8266,18 +8278,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ocean_floor.png
 
-#begin gfx/repeating_textures/pebbles.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/pebbles.png
-
 #begin gfx/repeating_textures/pebbles_normal.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8289,6 +8289,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/pebbles_normal.png
+
+#begin gfx/repeating_textures/pebbles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/pebbles.png
 
 #begin gfx/repeating_textures/perlin_noise_color.png
 /importer:TextureImporter
@@ -8914,18 +8926,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/tent_medium.png
 
-#begin gfx/tent_modern.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/tent_modern.png
-
 #begin gfx/tent_modern_packed.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8938,7 +8938,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/tent_modern_packed.png
 
-#begin gfx/tomato.png
+#begin gfx/tent_modern.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -8948,7 +8948,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/tomato.png
+/build:gfx/tent_modern.png
 
 #begin gfx/tomato_plant_big.png
 /importer:TextureImporter
@@ -8985,6 +8985,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/tomato_plant_small.png
+
+#begin gfx/tomato.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/tomato.png
 
 #begin gfx/torch_big_off.png
 /importer:TextureImporter
@@ -9370,18 +9382,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/upgrade.png
 
-#begin gfx/virtual_button.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/virtual_button.png
-
 #begin gfx/virtual_button_pressed.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -9393,6 +9393,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/virtual_button_pressed.png
+
+#begin gfx/virtual_button.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/virtual_button.png
 
 #begin gfx/virtual_joypad_background.png
 /importer:TextureImporter
@@ -9670,18 +9682,6 @@
 /processorParam:TextureFormat=Color
 /build:gfx/zzz.png
 
-#begin music/alexander-nakarada-night-of-mystery.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:music/alexander-nakarada-night-of-mystery.mp3
-
-#begin music/alexander-nakarada-tam-lin.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:music/alexander-nakarada-tam-lin.mp3
-
 #begin music/alex-productions-desert.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -9693,6 +9693,18 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:music/alex-productions-rain-on-the-window.mp3
+
+#begin music/alexander-nakarada-night-of-mystery.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/alexander-nakarada-night-of-mystery.mp3
+
+#begin music/alexander-nakarada-tam-lin.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/alexander-nakarada-tam-lin.mp3
 
 #begin music/fscm-productions-flowers.mp3
 /importer:Mp3Importer
@@ -9826,17 +9838,17 @@
 /processorParam:Quality=Best
 /build:sound/195439__littlebrojay__strike-3-sec.ogg
 
-#begin sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
-
 #begin sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality_short.ogg
+
+#begin sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/195586__scott-snailham__bonfire-fx-with-whoosh-basic-with-some-crackle-cd-quality.ogg
 
 #begin sound/203086__mafon2__two-thumps.ogg
 /importer:OggImporter
@@ -10984,17 +10996,17 @@
 /processorParam:Quality=Best
 /build:sound/620354__marb7e__whoosh-sword-hit-flesh.ogg
 
-#begin sound/62282__robinhood76__00517-alchemist-laboratory-arrangement.ogg
-/importer:OggImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement.ogg
-
 #begin sound/62282__robinhood76__00517-alchemist-laboratory-arrangement_loop.ogg
 /importer:OggImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement_loop.ogg
+
+#begin sound/62282__robinhood76__00517-alchemist-laboratory-arrangement.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sound/62282__robinhood76__00517-alchemist-laboratory-arrangement.ogg
 
 #begin sound/625174__gabfitzgerald__ui-sound-approval-high-pitched-bell-synth.ogg
 /importer:OggImporter
