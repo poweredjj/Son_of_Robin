@@ -34,8 +34,8 @@ namespace SonOfRobin
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
             this.effect.Parameters["ambientColor"].SetValue(this.ambientColor);
-            this.effect.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
             this.effect.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
+            this.effect.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
 
             Vector3 scale; Quaternion rot; Vector3 pos;
             SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
@@ -63,7 +63,7 @@ namespace SonOfRobin
 
             this.effect.Parameters["sunPos"].SetValue(normalizedSunPos);
             this.effect.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * this.sunPowerMultiplier);
-            this.effect.Parameters["sunYAxisCenterFactor"].SetValue(1f - (sunLightData.sunShadowsLength / 3f));
+            this.effect.Parameters["sunYAxisCenterFactor"].SetValue(1f - ((sunLightData.sunShadowsLength - 1f) / 2f));
             this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
