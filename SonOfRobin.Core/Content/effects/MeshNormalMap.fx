@@ -80,8 +80,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
     float4 sumOfLights = float4(0, 0, 0, 0);
-    sunPos.y = lerp(sunPos.y, input.PosWorld.y - 500, sunYAxisCenterFactor);
-    float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPos)))));
+    float3 sunPosCalculated = sunPos;
+    
+    sunPosCalculated.y = lerp(sunPos.y, input.PosWorld.y - 500, sunYAxisCenterFactor);
+    float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
     for (int i = 0; i < noOfLights; i++)
