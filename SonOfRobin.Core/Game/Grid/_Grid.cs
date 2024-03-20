@@ -1225,9 +1225,9 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(this.level.hasWater ? Map.waterColor : Color.Black);
 
-            foreach (Mesh mesh in this.MeshGrid.allMeshes.Distinct().OrderBy(mesh => mesh.meshDef.drawPriority))
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.Distinct().OrderBy(mesh => mesh.MeshDef.drawPriority))
             {
-                basicEffect.Texture = mesh.meshDef.mapTexture;
+                basicEffect.Texture = mesh.MeshDef.mapTexture;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1247,11 +1247,14 @@ namespace SonOfRobin
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
 
-            LightData[] lightDataArray = new LightData[lightSprites.Length];
+            LightData[] lightDataArray = new LightData[Preferences.HighTerrainDetail ? lightSprites.Length : 0];
 
-            for (int i = 0; i < lightSprites.Length; i++)
+            if (Preferences.HighTerrainDetail)
             {
-                lightDataArray[i] = new LightData(lightSprites[i]);
+                for (int i = 0; i < lightSprites.Length; i++)
+                {
+                    lightDataArray[i] = new LightData(lightSprites[i]);
+                }
             }
 
             Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false).AsSpan();
@@ -1274,25 +1277,25 @@ namespace SonOfRobin
             var meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
                 .Distinct()
-                .OrderBy(mesh => mesh.meshDef.drawPriority)
-                .ThenBy(mesh => mesh.meshDef.textureName);
+                .OrderBy(mesh => mesh.MeshDef.drawPriority)
+                .ThenBy(mesh => mesh.MeshDef.textureName);
 
             MeshDefinition currentMeshDef = null;
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                if (mesh.meshDef != currentMeshDef)
+                if (mesh.MeshDef != currentMeshDef)
                 {
-                    SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
-                    EffInstance effInstance = mesh.meshDef.effInstance;
+                    SonOfRobinGame.GfxDev.BlendState = mesh.MeshDef.blendState;
+                    EffInstance effInstance = mesh.MeshDef.effInstance;
                     effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
-                    currentMeshDef = mesh.meshDef;
+                    currentMeshDef = mesh.MeshDef;
                 }
 
-                if (mesh.meshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
+                if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
                 {
                     // every mesh should only have assigned lights, that are affecting it
-                    ((MeshNormalMapInstance)mesh.meshDef.effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
+                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
                 }
 
                 mesh.Draw();

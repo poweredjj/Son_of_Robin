@@ -57,6 +57,9 @@ namespace SonOfRobin
 
         public static void CreateMeshDefinitions()
         {
+            meshDefBySearchPriority.Clear();
+            meshDefByTextureName.Clear();
+
             // needed to fill small holes, that will occur between other meshes
             MeshDefinition groundBase = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -330,7 +333,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
 
-            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalMapTexture: TextureBank.GetTexture(textureName: TextureBank.TextureName.RepeatingPebblesNormal), flippedNormalYAxis: true, lightPowerMultiplier: 0.2f);
+            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalTextureName: TextureBank.TextureName.RepeatingPebblesNormal, flippedNormalYAxis: true, lightPowerMultiplier: 0.2f);
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
@@ -358,7 +361,7 @@ namespace SonOfRobin
             foreach (MeshDefinition meshDef in meshDefByTextureName.Values)
             {
                 // every meshDef should have its effect defined
-                if (meshDef.effInstance == null) meshDef.effInstance = new MeshBasicInstance(meshDef: meshDef);
+                if (meshDef.effInstance == null || !Preferences.HighTerrainDetail) meshDef.effInstance = new MeshBasicInstance(meshDef: meshDef);
             }
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));
