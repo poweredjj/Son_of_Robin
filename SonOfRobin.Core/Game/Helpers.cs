@@ -669,6 +669,7 @@ namespace SonOfRobin
             textList.Add(new TextWithImages(font: fontText, text: "Studies.Joystick library: Luiz Ossinho", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "ImageSharp library: Six Labors", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "Earcut polygon triangulation library: Oberbichler + Mapbox", imageList: new List<ImageObj>()));
+            textList.Add(new TextWithImages(font: fontText, text: "Normal map shader code: Francesco Bonizzi", imageList: new List<ImageObj>()));
             textList.Add(new TextWithImages(font: fontText, text: "Free graphics assets: RPGMaker forums, opengameart.org, other sites", imageList: new List<ImageObj>()));
 
             textList.Add(new TextWithImages(font: fontTitle, text: " ", imageList: new List<ImageObj>()));

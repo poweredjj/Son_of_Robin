@@ -76,12 +76,10 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {       
     float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);
-    normal.y *= normalYAxisMultiplier;
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
     float4 sumOfLights = float4(0, 0, 0, 0);
-  
-    
+     
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPos)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
