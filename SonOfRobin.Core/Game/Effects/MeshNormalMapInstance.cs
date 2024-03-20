@@ -44,7 +44,7 @@ namespace SonOfRobin
             base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
         }
 
-        public void SetLightArrays(LightData[] lightDataArray, Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData)
+        public void SetLights(LightData[] lightDataArray, Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData)
         {
             int arraySize = Math.Min(lightDataArray.Length, 6);
 
@@ -63,6 +63,7 @@ namespace SonOfRobin
 
             this.effect.Parameters["sunPos"].SetValue(normalizedSunPos);
             this.effect.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * this.sunPowerMultiplier);
+            this.effect.Parameters["sunYAxisCenterFactor"].SetValue(1f - (sunLightData.sunShadowsLength / 3f));
             this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);

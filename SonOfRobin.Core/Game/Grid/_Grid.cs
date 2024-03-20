@@ -1299,7 +1299,7 @@ namespace SonOfRobin
                 if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
                 {
                     // every mesh should only have assigned lights, that are affecting it
-                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLightArrays(
+                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLights(
                         lightDataArray: lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray(),
                         normalizedSunPos: normalizedSunPosVector3,
                         sunLightData: sunLightData);

@@ -15,6 +15,7 @@ float lightPowerMultiplier;
 
 float3 sunPos;
 float sunPower;
+float sunYAxisCenterFactor;
 
 float3 lightPosArray[6];
 float4 lightColorArray[6];
@@ -79,7 +80,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
     float4 sumOfLights = float4(0, 0, 0, 0);
-     
+    
+    sunPos.y = lerp(sunPos.y, input.PosWorld.y, sunYAxisCenterFactor);
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPos)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
@@ -88,10 +90,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         float4 lightPos = float4(lightPosArray[i], 1);
         float lightRadius = lightRadiusArray[i];
                     
-        float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));   
-        float lightDistance = min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius;
-                        
-        sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * (1 - lightDistance);
+        float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius), 0);
+        if (lightDistancePower > 0)
+        {
+            float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));                
+            sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;        
+        }
     }
   
     return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;
