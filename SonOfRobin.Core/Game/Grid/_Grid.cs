@@ -1285,12 +1285,14 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
                     EffInstance effInstance = mesh.meshDef.effInstance;
-                    if (effInstance.GetType() == typeof(MeshNormalMapInstance))
-                    {
-                        ((MeshNormalMapInstance)effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
-                    }
                     effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
                     currentMeshDef = mesh.meshDef;
+                }
+
+                if (mesh.meshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
+                {
+                    // every mesh should only have assigned lights, that are affecting it
+                    ((MeshNormalMapInstance)mesh.meshDef.effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
                 }
 
                 mesh.Draw();

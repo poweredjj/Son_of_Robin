@@ -16,6 +16,7 @@ float lightPowerMultiplier;
 float3 lightPosArray[6];
 float4 lightColorArray[6];
 float lightRadiusArray[6];
+int noOfLights;
 
 float4x4 World;
 float4x4 View;
@@ -63,7 +64,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 worldPosition = mul(float4(input.Position.xyz, 1), World);
     float4 viewPosition = mul(worldPosition, View);
     output.Position = mul(viewPosition, Projection);
-    output.PosWorld = mul(input.Position, World); // handing over WorldSpace Coordinates to PS
+    output.PosWorld = mul(input.Position, World) / worldScale; // handing over WorldSpace Coordinates to PS
     output.TexCoord = input.TexCoord;
     
     return output;    
@@ -78,8 +79,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float4 sumOfLights = float4(0,0,0,0);
     
     for (int i = 0; i < 6; i++)
-    {
-        float4 lightPos = mul(float4(lightPosArray[i], 1), worldScale);
+    {    
+        float4 lightPos = float4(lightPosArray[i], 1);
         float4 lightColor = lightColorArray[i];
         float lightRadius = lightRadiusArray[i];
                     
@@ -87,6 +88,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         float lightDistance = min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius;
                         
         sumOfLights.rgb += max(baseColor * lightAmount * (1 - lightDistance), 0) * lightColor;
+        
+        if (i == noOfLights - 1) break;
     }
   
     return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;

@@ -46,22 +46,23 @@ namespace SonOfRobin
         {
             int arraySize = Math.Min(lightDataArray.Length, 6);
 
+            if (lightDataArray.Length > 6) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
+
             var lightPosArray = new Vector3[arraySize];
             var lightColorArray = new Vector4[arraySize];
             var lightRadiusArray = new float[arraySize];
 
             for (int i = 0; i < arraySize; i++)
             {
-                LightData lightData = lightDataArray[i];
-
-                lightPosArray[i] = lightData.pos;
-                lightColorArray[i] = lightData.color;
-                lightRadiusArray[i] = lightData.radius;
+                lightPosArray[i] = lightDataArray[i].pos;
+                lightColorArray[i] = lightDataArray[i].color;
+                lightRadiusArray[i] = lightDataArray[i].radius;
             }
 
             this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
+            this.effect.Parameters["noOfLights"].SetValue(arraySize);
         }
     }
 
