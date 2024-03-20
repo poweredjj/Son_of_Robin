@@ -14,7 +14,7 @@ float normalYAxisMultiplier;
 float lightPowerMultiplier;
 
 float3 lightPosArray[6];
-float3 lightColorArray[6];
+float4 lightColorArray[6];
 float lightRadiusArray[6];
 
 float4x4 World;
@@ -80,7 +80,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     for (int i = 0; i < 6; i++)
     {
         float4 lightPos = mul(float4(lightPosArray[i], 1), worldScale);
-        float3 lightColor = lightColorArray[i];
+        float4 lightColor = lightColorArray[i];
         float lightRadius = lightRadiusArray[i];
                     
         float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));   

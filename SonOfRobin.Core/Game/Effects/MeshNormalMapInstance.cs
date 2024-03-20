@@ -12,7 +12,6 @@ namespace SonOfRobin
         private readonly Vector4 ambientColor;
         private readonly float normalYAxisMultiplier;
         private readonly float lightPowerMultiplier;
-        public Sprite[] lightSprites;
 
         public MeshNormalMapInstance(MeshDefinition meshDef, Texture2D normalMapTexture, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshNormalMap, framesLeft: framesLeft, priority: priority)
@@ -23,7 +22,6 @@ namespace SonOfRobin
             this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
-            this.lightSprites = [];
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
@@ -39,40 +37,53 @@ namespace SonOfRobin
 
             Vector3 scale; Quaternion rot; Vector3 pos;
             SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
-
             this.effect.Parameters["worldScale"].SetValue(scale.X);
 
-            int arraySize = 6;
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
+        }
+
+        public void SetLightArrays(LightData[] lightDataArray)
+        {
+            int arraySize = Math.Min(lightDataArray.Length, 6);
 
             var lightPosArray = new Vector3[arraySize];
-            var lightColorArray = new Vector3[arraySize];
+            var lightColorArray = new Vector4[arraySize];
             var lightRadiusArray = new float[arraySize];
 
             for (int i = 0; i < arraySize; i++)
             {
-                Vector3 lightPos = Vector3.Zero;
-                Color lightColor = Color.Transparent;
-                float lightRadius = 0f;
+                LightData lightData = lightDataArray[i];
 
-                if (i <= this.lightSprites.Length - 1)
-                {
-                    Sprite lightSprite = this.lightSprites[i];
-
-                    lightPos = new Vector3(lightSprite.position.X, lightSprite.position.Y, 0);
-                    lightColor = lightSprite.lightEngine.Color * lightSprite.lightEngine.Opacity;
-                    lightRadius = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height) / 2;
-                }
-
-                lightPosArray[i] = lightPos;
-                lightColorArray[i] = new Vector3(lightColor.R, lightColor.G, lightColor.B);
-                lightRadiusArray[i] = lightRadius;
+                lightPosArray[i] = lightData.pos;
+                lightColorArray[i] = lightData.color;
+                lightRadiusArray[i] = lightData.radius;
             }
 
             this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
+        }
+    }
 
-            base.TurnOn(currentUpdate: currentUpdate, drawColor: drawColor);
+    public readonly struct LightData
+    {
+        public readonly Vector3 pos;
+        public readonly Vector4 color;
+        public readonly float radius;
+        public readonly Rectangle rect;
+
+        public LightData(Sprite lightSprite)
+        {
+            this.pos = new Vector3(lightSprite.position.X, lightSprite.position.Y, 0);
+            Color color = lightSprite.lightEngine.Color * lightSprite.lightEngine.Opacity;
+            this.color = new Vector4(color.R, color.G, color.B, color.A);
+            this.radius = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height) / 2;
+
+            this.rect = new Rectangle(
+                x: (int)(lightSprite.position.X - (radius / 2)),
+                y: (int)(lightSprite.position.Y - (radius / 2)),
+                width: (int)radius,
+                height: (int)radius);
         }
     }
 }

@@ -1247,6 +1247,13 @@ namespace SonOfRobin
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
 
+            LightData[] lightDataArray = new LightData[lightSprites.Length];
+
+            for (int i = 0; i < lightSprites.Length; i++)
+            {
+                lightDataArray[i] = new LightData(lightSprites[i]);
+            }
+
             Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false).AsSpan();
 
             for (int i = 0; i < visibleCellsAsSpan.Length; i++)
@@ -1278,7 +1285,10 @@ namespace SonOfRobin
                 {
                     SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
                     EffInstance effInstance = mesh.meshDef.effInstance;
-                    if (effInstance.GetType() == typeof(MeshNormalMapInstance)) ((MeshNormalMapInstance)effInstance).lightSprites = lightSprites;
+                    if (effInstance.GetType() == typeof(MeshNormalMapInstance))
+                    {
+                        ((MeshNormalMapInstance)effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
+                    }
                     effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
                     currentMeshDef = mesh.meshDef;
                 }
