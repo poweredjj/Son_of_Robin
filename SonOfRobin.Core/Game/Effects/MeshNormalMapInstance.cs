@@ -23,7 +23,7 @@ namespace SonOfRobin
             this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
-            this.sunPowerMultiplier = sunPowerMultiplier;
+            this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 1f : 0.1f);
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)

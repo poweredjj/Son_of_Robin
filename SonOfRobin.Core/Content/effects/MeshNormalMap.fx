@@ -8,6 +8,10 @@
 #define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
+float4x4 World;
+float4x4 View;
+float4x4 Projection;
+
 float4 ambientColor;
 float worldScale;
 float normalYAxisMultiplier;
@@ -22,12 +26,7 @@ float4 lightColorArray[6];
 float lightRadiusArray[6];
 int noOfLights;
 
-float4x4 World;
-float4x4 View;
-float4x4 Projection;
-
 float4 drawColor;
-float effectPower;
 
 Texture2D BaseTexture : register(t0);
 Texture2D NormalTexture : register(t1);
@@ -56,7 +55,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-    float4 PosWorld : POSITION1;
+    float4 PosWorld : TEXCOORD1; // TEXCOORD1 name is needed for Android, will crash otherwise
     float2 TexCoord : TEXCOORD0;
     float4 Color : COLOR0;
 };
@@ -70,7 +69,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     output.Position = mul(viewPosition, Projection);
     output.PosWorld = mul(input.Position, World) / worldScale; // handing over WorldSpace Coordinates to PS
     output.TexCoord = input.TexCoord;
-    
+        
     return output;    
 }
 
@@ -80,22 +79,22 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
     float4 sumOfLights = float4(0, 0, 0, 0);
+
     float3 sunPosCalculated = sunPos;
-    
     sunPosCalculated.y = lerp(sunPos.y, input.PosWorld.y - 500, sunYAxisCenterFactor);
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
     for (int i = 0; i < noOfLights; i++)
-    {            
+    {
         float4 lightPos = float4(lightPosArray[i], 1);
         float lightRadius = lightRadiusArray[i];
                     
         float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius), 0);
         if (lightDistancePower > 0)
         {
-            float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));                
-            sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;        
+            float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));
+            sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;
         }
     }
   
