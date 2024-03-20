@@ -1499,7 +1499,7 @@ namespace SonOfRobin
 
             // drawing background (ground, leaving "holes" for water)
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
-            int trianglesDrawn = this.Grid.DrawBackground(lightSprites: lightSprites);
+            int trianglesDrawn = this.Grid.DrawBackground(lightSprites: lightSprites, sunLightData: sunLightData);
 
             // drawing sprites
 

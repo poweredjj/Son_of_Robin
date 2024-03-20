@@ -1241,7 +1241,7 @@ namespace SonOfRobin
             // GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
 
-        public int DrawBackground(Sprite[] lightSprites)
+        public int DrawBackground(Sprite[] lightSprites, AmbientLight.SunLightData sunLightData)
         {
             bool updateFog = false;
             Camera camera = this.world.camera;
@@ -1249,8 +1249,13 @@ namespace SonOfRobin
 
             LightData[] lightDataArray = new LightData[Preferences.HighTerrainDetail ? lightSprites.Length : 0];
 
+            Vector3 normalizedSunPos = Vector3.Zero;
+
             if (Preferences.HighTerrainDetail)
             {
+                Vector2 normalizedSunPosVector2 = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
+                normalizedSunPos = new Vector3(normalizedSunPosVector2.X, normalizedSunPosVector2.Y, 0);
+
                 for (int i = 0; i < lightSprites.Length; i++)
                 {
                     lightDataArray[i] = new LightData(lightSprites[i]);
@@ -1295,7 +1300,10 @@ namespace SonOfRobin
                 if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
                 {
                     // every mesh should only have assigned lights, that are affecting it
-                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLightArrays(lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray());
+                    ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLightArrays(
+                        lightDataArray: lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray(),
+                        normalizedSunPos: normalizedSunPos,
+                        sunLightData: sunLightData);
                 }
 
                 mesh.Draw();
@@ -1319,15 +1327,21 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public void DrawSunShadows(IEnumerable<Sprite> spritesCastingShadows, AmbientLight.SunLightData sunLightData)
+        private static Vector2 CalculateNormalizedSunPos(AmbientLight.SunLightData sunLightData, Rectangle cameraRect)
         {
-            Rectangle cameraRect = this.world.camera.viewRect;
-
             Vector2 normalizedSunPos = new(sunLightData.sunPos.X + cameraRect.Center.X, sunLightData.sunPos.Y + cameraRect.Center.Y);
             float sunAngle = Helpers.GetAngleBetweenTwoPoints(start: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), end: normalizedSunPos);
             int sunDistance = 100000;
             Vector2 sunOffset = new(sunDistance * (float)Math.Cos(sunAngle), sunDistance * (float)Math.Sin(sunAngle));
             normalizedSunPos = new Vector2(cameraRect.Center.X, cameraRect.Center.Y) + sunOffset;
+
+            return normalizedSunPos;
+        }
+
+        public void DrawSunShadows(IEnumerable<Sprite> spritesCastingShadows, AmbientLight.SunLightData sunLightData)
+        {
+            Rectangle cameraRect = this.world.camera.viewRect;
+            Vector2 normalizedSunPos = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
 
             bool shadowLeftSide = sunLightData.sunPos.X < 0;
             bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed
