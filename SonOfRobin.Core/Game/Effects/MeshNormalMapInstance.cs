@@ -23,7 +23,7 @@ namespace SonOfRobin
             this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
-            this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 1f : 0.1f);
+            this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 0.1f : 1f);
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
@@ -46,9 +46,11 @@ namespace SonOfRobin
 
         public void SetLights(LightData[] lightDataArray, Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData)
         {
-            int arraySize = Math.Min(lightDataArray.Length, 6);
+            int maxLightCount = 6;
 
-            if (lightDataArray.Length > 6) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
+            int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
+
+            if (lightDataArray.Length > maxLightCount) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
 
             var lightPosArray = new Vector3[arraySize];
             var lightColorArray = new Vector4[arraySize];

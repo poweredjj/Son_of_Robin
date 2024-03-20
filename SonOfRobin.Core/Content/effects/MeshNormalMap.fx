@@ -4,7 +4,7 @@
 #define VS_SHADERMODEL vs_3_0
 #define PS_SHADERMODEL ps_3_0
 #else
-#define VS_SHADERMODEL vs_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
+#define VS_SHADERMODEL vs_4_0_level_9_1 // slightly higher version, allowing for 512 max instructions
 #define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
@@ -85,17 +85,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
-    for (int i = 0; i < noOfLights; i++)
+    for (int i = 0; i < 6; i++)
     {
-        float4 lightPos = float4(lightPosArray[i], 1);
-        float lightRadius = lightRadiusArray[i];
-                    
-        float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius), 0);
-        if (lightDistancePower > 0)
-        {
-            float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));
-            sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;
-        }
+        if (i == noOfLights) break;
+                            
+        float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPosArray[i])), lightRadiusArray[i]) / lightRadiusArray[i]), 0);
+        float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPosArray[i])))));
+        sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower; 
     }
   
     return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;
