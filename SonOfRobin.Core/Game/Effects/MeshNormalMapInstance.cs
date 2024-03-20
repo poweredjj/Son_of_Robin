@@ -12,8 +12,9 @@ namespace SonOfRobin
         private readonly Vector4 ambientColor;
         private readonly float normalYAxisMultiplier;
         private readonly float lightPowerMultiplier;
+        private readonly float sunPowerMultiplier;
 
-        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, int framesLeft = 1, int priority = 1) :
+        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, float sunPowerMultiplier = 70f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshNormalMap, framesLeft: framesLeft, priority: priority)
         {
             this.meshDef = meshDef;
@@ -22,6 +23,7 @@ namespace SonOfRobin
             this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
+            this.sunPowerMultiplier = sunPowerMultiplier;
         }
 
         public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
@@ -60,7 +62,7 @@ namespace SonOfRobin
             }
 
             this.effect.Parameters["sunPos"].SetValue(normalizedSunPos);
-            this.effect.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * 30f);
+            this.effect.Parameters["sunPower"].SetValue(sunLightData.sunShadowsOpacity * this.sunPowerMultiplier);
             this.effect.Parameters["lightPosArray"].SetValue(lightPosArray);
             this.effect.Parameters["lightColorArray"].SetValue(lightColorArray);
             this.effect.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);

@@ -1249,12 +1249,11 @@ namespace SonOfRobin
 
             LightData[] lightDataArray = new LightData[Preferences.HighTerrainDetail ? lightSprites.Length : 0];
 
-            Vector3 normalizedSunPos = Vector3.Zero;
-
+            Vector3 normalizedSunPosVector3 = Vector3.Zero;
             if (Preferences.HighTerrainDetail)
             {
-                Vector2 normalizedSunPosVector2 = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
-                normalizedSunPos = new Vector3(normalizedSunPosVector2.X, normalizedSunPosVector2.Y, 0);
+                Vector2 normalizedSunPos = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
+                normalizedSunPosVector3 = new Vector3(normalizedSunPos.X, normalizedSunPos.Y, 0);
 
                 for (int i = 0; i < lightSprites.Length; i++)
                 {
@@ -1302,7 +1301,7 @@ namespace SonOfRobin
                     // every mesh should only have assigned lights, that are affecting it
                     ((MeshNormalMapInstance)mesh.MeshDef.effInstance).SetLightArrays(
                         lightDataArray: lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray(),
-                        normalizedSunPos: normalizedSunPos,
+                        normalizedSunPos: normalizedSunPosVector3,
                         sunLightData: sunLightData);
                 }
 
