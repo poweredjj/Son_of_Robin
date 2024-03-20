@@ -299,7 +299,7 @@ namespace SonOfRobin
                 );
 
             lava.tweenEffectPower = 0.5f;
-            lava.effect = new MeshLavaInstance(meshDef: lava);
+            lava.effInstance = new MeshLavaInstance(meshDef: lava);
 
             tweener.TweenTo(target: lava, expression: meshDef => meshDef.tweenEffectPower, toValue: 1f, duration: 15, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
