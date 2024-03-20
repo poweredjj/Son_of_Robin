@@ -1225,9 +1225,9 @@ namespace SonOfRobin
 
             SonOfRobinGame.GfxDev.Clear(this.level.hasWater ? Map.waterColor : Color.Black);
 
-            foreach (Mesh mesh in this.MeshGrid.allMeshes.Distinct().OrderBy(mesh => mesh.meshDef.drawPriority))
+            foreach (Mesh mesh in this.MeshGrid.allMeshes.Distinct().OrderBy(mesh => mesh.MeshDef.drawPriority))
             {
-                basicEffect.Texture = mesh.meshDef.mapTexture;
+                basicEffect.Texture = mesh.MeshDef.mapTexture;
 
                 foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                 {
@@ -1241,11 +1241,28 @@ namespace SonOfRobin
             // GfxConverter.SaveTextureAsPNG(filename: Path.Combine(this.gridTemplate.templatePath, "whole_map.png"), texture: this.WholeIslandPreviewTexture); // for testing
         }
 
-        public int DrawBackground()
+        public int DrawBackground(Sprite[] lightSprites, AmbientLight.SunLightData sunLightData)
         {
             bool updateFog = false;
             Camera camera = this.world.camera;
             Rectangle cameraRect = this.world.camera.viewRect;
+
+            LightData[] lightDataArray = new LightData[Preferences.HighTerrainDetail ? lightSprites.Length : 0];
+
+            Vector3 normalizedSunPosVector3 = Vector3.Zero;
+            if (Preferences.HighTerrainDetail)
+            {
+                Vector2 normalizedSunPos = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
+                normalizedSunPosVector3 = new Vector3(normalizedSunPos.X, normalizedSunPos.Y, 0);
+
+                // putting player first, to always show when there are more lights than can be drawn
+                lightSprites = lightSprites.OrderByDescending(sprite => sprite.boardPiece.GetType() == typeof(Player)).ToArray();
+
+                for (int i = 0; i < lightSprites.Length; i++)
+                {
+                    lightDataArray[i] = new LightData(lightSprites[i]);
+                }
+            }
 
             Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: cameraRect, addPadding: false).AsSpan();
 
@@ -1267,18 +1284,30 @@ namespace SonOfRobin
             var meshesToDraw = this.MeshGrid.GetMeshesForRect(cameraRect)
                 .Where(mesh => mesh.boundsRect.Intersects(cameraRect))
                 .Distinct()
-                .OrderBy(mesh => mesh.meshDef.drawPriority)
-                .ThenBy(mesh => mesh.meshDef.textureName);
+                .OrderBy(mesh => mesh.MeshDef.drawPriority)
+                .ThenBy(mesh => mesh.MeshDef.textureName);
 
             MeshDefinition currentMeshDef = null;
 
             foreach (Mesh mesh in meshesToDraw)
             {
-                if (mesh.meshDef != currentMeshDef)
+                if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
                 {
-                    SonOfRobinGame.GfxDev.BlendState = mesh.meshDef.blendState;
-                    mesh.meshDef.effect.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
-                    currentMeshDef = mesh.meshDef;
+                    MeshNormalMapInstance meshNormalMapInstance = (MeshNormalMapInstance)mesh.MeshDef.effInstance;
+                    // every mesh should only have assigned lights, that are affecting it
+                    meshNormalMapInstance.lightDataArray = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
+                    meshNormalMapInstance.normalizedSunPos = normalizedSunPosVector3;
+                    meshNormalMapInstance.sunLightData = sunLightData;
+
+                    mesh.MeshDef.effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    currentMeshDef = mesh.MeshDef;
+                }
+                else if (mesh.MeshDef != currentMeshDef)
+                {
+                    SonOfRobinGame.GfxDev.BlendState = mesh.MeshDef.blendState;
+                    EffInstance effInstance = mesh.MeshDef.effInstance;
+                    effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    currentMeshDef = mesh.MeshDef;
                 }
 
                 mesh.Draw();
@@ -1302,15 +1331,21 @@ namespace SonOfRobin
             return trianglesDrawn;
         }
 
-        public void DrawSunShadows(IEnumerable<Sprite> spritesCastingShadows, AmbientLight.SunLightData sunLightData)
+        private static Vector2 CalculateNormalizedSunPos(AmbientLight.SunLightData sunLightData, Rectangle cameraRect)
         {
-            Rectangle cameraRect = this.world.camera.viewRect;
-
             Vector2 normalizedSunPos = new(sunLightData.sunPos.X + cameraRect.Center.X, sunLightData.sunPos.Y + cameraRect.Center.Y);
             float sunAngle = Helpers.GetAngleBetweenTwoPoints(start: new Vector2(cameraRect.Center.X, cameraRect.Center.Y), end: normalizedSunPos);
             int sunDistance = 100000;
             Vector2 sunOffset = new(sunDistance * (float)Math.Cos(sunAngle), sunDistance * (float)Math.Sin(sunAngle));
             normalizedSunPos = new Vector2(cameraRect.Center.X, cameraRect.Center.Y) + sunOffset;
+
+            return normalizedSunPos;
+        }
+
+        public void DrawSunShadows(IEnumerable<Sprite> spritesCastingShadows, AmbientLight.SunLightData sunLightData)
+        {
+            Rectangle cameraRect = this.world.camera.viewRect;
+            Vector2 normalizedSunPos = CalculateNormalizedSunPos(sunLightData: sunLightData, cameraRect: cameraRect);
 
             bool shadowLeftSide = sunLightData.sunPos.X < 0;
             bool shadowTopSide = sunLightData.sunPos.Y > 0; // must be reversed

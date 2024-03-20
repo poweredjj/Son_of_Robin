@@ -2532,7 +2532,7 @@ namespace SonOfRobin
 
                 case Name.LanternFull:
                     {
-                        LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: Color.Orange * 0.2f, isActive: false, castShadows: true);
+                        LightEngine storedLightEngine = new LightEngine(size: 800, opacity: 0.9f, colorActive: true, color: new Color(247, 244, 47) * 0.2f, isActive: false, castShadows: true);
 
                         boardPiece = new PortableLight(name: templateName, world: world, id: id, animPackage: AnimData.PkgName.Lantern, canBeUsedDuringRain: true, storedLightEngine: storedLightEngine,
                             allowedTerrain: AllowedTerrain.GetShallowWaterToVolcano(), rotatesWhenDropped: true, maxHitPoints: 500, readableName: "lantern", description: "Can be used during rain. Refillable.", convertsToWhenUsedUp: Name.LanternEmpty);

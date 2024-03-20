@@ -20,7 +20,7 @@ namespace SonOfRobin
         public readonly Level.LevelType[] levelTypes;
         public readonly int drawPriority;
         public readonly BlendState blendState;
-        public EffInstance effect;
+        public EffInstance effInstance;
 
         public static readonly Tweener tweener = new();
         public float tweenEffectPower;
@@ -57,6 +57,9 @@ namespace SonOfRobin
 
         public static void CreateMeshDefinitions()
         {
+            meshDefBySearchPriority.Clear();
+            meshDefByTextureName.Clear();
+
             // needed to fill small holes, that will occur between other meshes
             MeshDefinition groundBase = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -312,8 +315,9 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
-            swamp.tweenEffectPower = 1f;
-            swamp.effect = new MeshSwampInstance(meshDef: swamp);
+          
+            swamp.tweenEffectPower = 0.5f;
+            swamp.effInstance = new MeshSwampInstance(meshDef: swamp);
 
             tweener.TweenTo(target: swamp, expression: meshDef => meshDef.tweenEffectPower, toValue: 1.5f, duration: 60 * 4, delay: 0)
                 .RepeatForever(repeatDelay: 0f)
@@ -322,13 +326,15 @@ namespace SonOfRobin
 
             MeshDefinition ruins = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
-                textureName: TextureBank.TextureName.RepeatingRuins,
+                textureName: TextureBank.TextureName.RepeatingPebblesColor, // RepeatingRuins
                 mapTextureName: TextureBank.TextureName.RepeatingMapRuins,
                 search: new(
                 searchPriority: 11,
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
+
+            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalTextureName: TextureBank.TextureName.RepeatingPebblesNormal, flippedNormalYAxis: true, lightPowerMultiplier: 0.2f);
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
@@ -356,7 +362,7 @@ namespace SonOfRobin
             foreach (MeshDefinition meshDef in meshDefByTextureName.Values)
             {
                 // every meshDef should have its effect defined
-                if (meshDef.effect == null) meshDef.effect = new MeshBasicInstance(meshDef: meshDef);
+                if (meshDef.effInstance == null || !Preferences.HighTerrainDetail) meshDef.effInstance = new MeshBasicInstance(meshDef: meshDef);
             }
 
             meshDefBySearchPriority.AddRange(meshDefByTextureName.Values.OrderBy(meshDef => meshDef.search.searchPriority));

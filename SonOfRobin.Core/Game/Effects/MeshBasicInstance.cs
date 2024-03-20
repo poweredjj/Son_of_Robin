@@ -15,7 +15,7 @@ namespace SonOfRobin
             this.baseTexture = this.meshDef.texture;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["Projection"].SetValue(SonOfRobinGame.BasicEffect.Projection);
             this.effect.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);

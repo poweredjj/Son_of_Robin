@@ -27,7 +27,7 @@ namespace SonOfRobin
     public class SonOfRobinGame : Game
     {
         public const float version = 0.6064f;
-        public static readonly DateTime lastChanged = new(2024, 03, 18);
+        public static readonly DateTime lastChanged = new(2024, 03, 20);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)
@@ -42,7 +42,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+           // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
@@ -65,6 +65,9 @@ namespace SonOfRobin
         public static Effect EffectMeshBasic { get; private set; }
         public static Effect EffectMeshSwamp { get; private set; }
         public static Effect EffectMeshLava { get; private set; }
+        public static Effect EffectMeshNormalMap0 { get; private set; }
+        public static Effect EffectMeshNormalMap4 { get; private set; }
+        public static Effect EffectMeshNormalMap7 { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -266,6 +269,9 @@ namespace SonOfRobin
             EffectMeshBasic = ContentMgr.Load<Effect>("effects/MeshBasic");
             EffectMeshSwamp = ContentMgr.Load<Effect>("effects/MeshSwamp");
             EffectMeshLava = ContentMgr.Load<Effect>("effects/MeshLava");
+            EffectMeshNormalMap0 = ContentMgr.Load<Effect>("effects/MeshNormalMap0");
+            EffectMeshNormalMap4 = ContentMgr.Load<Effect>("effects/MeshNormalMap4");
+            EffectMeshNormalMap7 = ContentMgr.Load<Effect>("effects/MeshNormalMap7");
         }
 
         public static void LoadInitialTextures()

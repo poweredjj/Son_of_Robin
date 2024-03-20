@@ -7,7 +7,7 @@ namespace SonOfRobin
 {
     public readonly struct Mesh
     {
-        public const float currentVersion = 1.021f;
+        public const float currentVersion = 1.024f;
 
         public readonly string meshID;
         public readonly TextureBank.TextureName textureName;
@@ -15,7 +15,6 @@ namespace SonOfRobin
         public readonly short[] indices;
         public readonly int triangleCount;
         public readonly Rectangle boundsRect;
-        public readonly MeshDefinition meshDef;
 
         public Mesh(TextureBank.TextureName textureName, VertexPositionTexture[] vertArray, short[] indicesArray)
         {
@@ -25,8 +24,9 @@ namespace SonOfRobin
             this.triangleCount = this.indices.Length / 3;
             this.boundsRect = GetBoundsRect(vertices);
             this.meshID = GetID(boundsRect: boundsRect, textureName: textureName);
-            this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
+
+        public MeshDefinition MeshDef { get { return MeshDefinition.meshDefByTextureName[this.textureName]; } }
 
         private static string GetID(Rectangle boundsRect, TextureBank.TextureName textureName)
         {
@@ -63,8 +63,6 @@ namespace SonOfRobin
                     TextureCoordinate = new Vector2(vertTexCoordXAsSpan[i], vertTexCoordYAsSpan[i])
                 };
             }
-
-            this.meshDef = MeshDefinition.meshDefByTextureName[this.textureName];
         }
 
         public Object Serialize()
@@ -134,5 +132,4 @@ namespace SonOfRobin
                 PrimitiveType.TriangleList, this.vertices, 0, this.vertices.Length, indices, 0, this.triangleCount);
         }
     }
-
 }

@@ -18,7 +18,7 @@ namespace SonOfRobin
             this.baseTextureOffset = Vector2.Zero;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
             this.effect.Parameters["baseTextureSize"].SetValue(this.baseTextureSize);

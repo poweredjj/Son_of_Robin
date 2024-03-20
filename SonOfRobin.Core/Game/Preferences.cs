@@ -111,6 +111,7 @@ namespace SonOfRobin
         public static bool drawAllShadows = true;
         public static bool drawSunShadows = true;
         public static bool drawLightSourcedShadows = true;
+        private static bool highTerrainDetail = true;
         public static MapOverlay.Corner miniMapCorner = MapOverlay.Corner.TopRight;
         public static float miniMapScale = 3.5f;
         public static bool sortCompendium = false;
@@ -219,6 +220,18 @@ namespace SonOfRobin
 
                 fpsCounterPosRight = value;
                 Scene.ScheduleAllScenesResize();
+            }
+        }
+
+        public static bool HighTerrainDetail
+        {
+            get { return highTerrainDetail; }
+            set
+            {
+                if (highTerrainDetail == value) return;
+
+                highTerrainDetail = value;
+                MeshDefinition.CreateMeshDefinitions();
             }
         }
 
@@ -581,6 +594,7 @@ namespace SonOfRobin
             prefsData["sortCompendium"] = sortCompendium;
             prefsData["musicGlobalOn"] = SongPlayer.GlobalOn;
             prefsData["musicGlobalVolume"] = SongPlayer.GlobalVolume;
+            prefsData["highTerrainDetail"] = highTerrainDetail;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -658,7 +672,8 @@ namespace SonOfRobin
                     miniMapScale = (float)(double)prefsData["miniMapScale"];
                     sortCompendium = (bool)prefsData["sortCompendium"];
                     SongPlayer.GlobalOn = (bool)prefsData["musicGlobalOn"];
-                    SongPlayer.GlobalVolume = (float)prefsData["musicGlobalVolume"];
+                    SongPlayer.GlobalVolume = (float)(double)prefsData["musicGlobalVolume"];
+                    highTerrainDetail = (bool)prefsData["highTerrainDetail"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

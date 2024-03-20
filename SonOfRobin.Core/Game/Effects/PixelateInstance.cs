@@ -13,7 +13,7 @@ namespace SonOfRobin
             this.textureSize = textureSize;
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["effectSize"].SetValue(Vector2.Max(this.pixelSize * this.intensityForTweener, Vector2.One));
             this.effect.Parameters["textureSize"].SetValue(this.textureSize);

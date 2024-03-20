@@ -291,7 +291,9 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "high quality water", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) }, resizesAllScenes: true);
+                        new Selector(menu: menu, name: "terrain quality", valueDict: new Dictionary<object, object> { { true, "high" }, { false, "low" } }, targetObj: preferences, propertyName: "HighTerrainDetail", rebuildsMenu: true, resizesAllScenes: true);
+
+                        new Selector(menu: menu, name: "water quality", valueDict: new Dictionary<object, object> { { true, "high" }, { false, "low" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) }, resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "plants sway", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "plantsSway");
 

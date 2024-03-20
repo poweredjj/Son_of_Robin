@@ -290,12 +290,14 @@ namespace SonOfRobin
                 var indicesForShapeAsSpan = CollectionsMarshal.AsSpan(indicesForShape);
 
                 Vector3 basePos = new(offset.X, offset.Y, 0);
+                // to be subtracted from every TextureCoordinate (to avoid big TextureCoordinate values, causing shader precisions problems on mobile)
+                Vector2 textureDeltaPos = new((int)(basePos.X / textureSize.X), (int)(basePos.Y / textureSize.Y));
 
                 for (int i = 0; i < vertPositionsForShapeArrayAsSpan.Length; i++)
                 {
                     Vector2 position = vertPositionsForShapeArrayAsSpan[i];
                     VertexPositionTexture vertex = new() { Position = basePos + new Vector3(position.X * scaleX, position.Y * scaleY, 0) };
-                    vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y);
+                    vertex.TextureCoordinate = new Vector2(vertex.Position.X / textureSize.X, vertex.Position.Y / textureSize.Y) - textureDeltaPos;
                     shapeVertList.Add(vertex);
                 }
 

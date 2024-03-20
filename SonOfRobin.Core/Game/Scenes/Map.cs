@@ -570,7 +570,7 @@ namespace SonOfRobin
                 {
                     Mesh mesh = bgTaskMeshesToShowAsSpan[i];
 
-                    basicEffect.Texture = mesh.meshDef.mapTexture;
+                    basicEffect.Texture = mesh.MeshDef.mapTexture;
 
                     foreach (EffectPass effectPass in basicEffect.CurrentTechnique.Passes)
                     {
@@ -877,7 +877,7 @@ namespace SonOfRobin
                 {
                     meshesToShow.AddRange(this.world.Grid.MeshGrid.GetMeshesForRect(meshSearchRect)
                         .Where(mesh => mesh.boundsRect.Intersects(meshSearchRect))
-                        .OrderBy(mesh => mesh.meshDef.drawPriority)
+                        .OrderBy(mesh => mesh.MeshDef.drawPriority)
                         .Distinct()
                         .ToList());
                 }

@@ -532,7 +532,6 @@ namespace SonOfRobin
             basicEffect.Projection = Matrix.CreateOrthographicOffCenter(left: 0, right: viewport.Width, bottom: viewport.Height, top: 0, zNearPlane: 0, zFarPlane: -1);
 
             basicEffect.World = transformMatrix;
-            // basicEffect.View *= transformMatrix; // alternative to setting basicEffect.World
 
             if (allowRepeat) SonOfRobinGame.GfxDev.SamplerStates[0] = SamplerState.LinearWrap;
         }

@@ -32,7 +32,7 @@ namespace SonOfRobin
             this.baseTextureSize = new Vector2(this.baseTexture.Width, this.baseTexture.Height);
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyPassZero = true)
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
         {
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
 
