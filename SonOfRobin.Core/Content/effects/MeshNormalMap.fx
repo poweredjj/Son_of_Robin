@@ -73,23 +73,19 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {       
     float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);
-    normal.y *= normalYAxisMultiplier;
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * normalYAxisMultiplier;
     
     float4 sumOfLights = float4(0,0,0,0);
     
-    for (int i = 0; i < 6; i++)
-    {    
+    for (int i = 0; i < noOfLights; i++)
+    {            
         float4 lightPos = float4(lightPosArray[i], 1);
-        float4 lightColor = lightColorArray[i];
         float lightRadius = lightRadiusArray[i];
                     
         float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPos)))));   
         float lightDistance = min((distance(input.PosWorld, lightPos) / worldScale), lightRadius) / lightRadius;
                         
-        sumOfLights.rgb += max(baseColor * lightAmount * (1 - lightDistance), 0) * lightColor;
-        
-        if (i == noOfLights - 1) break;
+        sumOfLights.rgb += max(baseColor * lightAmount * (1 - lightDistance), 0) * lightColorArray[i];
     }
   
     return ((baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier)) * drawColor;
