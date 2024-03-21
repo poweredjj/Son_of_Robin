@@ -1,8 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.Tweening;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace SonOfRobin
 {
@@ -270,6 +270,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
+
+            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.018f, sunPowerMultiplier: 1.3f);
 
             MeshDefinition mountainHigh = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
