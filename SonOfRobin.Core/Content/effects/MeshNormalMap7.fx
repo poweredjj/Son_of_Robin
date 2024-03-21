@@ -21,9 +21,9 @@ float3 sunPos;
 float sunPower;
 float sunYAxisCenterFactor;
 
-float3 lightPosArray[7];
-float4 lightColorArray[7];
-float lightRadiusArray[7];
+float3 lightPosArray[7]; // line changed between 2-7 light versions
+float4 lightColorArray[7]; // line changed between 2-7 light versions
+float lightRadiusArray[7]; // line changed between 2-7 light versions
 int noOfLights;
 
 Texture2D BaseTexture : register(t0);
@@ -83,7 +83,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
     
-    for (int i = 0; i < 7; i++)
+    for (int i = 0; i < 7; i++) // line changed between 2-7 light versions
     {
         if (i == noOfLights)
             break;

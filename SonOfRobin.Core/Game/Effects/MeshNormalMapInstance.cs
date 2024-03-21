@@ -14,10 +14,6 @@ namespace SonOfRobin
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
-        public Vector3 normalizedSunPos; // need to be set before invoking TurnOn()
-        public AmbientLight.SunLightData sunLightData; // need to be set before invoking TurnOn()
-        public LightData[] lightDataArray; // need to be set before invoking TurnOn()
-
         public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, float sunPowerMultiplier = 70f, int framesLeft = 1, int priority = 1) :
             base(effect: null, framesLeft: framesLeft, priority: priority)
         {
@@ -30,8 +26,10 @@ namespace SonOfRobin
             this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 0.1f : 1f);
         }
 
-        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
+        public void TurnOnAlternative(Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData, LightData[] lightDataArray)
         {
+            // this effect doesn't use regular TurnOn method
+
             int maxLightCount = 7;
 
             int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
@@ -52,7 +50,7 @@ namespace SonOfRobin
             Effect effInstance;
 
             if (arraySize == 0) effInstance = SonOfRobinGame.EffectMeshNormalMap0;
-            else if (arraySize <= 4) effInstance = SonOfRobinGame.EffectMeshNormalMap4;
+            else if (arraySize <= 2) effInstance = SonOfRobinGame.EffectMeshNormalMap2;
             else effInstance = SonOfRobinGame.EffectMeshNormalMap7;
 
             if (arraySize > 0)

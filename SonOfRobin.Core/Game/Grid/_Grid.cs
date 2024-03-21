@@ -1257,7 +1257,6 @@ namespace SonOfRobin
 
                 // putting player first, to always show when there are more lights than can be drawn
                 lightSprites = lightSprites.OrderByDescending(sprite => sprite.boardPiece.GetType() == typeof(Player)).ToArray();
-
                 for (int i = 0; i < lightSprites.Length; i++)
                 {
                     lightDataArray[i] = new LightData(lightSprites[i]);
@@ -1288,6 +1287,7 @@ namespace SonOfRobin
                 .ThenBy(mesh => mesh.MeshDef.textureName);
 
             MeshDefinition currentMeshDef = null;
+            int lastLightCount = -1;
 
             foreach (Mesh mesh in meshesToDraw)
             {
@@ -1295,12 +1295,16 @@ namespace SonOfRobin
                 {
                     MeshNormalMapInstance meshNormalMapInstance = (MeshNormalMapInstance)mesh.MeshDef.effInstance;
                     // every mesh should only have assigned lights, that are affecting it
-                    meshNormalMapInstance.lightDataArray = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
-                    meshNormalMapInstance.normalizedSunPos = normalizedSunPosVector3;
-                    meshNormalMapInstance.sunLightData = sunLightData;
+                    LightData[] thisMeshLightDataArray = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
+                    lastLightCount = thisMeshLightDataArray.Length;
 
-                    mesh.MeshDef.effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
-                    currentMeshDef = mesh.MeshDef;
+                    if (mesh.MeshDef != currentMeshDef || lastLightCount != 0 || thisMeshLightDataArray.Length != 0)
+                    {
+                        // if last drawn mesh had 0 lights, no change in shader is needed
+
+                        meshNormalMapInstance.TurnOnAlternative(normalizedSunPos: normalizedSunPosVector3, sunLightData: sunLightData, lightDataArray: thisMeshLightDataArray);
+                        currentMeshDef = mesh.MeshDef;
+                    }
                 }
                 else if (mesh.MeshDef != currentMeshDef)
                 {
