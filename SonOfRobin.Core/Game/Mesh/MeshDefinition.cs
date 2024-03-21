@@ -168,6 +168,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
+            sand.effInstance = new MeshNormalMapInstance(meshDef: sand, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 2f);
+
             MeshDefinition groundBad = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBad,
@@ -182,6 +184,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
+
+            groundBad.effInstance = new MeshNormalMapInstance(meshDef: groundBad, normalTextureName: TextureBank.TextureName.RepeatingGroundBadNormal, lightPowerMultiplier: 0.03f, sunPowerMultiplier: 1f);
 
             MeshDefinition groundGood = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -198,7 +202,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            groundGood.effInstance = new MeshNormalMapInstance(meshDef: groundGood, normalTextureName: TextureBank.TextureName.RepeatingGroundGoodNormal, lightPowerMultiplier: 0.03f, sunPowerMultiplier: 1f);
+            groundGood.effInstance = new MeshNormalMapInstance(meshDef: groundGood, normalTextureName: TextureBank.TextureName.RepeatingGroundGoodNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 1.3f);
 
             MeshDefinition grassBad = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },

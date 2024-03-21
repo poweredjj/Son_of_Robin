@@ -133,21 +133,6 @@
 #begin fonts/VCR_OSD_MONO_1.001.ttf
 /copy:fonts/VCR_OSD_MONO_1.001.ttf
 
-#begin gfx/_DragonBones/female_mage_tex_attack.json
-/copy:gfx/_DragonBones/female_mage_tex_attack.json
-
-#begin gfx/_DragonBones/female_mage_tex_attack.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_attack.png
-
 #begin gfx/_DragonBones/female_mage_tex_cropped.json
 /copy:gfx/_DragonBones/female_mage_tex_cropped.json
 
@@ -162,81 +147,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/_DragonBones/female_mage_tex_cropped.png
-
-#begin gfx/_DragonBones/female_mage_tex_damage.json
-/copy:gfx/_DragonBones/female_mage_tex_damage.json
-
-#begin gfx/_DragonBones/female_mage_tex_damage.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_damage.png
-
-#begin gfx/_DragonBones/female_mage_tex_dead.json
-/copy:gfx/_DragonBones/female_mage_tex_dead.json
-
-#begin gfx/_DragonBones/female_mage_tex_dead.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_dead.png
-
-#begin gfx/_DragonBones/female_mage_tex_stand.json
-/copy:gfx/_DragonBones/female_mage_tex_stand.json
-
-#begin gfx/_DragonBones/female_mage_tex_stand.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_stand.png
-
-#begin gfx/_DragonBones/female_mage_tex_walk.json
-/copy:gfx/_DragonBones/female_mage_tex_walk.json
-
-#begin gfx/_DragonBones/female_mage_tex_walk.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_walk.png
-
-#begin gfx/_DragonBones/female_mage_tex_weak.json
-/copy:gfx/_DragonBones/female_mage_tex_weak.json
-
-#begin gfx/_DragonBones/female_mage_tex_weak.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/_DragonBones/female_mage_tex_weak.png
 
 #begin gfx/acorn.png
 /importer:TextureImporter
@@ -7954,6 +7864,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ground_bad.png
 
+#begin gfx/repeating_textures/ground_bad_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/ground_bad_normal.png
+
 #begin gfx/repeating_textures/ground_base.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8349,6 +8271,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/sand.png
+
+#begin gfx/repeating_textures/sand_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/sand_normal.png
 
 #begin gfx/repeating_textures/stars.png
 /importer:TextureImporter

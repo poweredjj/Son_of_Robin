@@ -893,8 +893,6 @@ namespace SonOfRobin
 
         private void CreateTemporaryDecorations(bool ignoreDuration)
         {
-            return; // for testing
-
             if (!ignoreDuration && !CanProcessMoreOffCameraRectPiecesNow) return;
 
             DateTime creationStarted = DateTime.Now;
