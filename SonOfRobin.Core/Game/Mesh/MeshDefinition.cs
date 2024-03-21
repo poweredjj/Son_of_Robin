@@ -380,6 +380,8 @@ namespace SonOfRobin
                     })
                 );
 
+            caveFloor.effInstance = new MeshNormalMapInstance(meshDef: caveFloor, normalTextureName: TextureBank.TextureName.RepeatingCaveFloorNormal, lightPowerMultiplier: 0.1f, sunPowerMultiplier: 0f);
+
             foreach (MeshDefinition meshDef in meshDefByTextureName.Values)
             {
                 // every meshDef should have its effect defined

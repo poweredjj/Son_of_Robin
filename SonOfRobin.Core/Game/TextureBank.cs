@@ -173,6 +173,7 @@ namespace SonOfRobin
             RepeatingVolcanoEdgeNormal = 173,
             RepeatingMapVolcanoEdge = 128,
             RepeatingCaveFloor = 129,
+            RepeatingCaveFloorNormal = 174,
             RepeatingMapCaveFloor = 130,
             RepeatingCaveWall = 131,
             RepeatingMapCaveWall = 132,
@@ -364,8 +365,9 @@ namespace SonOfRobin
             { TextureName.RepeatingVolcanoEdge, "repeating_textures/volcano_edge" },
             { TextureName.RepeatingVolcanoEdgeNormal, "repeating_textures/volcano_edge_normal" },
             { TextureName.RepeatingMapVolcanoEdge, "repeating_textures/map_volcano_edge" },
-            { TextureName.RepeatingCaveFloor, "repeating_textures/mountain_low" }, // repeated (needs a separate texture)
-            { TextureName.RepeatingMapCaveFloor, "repeating_textures/map_mountain_low" }, // repeated (needs a separate texture)
+            { TextureName.RepeatingCaveFloor, "repeating_textures/cave_floor" },
+            { TextureName.RepeatingCaveFloorNormal, "repeating_textures/cave_floor_normal" },
+            { TextureName.RepeatingMapCaveFloor, "repeating_textures/map_cave_floor" },
             { TextureName.RepeatingCaveWall, "repeating_textures/cave_wall" },
             { TextureName.RepeatingMapCaveWall, "repeating_textures/map_cave_wall" },
 
