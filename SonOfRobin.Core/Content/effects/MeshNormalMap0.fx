@@ -12,7 +12,6 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-float4 ambientColor;
 float worldScale;
 
 float3 sunPos;
@@ -74,7 +73,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
     float4 sunlight = baseColor * sunPower * sunlightAmount;
   
-    return (baseColor * ambientColor) + sunlight;
+    return baseColor + sunlight;
 }
 
 // Technique and passes within the technique

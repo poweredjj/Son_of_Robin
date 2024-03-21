@@ -9,12 +9,10 @@ namespace SonOfRobin
         private readonly MeshDefinition meshDef;
         private readonly Texture2D baseTexture;
         private readonly TextureBank.TextureName normalTextureName;
-        private readonly Color ambientColor;
-        private readonly Vector4 ambientColorVector;
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
-        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, Color ambientColor = default, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
+        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshBasic, framesLeft: framesLeft, priority: priority)
         {
             // EffectMeshBasic is the default one, used only when there is no light at all
@@ -22,8 +20,6 @@ namespace SonOfRobin
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
             this.normalTextureName = normalTextureName; // normal texture should only be loaded when needed (to avoid loading when low terrain detail is set)
-            this.ambientColor = ambientColor == default ? Color.White : ambientColor;
-            this.ambientColorVector = this.ambientColor.ToVector4();
             this.lightPowerMultiplier = lightPowerMultiplier;
             this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 0.1f : 1f);
         }
@@ -73,7 +69,6 @@ namespace SonOfRobin
             effInstance.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
             effInstance.Parameters["BaseTexture"].SetValue(this.baseTexture);
             effInstance.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
-            effInstance.Parameters["ambientColor"].SetValue(this.ambientColorVector);
             SonOfRobinGame.BasicEffect.World.Decompose(out Vector3 scale, out _, out _);
             effInstance.Parameters["worldScale"].SetValue(scale.X);
 
@@ -89,7 +84,7 @@ namespace SonOfRobin
             this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
             this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
 
-            base.TurnOn(currentUpdate: currentUpdate, drawColor: this.ambientColor);
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: Color.White);
         }
     }
 

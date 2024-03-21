@@ -12,7 +12,6 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 
-float4 ambientColor;
 float worldScale;
 float lightPowerMultiplier;
 
@@ -91,7 +90,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         if (i + 1 == noOfLights) break;
     }
   
-    return (baseColor * ambientColor) + sunlight + (sumOfLights * lightPowerMultiplier);
+    return baseColor + sunlight + (sumOfLights * lightPowerMultiplier);
 }
 
 // Technique and passes within the technique
