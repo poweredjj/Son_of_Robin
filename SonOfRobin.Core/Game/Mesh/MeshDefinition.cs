@@ -271,7 +271,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.018f, sunPowerMultiplier: 1.3f);
+            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.022f, sunPowerMultiplier: 1.3f);
 
             MeshDefinition mountainHigh = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -286,6 +286,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
+
+            mountainHigh.effInstance = new MeshNormalMapInstance(meshDef: mountainHigh, normalTextureName: TextureBank.TextureName.RepeatingMountainHighNormal, lightPowerMultiplier: 0.01f, sunPowerMultiplier: 0.8f);
 
             MeshDefinition volcanoEdge = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
