@@ -14,7 +14,6 @@ float4x4 Projection;
 
 float4 ambientColor;
 float worldScale;
-float normalYAxisMultiplier;
 float lightPowerMultiplier;
 
 float3 sunPos;
@@ -74,7 +73,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
-    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
+    float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1);
     
     float3 sunPosCalculated = sunPos;
     sunPosCalculated.y = lerp(sunPos.y, input.PosWorld.y - 500, sunYAxisCenterFactor);
