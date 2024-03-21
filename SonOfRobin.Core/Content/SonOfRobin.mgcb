@@ -7930,6 +7930,30 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/grass_good.png
 
+#begin gfx/repeating_textures/grass_good.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/grass_good.png
+
+#begin gfx/repeating_textures/grass_good_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/grass_good_normal.png
+
 #begin gfx/repeating_textures/ground_bad.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8277,30 +8301,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/ocean_floor.png
-
-#begin gfx/repeating_textures/pebbles.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/pebbles.png
-
-#begin gfx/repeating_textures/pebbles_normal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/pebbles_normal.png
 
 #begin gfx/repeating_textures/perlin_noise_color.png
 /importer:TextureImporter
