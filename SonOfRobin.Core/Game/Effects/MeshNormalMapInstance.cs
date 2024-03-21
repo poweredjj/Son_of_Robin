@@ -9,18 +9,22 @@ namespace SonOfRobin
         private readonly MeshDefinition meshDef;
         private readonly Texture2D baseTexture;
         private readonly TextureBank.TextureName normalTextureName;
-        private readonly Vector4 ambientColor;
+        private readonly Color ambientColor;
+        private readonly Vector4 ambientColorVector;
         private readonly float normalYAxisMultiplier;
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
         public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
-            base(effect: null, framesLeft: framesLeft, priority: priority)
+            base(effect: SonOfRobinGame.EffectMeshBasic, framesLeft: framesLeft, priority: priority)
         {
+            // EffectMeshBasic is the default one, used only when there is no light at all
+
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
             this.normalTextureName = normalTextureName; // normal texture should only be loaded when needed (to avoid loading when low terrain detail is set)
-            this.ambientColor = new Vector4(1f, 1f, 1f, ambientColorVal);
+            this.ambientColor = new Color(1f, 1f, 1f, ambientColorVal);
+            this.ambientColorVector = new Vector4(1f, 1f, 1f, ambientColorVal);
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
             this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 0.1f : 1f);
@@ -28,7 +32,7 @@ namespace SonOfRobin
 
         public void TurnOnAlternative(Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData, LightData[] lightDataArray)
         {
-            // base.TurnOn is not used here, to allow using various effects
+            // use when there is sun or point lights
 
             int maxLightCount = 7;
 
@@ -70,7 +74,7 @@ namespace SonOfRobin
             effInstance.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
             effInstance.Parameters["BaseTexture"].SetValue(this.baseTexture);
             effInstance.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
-            effInstance.Parameters["ambientColor"].SetValue(this.ambientColor);
+            effInstance.Parameters["ambientColor"].SetValue(this.ambientColorVector);
             effInstance.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
             effInstance.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
 
@@ -78,6 +82,18 @@ namespace SonOfRobin
             effInstance.Parameters["worldScale"].SetValue(scale.X);
 
             effInstance.CurrentTechnique.Passes[0].Apply();
+        }
+
+        public override void TurnOn(int currentUpdate, Color drawColor, bool applyFirstPass = true)
+        {
+            // use only when there is no sun and no point lights are present
+
+            this.effect.Parameters["Projection"].SetValue(SonOfRobinGame.BasicEffect.Projection);
+            this.effect.Parameters["World"].SetValue(SonOfRobinGame.BasicEffect.World);
+            this.effect.Parameters["View"].SetValue(SonOfRobinGame.BasicEffect.View);
+            this.effect.Parameters["BaseTexture"].SetValue(this.baseTexture);
+
+            base.TurnOn(currentUpdate: currentUpdate, drawColor: this.ambientColor);
         }
     }
 

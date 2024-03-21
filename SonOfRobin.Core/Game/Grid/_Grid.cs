@@ -1293,24 +1293,35 @@ namespace SonOfRobin
             {
                 if (mesh.MeshDef.effInstance.GetType() == typeof(MeshNormalMapInstance))
                 {
-                    MeshNormalMapInstance meshNormalMapInstance = (MeshNormalMapInstance)mesh.MeshDef.effInstance;
+                    SonOfRobinGame.GfxDev.BlendState = mesh.MeshDef.blendState;
+
                     // every mesh should only have assigned lights, that are affecting it
-                    LightData[] thisMeshLightDataArray = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
-                    lastLightCount = thisMeshLightDataArray.Length;
+                    LightData[] lightsIntersectingThisMesh = lightDataArray.Where(lightData => lightData.rect.Intersects(mesh.boundsRect)).ToArray();
+                    lastLightCount = lightsIntersectingThisMesh.Length;
 
-                    if (mesh.MeshDef != currentMeshDef || lastLightCount != 0 || thisMeshLightDataArray.Length != 0)
+                    // if last drawn mesh had 0 lights, no change in shader is needed
+                    if (mesh.MeshDef != currentMeshDef || lastLightCount != 0 || lightsIntersectingThisMesh.Length != 0)
                     {
-                        // if last drawn mesh had 0 lights, no change in shader is needed
+                        MeshNormalMapInstance meshNormalMapInstance = (MeshNormalMapInstance)mesh.MeshDef.effInstance;
 
-                        meshNormalMapInstance.TurnOnAlternative(normalizedSunPos: normalizedSunPosVector3, sunLightData: sunLightData, lightDataArray: thisMeshLightDataArray);
+                        // if there are no shadows at all, basic mesh shader can be used (default for MeshNormalMapInstance)
+                        if (lightsIntersectingThisMesh.Length == 0 && sunLightData.sunShadowsOpacity < 0.05f)
+                        {
+                            lastLightCount = -1;
+                            meshNormalMapInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: default);
+                        }
+                        else
+                        {
+                            meshNormalMapInstance.TurnOnAlternative(normalizedSunPos: normalizedSunPosVector3, sunLightData: sunLightData, lightDataArray: lightsIntersectingThisMesh);
+                        }
+
                         currentMeshDef = mesh.MeshDef;
                     }
                 }
                 else if (mesh.MeshDef != currentMeshDef)
                 {
                     SonOfRobinGame.GfxDev.BlendState = mesh.MeshDef.blendState;
-                    EffInstance effInstance = mesh.MeshDef.effInstance;
-                    effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
+                    mesh.MeshDef.effInstance.TurnOn(currentUpdate: this.world.CurrentUpdate, drawColor: Color.White);
                     currentMeshDef = mesh.MeshDef;
                 }
 
