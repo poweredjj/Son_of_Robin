@@ -15,7 +15,7 @@ namespace SonOfRobin
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
-        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
+        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, Color ambientColor = default, bool flippedNormalYAxis = false, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
             base(effect: SonOfRobinGame.EffectMeshBasic, framesLeft: framesLeft, priority: priority)
         {
             // EffectMeshBasic is the default one, used only when there is no light at all
@@ -23,8 +23,8 @@ namespace SonOfRobin
             this.meshDef = meshDef;
             this.baseTexture = this.meshDef.texture;
             this.normalTextureName = normalTextureName; // normal texture should only be loaded when needed (to avoid loading when low terrain detail is set)
-            this.ambientColor = new Color(1f, 1f, 1f, ambientColorVal);
-            this.ambientColorVector = new Vector4(1f, 1f, 1f, ambientColorVal);
+            this.ambientColor = ambientColor == default ? Color.White : ambientColor;
+            this.ambientColorVector = this.ambientColor.ToVector4();
             this.normalYAxisMultiplier = flippedNormalYAxis ? -1f : 1f; // some normal maps have their Y axis flipped and must be corrected
             this.lightPowerMultiplier = lightPowerMultiplier;
             this.sunPowerMultiplier = sunPowerMultiplier * (SonOfRobinGame.platform == Platform.Mobile ? 0.1f : 1f);
