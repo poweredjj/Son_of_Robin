@@ -60,7 +60,8 @@ namespace SonOfRobin
             meshDefBySearchPriority.Clear();
             meshDefByTextureName.Clear();
 
-            // needed to fill small holes, that will occur between other meshes
+            // Needed to fill small holes, that will occur between other meshes.
+            // Should not use any shader, to make drawing as cheap as possible.
             MeshDefinition groundBase = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingGroundBase,
@@ -152,6 +153,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
+
+            beachDark.effInstance = new MeshNormalMapInstance(meshDef: beachDark, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 2f);
 
             MeshDefinition sand = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
