@@ -28,7 +28,7 @@ namespace SonOfRobin
 
         public void TurnOnAlternative(Vector3 normalizedSunPos, AmbientLight.SunLightData sunLightData, LightData[] lightDataArray)
         {
-            // this effect doesn't use regular TurnOn method
+            // base.TurnOn is not used here, to allow using various effects
 
             int maxLightCount = 7;
 
@@ -77,7 +77,6 @@ namespace SonOfRobin
             SonOfRobinGame.BasicEffect.World.Decompose(out Vector3 scale, out Quaternion rot, out Vector3 pos);
             effInstance.Parameters["worldScale"].SetValue(scale.X);
 
-            // base.TurnOn is not used here, to allow using various effects
             effInstance.CurrentTechnique.Passes[0].Apply();
         }
     }
