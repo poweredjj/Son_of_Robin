@@ -7930,7 +7930,7 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/grass_good.png
 
-#begin gfx/repeating_textures/grass_good.png
+#begin gfx/repeating_textures/grass_good_bad_normal.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -7940,19 +7940,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/grass_good.png
-
-#begin gfx/repeating_textures/grass_good_normal.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:gfx/repeating_textures/grass_good_normal.png
+/build:gfx/repeating_textures/grass_good_bad_normal.png
 
 #begin gfx/repeating_textures/ground_bad.png
 /importer:TextureImporter
