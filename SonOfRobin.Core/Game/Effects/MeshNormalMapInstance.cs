@@ -61,6 +61,7 @@ namespace SonOfRobin
                 effInstance.Parameters["lightColorArray"].SetValue(lightColorArray);
                 effInstance.Parameters["lightRadiusArray"].SetValue(lightRadiusArray);
                 effInstance.Parameters["noOfLights"].SetValue(arraySize);
+                effInstance.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
             }
 
             effInstance.Parameters["sunPos"].SetValue(normalizedSunPos);
@@ -73,9 +74,7 @@ namespace SonOfRobin
             effInstance.Parameters["BaseTexture"].SetValue(this.baseTexture);
             effInstance.Parameters["NormalTexture"].SetValue(TextureBank.GetTexture(this.normalTextureName));
             effInstance.Parameters["ambientColor"].SetValue(this.ambientColorVector);
-            effInstance.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
-
-            SonOfRobinGame.BasicEffect.World.Decompose(out Vector3 scale, out Quaternion rot, out Vector3 pos);
+            SonOfRobinGame.BasicEffect.World.Decompose(out Vector3 scale, out _, out _);
             effInstance.Parameters["worldScale"].SetValue(scale.X);
 
             effInstance.CurrentTechnique.Passes[0].Apply();

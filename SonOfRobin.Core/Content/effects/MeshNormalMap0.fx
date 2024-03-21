@@ -14,7 +14,6 @@ float4x4 Projection;
 
 float4 ambientColor;
 float worldScale;
-float lightPowerMultiplier;
 
 float3 sunPos;
 float sunPower;
