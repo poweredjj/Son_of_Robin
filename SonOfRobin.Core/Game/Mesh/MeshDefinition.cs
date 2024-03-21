@@ -315,7 +315,7 @@ namespace SonOfRobin
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: true)})
                 );
-          
+
             swamp.tweenEffectPower = 0.5f;
             swamp.effInstance = new MeshSwampInstance(meshDef: swamp);
 
@@ -334,7 +334,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: true)})
                 );
 
-            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalTextureName: TextureBank.TextureName.RepeatingPebblesNormal, flippedNormalYAxis: true, lightPowerMultiplier: 0.2f);
+            ruins.effInstance = new MeshNormalMapInstance(meshDef: ruins, normalTextureName: TextureBank.TextureName.RepeatingPebblesNormal, flippedNormalYAxis: true, lightPowerMultiplier: 0.16f);
 
             MeshDefinition caveWall = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },

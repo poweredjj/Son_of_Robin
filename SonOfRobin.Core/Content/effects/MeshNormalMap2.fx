@@ -5,7 +5,7 @@
 #define PS_SHADERMODEL ps_3_0
 #else
 #define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_4_0_level_9_1
+#define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
 #endif
 
 float4x4 World;
@@ -21,9 +21,9 @@ float3 sunPos;
 float sunPower;
 float sunYAxisCenterFactor;
 
-float3 lightPosArray[4]; // line changed between 2-7 light versions
-float4 lightColorArray[4]; // line changed between 2-7 light versions
-float lightRadiusArray[4]; // line changed between 2-7 light versions
+float3 lightPosArray[2]; // line changed between 2-7 light versions
+float4 lightColorArray[2]; // line changed between 2-7 light versions
+float lightRadiusArray[2]; // line changed between 2-7 light versions
 int noOfLights;
 
 Texture2D BaseTexture : register(t0);
@@ -53,7 +53,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
     float4 Position : POSITION0;
-    float4 PosWorld : TEXCOORD1; // TEXCOORD1 name is needed for Android, will crash otherwise
+    float4 PosWorld : TEXCOORD1; // "TEXCOORD1" name is needed for Android, will crash otherwise
     float2 TexCoord : TEXCOORD0;
     float4 Color : COLOR0;
 };
@@ -76,23 +76,23 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float4 baseColor = tex2D(BaseTextureSampler, input.TexCoord);
     float3 normal = normalize((2 * tex2D(NormalTextureSampler, input.TexCoord)) - 1) * float3(1, normalYAxisMultiplier, 1);
     
-    float4 sumOfLights = float4(0, 0, 0, 0);
-
     float3 sunPosCalculated = sunPos;
     sunPosCalculated.y = lerp(sunPos.y, input.PosWorld.y - 500, sunYAxisCenterFactor);
     float sunlightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - sunPosCalculated)))));
-    sumOfLights.rgb += baseColor * sunPower * sunlightAmount;
-    
-    for (int i = 0; i < 2; i++)  // line changed between 2-7 light versions
+    float4 sunlight = baseColor * sunPower * sunlightAmount;
+        
+    float4 sumOfLights = float4(0, 0, 0, 0);
+   
+    for (int i = 0; i < 2; i++) // line changed between 2-7 light versions
     {
-        if (i == noOfLights) break;
-                            
         float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPosArray[i])), lightRadiusArray[i]) / lightRadiusArray[i]), 0);
         float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPosArray[i])))));
         sumOfLights.rgb += baseColor * lightColorArray[i] * lightAmount * lightDistancePower;
+        
+        if (i + 1 == noOfLights) break;
     }
   
-    return (baseColor * ambientColor) + (sumOfLights * lightPowerMultiplier);
+    return (baseColor * ambientColor) + sunlight + (sumOfLights * lightPowerMultiplier);
 }
 
 // Technique and passes within the technique

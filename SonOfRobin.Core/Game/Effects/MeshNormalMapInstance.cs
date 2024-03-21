@@ -14,7 +14,7 @@ namespace SonOfRobin
         private readonly float lightPowerMultiplier;
         private readonly float sunPowerMultiplier;
 
-        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 1f, float sunPowerMultiplier = 70f, int framesLeft = 1, int priority = 1) :
+        public MeshNormalMapInstance(MeshDefinition meshDef, TextureBank.TextureName normalTextureName, float ambientColorVal = 1f, bool flippedNormalYAxis = false, float lightPowerMultiplier = 0.16f, float sunPowerMultiplier = 14f, int framesLeft = 1, int priority = 1) :
             base(effect: null, framesLeft: framesLeft, priority: priority)
         {
             this.meshDef = meshDef;
@@ -74,8 +74,7 @@ namespace SonOfRobin
             effInstance.Parameters["lightPowerMultiplier"].SetValue(this.lightPowerMultiplier);
             effInstance.Parameters["normalYAxisMultiplier"].SetValue(this.normalYAxisMultiplier);
 
-            Vector3 scale; Quaternion rot; Vector3 pos;
-            SonOfRobinGame.BasicEffect.World.Decompose(out scale, out rot, out pos);
+            SonOfRobinGame.BasicEffect.World.Decompose(out Vector3 scale, out Quaternion rot, out Vector3 pos);
             effInstance.Parameters["worldScale"].SetValue(scale.X);
 
             // base.TurnOn is not used here, to allow using various effects
