@@ -303,6 +303,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
+            volcanoEdge.effInstance = new MeshNormalMapInstance(meshDef: volcanoEdge, normalTextureName: TextureBank.TextureName.RepeatingVolcanoEdgeNormal, lightPowerMultiplier: 0.12f, sunPowerMultiplier: 5f);
+
             MeshDefinition lava = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island, Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingLava,
