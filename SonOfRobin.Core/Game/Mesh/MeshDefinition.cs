@@ -255,6 +255,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
+            mountainLow.effInstance = new MeshNormalMapInstance(meshDef: mountainLow, normalTextureName: TextureBank.TextureName.RepeatingMountainLowNormal, lightPowerMultiplier: 0.06f, sunPowerMultiplier: 3f);
+
             MeshDefinition mountainMedium = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainMedium,
