@@ -368,6 +368,8 @@ namespace SonOfRobin
                     })
                 );
 
+            caveWall.effInstance = new MeshNormalMapInstance(meshDef: caveWall, normalTextureName: TextureBank.TextureName.RepeatingCaveWallNormal, lightPowerMultiplier: 0.1f, sunPowerMultiplier: 0f);
+
             MeshDefinition caveFloor = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Cave },
                 textureName: TextureBank.TextureName.RepeatingCaveFloor,

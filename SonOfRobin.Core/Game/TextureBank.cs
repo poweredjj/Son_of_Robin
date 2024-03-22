@@ -176,6 +176,7 @@ namespace SonOfRobin
             RepeatingCaveFloorNormal = 174,
             RepeatingMapCaveFloor = 130,
             RepeatingCaveWall = 131,
+            RepeatingCaveWallNormal = 175,
             RepeatingMapCaveWall = 132,
 
             TriSliceBGMessageLogLeft = 133,
@@ -369,6 +370,7 @@ namespace SonOfRobin
             { TextureName.RepeatingCaveFloorNormal, "repeating_textures/cave_floor_normal" },
             { TextureName.RepeatingMapCaveFloor, "repeating_textures/map_cave_floor" },
             { TextureName.RepeatingCaveWall, "repeating_textures/cave_wall" },
+            { TextureName.RepeatingCaveWallNormal, "repeating_textures/cave_wall_normal" },
             { TextureName.RepeatingMapCaveWall, "repeating_textures/map_cave_wall" },
 
             { TextureName.TriSliceBGMessageLogLeft, "tri_slice_bg/message_bg_left" },
