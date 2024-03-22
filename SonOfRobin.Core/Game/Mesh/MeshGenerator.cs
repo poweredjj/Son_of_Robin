@@ -126,8 +126,8 @@ namespace SonOfRobin
                         // Keeping chunk size random, to make shared chunk borders less common.
 
                         foreach (BitArrayWrapperChunk chunk in bitArrayWrapper.SplitIntoChunks(
-                            chunkWidth: Math.Max(grid.world.random.Next(800, 1600) / grid.resDivider, 80),
-                            chunkHeight: Math.Max(grid.world.random.Next(800, 1200) / grid.resDivider, 80)))
+                            chunkWidth: Math.Max(grid.world.random.Next(1200, 2200) / grid.resDivider, 80),
+                            chunkHeight: Math.Max(grid.world.random.Next(1200, 1600) / grid.resDivider, 80)))
                         {
                             if (chunk.HasAnyPixelSet) chunkDataForMeshGenBag.Add(new ChunkDataForMeshGeneration(meshDef: meshDef, chunk: chunk, posX: xMin + chunk.xOffset, posY: yMin + chunk.yOffset));
                         }
