@@ -2,6 +2,7 @@
 using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -315,6 +316,26 @@ namespace SonOfRobin
 
             if (!this.transManager.HasAnyTransition)
             {
+                Camera camera = this.world.camera;
+
+                float tipsHeight = 0; // to avoid drawing marker under ControlTips
+                if (Preferences.ShowControlTips)
+                {
+                    ControlTips topTips = ControlTips.GetTopTips();
+                    if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
+                }
+
+                float cameraLeft = this.world.viewParams.PosX * -1;
+                float cameraRight = cameraLeft + camera.viewRect.Width;
+                float cameraTop = this.world.viewParams.PosY * -1;
+                float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
+
+                Rectangle cameraRect = new(x: (int)cameraLeft, y: (int)cameraTop, width: camera.viewRect.Width, height: (int)(camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY)));
+
+                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: cameraRect, color: Color.Green, thickness: 4f);
+
+                Vector2 cameraCenter = new(cameraLeft + ((cameraRight - cameraLeft) / 2), cameraTop + ((cameraBottom - cameraTop) / 2));
+
                 foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
                     Color markerColor = kvp.Key;
@@ -327,25 +348,19 @@ namespace SonOfRobin
                     {
                         // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
 
-                        Camera camera = this.world.camera;
                         Vector2 markerPos = markerPiece.sprite.position;
-                        ImageObj markerImage = markerPiece.sprite.AnimFrame.imageObj;
 
-                        float tipsHeight = 0; // to avoid drawing marker under ControlTips
-                        if (Preferences.ShowControlTips)
+                        if (!cameraRect.Contains(markerPos))
                         {
-                            ControlTips topTips = ControlTips.GetTopTips();
-                            if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
+                            // moving marker just outside camera rect (to get more precise angle)
+                            markerPos = Helpers.FindLineWithRectIntersection(rectangle: cameraRect, lineStart: cameraCenter, lineEnd: markerPos);
                         }
+
+                        ImageObj markerImage = markerPiece.sprite.AnimFrame.imageObj;
 
                         float markerHeight = Preferences.MapMarkerRealSize * this.world.viewParams.ScaleY;
                         float markerScale = markerHeight / markerImage.Height;
                         float markerWidth = markerImage.Width * markerScale;
-
-                        float cameraLeft = this.world.viewParams.PosX * -1;
-                        float cameraRight = cameraLeft + camera.viewRect.Width;
-                        float cameraTop = this.world.viewParams.PosY * -1;
-                        float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
 
                         Vector2 offset = Vector2.Zero;
 
@@ -354,9 +369,7 @@ namespace SonOfRobin
                         if (markerPos.Y < cameraTop) offset.Y = cameraTop - markerPos.Y;
                         if (markerPos.Y + markerHeight > cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
 
-                        markerPos += offset;
-
-                        markerPos += new Vector2(markerWidth / 2, markerHeight / 2);
+                        markerPos += offset + new Vector2(markerWidth / 2, markerHeight / 2);
 
                         Vector2 markerScreenPos = this.world.TranslateWorldToScreenPos(markerPos);
                         markerScreenPos.X -= this.viewParams.DrawPos.X;

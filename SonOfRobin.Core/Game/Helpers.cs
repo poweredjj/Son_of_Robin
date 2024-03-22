@@ -638,6 +638,64 @@ namespace SonOfRobin
             return newText;
         }
 
+        public static Vector2 FindLineWithRectIntersection(Rectangle rectangle, Vector2 lineStart, Vector2 lineEnd)
+        {
+            Vector2 pointInside, pointOutside;
+            if (rectangle.Contains(lineStart))
+            {
+                pointInside = lineStart;
+                pointOutside = lineEnd;
+            }
+            else if (rectangle.Contains(lineEnd))
+            {
+                pointInside = lineEnd;
+                pointOutside = lineStart;
+            }
+            else return Vector2.Zero; // no point is inside the rectangle
+
+            Vector2 intersectPoint;
+
+            if (pointOutside.Y < rectangle.Top)
+            {
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Top), line1End: new Vector2(rectangle.Right, rectangle.Top), line2Start: pointInside, line2End: pointOutside);
+            }
+            else
+            {
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Bottom), line1End: new Vector2(rectangle.Right, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+            }
+
+            if (intersectPoint != Vector2.Zero) return intersectPoint;
+
+            if (pointOutside.X < rectangle.Left)
+            {
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Top), line1End: new Vector2(rectangle.Left, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+            }
+            else
+            {
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Right, rectangle.Top), line1End: new Vector2(rectangle.Right, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+            }
+
+            return intersectPoint;
+        }
+
+        public static Vector2 CheckWhereLinesIntersect(Vector2 line1Start, Vector2 line1End, Vector2 line2Start, Vector2 line2End)
+        {
+            float dx, dy, da, db, t, s;
+
+            dx = line1End.X - line1Start.X;
+            dy = line1End.Y - line1Start.Y;
+            da = line2End.X - line2Start.X;
+            db = line2End.Y - line2Start.Y;
+
+            if (da * dy - db * dx == 0) return Vector2.Zero; // the segments are parallel
+
+            s = (dx * (line2Start.Y - line1Start.Y) + dy * (line1Start.X - line2Start.X)) / (da * dy - db * dx);
+            t = (da * (line1Start.Y - line2Start.Y) + db * (line2Start.X - line1Start.X)) / (db * dx - da * dy);
+
+            if ((s >= 0) & (s <= 1) & (t >= 0) & (t <= 1)) return new Vector2(line1Start.X + t * dx, line1Start.Y + t * dy);
+            else return Vector2.Zero;
+        }
+
         public static T[] ConcatArrays<T>(params T[][] p)
         {
             var position = 0;
