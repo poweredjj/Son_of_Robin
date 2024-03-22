@@ -140,6 +140,8 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
+            beachBright.effInstance = new MeshNormalMapInstance(meshDef: beachBright, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.035f, sunPowerMultiplier: 0.6f);
+
             MeshDefinition beachDark = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingBeachDark,
@@ -154,7 +156,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            beachDark.effInstance = new MeshNormalMapInstance(meshDef: beachDark, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 2f);
+            beachDark.effInstance = new MeshNormalMapInstance(meshDef: beachDark, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.04f, sunPowerMultiplier: 1.2f);
 
             MeshDefinition sand = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -171,7 +173,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            sand.effInstance = new MeshNormalMapInstance(meshDef: sand, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.01f, sunPowerMultiplier: 0.15f);
+            sand.effInstance = new MeshNormalMapInstance(meshDef: sand, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 2f);
 
             MeshDefinition groundBad = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -271,7 +273,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainLow.effInstance = new MeshNormalMapInstance(meshDef: mountainLow, normalTextureName: TextureBank.TextureName.RepeatingMountainLowNormal, lightPowerMultiplier: 0.06f, sunPowerMultiplier: 3f);
+            mountainLow.effInstance = new MeshNormalMapInstance(meshDef: mountainLow, normalTextureName: TextureBank.TextureName.RepeatingMountainAllNormal, lightPowerMultiplier: 0.06f, sunPowerMultiplier: 3f);
 
             MeshDefinition mountainMedium = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -287,7 +289,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.035f, sunPowerMultiplier: 2f);
+            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainAllNormal, lightPowerMultiplier: 0.035f, sunPowerMultiplier: 2f);
 
             MeshDefinition mountainHigh = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -303,7 +305,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainHigh.effInstance = new MeshNormalMapInstance(meshDef: mountainHigh, normalTextureName: TextureBank.TextureName.RepeatingMountainHighNormal, lightPowerMultiplier: 0.025f, sunPowerMultiplier: 2f);
+            mountainHigh.effInstance = new MeshNormalMapInstance(meshDef: mountainHigh, normalTextureName: TextureBank.TextureName.RepeatingMountainAllNormal, lightPowerMultiplier: 0.025f, sunPowerMultiplier: 2f);
 
             MeshDefinition volcanoEdge = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
