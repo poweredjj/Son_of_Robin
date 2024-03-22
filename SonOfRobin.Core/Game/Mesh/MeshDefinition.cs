@@ -171,7 +171,7 @@ namespace SonOfRobin
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            sand.effInstance = new MeshNormalMapInstance(meshDef: sand, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.05f, sunPowerMultiplier: 2f);
+            sand.effInstance = new MeshNormalMapInstance(meshDef: sand, normalTextureName: TextureBank.TextureName.RepeatingSandNormal, lightPowerMultiplier: 0.01f, sunPowerMultiplier: 0.15f);
 
             MeshDefinition groundBad = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
