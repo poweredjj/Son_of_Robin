@@ -8098,6 +8098,18 @@
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/map_lava.png
 
+#begin gfx/repeating_textures/map_mountain_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/map_mountain_base.png
+
 #begin gfx/repeating_textures/map_mountain_high.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -8229,6 +8241,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:gfx/repeating_textures/map_water_supershallow.png
+
+#begin gfx/repeating_textures/mountain_base.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/mountain_base.png
+
+#begin gfx/repeating_textures/mountain_base_normal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:gfx/repeating_textures/mountain_base_normal.png
 
 #begin gfx/repeating_textures/mountain_high.png
 /importer:TextureImporter

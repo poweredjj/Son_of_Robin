@@ -241,6 +241,22 @@ namespace SonOfRobin
 
             grassGood.effInstance = new MeshNormalMapInstance(meshDef: grassGood, normalTextureName: TextureBank.TextureName.RepeatingGrassGoodBadNormal, lightPowerMultiplier: 0.06f, sunPowerMultiplier: 2f);
 
+            MeshDefinition mountainBase = new MeshDefinition(
+                levelTypes: new Level.LevelType[] { Level.LevelType.Island },
+                textureName: TextureBank.TextureName.RepeatingMountainBase,
+                mapTextureName: TextureBank.TextureName.RepeatingMapMountainBase,
+                search: new(
+                searchPriority: 3,
+                searchEntriesTerrain: new List<SearchEntryTerrain> {
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin, maxVal: 165),
+                    },
+                searchEntriesExtProps: new List<SearchEntryExtProps> {
+                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
+                    new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
+                );
+
+            mountainBase.effInstance = new MeshNormalMapInstance(meshDef: mountainBase, normalTextureName: TextureBank.TextureName.RepeatingMountainBaseNormal, lightPowerMultiplier: 0.06f, sunPowerMultiplier: 3f);
+
             MeshDefinition mountainLow = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
                 textureName: TextureBank.TextureName.RepeatingMountainLow,
@@ -248,7 +264,7 @@ namespace SonOfRobin
                 search: new(
                 searchPriority: 3,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: Terrain.rocksLevelMin, maxVal: 178),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 166, maxVal: 179),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
@@ -264,14 +280,14 @@ namespace SonOfRobin
                 search: new(
                 searchPriority: 10,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 179, maxVal: 194),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 180, maxVal: 193),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.035f, sunPowerMultiplier: 1.3f);
+            mountainMedium.effInstance = new MeshNormalMapInstance(meshDef: mountainMedium, normalTextureName: TextureBank.TextureName.RepeatingMountainMediumNormal, lightPowerMultiplier: 0.035f, sunPowerMultiplier: 2f);
 
             MeshDefinition mountainHigh = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
@@ -280,14 +296,14 @@ namespace SonOfRobin
                 search: new(
                 searchPriority: 14,
                 searchEntriesTerrain: new List<SearchEntryTerrain> {
-                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 195, maxVal: Terrain.volcanoEdgeMin - 1),
+                    new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 194, maxVal: Terrain.volcanoEdgeMin - 1),
                     },
                 searchEntriesExtProps: new List<SearchEntryExtProps> {
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeSwamp, value: false),
                     new SearchEntryExtProps(name: ExtBoardProps.Name.BiomeRuins, value: false)})
                 );
 
-            mountainHigh.effInstance = new MeshNormalMapInstance(meshDef: mountainHigh, normalTextureName: TextureBank.TextureName.RepeatingMountainHighNormal, lightPowerMultiplier: 0.01f, sunPowerMultiplier: 1f);
+            mountainHigh.effInstance = new MeshNormalMapInstance(meshDef: mountainHigh, normalTextureName: TextureBank.TextureName.RepeatingMountainHighNormal, lightPowerMultiplier: 0.025f, sunPowerMultiplier: 2f);
 
             MeshDefinition volcanoEdge = new MeshDefinition(
                 levelTypes: new Level.LevelType[] { Level.LevelType.Island },
