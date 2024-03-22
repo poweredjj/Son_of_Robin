@@ -100,13 +100,15 @@ namespace SonOfRobin
             this.pos = new Vector3(lightSprite.position.X, lightSprite.position.Y, 0);
             Color color = lightSprite.lightEngine.Color * lightSprite.lightEngine.Opacity;
             this.color = new Vector4(color.R, color.G, color.B, color.A);
-            this.radius = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height) / 2;
+
+            int rectSize = Math.Max(lightSprite.lightEngine.Width, lightSprite.lightEngine.Height);
+            this.radius = rectSize / 2;
 
             this.rect = new Rectangle(
-                x: (int)(lightSprite.position.X - (radius / 2)),
-                y: (int)(lightSprite.position.Y - (radius / 2)),
-                width: (int)radius,
-                height: (int)radius);
+                x: (int)(lightSprite.position.X - (rectSize / 2)),
+                y: (int)(lightSprite.position.Y - (rectSize / 2)),
+                width: (int)rectSize,
+                height: (int)rectSize);
         }
     }
 }
