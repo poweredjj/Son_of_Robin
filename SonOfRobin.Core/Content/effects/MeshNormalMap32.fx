@@ -5,7 +5,7 @@
 #define PS_SHADERMODEL ps_3_0
 #else
 #define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_5_0
+#define PS_SHADERMODEL ps_5_0 // WILL CRASH AFTER LOADING ON ANDROID (PS level not supported)
 #endif
 
 float4x4 World;

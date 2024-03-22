@@ -28,11 +28,9 @@ namespace SonOfRobin
         {
             // use when there is sun or point lights
 
-            int maxLightCount = 32;
+            int maxLightCount = SonOfRobinGame.platform == Platform.Mobile ? 7 : 32;
 
             int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
-
-            //if (lightDataArray.Length > maxLightCount) MessageLog.Add(debugMessage: true, text: $"{SonOfRobinGame.CurrentUpdate} lightDataArray size: {lightDataArray.Length}");
 
             var lightPosArray = new Vector3[arraySize];
             var lightColorArray = new Vector4[arraySize];

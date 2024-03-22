@@ -42,7 +42,7 @@ namespace SonOfRobin
 
         private static void MoveWindowOnWorkMachine(Game game)
         {
-            if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
+           // if (ThisIsWorkMachine) game.Window.Position = new Point(-7, 758); // COMMENT THIS LINE on ANDROID
         }
 
         public static GraphicsDeviceManager GfxDevMgr { get; private set; }
@@ -273,7 +273,7 @@ namespace SonOfRobin
             EffectMeshNormalMap0 = ContentMgr.Load<Effect>("effects/MeshNormalMap0");
             EffectMeshNormalMap2 = ContentMgr.Load<Effect>("effects/MeshNormalMap2");
             EffectMeshNormalMap7 = ContentMgr.Load<Effect>("effects/MeshNormalMap7");
-            EffectMeshNormalMap32 = ContentMgr.Load<Effect>("effects/MeshNormalMap32");
+            EffectMeshNormalMap32 = ContentMgr.Load<Effect>(platform == Platform.Mobile ? "effects/MeshNormalMap7" : "effects/MeshNormalMap32"); // 32 will crash after loading on Android
         }
 
         public static void LoadInitialTextures()
