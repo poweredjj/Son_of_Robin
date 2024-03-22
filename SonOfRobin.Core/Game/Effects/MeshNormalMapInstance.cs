@@ -28,7 +28,7 @@ namespace SonOfRobin
         {
             // use when there is sun or point lights
 
-            int maxLightCount = 7;
+            int maxLightCount = 32;
 
             int arraySize = Math.Min(lightDataArray.Length, maxLightCount);
 
@@ -49,7 +49,8 @@ namespace SonOfRobin
 
             if (arraySize == 0) effInstance = SonOfRobinGame.EffectMeshNormalMap0;
             else if (arraySize <= 2) effInstance = SonOfRobinGame.EffectMeshNormalMap2;
-            else effInstance = SonOfRobinGame.EffectMeshNormalMap7;
+            else if (arraySize <= 7) effInstance = SonOfRobinGame.EffectMeshNormalMap7;
+            else effInstance = SonOfRobinGame.EffectMeshNormalMap32;
 
             if (arraySize > 0)
             {

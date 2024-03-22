@@ -68,6 +68,7 @@ namespace SonOfRobin
         public static Effect EffectMeshNormalMap0 { get; private set; }
         public static Effect EffectMeshNormalMap2 { get; private set; }
         public static Effect EffectMeshNormalMap7 { get; private set; }
+        public static Effect EffectMeshNormalMap32 { get; private set; }
         public static InfoWindow HintWindow { get; private set; }
         public static InfoWindow SmallProgressBar { get; private set; }
         public static FullScreenProgressBar FullScreenProgressBar { get; private set; }
@@ -272,6 +273,7 @@ namespace SonOfRobin
             EffectMeshNormalMap0 = ContentMgr.Load<Effect>("effects/MeshNormalMap0");
             EffectMeshNormalMap2 = ContentMgr.Load<Effect>("effects/MeshNormalMap2");
             EffectMeshNormalMap7 = ContentMgr.Load<Effect>("effects/MeshNormalMap7");
+            EffectMeshNormalMap32 = ContentMgr.Load<Effect>("effects/MeshNormalMap32");
         }
 
         public static void LoadInitialTextures()

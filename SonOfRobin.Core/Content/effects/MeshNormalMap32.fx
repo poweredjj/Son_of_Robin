@@ -5,7 +5,7 @@
 #define PS_SHADERMODEL ps_3_0
 #else
 #define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_4_0_level_9_3 // slightly higher version, allowing for 512 max instructions
+#define PS_SHADERMODEL ps_5_0
 #endif
 
 float4x4 World;
@@ -19,9 +19,9 @@ float3 sunPos;
 float sunPower;
 float sunYAxisCenterFactor;
 
-float3 lightPosArray[7]; // line changed between 2-7-32 light versions
-float4 lightColorArray[7]; // line changed between 2-7-32 light versions
-float lightRadiusArray[7]; // line changed between 2-7-32 light versions
+float3 lightPosArray[32]; // line changed between 2-7-32 light versions
+float4 lightColorArray[32]; // line changed between 2-7-32 light versions
+float lightRadiusArray[32]; // line changed between 2-7-32 light versions
 int noOfLights;
 
 Texture2D BaseTexture : register(t0);
@@ -81,7 +81,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         
     float4 sumOfLights = float4(0, 0, 0, 0);
    
-    for (int i = 0; i < 7; i++) // line changed between 2-7-32 light versions
+    for (int i = 0; i < 32; i++) // line changed between 2-7-32 light versions
     {                         
         float lightDistancePower = max(1 - (min((distance(input.PosWorld, lightPosArray[i])), lightRadiusArray[i]) / lightRadiusArray[i]), 0);
         float lightAmount = saturate(max(0, dot(normal, -normalize((input.PosWorld - lightPosArray[i])))));

@@ -67,6 +67,12 @@
 /processorParam:DebugMode=Auto
 /build:effects/MeshNormalMap2.fx
 
+#begin effects/MeshNormalMap32.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:effects/MeshNormalMap32.fx
+
 #begin effects/MeshNormalMap7.fx
 /importer:EffectImporter
 /processor:EffectProcessor
