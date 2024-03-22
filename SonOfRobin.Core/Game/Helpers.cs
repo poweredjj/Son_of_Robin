@@ -657,27 +657,25 @@ namespace SonOfRobin
             }
             else return Vector2.Zero; // no point is inside the rectangle
 
-            Vector2 intersectPoint = Vector2.Zero;
+            Vector2 intersectPoint;
 
             if (pointOutside.Y < rectTop)
             {
                 intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectTop), line1End: new Vector2(rectRight, rectTop), line2Start: pointInside, line2End: pointOutside);
-                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
-            if (pointOutside.Y > rectBottom)
+            else
             {
                 intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectBottom), line1End: new Vector2(rectRight, rectBottom), line2Start: pointInside, line2End: pointOutside);
-                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
+            if (intersectPoint != Vector2.Zero) return intersectPoint;
+
             if (pointOutside.X < rectLeft)
             {
                 intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectTop), line1End: new Vector2(rectLeft, rectBottom), line2Start: pointInside, line2End: pointOutside);
-                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
-            if (pointOutside.X > rectRight)
+            else
             {
                 intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectRight, rectTop), line1End: new Vector2(rectRight, rectBottom), line2Start: pointInside, line2End: pointOutside);
-                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
 
             return intersectPoint;

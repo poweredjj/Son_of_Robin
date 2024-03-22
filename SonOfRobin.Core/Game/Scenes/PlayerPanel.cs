@@ -324,14 +324,17 @@ namespace SonOfRobin
                     if (topTips != null) tipsHeight = (float)topTips.viewParams.Height / topTips.viewParams.ScaleY;
                 }
 
+                // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
+
                 float cameraLeft = this.world.viewParams.PosX * -1;
                 float cameraRight = cameraLeft + camera.viewRect.Width;
                 float cameraTop = this.world.viewParams.PosY * -1;
                 float cameraBottom = cameraTop + camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY);
+                float cameraWidth = cameraRight - cameraLeft;
+                float cameraHeight = cameraBottom - cameraTop;
 
+                Vector2 cameraCenter = new(cameraLeft + (cameraWidth / 2), cameraTop + (cameraHeight / 2));
                 Rectangle cameraRect = new(x: (int)cameraLeft, y: (int)cameraTop, width: camera.viewRect.Width, height: (int)(camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY)));
-
-                Vector2 cameraCenter = new(cameraLeft + ((cameraRight - cameraLeft) / 2), cameraTop + ((cameraBottom - cameraTop) / 2));
 
                 foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
                 {
@@ -343,18 +346,14 @@ namespace SonOfRobin
                         markerPiece.exists &&
                         markerPiece.sprite.opacity > 0)
                     {
-                        // calculating and drawing everything as Vector2 / float to avoid jerky marker motion
-
                         Vector2 markerPos = markerPiece.sprite.position;
 
-                        if (!cameraRect.Contains(markerPos))
-                        {
-                            // moving marker just outside camera rect (to get more precise angle)
-                            markerPos = Helpers.FindLineWithRectIntersection(rectLeft: cameraLeft, rectTop: cameraTop, rectRight: cameraRight, rectBottom: cameraBottom, lineStart: cameraCenter, lineEnd: markerPos);
-                        }
+                        // moving marker just outside camera rect (to get more precise angle)
+
+                        Vector2 intersection = Helpers.FindLineWithRectIntersection(rectLeft: cameraLeft, rectTop: cameraTop, rectRight: cameraRight, rectBottom: cameraBottom, lineStart: cameraCenter, lineEnd: markerPos);
+                        if (intersection != Vector2.Zero) markerPos = intersection;
 
                         ImageObj markerImage = markerPiece.sprite.AnimFrame.imageObj;
-
                         float markerHeight = Preferences.MapMarkerRealSize * this.world.viewParams.ScaleY;
                         float markerScale = markerHeight / markerImage.Height;
                         float markerWidth = markerImage.Width * markerScale;
@@ -364,7 +363,7 @@ namespace SonOfRobin
                         if (markerPos.X < cameraLeft) offset.X = cameraLeft - markerPos.X;
                         if (markerPos.X + markerWidth > cameraRight) offset.X = -(markerPos.X + markerWidth - cameraRight);
                         if (markerPos.Y < cameraTop) offset.Y = cameraTop - markerPos.Y;
-                        if (markerPos.Y + markerHeight >= cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
+                        if (markerPos.Y + markerHeight > cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
 
                         markerPos += offset + new Vector2(markerWidth / 2, markerHeight / 2);
 
