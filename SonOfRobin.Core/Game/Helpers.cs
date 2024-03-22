@@ -638,8 +638,12 @@ namespace SonOfRobin
             return newText;
         }
 
-        public static Vector2 FindLineWithRectIntersection(Rectangle rectangle, Vector2 lineStart, Vector2 lineEnd)
+        public static Vector2 FindLineWithRectIntersection(float rectLeft, float rectRight, float rectTop, float rectBottom, Vector2 lineStart, Vector2 lineEnd)
         {
+            // using floats and Vector2 for better precision
+
+            Rectangle rectangle = new(x: (int)rectLeft, y: (int)rectTop, width: (int)(rectRight - rectLeft), height: (int)(rectBottom - rectTop));
+
             Vector2 pointInside, pointOutside;
             if (rectangle.Contains(lineStart))
             {
@@ -653,26 +657,27 @@ namespace SonOfRobin
             }
             else return Vector2.Zero; // no point is inside the rectangle
 
-            Vector2 intersectPoint;
+            Vector2 intersectPoint = Vector2.Zero;
 
-            if (pointOutside.Y < rectangle.Top)
+            if (pointOutside.Y < rectTop)
             {
-                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Top), line1End: new Vector2(rectangle.Right, rectangle.Top), line2Start: pointInside, line2End: pointOutside);
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectTop), line1End: new Vector2(rectRight, rectTop), line2Start: pointInside, line2End: pointOutside);
+                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
-            else
+            if (pointOutside.Y > rectBottom)
             {
-                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Bottom), line1End: new Vector2(rectangle.Right, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectBottom), line1End: new Vector2(rectRight, rectBottom), line2Start: pointInside, line2End: pointOutside);
+                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
-
-            if (intersectPoint != Vector2.Zero) return intersectPoint;
-
-            if (pointOutside.X < rectangle.Left)
+            if (pointOutside.X < rectLeft)
             {
-                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Left, rectangle.Top), line1End: new Vector2(rectangle.Left, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectLeft, rectTop), line1End: new Vector2(rectLeft, rectBottom), line2Start: pointInside, line2End: pointOutside);
+                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
-            else
+            if (pointOutside.X > rectRight)
             {
-                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectangle.Right, rectangle.Top), line1End: new Vector2(rectangle.Right, rectangle.Bottom), line2Start: pointInside, line2End: pointOutside);
+                intersectPoint = CheckWhereLinesIntersect(line1Start: new Vector2(rectRight, rectTop), line1End: new Vector2(rectRight, rectBottom), line2Start: pointInside, line2End: pointOutside);
+                if (intersectPoint != Vector2.Zero) return intersectPoint;
             }
 
             return intersectPoint;

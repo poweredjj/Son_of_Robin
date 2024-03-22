@@ -2,7 +2,6 @@
 using FontStashSharp.RichText;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
-using MonoGame.Extended;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -332,8 +331,6 @@ namespace SonOfRobin
 
                 Rectangle cameraRect = new(x: (int)cameraLeft, y: (int)cameraTop, width: camera.viewRect.Width, height: (int)(camera.viewRect.Height - (tipsHeight * this.world.viewParams.ScaleY)));
 
-                SonOfRobinGame.SpriteBatch.DrawRectangle(rectangle: cameraRect, color: Color.Green, thickness: 4f);
-
                 Vector2 cameraCenter = new(cameraLeft + ((cameraRight - cameraLeft) / 2), cameraTop + ((cameraBottom - cameraTop) / 2));
 
                 foreach (var kvp in this.world.ActiveLevel.mapMarkerByColor)
@@ -353,7 +350,7 @@ namespace SonOfRobin
                         if (!cameraRect.Contains(markerPos))
                         {
                             // moving marker just outside camera rect (to get more precise angle)
-                            markerPos = Helpers.FindLineWithRectIntersection(rectangle: cameraRect, lineStart: cameraCenter, lineEnd: markerPos);
+                            markerPos = Helpers.FindLineWithRectIntersection(rectLeft: cameraLeft, rectTop: cameraTop, rectRight: cameraRight, rectBottom: cameraBottom, lineStart: cameraCenter, lineEnd: markerPos);
                         }
 
                         ImageObj markerImage = markerPiece.sprite.AnimFrame.imageObj;
@@ -367,7 +364,7 @@ namespace SonOfRobin
                         if (markerPos.X < cameraLeft) offset.X = cameraLeft - markerPos.X;
                         if (markerPos.X + markerWidth > cameraRight) offset.X = -(markerPos.X + markerWidth - cameraRight);
                         if (markerPos.Y < cameraTop) offset.Y = cameraTop - markerPos.Y;
-                        if (markerPos.Y + markerHeight > cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
+                        if (markerPos.Y + markerHeight >= cameraBottom) offset.Y = -(markerPos.Y + markerHeight - cameraBottom);
 
                         markerPos += offset + new Vector2(markerWidth / 2, markerHeight / 2);
 
