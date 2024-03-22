@@ -642,15 +642,13 @@ namespace SonOfRobin
         {
             // using floats and Vector2 for better precision
 
-            Rectangle rectangle = new(x: (int)rectLeft, y: (int)rectTop, width: (int)(rectRight - rectLeft), height: (int)(rectBottom - rectTop));
-
             Vector2 pointInside, pointOutside;
-            if (rectangle.Contains(lineStart))
+            if (rectLeft <= lineStart.X && lineStart.X <= rectRight && rectTop <= lineStart.Y && lineStart.Y <= rectBottom)
             {
                 pointInside = lineStart;
                 pointOutside = lineEnd;
             }
-            else if (rectangle.Contains(lineEnd))
+            else if (rectLeft <= lineEnd.X && lineEnd.X <= rectRight && rectTop <= lineEnd.Y && lineEnd.Y <= rectBottom)
             {
                 pointInside = lineEnd;
                 pointOutside = lineStart;
