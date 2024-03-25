@@ -1371,7 +1371,9 @@ namespace SonOfRobin
 
             foreach (Sprite shadowSprite in spritesCastingShadows
                 .OrderBy(s => s.AnimFrame.layer)
-                .ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position)))
+                .ThenBy(s => s.GfxRect.Bottom)
+                .ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position))
+                )
             {
                 if (!shadowSprite.AnimFrame.castsShadow) continue;
 

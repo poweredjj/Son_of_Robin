@@ -1468,7 +1468,7 @@ namespace SonOfRobin
 
             // getting blocking light sprites
 
-            IEnumerable<Sprite> spritesCastingShadows = Array.Empty<Sprite>();
+            IEnumerable<Sprite> spritesCastingShadows = [];
 
             AmbientLight.SunLightData sunLightData = AmbientLight.SunLightData.CalculateSunLight(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather);
             float sunShadowsOpacity = this.CalculateSunShadowsOpacity(sunLightData);
@@ -1560,7 +1560,7 @@ namespace SonOfRobin
                 if (softShadows)
                 {
                     this.shadowBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
+                    //this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
                 }
                 SonOfRobinGame.SpriteBatch.Draw(DarknessAndDistortionMask, DarknessAndDistortionMask.Bounds, Color.White * sunShadowsOpacity);
                 SonOfRobinGame.SpriteBatch.End();
