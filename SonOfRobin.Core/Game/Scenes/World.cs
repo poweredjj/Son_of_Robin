@@ -1482,7 +1482,10 @@ namespace SonOfRobin
             }
 
             // switching to RenderTarget2 (to draw board before any distortions)
-            SetRenderTarget(Preferences.drawBoardDistortion ? RenderTarget2 : RenderTarget1);
+
+            bool drawBoardDistortion = Preferences.drawBoardDistortion && this.ActiveLevel.recentParticlesManager.GetParticlesToDrawCountForType(ParticleEngine.DrawType.DistortBoard) > 0;
+
+            SetRenderTarget(drawBoardDistortion ? RenderTarget2 : RenderTarget1);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             // drawing water surface
@@ -1493,7 +1496,7 @@ namespace SonOfRobin
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
             int trianglesDrawn = this.Grid.DrawBackground(lightSprites: lightSprites, sunLightData: sunLightData);
 
-            if (Preferences.drawBoardDistortion)
+            if (drawBoardDistortion)
             {
                 // drawing board distortion
                 SetRenderTarget(DarknessAndDistortionMask);
@@ -1578,7 +1581,9 @@ namespace SonOfRobin
 
             // drawing global distortion
 
-            if (Preferences.drawGlobalDistortion)
+            bool drawGlobalDistortion = Preferences.drawGlobalDistortion && this.ActiveLevel.recentParticlesManager.GetParticlesToDrawCountForType(ParticleEngine.DrawType.DistortAll) > 0;
+
+            if (drawGlobalDistortion)
             {
                 SetRenderTarget(DarknessAndDistortionMask);
                 SonOfRobinGame.GfxDev.Clear(Color.Black);
@@ -1599,7 +1604,7 @@ namespace SonOfRobin
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
-            if (Preferences.drawGlobalDistortion)
+            if (drawGlobalDistortion)
             {
                 this.heatMaskDistortInstance.baseTexture = RenderTarget1;
                 this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);

@@ -24,6 +24,11 @@ namespace SonOfRobin
             }
         }
 
+        public int GetParticlesToDrawCountForType(ParticleEngine.DrawType drawType)
+        {
+            return this.distortionParticlesToDrawInThisFrameByDrawType[drawType].Count;
+        }
+
         public void AddPiece(BoardPiece piece)
         {
             this.pieceSet.Add(piece);
