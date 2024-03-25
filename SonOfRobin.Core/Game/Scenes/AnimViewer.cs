@@ -71,7 +71,7 @@ namespace SonOfRobin
             }
 
             this.animPkgArray = animPkgList.OrderBy(a => a.name).ToArray();
-            this.currentAnimPkgIndex = 0;
+            this.currentAnimPkgIndex = 226; // 0
             this.currentAnimIndex = 0;
 
             this.AssignCurrentAnim();
@@ -446,6 +446,8 @@ namespace SonOfRobin
 
         private void DrawShadow(Color color, Vector2 lightPos, float shadowAngle, float drawOffsetX = 0f, float drawOffsetY = 0f, float yScaleForce = 0f)
         {
+            if (!this.currentAnimFrame.castsShadow) return;
+
             // must match Sprite.DrawShadow logic
 
             float distance = Vector2.Distance(lightPos, this.pos);
