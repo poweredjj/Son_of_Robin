@@ -277,13 +277,13 @@ namespace SonOfRobin
                             if (Preferences.FullScreenMode) new Selector(menu: menu, name: "resolution", valueList: Preferences.AvailableScreenModes, targetObj: preferences, propertyName: "FullScreenResolution");
                         }
 
-                        new Selector(menu: menu, name: "cut framerate in half", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "halfFramerate", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "limit framerate", color: Color.White, scale: 1f) }, rebuildsMenu: true);
+                        new Selector(menu: menu, name: "cut framerate in half", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "halfFramerate", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "limit framerate", color: Color.White, scale: 1f) });
 
                         new Selector(menu: menu, name: "frameskip", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "FrameSkip", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "skip frames to maintain speed", color: Color.White, scale: 1f) });
 
                         new Selector(menu: menu, name: "sun shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawSunShadows", rebuildsMenu: true, resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "light-sourced shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawLightSourcedShadows", rebuildsMenu: true, resizesAllScenes: true);
+                        new Selector(menu: menu, name: "light-sourced shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawLightSourcedShadows", resizesAllScenes: true);
 
                         if (Preferences.drawSunShadows) new Selector(menu: menu, name: "soft shadows", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "softShadows", resizesAllScenes: true);
 
@@ -291,9 +291,13 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "max flame lights", valueDict: new Dictionary<Object, Object> { { 0, "zero" }, { 1, "few" }, { 2, "some" }, { 3, "many" }, { 5, "too many" }, { 9999, "unlimited" } }, targetObj: preferences, propertyName: "maxFlameLightsPerCell", resizesAllScenes: true);
 
-                        new Selector(menu: menu, name: "terrain quality", valueDict: new Dictionary<object, object> { { true, "high" }, { false, "low" } }, targetObj: preferences, propertyName: "HighTerrainDetail", rebuildsMenu: true, resizesAllScenes: true);
+                        new Selector(menu: menu, name: "terrain quality", valueDict: new Dictionary<object, object> { { true, "high" }, { false, "low" } }, targetObj: preferences, propertyName: "HighTerrainDetail", resizesAllScenes: true);
 
                         new Selector(menu: menu, name: "water quality", valueDict: new Dictionary<object, object> { { true, "high" }, { false, "low" } }, targetObj: preferences, propertyName: "highQualityWater", infoTextList: new List<InfoWindow.TextEntry> { new InfoWindow.TextEntry(text: "show water animations", color: Color.White, scale: 1f) }, resizesAllScenes: true);
+
+                        new Selector(menu: menu, name: "show terrain distortion", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawBoardDistortion");
+
+                        new Selector(menu: menu, name: "show heat distortion", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "drawGlobalDistortion");
 
                         new Selector(menu: menu, name: "plants sway", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "plantsSway");
 

@@ -112,6 +112,8 @@ namespace SonOfRobin
         public static bool drawSunShadows = true;
         public static bool drawLightSourcedShadows = true;
         private static bool highTerrainDetail = true;
+        public static bool drawBoardDistortion = true;
+        public static bool drawGlobalDistortion = true;
         public static MapOverlay.Corner miniMapCorner = MapOverlay.Corner.TopRight;
         public static float miniMapScale = 3.5f;
         public static bool sortCompendium = false;
@@ -595,6 +597,8 @@ namespace SonOfRobin
             prefsData["musicGlobalOn"] = SongPlayer.GlobalOn;
             prefsData["musicGlobalVolume"] = SongPlayer.GlobalVolume;
             prefsData["highTerrainDetail"] = highTerrainDetail;
+            prefsData["drawBoardDistortion"] = drawBoardDistortion;
+            prefsData["drawGlobalDistortion"] = drawGlobalDistortion;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -674,6 +678,8 @@ namespace SonOfRobin
                     SongPlayer.GlobalOn = (bool)prefsData["musicGlobalOn"];
                     SongPlayer.GlobalVolume = (float)(double)prefsData["musicGlobalVolume"];
                     highTerrainDetail = (bool)prefsData["highTerrainDetail"];
+                    drawBoardDistortion = (bool)prefsData["drawBoardDistortion"];
+                    drawGlobalDistortion = (bool)prefsData["drawGlobalDistortion"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

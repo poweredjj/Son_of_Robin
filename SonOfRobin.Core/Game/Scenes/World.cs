@@ -1477,7 +1477,7 @@ namespace SonOfRobin
             }
 
             // switching to RenderTarget2 (to draw board before any distortions)
-            SetRenderTarget(RenderTarget2);
+            SetRenderTarget(Preferences.drawBoardDistortion ? RenderTarget2 : RenderTarget1);
             SonOfRobinGame.GfxDev.Clear(Color.Black);
 
             // drawing water surface
@@ -1488,24 +1488,27 @@ namespace SonOfRobin
             SetupPolygonDrawing(allowRepeat: true, transformMatrix: worldMatrix);
             int trianglesDrawn = this.Grid.DrawBackground(lightSprites: lightSprites, sunLightData: sunLightData);
 
-            // drawing board distortion
-            SetRenderTarget(DarknessAndDistortionMask);
-            SonOfRobinGame.GfxDev.Clear(Color.Black);
+            if (Preferences.drawBoardDistortion)
+            {
+                // drawing board distortion
+                SetRenderTarget(DarknessAndDistortionMask);
+                SonOfRobinGame.GfxDev.Clear(Color.Black);
 
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
-            this.ActiveLevel.recentParticlesManager.DrawDistortion(drawType: ParticleEngine.DrawType.DistortBoard); // SpriteSortMode.Immediate is needed to draw particles properly
-            SonOfRobinGame.SpriteBatch.End();
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
+                this.ActiveLevel.recentParticlesManager.DrawDistortion(drawType: ParticleEngine.DrawType.DistortBoard); // SpriteSortMode.Immediate is needed to draw particles properly
+                SonOfRobinGame.SpriteBatch.End();
 
-            // rendering board with board distortion onto RenderTarget1
+                // rendering board with board distortion onto RenderTarget1
 
-            SetRenderTarget(RenderTarget1);
-            SonOfRobinGame.GfxDev.Clear(Color.Transparent);
-            SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
+                SetRenderTarget(RenderTarget1);
+                SonOfRobinGame.GfxDev.Clear(Color.Transparent);
+                SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
-            this.heatMaskDistortInstance.baseTexture = RenderTarget2;
-            this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
-            SonOfRobinGame.SpriteBatch.Draw(RenderTarget2, RenderTarget2.Bounds, Color.White);
-            SonOfRobinGame.SpriteBatch.End();
+                this.heatMaskDistortInstance.baseTexture = RenderTarget2;
+                this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+                SonOfRobinGame.SpriteBatch.Draw(RenderTarget2, RenderTarget2.Bounds, Color.White);
+                SonOfRobinGame.SpriteBatch.End();
+            }
 
             // drawing sun shadows onto darkness mask
 
@@ -1569,26 +1572,34 @@ namespace SonOfRobin
             }
 
             // drawing global distortion
-            SetRenderTarget(DarknessAndDistortionMask);
-            SonOfRobinGame.GfxDev.Clear(Color.Black);
 
-            if (this.weather.HeatPercentage > 0)
+            if (Preferences.drawGlobalDistortion)
             {
-                this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.3f, endSpriteBatch: false);
+                SetRenderTarget(DarknessAndDistortionMask);
+                SonOfRobinGame.GfxDev.Clear(Color.Black);
+
+                if (this.weather.HeatPercentage > 0)
+                {
+                    this.scrollingSurfaceManager.hotAir.Draw(opacityOverride: this.weather.HeatPercentage * 0.3f, endSpriteBatch: false);
+                    SonOfRobinGame.SpriteBatch.End();
+                }
+
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
+                this.ActiveLevel.recentParticlesManager.DrawDistortion(drawType: ParticleEngine.DrawType.DistortAll); // SpriteSortMode.Immediate is needed to draw particles properly
                 SonOfRobinGame.SpriteBatch.End();
             }
-
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: worldMatrix, samplerState: SamplerState.AnisotropicClamp, sortMode: SpriteSortMode.Immediate, blendState: BlendState.Additive);
-            this.ActiveLevel.recentParticlesManager.DrawDistortion(drawType: ParticleEngine.DrawType.DistortAll); // SpriteSortMode.Immediate is needed to draw particles properly
-            SonOfRobinGame.SpriteBatch.End();
 
             // drawing all effects
             SetRenderTarget(RenderTarget2);
             SonOfRobinGame.GfxDev.Clear(Color.Transparent);
             SonOfRobinGame.SpriteBatch.Begin(sortMode: SpriteSortMode.Immediate, blendState: BlendState.AlphaBlend);
 
-            this.heatMaskDistortInstance.baseTexture = RenderTarget1;
-            this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+            if (Preferences.drawGlobalDistortion)
+            {
+                this.heatMaskDistortInstance.baseTexture = RenderTarget1;
+                this.heatMaskDistortInstance.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White);
+            }
+
             SonOfRobinGame.SpriteBatch.Draw(RenderTarget1, RenderTarget1.Bounds, Color.White);
             SonOfRobinGame.SpriteBatch.End();
 

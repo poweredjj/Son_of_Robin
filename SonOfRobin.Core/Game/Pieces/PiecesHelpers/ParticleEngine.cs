@@ -718,7 +718,7 @@ namespace SonOfRobin
                         {
                             Parameters = new ParticleReleaseParameters
                             {
-                                Scale = new Range<float>(0.1f, 0.4f),
+                                Scale = new Range<float>(0.1f, 0.6f),
                                 Color = HslColor.FromRgb(Color.White),
                                 Speed = new Range<float>(30f, 70f),
                             },
