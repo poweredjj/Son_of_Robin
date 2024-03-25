@@ -670,6 +670,9 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(30)), storeForLaterUse: true));
 
+                        Scheduler.ExecutionDelegate changeBoatAnimNameDlgt1 = () => { if (!this.world.HasBeenRemoved) boat.sprite.AssignNewName("cruise_slow"); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: changeBoatAnimNameDlgt1, storeForLaterUse: true));
+
                         taskChain.Add(new HintMessage(text: "I'm starting to miss my island already...\nMaybe it wasn't such a good idea to leave?", boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         VisualEffect orbiter = (VisualEffect)PieceTemplate.CreatePiece(world: this.world, templateName: PieceTemplate.Name.Orbiter);
@@ -685,6 +688,9 @@ namespace SonOfRobin
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: addOrbiterDlgt, storeForLaterUse: true));
 
+                        Scheduler.ExecutionDelegate changeBoatAnimNameDlgt2 = () => { if (!this.world.HasBeenRemoved) boat.sprite.AssignNewName("cruise_medium"); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: changeBoatAnimNameDlgt2, storeForLaterUse: true));
+
                         taskChain.Add(new HintMessage(text: "Finally, | rain! How refreshing!", imageList: new List<ImageObj> { AnimData.GetImageObj(AnimData.PkgName.WaterDrop) }, boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 60 * 5, executeHelper: new WeatherEvent(type: Weather.WeatherType.Lightning, intensity: 0.35f, startTime: DateTime.MinValue, duration: TimeSpan.FromSeconds(40), transitionLength: TimeSpan.FromSeconds(15)), storeForLaterUse: true));
@@ -696,6 +702,9 @@ namespace SonOfRobin
 
                         Sound soundStormLoop = new Sound(name: SoundData.Name.OpenSeaStormLoop, isLooped: true, volumeFadeFrames: 90, ignore3DAlways: true);
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.PlaySound, delay: 60 * 5, executeHelper: soundStormLoop, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate changeBoatAnimNameDlgt3 = () => { if (!this.world.HasBeenRemoved) boat.sprite.AssignNewName("cruise_fast"); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: changeBoatAnimNameDlgt3, storeForLaterUse: true));
 
                         Scheduler.ExecutionDelegate updateOrbiterDlgt1 = () =>
                         {
@@ -762,6 +771,9 @@ namespace SonOfRobin
                         Scheduler.ExecutionDelegate clearWeatherDelegate = () =>
                         { if (!this.world.HasBeenRemoved) this.world.weather.RemoveAllEventsForDuration(TimeSpan.FromHours(48)); };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: clearWeatherDelegate, storeForLaterUse: true));
+
+                        Scheduler.ExecutionDelegate changeBoatAnimNameDlgt4 = () => { if (!this.world.HasBeenRemoved) boat.sprite.AssignNewName("cruise_slow"); };
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: changeBoatAnimNameDlgt4, storeForLaterUse: true));
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 60 * 4, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 5 } }, storeForLaterUse: true));
 

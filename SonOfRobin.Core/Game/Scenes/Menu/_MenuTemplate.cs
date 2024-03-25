@@ -336,7 +336,6 @@ namespace SonOfRobin
                             new Selector(menu: menu, name: "music", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: SongPlayer, propertyName: "GlobalOn");
 
                             new Selector(menu: menu, name: "music volume", valueDict: valueDict, targetObj: SongPlayer, propertyName: "GlobalVolume");
-
                         }
 
                         foreach (Entry entry in menu.entryList)
@@ -1520,8 +1519,13 @@ namespace SonOfRobin
                             BoardPiece boat = (BoardPiece)executeHelper;
                             if (boat.world.HasBeenRemoved) return;
 
-                            if (!boat.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.CineIntroduction)) boat.world.HintEngine.shownGeneralHints.Add(HintEngine.Type.CineIntroduction); // if, for whatever reason, introduction would not be marked as shown, it would be shown now instead
+                            if (!boat.world.HintEngine.shownGeneralHints.Contains(HintEngine.Type.CineIntroduction))
+                            {
+                                // if, for whatever reason, introduction would not be marked as shown, it would be shown now instead
+                                boat.world.HintEngine.shownGeneralHints.Add(HintEngine.Type.CineIntroduction);
+                            }
 
+                            boat.world.HintEngine.shownGeneralHints.Remove(HintEngine.Type.CineEndingPart1); // making sure that ending is not marked as shown
                             boat.world.HintEngine.ShowGeneralHint(type: HintEngine.Type.CineEndingPart1, ignoreDelay: true, piece: boat);
                         };
 
