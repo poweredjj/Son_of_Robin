@@ -355,7 +355,7 @@ namespace SonOfRobin
 
                             Scheduler.ExecutionDelegate setGlobEffectDlgt = () =>
                             {
-                                if (!world.HasBeenRemoved) world.globalEffect = new MosaicInstance(textureSize: new Vector2(World.DarknessAndHeatMask.Width, World.DarknessAndHeatMask.Height), blurSize: new Vector2(18, 18), framesLeft: -1);
+                                if (!world.HasBeenRemoved) world.globalEffect = new MosaicInstance(textureSize: new Vector2(World.DarknessAndDistortionMask.Width, World.DarknessAndDistortionMask.Height), blurSize: new Vector2(18, 18), framesLeft: -1);
                             };
                             taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 0, executeHelper: setGlobEffectDlgt, storeForLaterUse: true));
 

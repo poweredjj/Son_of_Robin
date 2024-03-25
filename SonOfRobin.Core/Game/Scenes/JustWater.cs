@@ -34,7 +34,9 @@ namespace SonOfRobin
             this.waterCausticsTexture = TextureBank.GetTexture(TextureBank.TextureName.RepeatingWaterCaustics);
             this.distortionTexture = TextureBank.GetTexture(TextureBank.TextureName.RepeatingPerlinNoiseColor);
 
-            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.waterCausticsTexture, distortTexture: this.distortionTexture);
+            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(distortTexture: this.distortionTexture);
+            this.heatMaskDistortInstance.baseTexture = this.waterCausticsTexture;
+
 
             this.causticsOffset1 = Vector2.Zero;
             this.causticsOffset2 = Vector2.Zero;

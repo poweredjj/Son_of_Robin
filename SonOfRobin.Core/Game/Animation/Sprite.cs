@@ -797,7 +797,7 @@ namespace SonOfRobin
                 if (Scene.UpdateStack.Contains(this.world)) this.particleEngine.Update();
                 if (this.particleEngine.HasAnyParticles)
                 {
-                    this.particleEngine.Draw();
+                    this.particleEngine.Draw(drawType: ParticleEngine.DrawType.Draw, setupSpriteBatch: true);
                     this.boardPiece.level.recentParticlesManager.AddPiece(this.boardPiece);
                 }
             }

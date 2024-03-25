@@ -14,6 +14,8 @@ namespace SonOfRobin
 {
     public class ParticleEngine
     {
+        public enum DrawType { Draw, DistortBoard, DistortAll };
+
         public enum Preset
         {
             Fireplace = 0,
@@ -68,7 +70,7 @@ namespace SonOfRobin
             DistortWaterEdge = 43,
         }
 
-        private static readonly HashSet<Preset> presetsAffectedByWind = new() { Preset.BurnFlame, Preset.HeatFlame, Preset.HeatSmall, Preset.HeatMedium, Preset.HeatBig, Preset.Fireplace, Preset.Cooking, Preset.Brewing, Preset.Smelting, Preset.HeatSmelting, Preset.LavaFlame, Preset.MeatDrying };
+        private static readonly HashSet<Preset> presetsAffectedByWind = [Preset.BurnFlame, Preset.HeatFlame, Preset.HeatSmall, Preset.HeatMedium, Preset.HeatBig, Preset.Fireplace, Preset.Cooking, Preset.Brewing, Preset.Smelting, Preset.HeatSmelting, Preset.LavaFlame, Preset.MeatDrying];
 
         private static readonly Dictionary<Preset, TextureBank.TextureName> textureNameDict = new()
         {
@@ -124,7 +126,7 @@ namespace SonOfRobin
             public readonly ParticleEmitter particleEmitter;
             public readonly int defaultParticlesToEmit;
             public readonly int particleToEmitMaxVariation;
-            public readonly bool drawAsDistortion;
+            public readonly DrawType drawType;
 
             private int currentParticlesToEmit;
             private int framesLeft;
@@ -137,7 +139,7 @@ namespace SonOfRobin
             public bool HasFinished
             { get { return !this.IsActive && this.particleEmitter.ActiveParticles == 0; } }
 
-            public PresetData(Preset preset, int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0, bool drawAsDistortion = false)
+            public PresetData(Preset preset, int defaultParticlesToEmit, ParticleEmitter particleEmitter, int particlesToEmitMaxVariation = 0, int maxDelay = 0, DrawType drawType = DrawType.Draw)
             {
                 if (particlesToEmitMaxVariation < 0) throw new ArgumentOutOfRangeException($"particleToEmitMaxVariation cannot be < 0 - {particlesToEmitMaxVariation}");
 
@@ -145,7 +147,7 @@ namespace SonOfRobin
                 this.defaultParticlesToEmit = defaultParticlesToEmit;
                 this.particleToEmitMaxVariation = particlesToEmitMaxVariation;
                 this.currentParticlesToEmit = 0;
-                this.drawAsDistortion = drawAsDistortion;
+                this.drawType = drawType;
 
                 this.particleEmitter = particleEmitter;
                 this.delayFramesLeft = maxDelay > 0 ? SonOfRobinGame.random.Next(maxDelay + 1) : 0;
@@ -183,7 +185,7 @@ namespace SonOfRobin
 
                     this.particleEmitter.Parameters.Quantity = particlesToEmit;
 
-                    // LinearGravityModifier must be declared as a second modifier 
+                    // LinearGravityModifier must be declared as a second modifier
                     if (presetsAffectedByWind.Contains(this.preset)) ((LinearGravityModifier)this.particleEmitter.Modifiers[1]).Direction = GetGravityModifierWithWind(sprite);
                 }
 
@@ -218,30 +220,51 @@ namespace SonOfRobin
         }
 
         public static readonly Preset[] allPresets = (Preset[])Enum.GetValues(typeof(Preset));
+        public static readonly DrawType[] allDrawTypes = (DrawType[])Enum.GetValues(typeof(DrawType));
 
         private Sprite sprite;
-        private readonly ParticleEffect particleEffectDraw;
-        private readonly ParticleEffect particleEffectDistortion;
+
+        private readonly Dictionary<DrawType, ParticleEffect> particleEffectByDrawType;
         private readonly Dictionary<Preset, PresetData> dataByPreset;
 
         public bool HasAnyParticles
-        { get { return this.ActiveParticlesCountDraw > 0 || this.ActiveParticlesCountDistortion > 0; } }
+        {
+            get
+            {
+                foreach (ParticleEffect particleEffect in this.particleEffectByDrawType.Values)
+                {
+                    foreach (ParticleEmitter particleEmitter in particleEffect.Emitters)
+                    {
+                        if (particleEmitter.ActiveParticles > 0) return true;
+                    }
+                }
 
-        public int ActiveParticlesCountDraw
-        { get { return this.particleEffectDraw.Emitters.Select(x => x.ActiveParticles).Sum(); } }
+                return false;
+            }
+        }
 
-        public int ActiveParticlesCountDistortion
-        { get { return this.particleEffectDistortion.Emitters.Select(x => x.ActiveParticles).Sum(); } }
+        public bool HasAnyActiveParticlesForDrawType(DrawType drawType)
+        {
+            foreach (ParticleEmitter particleEmitter in this.particleEffectByDrawType[drawType].Emitters)
+            {
+                if (particleEmitter.ActiveParticles > 0) return true;
+            }
+
+            return false;
+        }
 
         private ParticleEngine(Sprite sprite)
         {
             this.sprite = sprite;
-            this.dataByPreset = new Dictionary<Preset, PresetData>();
-            this.particleEffectDraw = new ParticleEffect(autoTrigger: false);
-            this.particleEffectDraw.Emitters = new List<ParticleEmitter>();
+            this.dataByPreset = [];
 
-            this.particleEffectDistortion = new ParticleEffect(autoTrigger: false);
-            this.particleEffectDistortion.Emitters = new List<ParticleEmitter>();
+            this.particleEffectByDrawType = [];
+
+            foreach (DrawType drawType in allDrawTypes)
+            {
+                this.particleEffectByDrawType[drawType] = new ParticleEffect(autoTrigger: false);
+                this.particleEffectByDrawType[drawType].Emitters = new List<ParticleEmitter>();
+            }
         }
 
         public void ReassignSprite(Sprite newSprite)
@@ -260,18 +283,17 @@ namespace SonOfRobin
         {
             TextureRegion2D textureRegion = new(TextureBank.GetTexture(textureNameDict[preset]));
 
-            int defaultParticlesToEmit;
+            int defaultParticlesToEmit = 1;
             int particlesToEmitMaxVariation = 0;
             int maxDelay = 0;
-            bool drawAsDistortion = false;
+
+            DrawType drawType = DrawType.Draw;
             ParticleEmitter particleEmitter;
 
             switch (preset)
             {
                 case Preset.Fireplace:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                         {
                             Parameters = new ParticleReleaseParameters
@@ -308,8 +330,7 @@ namespace SonOfRobin
 
                 case Preset.HeatSmall:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 200, TimeSpan.FromSeconds(1.8),
                             Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
@@ -347,8 +368,7 @@ namespace SonOfRobin
 
                 case Preset.HeatMedium:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 140, TimeSpan.FromSeconds(3.0),
                             Profile.BoxFill(width: this.sprite.GfxRect.Width / 2, height: this.sprite.GfxRect.Height / 2))
@@ -385,8 +405,7 @@ namespace SonOfRobin
 
                 case Preset.HeatBig:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(3.0),
                             Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
@@ -424,8 +443,7 @@ namespace SonOfRobin
 
                 case Preset.HeatFlame:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 300, TimeSpan.FromSeconds(2.2),
                             Profile.BoxFill(width: this.sprite.GfxRect.Width, height: this.sprite.GfxRect.Height))
@@ -511,8 +529,6 @@ namespace SonOfRobin
 
                 case Preset.Cooking:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.Point())
                         {
                             Parameters = new ParticleReleaseParameters
@@ -585,8 +601,7 @@ namespace SonOfRobin
 
                 case Preset.HeatSmelting:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(1.3), Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
                         {
@@ -622,8 +637,6 @@ namespace SonOfRobin
 
                 case Preset.Brewing:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(1.5), Profile.BoxFill(width: this.sprite.ColRect.Width, height: this.sprite.ColRect.Height))
                         {
                             Parameters = new ParticleReleaseParameters
@@ -699,8 +712,7 @@ namespace SonOfRobin
 
                 case Preset.WaterDistortWalk:
                     {
-                        drawAsDistortion = true;
-                        defaultParticlesToEmit = 1;
+                        drawType = DrawType.DistortBoard;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 3000, TimeSpan.FromSeconds(1.0f), Profile.Circle(radius: 6, radiate: Profile.CircleRadiation.Out))
                         {
@@ -809,7 +821,7 @@ namespace SonOfRobin
                 case Preset.DistortCruiseCine:
                     {
                         defaultParticlesToEmit = 6;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortBoard;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 2000, TimeSpan.FromSeconds(1.8f),
                             Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
@@ -848,7 +860,7 @@ namespace SonOfRobin
                 case Preset.DistortStormCine:
                     {
                         defaultParticlesToEmit = 10;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortBoard;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 10, TimeSpan.FromSeconds(2.0f), Profile.Point())
                         {
@@ -883,8 +895,7 @@ namespace SonOfRobin
 
                 case Preset.DistortWaterEdge:
                     {
-                        defaultParticlesToEmit = 1;
-                        drawAsDistortion = true;
+                        drawType = DrawType.DistortBoard;
 
                         Vector2 endScale = new(
                             2f + (SonOfRobinGame.random.NextSingle() * 2f),
@@ -967,8 +978,7 @@ namespace SonOfRobin
 
                 case Preset.WaterWaveDistort:
                     {
-                        drawAsDistortion = true;
-                        defaultParticlesToEmit = 3;
+                        drawType = DrawType.DistortBoard;
 
                         float axisX = MathF.Cos(this.sprite.rotation - (float)(Math.PI / 2));
                         float axisY = MathF.Sin(this.sprite.rotation - (float)(Math.PI / 2));
@@ -1120,8 +1130,6 @@ namespace SonOfRobin
 
                 case Preset.DustPuff:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(
                             textureRegion, 5, TimeSpan.FromSeconds(0.7f),
                             profile: Profile.BoxFill(width: this.sprite.GfxRect.Width * 0.7f, height: this.sprite.GfxRect.Height * 0.7f))
@@ -1160,8 +1168,6 @@ namespace SonOfRobin
 
                 case Preset.SmokePuff:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(
                             textureRegion, 5, TimeSpan.FromSeconds(2.0f),
                             profile: Profile.Point())
@@ -1238,7 +1244,6 @@ namespace SonOfRobin
 
                 case Preset.LavaFlame:
                     {
-                        defaultParticlesToEmit = 1;
                         maxDelay = 130;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 60, TimeSpan.FromSeconds(3.5), Profile.Point())
@@ -1374,8 +1379,6 @@ namespace SonOfRobin
 
                 case Preset.WindPetal:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 50, TimeSpan.FromSeconds(2.5f),
                             profile: Profile.Point()) // to be replaced with Spray()
                         {
@@ -1699,7 +1702,6 @@ namespace SonOfRobin
 
                 case Preset.SwampGas:
                     {
-                        defaultParticlesToEmit = 1;
                         maxDelay = 30;
                         particlesToEmitMaxVariation = 4;
 
@@ -1772,8 +1774,6 @@ namespace SonOfRobin
 
                 case Preset.BloodDripping:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 100, TimeSpan.FromSeconds(5.5f),
                             Profile.BoxFill(width: (int)(this.sprite.GfxRect.Width * 0.8f), height: this.sprite.GfxRect.Height / 2))
                         {
@@ -1811,8 +1811,6 @@ namespace SonOfRobin
 
                 case Preset.MeatDrying:
                     {
-                        defaultParticlesToEmit = 1;
-
                         particleEmitter = new ParticleEmitter(textureRegion, 250, TimeSpan.FromSeconds(3.5),
                             Profile.BoxFill(width: (int)(this.sprite.GfxRect.Width * 0.7f), height: this.sprite.GfxRect.Height / 4))
                         {
@@ -1874,10 +1872,11 @@ namespace SonOfRobin
                     throw new ArgumentException($"Unsupported preset - '{preset}'.");
             }
 
-            if (drawAsDistortion) this.particleEffectDistortion.Emitters.Add(particleEmitter);
-            else this.particleEffectDraw.Emitters.Add(particleEmitter);
+            ParticleEffect particleEffect = this.particleEffectByDrawType[drawType];
 
-            this.dataByPreset[preset] = new PresetData(preset: preset, defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay, drawAsDistortion: drawAsDistortion);
+            particleEffect.Emitters.Add(particleEmitter);
+
+            this.dataByPreset[preset] = new PresetData(preset: preset, defaultParticlesToEmit: defaultParticlesToEmit, particleEmitter: particleEmitter, particlesToEmitMaxVariation: particlesToEmitMaxVariation, maxDelay: maxDelay, drawType: drawType);
         }
 
         public static ParticleEmitter GetEmitterForPreset(Sprite sprite, Preset preset)
@@ -1916,8 +1915,10 @@ namespace SonOfRobin
 
         public void Dispose()
         {
-            this.particleEffectDraw.Dispose();
-            this.particleEffectDistortion.Dispose();
+            foreach (ParticleEffect particleEffect in this.particleEffectByDrawType.Values)
+            {
+                particleEffect.Dispose();
+            }
         }
 
         public Dictionary<string, Object> Serialize()
@@ -2000,24 +2001,22 @@ namespace SonOfRobin
                 _ => this.sprite.position,
             };
 
-            this.particleEffectDraw.Position = position;
-            this.particleEffectDistortion.Position = position;
-
-            this.particleEffectDraw.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds); // will speed up animation if used multiple times in a row
-            this.particleEffectDistortion.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds); // will speed up animation if used multiple times in a row
+            foreach (ParticleEffect particleEffect in this.particleEffectByDrawType.Values)
+            {
+                particleEffect.Position = position;
+                particleEffect.Update((float)SonOfRobinGame.CurrentGameTime.ElapsedGameTime.TotalSeconds);  // will speed up animation if used multiple times in a row
+            }
         }
 
-        public void Draw()
+        public void Draw(DrawType drawType, bool setupSpriteBatch)
         {
-            SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
-            SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix, sortMode: SpriteSortMode.Deferred);
-            SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDraw);
-        }
+            if (setupSpriteBatch)
+            {
+                SonOfRobinGame.SpriteBatch.End(); // otherwise flicker will occur (interaction with drawing water caustics, real reason unknown)
+                SonOfRobinGame.SpriteBatch.Begin(transformMatrix: this.sprite.world.TransformMatrix, sortMode: SpriteSortMode.Deferred);
+            }
 
-        public void DrawDistortion()
-        {
-            // SpriteSortMode.Immediate must be set to draw properly
-            SonOfRobinGame.SpriteBatch.Draw(this.particleEffectDistortion);
+            SonOfRobinGame.SpriteBatch.Draw(this.particleEffectByDrawType[drawType]);
         }
     }
 }

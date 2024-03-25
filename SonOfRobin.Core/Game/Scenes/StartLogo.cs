@@ -32,7 +32,8 @@ namespace SonOfRobin
 
             this.logoDistortionRenderTarget = new RenderTarget2D(SonOfRobinGame.GfxDev, this.logoTexture.Width, this.logoTexture.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.DiscardContents);
 
-            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(baseTexture: this.logoTexture, distortTexture: this.logoDistortionRenderTarget);
+            this.heatMaskDistortInstance = new HeatMaskDistortionInstance(distortTexture: this.logoDistortionRenderTarget);
+            this.heatMaskDistortInstance.baseTexture = this.logoTexture;
             this.viewParams.Opacity = 0f;
 
             this.transManager.AddTransition(new Transition(transManager: this.transManager, outTrans: false, baseParamName: "Opacity", targetVal: 1f, duration: 90, startSwapParams: true));

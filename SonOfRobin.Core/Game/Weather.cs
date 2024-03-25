@@ -372,7 +372,7 @@ namespace SonOfRobin
 
             if (this.world.globalEffect == null || this.world.globalEffect.effect != SonOfRobinGame.EffectMosaic)
             {
-                this.world.globalEffect = new RainInstance(baseTexture: World.FinalRenderTarget, framesLeft: 5);
+                this.world.globalEffect = new RainInstance(baseTexture: World.RenderTarget2, framesLeft: 5);
                 this.world.globalEffect.intensityForTweener = this.RainPercentage;
             }
 

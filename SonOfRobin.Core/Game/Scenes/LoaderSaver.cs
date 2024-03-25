@@ -448,7 +448,7 @@ namespace SonOfRobin
 
         private void FinishSaving() // steps that have to run on main thread
         {
-            GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.FinalRenderTarget, maxWidth: 800, maxHeight: 600);
+            GfxConverter.SaveTextureAsPNGResized(pngPath: Path.Combine(this.savePath, screenshotName), texture: World.RenderTarget2, maxWidth: 800, maxHeight: 600);
 
             bool savedCorrectly = this.SavedCorrectly;
 
