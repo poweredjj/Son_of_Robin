@@ -2109,7 +2109,7 @@ namespace SonOfRobin
 
                         for (int animSize = 0; animSize <= 5; animSize++)
                         {
-                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: $"boat/boat_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -145), ignoreWhenCalculatingMaxSize: true, hasFlatShadow: true)]));
+                            animPkg.AddAnim(new(animPkg: animPkg, size: animSize, frameArray: [new AnimFrame(atlasName: $"boat/boat_construction_{animSize}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -152), ignoreWhenCalculatingMaxSize: true, hasFlatShadow: true)]));
                         }
 
                         animPkg.presentationFrame = animPkg.GetAnim(size: 0, name: "default").frameArray[0]; // animSize == 0 should serve as an example (whole blueprint visible)
@@ -2120,7 +2120,7 @@ namespace SonOfRobin
                 case PkgName.BoatCompleteStanding:
                     {
                         animPkg = new(pkgName: pkgName, colWidth: 295, colHeight: 69);
-                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "boat/boat_stand", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -145), ignoreWhenCalculatingMaxSize: true, hasFlatShadow: true)]));
+                        animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "boat/boat_stand", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -152), ignoreWhenCalculatingMaxSize: true, hasFlatShadow: true)]));
                         break;
                     }
 
@@ -2142,14 +2142,14 @@ namespace SonOfRobin
                             var frameList = new List<AnimFrame>();
                             for (int frameNo = 0; frameNo < 4; frameNo++)
                             {
-                                frameList.Add(new AnimFrame(atlasName: $"boat/boat_cruise_{frameNo + 1}", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, duration: duration, gfxOffsetCorrection: new Vector2(30, -145), ignoreWhenCalculatingMaxSize: true, castsShadow: false));
+                                frameList.Add(new AnimFrame(atlasName: $"boat/boat_cruise_{frameNo + 1}", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, duration: duration, gfxOffsetCorrection: new Vector2(30, -152), ignoreWhenCalculatingMaxSize: true, castsShadow: false));
                             }
                             animPkg.AddAnim(new Anim(animPkg: animPkg, size: 0, frameArray: frameList.ToArray(), name: animName, pingPong: true));
                         }
 
                         foreach (string animName in new string[] { "default", "stop" })
                         {
-                            animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "boat/boat_stand", layer: 1, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -145), ignoreWhenCalculatingMaxSize: true, castsShadow: false)], name: animName));
+                            animPkg.AddAnim(new(animPkg: animPkg, size: 0, frameArray: [new AnimFrame(atlasName: "boat/boat_stand", layer: 0, cropRect: new Rectangle(x: 0, y: 0, width: 552, height: 438), scale: 0.7f, gfxOffsetCorrection: new Vector2(30, -152), ignoreWhenCalculatingMaxSize: true, castsShadow: false)], name: animName));
                         }
 
                         break;

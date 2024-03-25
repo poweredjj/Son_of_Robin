@@ -751,7 +751,7 @@ namespace SonOfRobin
                         defaultParticlesToEmit = 3;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 8000, TimeSpan.FromSeconds(4.0f),
-                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.65f, height: 10f))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -821,10 +821,10 @@ namespace SonOfRobin
                 case Preset.DistortCruiseCine:
                     {
                         defaultParticlesToEmit = 6;
-                        drawType = DrawType.DistortBoard;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 2000, TimeSpan.FromSeconds(1.8f),
-                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.55f, height: 10f))
+                            Profile.BoxFill(width: this.sprite.ColRect.Width * 0.65f, height: 10f))
                         {
                             Parameters = new ParticleReleaseParameters
                             {
@@ -860,7 +860,7 @@ namespace SonOfRobin
                 case Preset.DistortStormCine:
                     {
                         defaultParticlesToEmit = 10;
-                        drawType = DrawType.DistortBoard;
+                        drawType = DrawType.DistortAll;
 
                         particleEmitter = new ParticleEmitter(textureRegion, 10, TimeSpan.FromSeconds(2.0f), Profile.Point())
                         {

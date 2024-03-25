@@ -269,9 +269,18 @@ namespace SonOfRobin
 
         public override void SM_EndingBoatCruise()
         {
-            this.sprite.Move(new Vector2(1, 0));
-            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: 6, duration: 15);
-            ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.DistortCruiseCine, particlesToEmit: 6, duration: 15);
+            float windPercentage = this.world.weather.WindPercentage;
+            int baseMovement = this.world.CurrentFrame % 2 == 0 ? 1 : 0;
+            int windMovement = this.world.CurrentFrame % 2 != 0 ? 1 : 0;
+            windMovement = (int)(windMovement * Math.Ceiling(windPercentage * 2));
+
+            this.sprite.Move(new Vector2(baseMovement + windMovement, 0));
+
+            if (windPercentage > 0 || this.world.CurrentFrame % 3 == 0)
+            {
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: windPercentage > 0 ? 6 : 2, duration: 1);
+                ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.DistortCruiseCine, particlesToEmit: windPercentage > 0 ? 6 : 2, duration: 1);
+            }
 
             if (this.world.weather.RainPercentage > 0.7f && this.world.weather.WindPercentage > 0.7f) ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterSplashCine, particlesToEmit: 20, duration: 1);
         }

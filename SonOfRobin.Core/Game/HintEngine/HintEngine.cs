@@ -616,7 +616,7 @@ namespace SonOfRobin
                         boat.sprite.PlaceOnBoard(randomPlacement: false, position: player.sprite.position, closestFreeSpot: true);
                         boat.sprite.AssignNewName("stop");
                         boat.AddToStateMachines();
-                        new Tracking(level: player.level, targetSprite: boat.sprite, followingSprite: player.sprite, offsetX: 100, offsetY: -20);
+                        new Tracking(level: player.level, targetSprite: boat.sprite, followingSprite: player.sprite, offsetX: 60, offsetY: 80);
 
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here

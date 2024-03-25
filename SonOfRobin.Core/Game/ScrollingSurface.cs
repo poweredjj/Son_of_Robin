@@ -99,7 +99,7 @@ namespace SonOfRobin
             }
         }
 
-        public void DrawAllWater(float starsOpacity, float sunShadowsOpacity)
+        public void DrawAllWater(float starsOpacity, float sunShadowsOpacity, bool drawOceanFloor)
         {
             bool waterFound = false;
 
@@ -123,7 +123,7 @@ namespace SonOfRobin
                 return;
             }
 
-            this.oceanFloor.Draw();
+            if (drawOceanFloor) this.oceanFloor.Draw();
             this.waterCaustics.Draw();
 
             if (starsOpacity > 0) this.waterStarsReflection.Draw(opacityOverride: starsOpacity);
