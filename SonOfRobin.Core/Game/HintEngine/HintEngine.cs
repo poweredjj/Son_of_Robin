@@ -612,10 +612,11 @@ namespace SonOfRobin
                         player.sprite.CharacterStand(force: true);
                         var dialogue = HintMessage.BoxType.Dialogue;
 
-                        BoardPiece boatCruising = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
-                        boatCruising.sprite.PlaceOnBoard(randomPlacement: false, position: player.sprite.position, closestFreeSpot: true);
-                        boatCruising.AddToStateMachines();
-                        new Tracking(level: player.level, targetSprite: boatCruising.sprite, followingSprite: player.sprite, offsetX: 100, offsetY: -20);
+                        BoardPiece boat = PieceTemplate.CreatePiece(templateName: PieceTemplate.Name.BoatCompleteCruising, world: this.world);
+                        boat.sprite.PlaceOnBoard(randomPlacement: false, position: player.sprite.position, closestFreeSpot: true);
+                        boat.sprite.AssignNewName("stop");
+                        boat.AddToStateMachines();
+                        new Tracking(level: player.level, targetSprite: boat.sprite, followingSprite: player.sprite, offsetX: 100, offsetY: -20);
 
                         this.world.CineMode = true;
                         this.world.cineCurtains.showPercentage = 1f; // no transition here
