@@ -24,17 +24,18 @@ namespace SonOfRobin
             this.looped = !frameArray.Any(obj => obj.duration == 0);
             this.pingPong = pingPong;
 
-            if (pingPong)
+            if (pingPong && frameArray.Length > 2)
             {
-                AnimFrame[] frameArrayPingPong = new AnimFrame[frameArray.Length * 2];
+                // first and last element should be omitted (they would cause animation stutter)
+                var reversedFrameList = frameArray.ToList();
+                reversedFrameList.Reverse();
+                reversedFrameList.RemoveAt(0);
+                reversedFrameList.RemoveAt(reversedFrameList.Count - 1);
 
-                for (int i = 0; i < frameArray.Length; i++)
-                {
-                    frameArrayPingPong[i] = frameArray[i];
-                    frameArrayPingPong[frameArray.Length + (frameArray.Length - i - 1)] = frameArray[i];
-                }
+                var pingPongFrameList = frameArray.ToList();
+                pingPongFrameList.AddRange(reversedFrameList);
 
-                frameArray = frameArrayPingPong;
+                frameArray = pingPongFrameList.ToArray();
             }
 
             this.frameArray = frameArray;
