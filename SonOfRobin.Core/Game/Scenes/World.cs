@@ -1456,7 +1456,10 @@ namespace SonOfRobin
 
             // searching for light sources
 
-            Sprite[] lightSprites = this.Grid.GetPiecesInCameraView(groupName: Cell.Group.LightSource)
+            Rectangle rectForLightsSearch = this.camera.viewRect; // light search should be larger than camera view (to avoid light flickering when moving)
+            rectForLightsSearch.Inflate(rectForLightsSearch.Width / 6, rectForLightsSearch.Height / 6);
+
+            Sprite[] lightSprites = this.Grid.GetPiecesInRect(rectangle: rectForLightsSearch, groupName: Cell.Group.LightSource)
                 .Where(p => p.sprite.IsOnBoard && p.sprite.lightEngine.Opacity > 0)
                 .OrderBy(p => p.sprite.AnimFrame.layer)
                 .ThenBy(p => p.sprite.GfxRect.Bottom)
@@ -1473,7 +1476,9 @@ namespace SonOfRobin
             if ((Preferences.drawSunShadows && sunShadowsOpacity > 0f) ||
                 (Preferences.drawLightSourcedShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
-                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement).Select(p => p.sprite);
+                spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement)
+                    .Where(p => p.sprite.AnimFrame.castsShadow)
+                    .Select(p => p.sprite);
             }
 
             // switching to RenderTarget2 (to draw board before any distortions)

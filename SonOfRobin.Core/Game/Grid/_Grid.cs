@@ -1090,10 +1090,14 @@ namespace SonOfRobin
 
         public List<BoardPiece> GetPiecesInCameraView(Cell.Group groupName, bool compareWithCameraRect = false)
         {
-            Camera camera = this.world.camera;
-            Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: camera.viewRect, addPadding: true).AsSpan();
+            return this.GetPiecesInRect(rectangle: this.world.camera.viewRect, groupName: groupName, compareWithCameraRect: compareWithCameraRect);
+        }
 
-            var piecesInCameraView = new List<BoardPiece>();
+        public List<BoardPiece> GetPiecesInRect(Rectangle rectangle, Cell.Group groupName, bool compareWithCameraRect = false)
+        {
+            Span<Cell> visibleCellsAsSpan = this.GetCellsInsideRect(rectangle: rectangle, addPadding: true).AsSpan();
+
+            var piecesInRect = new List<BoardPiece>();
 
             if (compareWithCameraRect)
             {
@@ -1103,7 +1107,7 @@ namespace SonOfRobin
 
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
-                        if (camera.viewRect.Intersects(sprite.GfxRect)) piecesInCameraView.Add(sprite.boardPiece);
+                        if (rectangle.Intersects(sprite.GfxRect)) piecesInRect.Add(sprite.boardPiece);
                     }
                 }
             }
@@ -1115,12 +1119,12 @@ namespace SonOfRobin
 
                     foreach (Sprite sprite in cell.spriteGroups[groupName])
                     {
-                        piecesInCameraView.Add(sprite.boardPiece);
+                        piecesInRect.Add(sprite.boardPiece);
                     }
                 }
             }
 
-            return piecesInCameraView;
+            return piecesInRect;
         }
 
         private Cell[] GetAllCells()
