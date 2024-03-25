@@ -5,9 +5,8 @@ namespace SonOfRobin
 {
     public class HeatMaskDistortionInstance : EffInstance
     {
-        public Texture2D baseTexture;
+        public Texture2D baseTexture; // has to be set manually, before invoking TurnOn()
         private readonly Texture2D distortTexture;
-        private readonly Vector2 baseTextureSize;
         public Vector2 baseTextureOffset;
 
         public HeatMaskDistortionInstance(Texture2D distortTexture, int framesLeft = 1, int priority = 1) : base(effect: SonOfRobinGame.EffectHeatMaskDistortion, framesLeft: framesLeft, priority: priority)
