@@ -19,9 +19,12 @@ namespace SonOfRobin
         public static readonly Dictionary<Object, Object> namesForResDividers = new() { { 50, "low" }, { 40, "medium" }, { 20, "high" }, { 10, "ultra" } };
         public static readonly Dictionary<Object, Object> namesForDarknessRes = new() { { 4, "very low" }, { 3, "low" }, { 2, "medium" }, { 1, "high" } };
         public static readonly Dictionary<Object, Object> namesForFieldControlTipsScale = new() { { 0.15f, "micro" }, { 0.25f, "small" }, { 0.4f, "medium" }, { 0.5f, "large" }, { 0.6f, "huge" }, { 0.75f, "gigantic" } };
+
         public static readonly Dictionary<Object, Object> namesForMiniMapSize = new() { { 6f, "micro" }, { 5f, "very small" }, { 4f, "small" }, { 3.5f, "medium" }, { 3f, "bigger" }, { 2.5f, "big" }, { 2f, "huge" } };
         public static readonly Dictionary<Object, Object> namesForMapMarkerScale = new() { { 0.0125f, "small" }, { 0.025f, "medium" }, { 0.05f, "big" }, { 0.075f, "huge" }, { 0.1f, "gigantic" } };
         public static readonly Dictionary<Object, Object> namesForBuffFontSize = new() { { 6, "micro" }, { 12, "very small" }, { 18, "small" }, { 24, "normal" }, { 30, "big" }, { 36, "huge" }, { 42, "gigantic" } };
+
+        public static readonly Dictionary<Object, Object> namesForMapPiecesScale = new() { { 0.5f, "micro" }, { 0.75f, "small" }, { 1f, "normal" }, { 1.25f, "large" }, { 1.5f, "huge" }, { 2f, "gigantic" } };
 
         public static readonly List<PieceTemplate.Name> startingItemNames = new() { PieceTemplate.Name.BeltSmall, PieceTemplate.Name.Map, PieceTemplate.Name.BootsSpeed, PieceTemplate.Name.GlovesStrength };
 
@@ -117,6 +120,7 @@ namespace SonOfRobin
         public static MapOverlay.Corner miniMapCorner = MapOverlay.Corner.TopRight;
         public static float miniMapScale = 3.5f;
         public static bool sortCompendium = false;
+        public static float mapPiecesScale = 1.0f;
 
         public static int StateMachinesDurationFrameMS { get; private set; }
         private static float stateMachinesDurationFramePercent = 0.90f;
@@ -512,6 +516,7 @@ namespace SonOfRobin
                 buffFontSize = lowRes ? 12 : 30;
                 messageLogAtRight = true;
                 miniMapCorner = MapOverlay.Corner.TopCenter;
+                mapPiecesScale = 1.25f;
             }
             else
             {
@@ -521,6 +526,7 @@ namespace SonOfRobin
                 buffFontSize = 18;
                 messageLogAtRight = false;
                 miniMapCorner = MapOverlay.Corner.TopLeft;
+                mapPiecesScale = 1.0f;
             }
 
             EnableTouchButtons = SonOfRobinGame.platform == Platform.Mobile;
@@ -599,6 +605,7 @@ namespace SonOfRobin
             prefsData["highTerrainDetail"] = highTerrainDetail;
             prefsData["drawBoardDistortion"] = drawBoardDistortion;
             prefsData["drawGlobalDistortion"] = drawGlobalDistortion;
+            prefsData["mapPiecesScale"] = mapPiecesScale;
 
             FileReaderWriter.SaveJson(path: SonOfRobinGame.prefsPath, savedObj: prefsData, compress: false);
 
@@ -680,6 +687,7 @@ namespace SonOfRobin
                     highTerrainDetail = (bool)prefsData["highTerrainDetail"];
                     drawBoardDistortion = (bool)prefsData["drawBoardDistortion"];
                     drawGlobalDistortion = (bool)prefsData["drawGlobalDistortion"];
+                    mapPiecesScale = (float)(double)prefsData["mapPiecesScale"];
 
                     // mappings should be deserialized at the end, to prevent from loading other prefs after changing mapping classes
                     InputPackage loadedMappingGamepad = InputPackage.Deserialize(prefsData["currentMappingGamepad"]);

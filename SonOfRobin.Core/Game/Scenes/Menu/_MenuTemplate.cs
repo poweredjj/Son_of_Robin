@@ -196,6 +196,8 @@ namespace SonOfRobin
 
                         new Selector(menu: menu, name: "minimap size", valueDict: Preferences.namesForMiniMapSize, targetObj: preferences, propertyName: "miniMapScale", resizesAllScenes: true);
 
+                        new Selector(menu: menu, name: "map items size", valueDict: Preferences.namesForMapPiecesScale, targetObj: preferences, propertyName: "mapPiecesScale", resizesAllScenes: true);
+
                         new Selector(menu: menu, name: "map marker size", valueDict: Preferences.namesForMapMarkerScale, targetObj: preferences, propertyName: "mapMarkerScale");
 
                         new Selector(menu: menu, name: "auto remove map marker", valueDict: new Dictionary<object, object> { { true, "on" }, { false, "off" } }, targetObj: preferences, propertyName: "destroyMapMarkerWhenReached");

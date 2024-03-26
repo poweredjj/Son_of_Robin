@@ -657,6 +657,9 @@ namespace SonOfRobin
 
                 int maxSize = (int)(70f * (1f / this.camera.CurrentZoom) * (this.Mode == MapMode.Mini ? 2f : 1f)); // to avoid making sprites too large
 
+                spriteScale *= Preferences.mapPiecesScale;
+                maxSize = (int)(maxSize * Preferences.mapPiecesScale);
+
                 Span<Sprite> bgTaskSpritesToShowAsSpan = this.bgTaskSpritesToShow.AsSpan();
                 for (int i = 0; i < bgTaskSpritesToShowAsSpan.Length; i++)
                 {
