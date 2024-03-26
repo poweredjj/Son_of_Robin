@@ -276,6 +276,17 @@ namespace SonOfRobin
 
             this.sprite.Move(new Vector2(baseMovement + windMovement, 0));
 
+            Sprite playerSprite = this.world.Player.sprite;
+
+            this.sprite.rotation = (float)Math.Sin((float)this.world.CurrentUpdate / 28f) * (0.03f + (windPercentage * 0.08f));
+            playerSprite.rotation = this.sprite.rotation;
+
+            Vector2 rotationOriginOverride = new Vector2(this.sprite.GfxRect.Left, this.sprite.GfxRect.Top) - new Vector2(playerSprite.GfxRect.Left, playerSprite.GfxRect.Top);
+            rotationOriginOverride += new Vector2((float)this.sprite.AnimFrame.gfxWidth * 0.5f, this.sprite.AnimFrame.gfxHeight * 0.5f);
+            rotationOriginOverride /= playerSprite.AnimFrame.scale;
+
+            playerSprite.rotationOriginOverride = rotationOriginOverride;
+
             if (windPercentage > 0 || this.world.CurrentFrame % 3 == 0)
             {
                 ParticleEngine.TurnOn(sprite: this.sprite, preset: ParticleEngine.Preset.WaterCruiseCine, particlesToEmit: windPercentage > 0 ? 6 : 2, duration: 1);

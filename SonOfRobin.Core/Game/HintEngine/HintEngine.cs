@@ -630,6 +630,8 @@ namespace SonOfRobin
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.SolidColorRemoveAll, delay: 0, executeHelper: new Dictionary<string, Object> { { "manager", this.world.solidColorManager }, { "delay", 60 * 10 } }, storeForLaterUse: true));
 
+                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // weather won't get updated without this and the boat won't be rocking
+
                         Scheduler.ExecutionDelegate clockAdvanceDlgt1 = () =>
                         {
                             this.world.islandClock.Advance(amount: IslandClock.ConvertTimeSpanToUpdates(this.world.islandClock.TimeUntilPartOfDay(IslandClock.PartOfDay.Morning) + TimeSpan.FromHours(3)), ignorePause: true);
@@ -657,8 +659,6 @@ namespace SonOfRobin
                         taskChain.Add(new HintMessage(text: "Since departing from the island, all I see is an endless sea.\nNo sight of land or ships.", boxType: dialogue, delay: 60 * 4, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
 
                         taskChain.Add(new HintMessage(text: "This heat is unbearable. I don't have any strength left to row...", boxType: dialogue, delay: 60 * 2, autoClose: true, blockInputDuration: 60 * 4, noInput: true).ConvertToTask());
-
-                        taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.TempoPlay, delay: 0, executeHelper: null, storeForLaterUse: true)); // weather won't get updated without this
 
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.AddWeatherEvent, delay: 0, executeHelper: new WeatherEvent(type: Weather.WeatherType.Clouds, intensity: 1.0f, startTime: DateTime.MinValue, duration: TimeSpan.FromHours(24), transitionLength: TimeSpan.FromMinutes(60)), storeForLaterUse: true));
 
@@ -723,6 +723,7 @@ namespace SonOfRobin
 
                             VisualEffect orbiter = (VisualEffect)PieceTemplate.CreateAndPlaceOnBoard(world: this.world, position: player.sprite.position, templateName: PieceTemplate.Name.Orbiter, closestFreeSpot: true);
                             orbiter.universalFloat = 2f;
+                            ParticleEngine.TurnOn(sprite: player.sprite, preset: ParticleEngine.Preset.DistortStormCine, duration: 1);
                         };
                         taskChain.Add(new Scheduler.Task(taskName: Scheduler.TaskName.ExecuteDelegate, delay: 60 * 2, executeHelper: updateOrbiterDlgt2, storeForLaterUse: true));
 

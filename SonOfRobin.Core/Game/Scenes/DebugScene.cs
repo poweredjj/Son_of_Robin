@@ -480,13 +480,13 @@ namespace SonOfRobin
             //    else world.EnterNewLevel(world.IslandLevel);
             //}
 
-            if (Keyboard.HasBeenPressed(Keys.F2))
-            {
-                if (world == null) return;
+            //if (Keyboard.HasBeenPressed(Keys.F2))
+            //{
+            //    if (world == null) return;
 
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
-                world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.2f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
-            }
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Rain, intensity: 1.0f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //    world.weather.AddEvent(new WeatherEvent(type: Weather.WeatherType.Wind, intensity: 0.2f, startTime: world.islandClock.IslandDateTime, duration: TimeSpan.FromMinutes(60 * 3), transitionLength: TimeSpan.FromMinutes(10)));
+            //}
 
             if (Keyboard.HasBeenPressed(Keys.F3))
             {
@@ -516,26 +516,26 @@ namespace SonOfRobin
             //    new LevelEvent(eventName: LevelEvent.EventName.RestorePieceCreation, delay: 5 * 60, world: world, boardPiece: null, eventHelper: PieceTemplate.Name.CoalDeposit);
             //}
 
-            //if (Keyboard.HasBeenPressed(Keys.F2))
-            //{
-            //    // a shockwave
+            if (Keyboard.HasBeenPressed(Keys.F2))
+            {
+                // a shockwave
 
-            //    if (world == null) return;
+                if (world == null) return;
 
-            //    Vector2 windOriginLocation = world.Player.sprite.position;
+                Vector2 windOriginLocation = world.Player.sprite.position;
 
-            //    var plantSpriteList = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColPlantGrowth, rectangle: world.camera.viewRect);
+                var plantSpriteList = world.Grid.GetSpritesForRect(groupName: Cell.Group.ColPlantGrowth, rectangle: world.camera.viewRect);
 
-            //    foreach (Sprite sprite in plantSpriteList)
-            //    {
-            //        if (!sprite.boardPiece.pieceInfo.canBePickedUp)
-            //        {
-            //            float distance = Vector2.Distance(windOriginLocation, sprite.position);
+                foreach (Sprite sprite in plantSpriteList)
+                {
+                    if (!sprite.boardPiece.pieceInfo.canBePickedUp)
+                    {
+                        float distance = Vector2.Distance(windOriginLocation, sprite.position);
 
-            //            world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
-            //        }
-            //    }
-            //}
+                        world.swayManager.AddSwayEvent(targetSprite: sprite, sourceSprite: null, targetRotation: (sprite.position - windOriginLocation).X > 0 ? 0.15f : -0.15f, playSound: false, delayFrames: 20 + ((int)distance / 120));
+                    }
+                }
+            }
 
             //if (Keyboard.HasBeenPressed(Keys.F2))
             //{
