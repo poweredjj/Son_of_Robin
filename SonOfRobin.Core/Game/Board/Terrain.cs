@@ -62,13 +62,17 @@ namespace SonOfRobin
         private readonly bool filledWithValue;
         private readonly byte valueToFill;
 
+        private readonly bool addRotatedGradient;
+        private readonly float rotatedGradientAngle;
+        private readonly float rotatedGradientOpacity;
+
         private double[] gradientLineX;
         private double[] gradientLineY;
 
         private byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool filledWithValue = false, byte valueToFill = 0, bool addBorder = false, List<RangeConversion> rangeConversions = null)
+        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool filledWithValue = false, byte valueToFill = 0, bool addBorder = false, List<RangeConversion> rangeConversions = null, bool addRotatedGradient = false, float rotatedGradientAngle = 0f, float rotatedGradientOpacity = 0f)
         {
             this.CreationInProgress = true;
 
@@ -89,6 +93,10 @@ namespace SonOfRobin
 
             this.addBorder = addBorder;
             this.rangeConversions = rangeConversions == null ? new RangeConversion[0] : rangeConversions.ToArray();
+
+            this.addRotatedGradient = addRotatedGradient;
+            this.rotatedGradientAngle = rotatedGradientAngle;
+            this.rotatedGradientOpacity = rotatedGradientOpacity;
 
             string templatePath = this.Grid.gridTemplate.templatePath;
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}_flipped.png");
@@ -130,6 +138,45 @@ namespace SonOfRobin
                 this.maxValGridCell = loadedMaxVal;
                 this.CreationInProgress = false;
             }
+        }
+
+        private void AddRotatedGradient()
+        {
+            float gradientAngle = this.rotatedGradientAngle;
+            float gradientOpacity = this.rotatedGradientOpacity;
+            float originalOpacity = 1f - gradientOpacity;
+
+            int width = this.Grid.dividedWidth;
+            int height = this.Grid.dividedHeight;
+
+            // Calculate the gradient direction vector
+            float gradientDirectionX = (float)Math.Cos(gradientAngle);
+            float gradientDirectionY = (float)Math.Sin(gradientAngle);
+
+            // Iterate over each pixel in the 2D array
+            Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    // Calculate normalized coordinates (-1 to 1) relative to the center
+                    float normalizedX = ((float)x / (float)width) * 2f - 1f;
+                    float normalizedY = ((float)y / (float)height) * 2f - 1f;
+
+                    // Calculate dot product to determine gradient intensity
+                    float dotProduct = (normalizedX * gradientDirectionX) + (normalizedY * gradientDirectionY);
+
+                    // Ensure dot product is within bounds [-1, 1]
+                    dotProduct = Math.Max(-1f, Math.Min(1f, dotProduct));
+
+                    // Map dot product to gradient value (0 to 255)
+                    byte gradientValue = (byte)((dotProduct * 0.5f + 0.5f) * 255f);
+
+                    // Apply gradient to the pixel in the map data
+                    byte originalValue = this.mapData[x, y];
+                    byte newValue = (byte)((originalValue * originalOpacity) + (gradientValue * gradientOpacity));
+                    this.mapData[x, y] = newValue;
+                }
+            });
         }
 
         public void GenerateNoiseMap()
@@ -180,6 +227,8 @@ namespace SonOfRobin
                     }
                 });
             }
+
+            if (this.addRotatedGradient) this.AddRotatedGradient();
 
             this.UpdateMinMaxGridCell();
         }

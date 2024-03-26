@@ -338,7 +338,7 @@ namespace SonOfRobin
                                     grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
                                 this.terrainByName[Terrain.Name.Humidity] = new Terrain(
-                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f, addRotatedGradient: true, rotatedGradientAngle: 0.5f, rotatedGradientOpacity: 0.75f);
 
                                 this.terrainByName[Terrain.Name.Biome] = new Terrain(
                                     grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
