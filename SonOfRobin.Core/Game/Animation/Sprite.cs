@@ -825,7 +825,7 @@ namespace SonOfRobin
                 submergeCorrection = (int)Helpers.ConvertRange(oldMin: 0, oldMax: Terrain.waterLevelMax, newMin: Math.Min(4, this.AnimFrame.gfxHeight), newMax: this.AnimFrame.gfxHeight, oldVal: Terrain.waterLevelMax - this.GetFieldValue(Terrain.Name.Height), clampToEdges: true);
             }
 
-            this.AnimFrame.Draw(position: this.position + offset, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: rotationOriginOverride);
+            this.AnimFrame.Draw(position: this.position + offset, color: this.color, rotation: this.rotation, opacity: this.opacity, submergeCorrection: submergeCorrection, rotationOriginOverride: this.rotationOriginOverride);
 
             if (this.boardPiece.PieceStorage != null && this.boardPiece.GetType() == typeof(Plant)) this.DrawFruits();
         }
