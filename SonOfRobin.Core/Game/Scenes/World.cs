@@ -1560,7 +1560,7 @@ namespace SonOfRobin
                 if (softShadows)
                 {
                     this.shadowBlurEffect.blurSize = new Vector2(sunLightData.shadowBlurSize);
-                    //this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
+                    this.shadowBlurEffect.TurnOn(currentUpdate: this.CurrentUpdate, drawColor: Color.White * sunShadowsOpacity);
                 }
                 SonOfRobinGame.SpriteBatch.Draw(DarknessAndDistortionMask, DarknessAndDistortionMask.Bounds, Color.White * sunShadowsOpacity);
                 SonOfRobinGame.SpriteBatch.End();
@@ -1581,7 +1581,8 @@ namespace SonOfRobin
 
             // drawing global distortion
 
-            bool drawGlobalDistortion = Preferences.drawGlobalDistortion && this.ActiveLevel.recentParticlesManager.GetParticlesToDrawCountForType(ParticleEngine.DrawType.DistortAll) > 0;
+            bool drawGlobalDistortion = Preferences.drawGlobalDistortion &&
+                (this.weather.HeatPercentage > 0 || this.ActiveLevel.recentParticlesManager.GetParticlesToDrawCountForType(ParticleEngine.DrawType.DistortAll) > 0);
 
             if (drawGlobalDistortion)
             {
