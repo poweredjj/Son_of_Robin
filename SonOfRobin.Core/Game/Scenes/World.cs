@@ -729,6 +729,7 @@ namespace SonOfRobin
                     this.Player.sprite.orientation = Sprite.Orientation.right;
                     this.Player.sprite.CharacterStand(force: true);
                     this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Biome); // player should be spawned in a safe place, but able to go everywhere afterwards
+                    this.Player.sprite.allowedTerrain.RemoveTerrain(Terrain.Name.Humidity); // player should be spawned in a humid place, but able to go everywhere afterwards
                     this.Player.sprite.allowedTerrain.ClearExtProperties();
 
                     BoardPiece startingItem = PieceTemplate.CreatePiece(world: this, templateName: Preferences.newWorldStartingItem);

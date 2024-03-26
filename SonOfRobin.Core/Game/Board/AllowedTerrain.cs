@@ -19,6 +19,7 @@ namespace SonOfRobin
             Volcano = 7,
             NoBiome = 8,
             Biome = 9,
+            VeryHumid = 10,
         };
 
         private readonly Dictionary<Terrain.Name, AllowedRange> rangesByTerrainName;
@@ -57,7 +58,7 @@ namespace SonOfRobin
                         break;
 
                     case RangeName.WaterShallow:
-                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte((Terrain.waterLevelMax / 3) * 2), max: Terrain.waterLevelMax);
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Height, min: Convert.ToByte(Terrain.waterLevelMax / 3 * 2), max: Terrain.waterLevelMax);
                         break;
 
                     case RangeName.WaterMedium:
@@ -86,6 +87,10 @@ namespace SonOfRobin
 
                     case RangeName.Biome:
                         AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Biome, min: (byte)(Terrain.biomeMin + 1), max: 255);
+                        break;
+
+                    case RangeName.VeryHumid:
+                        AddRangeToRangeDict(rangeDict: rangeDict, terrainName: Terrain.Name.Humidity, min: 200, max: 255);
                         break;
 
                     default:
