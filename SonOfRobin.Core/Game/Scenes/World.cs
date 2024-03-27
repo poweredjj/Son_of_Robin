@@ -1477,8 +1477,7 @@ namespace SonOfRobin
                 (Preferences.drawLightSourcedShadows && AmbientLight.CalculateLightAndDarknessColors(currentDateTime: this.islandClock.IslandDateTime, weather: this.weather, level: this.ActiveLevel).darknessColor != Color.Transparent))
             {
                 spritesCastingShadows = this.Grid.GetPiecesInCameraView(groupName: Preferences.drawAllShadows ? Cell.Group.Visible : Cell.Group.ColMovement)
-                    .Where(p => p.sprite.AnimFrame.castsShadow)
-                    .Select(p => p.sprite);
+                    .Select(p => p.sprite); // all sprites, non-casting shadows too (to draw over shadows correctly)
             }
 
             // switching to RenderTarget2 (to draw board before any distortions)

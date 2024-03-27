@@ -1375,8 +1375,6 @@ namespace SonOfRobin
                 .ThenByDescending(s => Vector2.DistanceSquared(normalizedSunPos, s.position))
                 )
             {
-                if (!shadowSprite.AnimFrame.castsShadow) continue;
-
                 Rectangle gfxRect = shadowSprite.GfxRect;
 
                 if (!shadowSprite.GfxRect.Intersects(cameraRect) && !shadowSprite.AnimFrame.hasFlatShadow)
@@ -1398,9 +1396,9 @@ namespace SonOfRobin
                         continue;
                 }
 
-                shadowSprite.DrawShadow(color: Color.Black, lightPos: normalizedSunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: normalizedSunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
+                if (shadowSprite.AnimFrame.castsShadow) shadowSprite.DrawShadow(color: Color.Black, lightPos: normalizedSunPos, shadowAngle: Helpers.GetAngleBetweenTwoPoints(start: normalizedSunPos, end: shadowSprite.position), yScaleForce: sunLightData.sunShadowsLength);
 
-                if (cameraRect.Intersects(gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow
+                if (cameraRect.Intersects(gfxRect)) shadowSprite.DrawRoutine(calculateSubmerge: true); // erasing shadowSprite from the shadow (every sprite has to be drawn, to erase shadows correctly)
             }
         }
 
