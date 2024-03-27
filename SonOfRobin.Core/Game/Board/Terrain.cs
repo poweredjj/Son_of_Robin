@@ -80,7 +80,7 @@ namespace SonOfRobin
             this.Grid = grid;
             this.seed = grid.gridTemplate.seed;
 
-            this.noise = new FastNoiseLite(this.seed);
+            this.noise = new FastNoiseLite(this.seed + (int)this.name); // name added to avoid using the same seed for every terrain
 
             this.frequency = frequency;
             this.octaves = octaves;
@@ -92,7 +92,7 @@ namespace SonOfRobin
             this.valueToFill = valueToFill;
 
             this.addBorder = addBorder;
-            this.rangeConversions = rangeConversions == null ? new RangeConversion[0] : rangeConversions.ToArray();
+            this.rangeConversions = rangeConversions == null ? [] : rangeConversions.ToArray();
 
             this.addRotatedGradient = addRotatedGradient;
             this.rotatedGradientAngle = rotatedGradientAngle;
@@ -165,7 +165,7 @@ namespace SonOfRobin
                     float normalizedX = ((float)x / widthFloat * 2f) - 1f;
                     float dotProduct = Math.Clamp(value: (normalizedX * gradientDirectionX) + multipliedY, min: -1f, max: 1f);
 
-                    this.mapData[x, y] = (byte)Math.Floor(((float)this.mapData[x, y] * originalOpacity) + (((dotProduct * 0.5f) + 0.5f) * 255f * gradientOpacity));
+                    this.mapData[x, y] = (byte)(((float)this.mapData[x, y] * originalOpacity) + (((dotProduct * 0.5f) + 0.5f) * 255f * gradientOpacity));
                 }
             });
         }
@@ -209,7 +209,7 @@ namespace SonOfRobin
                         double rawNoiseValue = this.noise.GetNoise(realX, realY) + 1; // 0-2 range
                         if (this.addBorder) rawNoiseValue = Math.Max(rawNoiseValue - Math.Max(gradientLineX[realX], gradientLineY[realY]), 0);
 
-                        this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range;  can write to array using parallel, if every thread accesses its own indices
+                        this.mapData[x, y] = (byte)(rawNoiseValue * 128); // 0-255 range; can write to array using parallel, if every thread accesses its own indices
 
                         foreach (RangeConversion rangeConversion in this.rangeConversions)
                         {
@@ -220,8 +220,6 @@ namespace SonOfRobin
             }
 
             if (this.addRotatedGradient) this.AddRotatedGradient();
-
-            this.UpdateMinMaxGridCell();
         }
 
         public void SaveTemplate()
