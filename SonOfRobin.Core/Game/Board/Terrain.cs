@@ -149,23 +149,23 @@ namespace SonOfRobin
             int width = this.Grid.dividedWidth;
             int height = this.Grid.dividedHeight;
 
+            float widthFloat = (float)width;
+            float heightFloat = (float)height;
+
             float gradientDirectionX = (float)Math.Cos(gradientAngle);
             float gradientDirectionY = (float)Math.Sin(gradientAngle);
 
             Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
             {
-                float normalizedY = (((float)y / (float)height) * 2f) - 1f;
+                float normalizedY = ((float)y / heightFloat * 2f) - 1f;
                 float multipliedY = normalizedY * gradientDirectionY;
 
                 for (int x = 0; x < width; x++)
                 {
-                    float normalizedX = (((float)x / (float)width) * 2f) - 1f;
+                    float normalizedX = ((float)x / widthFloat * 2f) - 1f;
+                    float dotProduct = Math.Clamp(value: (normalizedX * gradientDirectionX) + multipliedY, min: -1f, max: 1f);
 
-                    float dotProduct = (normalizedX * gradientDirectionX) + multipliedY;
-                    dotProduct = Math.Clamp(value: dotProduct, min: -1f, max: 1f);
-
-                    float gradientValue = (dotProduct * 0.5f) + 0.5f;
-                    this.mapData[x, y] = (byte)(((float)this.mapData[x, y] * originalOpacity) + (gradientValue * gradientOpacity * 255f));
+                    this.mapData[x, y] = (byte)Math.Floor(((float)this.mapData[x, y] * originalOpacity) + (((dotProduct * 0.5f) + 0.5f) * 255f * gradientOpacity));
                 }
             });
         }
