@@ -405,7 +405,7 @@ namespace SonOfRobin
                             {
                                 // setting a rift in height for humidity == 128
 
-                                int maxValDiff = 7;
+                                int maxValDiff = 18;
                                 byte riftCenter = 128;
 
                                 Parallel.For(0, this.dividedHeight, rawY =>
@@ -415,8 +415,8 @@ namespace SonOfRobin
                                         int valDiff = Math.Abs(this.terrainByName[Terrain.Name.Humidity].GetMapDataRaw(rawX, rawY) - riftCenter);
                                         if (valDiff < maxValDiff)
                                         {
-                                            float riftDepthFactor = ((float)valDiff / (float)maxValDiff);
-                                            byte riftVal = (byte)Math.Max((riftDepthFactor * 255f) - 10, 0);
+                                            float riftDepthFactor = (float)valDiff / (float)maxValDiff;
+                                            byte riftVal = (byte)Math.Max((riftDepthFactor * 255f) - 12, 0);
 
                                             byte newHeightVal = Math.Min(this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY), riftVal);
                                             this.terrainByName[Terrain.Name.Height].SetMapDataRaw(rawCoords: new Point(rawX, rawY), value: newHeightVal);
