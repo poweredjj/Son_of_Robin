@@ -758,5 +758,10 @@ namespace SonOfRobin
 
             return textList;
         }
+
+        public static double ConvertAngleToRadians(double angle)
+        {
+            return Math.PI / 180 * angle;
+        }
     }
 }

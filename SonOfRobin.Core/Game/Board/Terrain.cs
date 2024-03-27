@@ -149,32 +149,23 @@ namespace SonOfRobin
             int width = this.Grid.dividedWidth;
             int height = this.Grid.dividedHeight;
 
-            // Calculate the gradient direction vector
             float gradientDirectionX = (float)Math.Cos(gradientAngle);
             float gradientDirectionY = (float)Math.Sin(gradientAngle);
 
-            // Iterate over each pixel in the 2D array
             Parallel.For(0, height, SonOfRobinGame.defaultParallelOptions, y =>
             {
+                float normalizedY = (((float)y / (float)height) * 2f) - 1f;
+                float multipliedY = normalizedY * gradientDirectionY;
+
                 for (int x = 0; x < width; x++)
                 {
-                    // Calculate normalized coordinates (-1 to 1) relative to the center
-                    float normalizedX = ((float)x / (float)width) * 2f - 1f;
-                    float normalizedY = ((float)y / (float)height) * 2f - 1f;
+                    float normalizedX = (((float)x / (float)width) * 2f) - 1f;
 
-                    // Calculate dot product to determine gradient intensity
-                    float dotProduct = (normalizedX * gradientDirectionX) + (normalizedY * gradientDirectionY);
+                    float dotProduct = (normalizedX * gradientDirectionX) + multipliedY;
+                    dotProduct = Math.Clamp(value: dotProduct, min: -1f, max: 1f);
 
-                    // Ensure dot product is within bounds [-1, 1]
-                    dotProduct = Math.Max(-1f, Math.Min(1f, dotProduct));
-
-                    // Map dot product to gradient value (0 to 255)
-                    byte gradientValue = (byte)((dotProduct * 0.5f + 0.5f) * 255f);
-
-                    // Apply gradient to the pixel in the map data
-                    byte originalValue = this.mapData[x, y];
-                    byte newValue = (byte)((originalValue * originalOpacity) + (gradientValue * gradientOpacity));
-                    this.mapData[x, y] = newValue;
+                    float gradientValue = (dotProduct * 0.5f) + 0.5f;
+                    this.mapData[x, y] = (byte)(((float)this.mapData[x, y] * originalOpacity) + (gradientValue * gradientOpacity * 255f));
                 }
             });
         }
