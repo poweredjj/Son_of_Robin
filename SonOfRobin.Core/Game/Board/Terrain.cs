@@ -230,21 +230,15 @@ namespace SonOfRobin
 
         public Byte GetMapData(int x, int y)
         {
-            if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0.");
+            // if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0."); // can be enabled to perform negative coords check
 
             return this.mapData[x / this.Grid.resDivider, y / this.Grid.resDivider];
         }
 
         public Byte GetMapDataRaw(int x, int y)
         {
-            if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0.");
+            // if (x < 0 || y < 0) throw new IndexOutOfRangeException($"Coords {x},{y} cannot be less than 0."); // can be enabled to perform negative coords check
 
-            // direct access, without taking resDivider into account
-            return this.mapData[x, y];
-        }
-
-        public Byte GetMapDataRawNoBoundsCheck(int x, int y)
-        {
             // direct access, without taking resDivider into account
             return this.mapData[x, y];
         }

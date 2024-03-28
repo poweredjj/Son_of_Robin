@@ -415,13 +415,13 @@ namespace SonOfRobin
                                 {
                                     for (int rawX = 0; rawX < this.dividedWidth; rawX++)
                                     {
-                                        int valDiff = Math.Abs(this.terrainByName[Terrain.Name.Humidity].GetMapDataRawNoBoundsCheck(rawX, rawY) - riftCenter);
+                                        int valDiff = Math.Abs(this.terrainByName[Terrain.Name.Humidity].GetMapDataRaw(rawX, rawY) - riftCenter);
                                         if (valDiff < maxValDiff)
                                         {
                                             float riftDepthFactor = (float)valDiff / (float)maxValDiff;
                                             byte riftVal = (byte)Math.Max((riftDepthFactor * 255f) - 12, 0);
 
-                                            byte newHeightVal = Math.Min(this.terrainByName[Terrain.Name.Height].GetMapDataRawNoBoundsCheck(rawX, rawY), riftVal);
+                                            byte newHeightVal = Math.Min(this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY), riftVal);
                                             this.terrainByName[Terrain.Name.Height].SetMapDataRaw(x: rawX, y: rawY, value: newHeightVal);
                                         }
                                     }
