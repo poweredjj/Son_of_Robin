@@ -85,7 +85,6 @@ namespace SonOfRobin
             this.acquiredMaterials = ((Dictionary<int, int>)compendiumData["acquiredMaterials"])
                 .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
 
-            // for compatibility with older saves
             this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
 
             this.materialsBySources = [];
