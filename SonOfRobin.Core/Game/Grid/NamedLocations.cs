@@ -20,6 +20,7 @@ namespace SonOfRobin
             Shore,
             Grassland,
             Ruins,
+            River,
         }
 
         public class NameRandomizer
@@ -69,6 +70,7 @@ namespace SonOfRobin
             { Category.Shore, new Color(186, 137, 32) },
             { Category.Grassland, new Color(27, 168, 2) },
             { Category.Ruins, new Color(112, 112, 112) },
+            { Category.River, new Color(0, 107, 179) },
         };
 
         private static readonly Dictionary<Category, List<string>> adjectiveListByCategory = new()
@@ -90,6 +92,8 @@ namespace SonOfRobin
             { Category.Grassland, new List<string>{ "Green", "Grassy", "Breezy", "Whispering", "Serene", "Abundant", "Palmshade", "Harmony", "Explorer's", "Bounty", "Governor's", "Tranquil", "Restful", "Tropic", "Verdant", "St. Augustine's", "Saint Francis'", "Vespucci's" } },
 
             { Category.Ruins, new List<string>{ "Ancient", "Lost", "Jungle", "Ceremonial", "Mystical", "Crumbling", "Forgotten", "Decaying", "Faded", "Mossy", "Vineswept", "Eroding" } },
+
+            { Category.River, new List<string>{ "Ancient", "Mighty", "Grand", "Rushing", "Wild", "Roaring"} },
             };
 
         private static readonly Dictionary<Category, List<string>> nounListByCategory = new()
@@ -111,6 +115,8 @@ namespace SonOfRobin
             { Category.Grassland, new List<string>{ "Grassland", "Meadow", "Savanna", "Expanse", "Plains", "Prairie", "Oasis", "Steppe", "Glade" } },
 
             { Category.Ruins, new List<string>{ "Ruins", "Remnants", "Enclave", "Court", "Mausoleum", "Keep", "Sanctum", "Site", "Grounds", "Totems", "Citadel", "Ruinscape" } },
+
+            { Category.River, new List<string>{ "River", "Rapids", "Torrent", "Cascade", "Artery", "Vein" } },
             };
 
         public class Location
@@ -511,6 +517,21 @@ namespace SonOfRobin
 
                     break;
 
+                case Category.River:
+
+                    cellSearches.Add(new(
+                        searchEntriesTerrain: new List<SearchEntryTerrain> {
+                            new SearchEntryTerrain(name: Terrain.Name.Height, minVal: 0, maxVal: Terrain.waterLevelMax),
+                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 112, maxVal: 144),
+                        }
+                        ));
+
+                    minCells = 50;
+                    maxCells = 5000;
+                    density = 1;
+
+                    break;
+
                 case Category.Desert:
 
                     cellSearches.Add(new(
@@ -546,14 +567,14 @@ namespace SonOfRobin
 
                     cellSearches.Add(new(
                             searchEntriesTerrain: new List<SearchEntryTerrain> {
-                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 0, maxVal: 128, strictSearch: true),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 0, maxVal: 128, strictSearch: true),
                         },
                         searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
                         ));
 
                     cellSearches.Add(new(
                            searchEntriesTerrain: new List<SearchEntryTerrain> {
-                            new SearchEntryTerrain(name: Terrain.Name.Humidity, minVal: 129, maxVal: 255, strictSearch: true),
+                            new SearchEntryTerrain(name: Terrain.Name.Biome, minVal: 129, maxVal: 255, strictSearch: true),
                        },
                        searchEntriesExtProps: new List<SearchEntryExtProps> { new SearchEntryExtProps(name: ExtBoardProps.Name.OuterBeach, value: true) }
                        ));
