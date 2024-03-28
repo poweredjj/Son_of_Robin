@@ -32,23 +32,23 @@ namespace SonOfRobin
             AnimalFlee = 17,
 
             FireplaceBurn = 18,
-            DryMeat = 30,
-            FlameBurn = 25,
+            DryMeat = 19,
+            FlameBurn = 20,
 
-            ScareAnimalsAway = 19,
-            PlayAmbientSound = 20,
-            MapMarkerShowAndCheck = 21,
-            FogMoveRandomly = 22,
-            WeatherFogMoveRandomly = 23,
+            ScareAnimalsAway = 21,
+            PlayAmbientSound = 22,
+            MapMarkerShowAndCheck = 23,
+            FogMoveRandomly = 24,
+            WeatherFogMoveRandomly = 25,
 
             AnimalRunForClosestWater = 26,
             AnimalCallForHelp = 27,
             SeaWaveMove = 28,
             EmitParticles = 29,
-            HasteCloneFollowPlayer = 31,
-            CaveEntranceDisappear = 32,
-            EndingBoatCruise = 33,
-            OscillateAroundTarget = 34,
+            HasteCloneFollowPlayer = 30,
+            CaveEntranceDisappear = 31,
+            EndingBoatCruise = 32,
+            OscillateAroundTarget = 33,
         }
 
         public static readonly Category[] allCategories = (Category[])Enum.GetValues(typeof(Category));

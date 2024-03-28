@@ -26,8 +26,8 @@ namespace SonOfRobin
 
     public class SonOfRobinGame : Game
     {
-        public const float version = 0.6065f;
-        public static readonly DateTime lastChanged = new(2024, 03, 27);
+        public const float version = 0.6066f;
+        public static readonly DateTime lastChanged = new(2024, 03, 28);
 
         public static readonly int enteringIslandGlobalSteps = 4 + Grid.allStagesCount;
         public static ContentManager ContentMgr { get; private set; } // for things other than textures (for textures use TextureBank)

@@ -8,7 +8,7 @@ namespace SonOfRobin
 {
     public class SaveHeaderManager
     {
-        public static readonly float saveVersion = 1.507f;
+        public static readonly float saveVersion = 1.508f;
 
         public static bool AnySavesExist
         { get { return Directory.GetDirectories(SonOfRobinGame.saveGamesPath).Length > 0; } }

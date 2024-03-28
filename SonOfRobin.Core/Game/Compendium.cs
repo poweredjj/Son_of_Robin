@@ -86,8 +86,7 @@ namespace SonOfRobin
                 .ToDictionary(kvp => (PieceTemplate.Name)kvp.Key, kvp => kvp.Value);
 
             // for compatibility with older saves
-            if (compendiumData.ContainsKey("sourcesUnlockedForScan")) this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
-            else this.sourcesUnlockedForScan = [];
+            this.sourcesUnlockedForScan = (HashSet<PieceTemplate.Name>)compendiumData["sourcesUnlockedForScan"];
 
             this.materialsBySources = [];
 
