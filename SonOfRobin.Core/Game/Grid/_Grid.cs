@@ -333,17 +333,11 @@ namespace SonOfRobin
                         switch (levelType)
                         {
                             case Level.LevelType.Island:
-                                Random gradientRandom = new(this.world.seed);
-                                float humidityGradientAngleDegrees = gradientRandom.Next(0, 4) * 90;
-                                humidityGradientAngleDegrees += ((gradientRandom.NextSingle() * 2f) - 1f) * 20f;
-
-                                float humidityGradientAngleRadians = (float)Helpers.ConvertAngleToRadians(humidityGradientAngleDegrees);
-
                                 this.terrainByName[Terrain.Name.Height] = new Terrain(
                                     grid: this, name: Terrain.Name.Height, frequency: 8f, octaves: 9, persistence: 0.5f, lacunarity: 1.9f, gain: 0.55f, addBorder: true);
 
                                 this.terrainByName[Terrain.Name.Humidity] = new Terrain(
-                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f, addRotatedGradient: true, rotatedGradientAngle: humidityGradientAngleRadians, rotatedGradientOpacity: 0.75f);
+                                    grid: this, name: Terrain.Name.Humidity, frequency: 4.3f, octaves: 9, persistence: 0.6f, lacunarity: 1.7f, gain: 0.6f);
 
                                 this.terrainByName[Terrain.Name.Biome] = new Terrain(
                                     grid: this, name: Terrain.Name.Biome, frequency: 7f, octaves: 3, persistence: 0.7f, lacunarity: 1.4f, gain: 0.3f, addBorder: true);
@@ -403,6 +397,15 @@ namespace SonOfRobin
                     {
                         case Level.LevelType.Island:
                             {
+                                // adding linear gradient to humidity
+
+                                Random gradientRandom = new(this.world.seed);
+                                float humidityGradientAngleDegrees = gradientRandom.Next(0, 4) * 90;
+                                humidityGradientAngleDegrees += ((gradientRandom.NextSingle() * 2f) - 1f) * 20f;
+                                float humidityGradientAngleRadians = (float)Helpers.ConvertAngleToRadians(humidityGradientAngleDegrees);
+
+                                this.terrainByName[Terrain.Name.Humidity].AddRotatedGradient(gradientAngle: humidityGradientAngleRadians, gradientOpacity: 0.75f);
+
                                 // setting a rift in height for humidity == 128
 
                                 int maxValDiff = 18;
@@ -412,14 +415,14 @@ namespace SonOfRobin
                                 {
                                     for (int rawX = 0; rawX < this.dividedWidth; rawX++)
                                     {
-                                        int valDiff = Math.Abs(this.terrainByName[Terrain.Name.Humidity].GetMapDataRaw(rawX, rawY) - riftCenter);
+                                        int valDiff = Math.Abs(this.terrainByName[Terrain.Name.Humidity].GetMapDataRawNoBoundsCheck(rawX, rawY) - riftCenter);
                                         if (valDiff < maxValDiff)
                                         {
                                             float riftDepthFactor = (float)valDiff / (float)maxValDiff;
                                             byte riftVal = (byte)Math.Max((riftDepthFactor * 255f) - 12, 0);
 
-                                            byte newHeightVal = Math.Min(this.terrainByName[Terrain.Name.Height].GetMapDataRaw(rawX, rawY), riftVal);
-                                            this.terrainByName[Terrain.Name.Height].SetMapDataRaw(rawCoords: new Point(rawX, rawY), value: newHeightVal);
+                                            byte newHeightVal = Math.Min(this.terrainByName[Terrain.Name.Height].GetMapDataRawNoBoundsCheck(rawX, rawY), riftVal);
+                                            this.terrainByName[Terrain.Name.Height].SetMapDataRaw(x: rawX, y: rawY, value: newHeightVal);
                                         }
                                     }
                                 });

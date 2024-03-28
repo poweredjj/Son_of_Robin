@@ -62,17 +62,13 @@ namespace SonOfRobin
         private readonly bool filledWithValue;
         private readonly byte valueToFill;
 
-        private readonly bool addRotatedGradient;
-        private readonly float rotatedGradientAngle;
-        private readonly float rotatedGradientOpacity;
-
         private double[] gradientLineX;
         private double[] gradientLineY;
 
         private byte[,] minValGridCell; // this values are stored in terrain, instead of cell
         private byte[,] maxValGridCell; // this values are stored in terrain, instead of cell
 
-        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool filledWithValue = false, byte valueToFill = 0, bool addBorder = false, List<RangeConversion> rangeConversions = null, bool addRotatedGradient = false, float rotatedGradientAngle = 0f, float rotatedGradientOpacity = 0f)
+        public Terrain(Grid grid, Name name, float frequency, int octaves, float persistence, float lacunarity, float gain, bool filledWithValue = false, byte valueToFill = 0, bool addBorder = false, List<RangeConversion> rangeConversions = null)
         {
             this.CreationInProgress = true;
 
@@ -93,10 +89,6 @@ namespace SonOfRobin
 
             this.addBorder = addBorder;
             this.rangeConversions = rangeConversions == null ? [] : rangeConversions.ToArray();
-
-            this.addRotatedGradient = addRotatedGradient;
-            this.rotatedGradientAngle = rotatedGradientAngle;
-            this.rotatedGradientOpacity = rotatedGradientOpacity;
 
             string templatePath = this.Grid.gridTemplate.templatePath;
             this.terrainPngPath = Path.Combine(templatePath, $"terrain_{Convert.ToString(name).ToLower()}_flipped.png");
@@ -140,10 +132,10 @@ namespace SonOfRobin
             }
         }
 
-        private void AddRotatedGradient()
+        public void AddRotatedGradient(float gradientAngle, float gradientOpacity)
         {
-            float gradientAngle = this.rotatedGradientAngle;
-            float gradientOpacity = this.rotatedGradientOpacity;
+            // should only be used before saving template - never during gameplay
+
             float originalOpacity = 1f - gradientOpacity;
 
             int width = this.Grid.dividedWidth;
@@ -218,8 +210,6 @@ namespace SonOfRobin
                     }
                 });
             }
-
-            if (this.addRotatedGradient) this.AddRotatedGradient();
         }
 
         public void SaveTemplate()
@@ -265,6 +255,14 @@ namespace SonOfRobin
 
             // direct access, without taking resDivider into account
             this.mapData[rawCoords.X, rawCoords.Y] = value;
+        }
+
+        public void SetMapDataRaw(int x, int y, byte value)
+        {
+            // should only be used before saving template - never during gameplay
+
+            // direct access, without taking resDivider into account
+            this.mapData[x, y] = value;
         }
 
         public byte GetMinValueForCell(int cellNoX, int cellNoY)
